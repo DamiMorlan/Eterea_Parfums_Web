@@ -1,37 +1,166 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
     @Styles.Render("~/Content/css")
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
     @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        body {
+            padding-top: 70px; /* Ajustá este valor si el navbar cambia de tamaño */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .body-content {
+            flex: 1;
+        }
+
+        .footer {
+            background-color: rgb(209, 167, 180);
+            color: white;
+            font-size: 0.95rem;
+        }
+
+            .footer h5 {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .footer .social-icons a {
+                color: white;
+                transition: color 0.3s ease;
+            }
+
+                .footer .social-icons a:hover {
+                    color: #f1f1f1;
+                }
+
+        .custom-navbar {
+            background-color: rgb(209, 167, 180); /* mismo color que el footer */
+        }
+
+        .navbar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .navbar .nav-link i {
+                font-size: 1.2em;
+            }
+
+        .navbar .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+    </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark custom-navbar fixed-top">
         <div class="container">
-            @Html.ActionLink("Nombre de la aplicación", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("Eterea Parfums", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar navegación" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Perfumes", "Index", "Producto", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Nosotros", "About", "Home", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Contacto", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav">
+                    <!-- Icono de Carrito -->
+                    <li class="nav-item">
+                        @if (Session["UsuarioId"] == null)
+                        {
+                            <a href="/UsuarioWeb/Login" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i> Carrito
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Carrito/Index" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i> Carrito
+                            </a>
+                        }
+                    </li>
+
+                    <!-- Icono de Perfil -->
+                    @if (Session["UsuarioId"] == null)
+                    {
+                        <li class="nav-item">
+                            <a href="/UsuarioWeb/Login" class="nav-link">
+                                <i class="fas fa-user"></i> Iniciar sesión
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a href="/UsuarioWeb/Logout" class="nav-link">
+                                <i class="fas fa-user"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
     </nav>
+
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
-        </footer>
+
+
     </div>
+
+    <footer class="footer mt-auto">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0 text-md-start text-center">
+                    <h5 class="mb-2">Eterea Parfums</h5>
+                    <p class="mb-1">&copy; @DateTime.Now.Year - Todos los derechos reservados.</p>
+                    <p class="small mb-0">
+                        Marcas registradas pertenecen a sus respectivos dueños.<br />
+                        Todos los precios incluyen IVA (donde sea aplicable).
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end text-center">
+                    <h5 class="mb-2">Síguenos</h5>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com" target="_blank" class="me-3" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="https://www.instagram.com" target="_blank" class="me-3" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="https://x.com" target="_blank" class="me-3" aria-label="X (antes Twitter)"><i class="fab fa-x-twitter fa-lg"></i></a>
+                        <a href="https://wa.me/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
