@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Eterea_Parfums_Web.Models;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -16,21 +17,28 @@ namespace Eterea_Parfums_Web.Controllers
 
         // POST: Cliente/Login
         [HttpPost]
-        public ActionResult Login(string username, string password)
+        public ActionResult Login(string usuario, string clave)
         {
-            // Aquí va la lógica real para validar usuario contra la base de datos
-            // Por ejemplo, un usuario de prueba:
-            if (username == "admin" && password == "1234")
-            {
-                // Podés usar Session o FormsAuthentication para autenticar
-                Session["Usuario"] = username;
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                ViewBag.Error = "Usuario o contraseña incorrectos.";
-                return View();
-            }
+            /* using (EtereaEntities1 db = new EtereaEntities1())
+             {
+                 Cliente usuarioLogueado = db.Cliente.FirstOrDefault(a => a.usuario == usuario && a.clave == clave);
+
+                 if (usuarioLogueado != null)
+                 {
+                     // Si el usuario se autentica correctamente
+                     // Guardar el objeto Cliente en la sesión
+                     Session["usuarioLogueado"] = usuarioLogueado;
+                     // Usuario y contraseña válidos, redirigir a la página Index de la carpeta Carrito
+                     return RedirectToAction("Index", "Perfume");
+                 }
+                 else
+                 {
+                     // Usuario o contraseña inválidos, volver a cargar la página de login con un mensaje de error
+                     ViewData["Error"] = "Usuario o contraseña incorrectos";
+                     return View();
+                 }
+             }*/
+            return View();
         }
 
         // GET: Cliente/Registrar
