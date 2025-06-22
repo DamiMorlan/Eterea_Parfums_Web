@@ -292,6 +292,7 @@
     <Content Include="Views\Cliente\Registrar.cshtml" />
     <Content Include="Views\Historial\DetalleFactura.cshtml" />
     <Content Include="Views\Historial\Index.cshtml" />
+    <Content Include="Views\Cliente\Perfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
