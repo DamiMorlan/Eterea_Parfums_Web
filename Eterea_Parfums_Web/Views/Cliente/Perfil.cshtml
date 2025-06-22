@@ -7,12 +7,14 @@
 <div class="register-container">
     <h2 id="title" class="text-center">@ViewBag.Title</h2>
     <hr class="separator">
-    @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post, new { @class = "register-form" }))
+    @Html.ActionLink("Ver Compras realizadas", "Index", "Historial", null, new { @class = "btn btn-primary" })
+    <!-- MODIFICAR el class = "perfil-form" cuando este el CSS -->
+    @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "perfil-form" }))
     {
         <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" value="Maxi" required /> 
-        <!-- Agregar Value a todos para mostar datos del cliente logueado -->
+            <input type="text" id="nombre" name="nombre" value="Maxi" required />
+            <!-- AGREGAR Value A TODOS PARA MOSTRAR LOS DATOS DEL CLIENTE LOGUEADO -->
         </div>
 
         <div class="form-group">

@@ -56,5 +56,10 @@ namespace Eterea_Parfums_Web.Controllers
             // Por ahora solo redirigimos a Login
             return RedirectToAction("Login");
         }
+
+        public ActionResult Perfil()
+        {
+            return View();
+        }
     }
 }
