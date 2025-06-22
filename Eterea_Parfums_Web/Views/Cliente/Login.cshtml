@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Login</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div style="color:red;">@ViewBag.Error</div>
+}
+
+@using (Html.BeginForm())
+{
+    <label>Usuario:</label>
+    <br />
+    <input type="text" name="username" />
+    <br />
+
+    <label>Contraseña:</label>
+    <br />
+    <input type="password" name="password" />
+    <br />
+
+    <input type="submit" value="Entrar" />
+}
