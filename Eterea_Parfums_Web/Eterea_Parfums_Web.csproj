@@ -129,6 +129,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
+    <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -289,6 +290,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Cliente\Login.cshtml" />
     <Content Include="Views\Cliente\Registrar.cshtml" />
+    <Content Include="Views\Historial\DetalleFactura.cshtml" />
+    <Content Include="Views\Historial\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
