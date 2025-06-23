@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Historial de compras";
+}
+
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="personal-data-container">
+        <h3>Datos personales</h3>
+        <p><strong>Nombre:</strong> @ViewBag.UsuarioLogueado.nombre</p>
+        <p><strong>Apellido:</strong> @ViewBag.UsuarioLogueado.apellido</p>
+        <p><strong>DNI:</strong> @ViewBag.UsuarioLogueado.dni</p>
+        <p><strong>Email:</strong> @ViewBag.UsuarioLogueado.e_mail</p>
+    </div>
+
+    <h2>@ViewBag.Title</h2>
+
+    <hr class="separator">
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Número de Factura</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Detalles</th> <!-- Nueva columna para mostrar detalles -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var factura in Model)
+            {
+                <tr>
+                    <td>@factura.num_factura</td>
+                    <td>@factura.fecha.ToString("dd/MM/yy")</td>
+                    <td>$ @factura.precio_total</td>
+                    <td>
+                        @using (Html.BeginForm("DetalleFactura", "Historial"))
+                        {
+                            <input type="hidden" name="numFactura" value="@factura.num_factura" />
+                            <button type="submit" class="btn btn-primary">Ver Detalles</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr class="separator">
+}
+else
+{
+    <p>No se encontraron compras en el historial.</p>
+}
+
