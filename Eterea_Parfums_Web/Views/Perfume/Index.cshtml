@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<Eterea_Parfums_Web.Models.perfume>
+
+@{
     ViewBag.Title = "Perfumes";
 }
 
@@ -72,18 +74,16 @@
         <!-- Productos -->
         <section class="col-md-9">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                @* Simulamos 12 perfumes *@
-                @for (int i = 1; i <= 12; i++)
+                @foreach (var perfume in Model)
                 {
                     <div class="col">
-                        <div class="card h-100">
-                            <img src="~/Content/Images/@(i).jpg" class="card-img-top" alt="Perfume @i" style="height: 250px; object-fit: cover;">
+                        <div class="card perfume-card h-100">
+                            <img src="@Url.Content("~/Content/Images/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Perfume @i</h5>
-                                <p class="card-text mb-1">Marca: Dior</p>
-                                <p class="card-text mb-1">Género: Femenino</p>
-                                <p class="card-text mb-1">Tamaño: 100 ml</p>
-                                <p class="card-text fw-bold mt-auto">$15.000</p>
+                                <h5 class="card-title">@perfume.nombre</h5>
+                                <p class="card-text mb-1">Marca: @perfume.marca.nombre</p>
+                                <p class="card-text mb-1">Tamaño: @perfume.presentacion_ml ml</p>
+                                <p class="card-text fw-bold mt-auto">$@perfume.precio_en_pesos</p>
 
                                 <div class="d-flex flex-column mt-3">
                                     <button class="btn btn-eterea mb-2">
@@ -129,22 +129,60 @@
         background-color: rgb(249, 230, 225);
     }
 
+    .card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            transform: translateY(-6px);
+        }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .custom-img {
+        height: 140px; /* Imagen más chica */
+        width: auto; /* Mantiene proporción */
+        display: block;
+        margin: 0 auto; /* Centra horizontalmente */
+        border-radius: 12px;
+    }
+
+    .card-body {
+        background-color: #fff;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-align: center; /* <-- Esto centra el contenido de texto */
+    }
+
     .btn-eterea {
         background-color: rgb(209, 167, 180);
         color: white;
         width: 100%;
         border: none;
-        transition: background-color 0.3s ease;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
         .btn-eterea:hover {
             background-color: rgb(189, 147, 160);
+            transform: scale(1.02);
+            color: white;
         }
-
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-    }
 
     .pagination .page-link {
         color: rgb(209, 167, 180);

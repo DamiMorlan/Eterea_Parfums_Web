@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Eterea_Parfums_Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +9,13 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class PerfumeController : Controller
     {
+        private etereaEntities1 db = new etereaEntities1();
+
         // GET: Perfume
         public ActionResult Index()
         {
-            return View();
+            var perfumes = db.perfume.ToList(); // Obtiene todos los perfumes
+            return View(perfumes);
         }
 
         // GET: Perfume/Details/5
