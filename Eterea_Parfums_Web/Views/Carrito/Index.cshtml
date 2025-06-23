@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegurate de tener este layout
+}
+
+@section Styles {
+    <link href="~/Content/carritoStyle.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="carrito-container">
+    <!-- Producto Ejemplo -->
+    <div class="producto-item">
+        <div class="eliminar">🗑️</div>
+        <img src="~/Content/Images/perfume.jpg" alt="Perfume agregado" />
+        <div class="producto-detalles">
+            <h3>Nombre del Perfume</h3>
+            <p>Tipo: Eau de Parfum</p>
+            <p>Presentación: 100ml</p>
+            <p>Género: Unisex</p>
+            <p class="precio-original">$15.000</p>
+            <p class="precio-descuento">$12.000</p>
+            <label for="cantidad">Cantidad: </label>
+            <select name="cantidad" id="cantidad">
+                <option value="0">0 (Eliminar)</option>
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+        <div class="producto-precio">
+            <p>Total: $12.000</p>
+        </div>
+    </div>
+
+    <!-- Resumen del carrito -->
+    <div class="resumen-carrito">
+        <div>Subtotal (sin descuento): $15.000</div>
+        <div>Descuentos aplicados: -$3.000</div>
+        <div class="total-final">Total a pagar: $12.000</div>
+        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+        <button class="btn-finalizar">Finalizar pedido</button>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $10.000.
+        </p>
+    </div>
+</div>
+
+
