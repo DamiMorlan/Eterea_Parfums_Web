@@ -9,6 +9,8 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class ClienteController : Controller
     {
+
+        private etereaEntities1 db = new etereaEntities1();
         // GET: Cliente/Login
         public ActionResult Login()
         {
@@ -19,9 +21,9 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
-            /* using (EtereaEntities1 db = new EtereaEntities1())
+             using (etereaEntities1 db = new etereaEntities1())
              {
-                 Cliente usuarioLogueado = db.Cliente.FirstOrDefault(a => a.usuario == usuario && a.clave == clave);
+                 cliente usuarioLogueado = db.cliente.FirstOrDefault(a => a.usuario == usuario && a.clave == clave);
 
                  if (usuarioLogueado != null)
                  {
@@ -37,7 +39,7 @@ namespace Eterea_Parfums_Web.Controllers
                      ViewData["Error"] = "Usuario o contraseña incorrectos";
                      return View();
                  }
-             }*/
+             }
             return View();
         }
 
