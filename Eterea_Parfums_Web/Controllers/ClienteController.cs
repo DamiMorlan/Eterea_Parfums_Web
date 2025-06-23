@@ -31,7 +31,7 @@ namespace Eterea_Parfums_Web.Controllers
                      // Guardar el objeto Cliente en la sesión
                      Session["usuarioLogueado"] = usuarioLogueado;
                      // Usuario y contraseña válidos, redirigir a la página Index de la carpeta Carrito
-                     return RedirectToAction("Index", "Perfume");
+                     return RedirectToAction("Index", "Home");
                  }
                  else
                  {
