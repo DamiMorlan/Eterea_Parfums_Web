@@ -17,7 +17,7 @@
     {
         foreach (var item in Model)
         {
-            <div class="fila-producto">
+            <div class="fila-producto" id="perfume-@item.PerfumeId">
                 <div class="contenedor-producto">
                     <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
                     <div class="producto-detalles">
@@ -44,19 +44,17 @@
                             <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
                         }
 
-                        <form action="@Url.Action("ActualizarCantidad", "Carrito")" method="post" style="display:inline;">
-                            <input type="hidden" name="perfumeId" value="@item.PerfumeId" />
-                            <label for="cantidad">Cantidad: </label>
-                            <select name="cantidad" onchange="this.form.submit()">
-                                @for (int i = 0; i <= 10; i++)
-                                {
-                                    <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
-                                }
-                            </select>
-                        </form>
+                        <label for="cantidad-@item.PerfumeId">Cantidad: </label>
+                        <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
+                            @for (int i = 0; i <= 10; i++)
+                            {
+                                <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                            }
+                        </select>
+
 
                         <div class="producto-precio">
-                            <p>Total: $@item.Total.ToString("N0")</p>
+                            <p id="total-perfume-@item.PerfumeId">Total: $@item.Total.ToString("N0")</p>
                         </div>
                     </div>
                 </div>
@@ -104,4 +102,60 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function actualizarCantidad(select) {
+            const perfumeId = select.dataset.id;
+            const cantidad = select.value;
+
+            const resumen = document.querySelector('.resumen-carrito');
+            resumen.style.opacity = "0.5";
+
+            fetch('@Url.Action("ActualizarCantidad", "Carrito")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `perfumeId=${perfumeId}&cantidad=${cantidad}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // ✅ Actualizar resumen general
+                    resumen.innerHTML = `
+                        <div>Subtotal (sin descuento): $${data.subtotal}</div>
+                        <div>Descuentos aplicados: -$${data.descuento}</div>
+                        <div class="total-final">Total a pagar: $${data.total}</div>
+                        ${data.envioGratis
+                            ? `<div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>`
+                            : `<p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                                   Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+                               </p>`}
+                        <button class="btn-finalizar">Finalizar pedido</button>
+                    `;
+
+                    // ✅ Actualizar total del perfume individual
+                    const totalElemento = document.getElementById(`total-perfume-${data.perfumeId}`);
+                    if (totalElemento) {
+                        totalElemento.innerText = `Total: $${data.perfumeTotal}`;
+                        totalElemento.style.transition = "background-color 0.3s";
+                        totalElemento.style.backgroundColor = "#ffffcc";
+                        setTimeout(() => {
+                            totalElemento.style.backgroundColor = "transparent";
+                        }, 500);
+                    }
+                }
+
+                resumen.style.opacity = "1";
+            })
+            .catch(() => {
+                resumen.style.opacity = "1";
+                alert("Error al actualizar el carrito");
+            });
+        }
+    </script>
+}
+
+}
 

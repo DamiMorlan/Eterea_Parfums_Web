@@ -96,9 +96,9 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         [HttpPost]
-        public ActionResult ActualizarCantidad(int perfumeId, int cantidad)
+        public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
-            int clienteId = 2; // simulado
+            int clienteId = 2; // Simulado
 
             var item = db.carrito.FirstOrDefault(c => c.perfume_id == perfumeId && c.cliente_id == clienteId);
             if (item != null)
@@ -114,7 +114,58 @@ namespace Eterea_Parfums_Web.Controllers
                 db.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+            // Recalcular totales
+            var perfumesEnCarrito = db.carrito
+                .Where(c => c.cliente_id == clienteId)
+                .ToList();
+
+            double subtotal = perfumesEnCarrito.Sum(p => p.perfume.precio_en_pesos * p.cantidad);
+            double total = 0;
+            double totalPerfume = 0;
+
+            foreach (var c in perfumesEnCarrito)
+            {
+                var perfume = c.perfume;
+                var promo = perfume.promocion.FirstOrDefault(pr =>
+                    pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now);
+
+                double precioAplicado = 0;
+
+                if (promo != null)
+                {
+                    if (promo.descuento == 10)
+                        precioAplicado = perfume.precio_en_pesos * 0.9 * c.cantidad;
+                    else
+                    {
+                        int conDesc = (c.cantidad / 2) * 2;
+                        int sinDesc = c.cantidad % 2;
+                        double porcentaje = (100 - promo.descuento) / 100.0;
+                        precioAplicado = (conDesc * perfume.precio_en_pesos * porcentaje) + (sinDesc * perfume.precio_en_pesos);
+                    }
+                }
+                else
+                {
+                    precioAplicado = perfume.precio_en_pesos * c.cantidad;
+                }
+
+                total += precioAplicado;
+
+                if (c.perfume_id == perfumeId)
+                {
+                    totalPerfume = precioAplicado;
+                }
+            }
+
+            return Json(new
+            {
+                success = true,
+                subtotal = subtotal.ToString("N0"),
+                total = total.ToString("N0"),
+                descuento = (subtotal - total).ToString("N0"),
+                envioGratis = total >= 50000,
+                perfumeTotal = totalPerfume.ToString("N0"),
+                perfumeId = perfumeId
+            });
         }
 
 
