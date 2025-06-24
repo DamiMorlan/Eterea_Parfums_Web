@@ -1,10 +1,128 @@
 ﻿@{
-    ViewBag.Title = "About Equipo Eterea Parfums";
+    ViewBag.Title = "Acerca de Nosotros";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
-    <h4>Cambios de Jose</h4>
 
-    <p>Use this area to provide additional information.</p>
-</main>
+<div class="about-section">
+    <h2 class="section-title">@ViewBag.Title</h2>
+
+    <div class="about-content">
+        <p class="intro-text">
+            Bienvenidos a <strong>Eterea Parfums</strong>, una experiencia sensorial donde el arte de la perfumería cobra vida. Nos dedicamos a ofrecer fragancias exclusivas y de alta calidad, cuidadosamente seleccionadas para reflejar tu personalidad, estilo y esencia.
+        </p>
+
+        <p>
+            En <strong>Eterea Parfums</strong>, creemos que un perfume es mucho más que una fragancia: es una expresión de identidad, un recuerdo inolvidable, un sello personal. Nuestro objetivo es ayudarte a encontrar esa fragancia perfecta que te acompañe todos los días o en momentos especiales.
+        </p>
+
+        <div class="mission-section">
+            <h3>¿Por qué elegirnos?</h3>
+            <ul class="benefits-list">
+                <li><i class="fas fa-spray-can-sparkles me-2"></i><strong>Amplia variedad:</strong> Fragancias femeninas, masculinas y unisex, de reconocidas marcas internacionales y locales.</li>
+                <li><i class="fas fa-percent me-2"></i><strong>Precios accesibles:</strong> Ofertas especiales, promociones y beneficios exclusivos para nuestros clientes frecuentes.</li>
+                <li><i class="fas fa-truck-fast me-2"></i><strong>Envíos a todo el país:</strong> Rápidos, seguros y con seguimiento en todo momento.</li>
+                <li><i class="fas fa-heart me-2"></i><strong>Atención personalizada:</strong> Te asesoramos según tus preferencias aromáticas y necesidades.</li>
+                <li><i class="fas fa-star me-2"></i><strong>Calidad garantizada:</strong> Productos 100% originales y certificados.</li>
+            </ul>
+        </div>
+
+        <div class="community-section">
+            <h3>Una comunidad que inspira</h3>
+            <p>
+                Más que una tienda, somos una comunidad apasionada por las esencias. Compartimos contigo lanzamientos, reseñas, tips de uso y cuidados para tus perfumes favoritos.
+            </p>
+
+            <ul class="community-list">
+                <li><i class="fas fa-bottle-droplet me-2"></i><strong>Lanzamientos exclusivos:</strong> Sé el primero en descubrir nuevas colecciones.</li>
+                <li><i class="fas fa-hand-holding-heart me-2"></i><strong>Eventos sensoriales:</strong> Participá en sorteos, workshops y experiencias olfativas.</li>
+                <li><i class="fas fa-comments me-2"></i><strong>Reseñas y consejos:</strong> Escuchamos tu opinión y compartimos recomendaciones útiles.</li>
+            </ul>
+        </div>
+
+        <p>
+            En <strong>Eterea Parfums</strong>, queremos acompañarte en cada paso con una fragancia que hable por vos. Explorá nuestro catálogo, descubrí nuevas notas y dejate llevar por el mundo de los perfumes.
+        </p>
+
+        <p class="team-signature">
+            – El equipo de Eterea Parfums
+        </p>
+    </div>
+</div>
+
+<!-- Estilos -->
+<style>
+    body {
+        background-color: rgb(249, 230, 225);
+        color: #333;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .about-section {
+        background-color: #fff;
+        padding: 40px 30px;
+        border-radius: 12px;
+        max-width: 1100px;
+        margin: 40px auto;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.8rem;
+        margin-bottom: 25px;
+        color: #2d2d2d;
+        font-weight: 700;
+    }
+
+    .about-content {
+        line-height: 1.8;
+        color: #555;
+        font-size: 1.1rem;
+    }
+
+    .intro-text {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 25px;
+        color: #444;
+    }
+
+    .mission-section, .community-section {
+        margin-top: 35px;
+    }
+
+        .mission-section h3,
+        .community-section h3 {
+            font-size: 1.7rem;
+            margin-bottom: 15px;
+            color: #2b2b2b;
+        }
+
+    .benefits-list,
+    .community-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .benefits-list li,
+        .community-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .benefits-list i,
+        .community-list i {
+            color: #d1a7b4;
+            margin-right: 10px;
+            font-size: 1.2rem;
+            min-width: 25px;
+        }
+
+    .team-signature {
+        text-align: center;
+        font-style: italic;
+        margin-top: 40px;
+        font-size: 1.15rem;
+        color: #666;
+    }
+</style>

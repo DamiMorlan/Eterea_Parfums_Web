@@ -14,14 +14,7 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult Index()
         {
-            var perfumes = db.perfume
-                             .Where(p => p.activo == true)
-                             .Select(p => new PerfumeViewModel
-                             {
-                                 Nombre = p.nombre,
-                                 Imagen1 = p.imagen1
-                             }).ToList();
-
+            var perfumes = db.perfume.ToList(); // Obtiene todos los perfumes
             return View(perfumes);
         }
 

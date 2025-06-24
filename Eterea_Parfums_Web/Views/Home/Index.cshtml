@@ -1,44 +1,144 @@
-﻿@{
+﻿@model List<Eterea_Parfums_Web.Models.perfume>
+
+@{
     ViewBag.Title = "Home Page";
 }
-@model List<Eterea_Parfums_Web.ViewModels.PerfumeViewModel>
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<div class="container">
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
-        <h2>Perfumes disponibles</h2>
-        <div class="row">
-            @foreach (var perfume in Model)
-            {
-                <div class="col-md-3 text-center">
-                    <img src="@Url.Content("~/Imagenes/" + perfume.Imagen1 + ".jpg")" alt="Imagen" class="img-fluid" style="max-height:150px;" />
-                    <p>@perfume.Nombre</p>
-                </div>
-            }
+    <!-- Carousel -->
+    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
+
+        <div class="carousel-inner rounded-4 overflow-hidden shadow">
+            <div class="carousel-item active">
+                <img src="~/Content/Images/descarga2.png" class="d-block w-100" alt="Imagen 1">
+            </div>
+            <div class="carousel-item">
+                <img src="~/Content/Images/descarga1.png" class="d-block w-100" alt="Imagen 2">
+            </div>
+            <div class="carousel-item">
+                <img src="~/Content/Images/descarga3.png" class="d-block w-100" alt="Imagen 3">
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
-</main>
+
+    <!-- Perfumes -->
+    <div class="row">
+        @foreach (var perfume in Model)
+        {
+            <div class="col-md-3 mb-4 d-flex">
+                <div class="card w-100">
+                    <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@perfume.nombre</h5>
+                        <p class="card-text mb-1"><strong>Marca:</strong> @perfume.marca.nombre</p>
+                        <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.precio_en_pesos</p>
+                        <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.presentacion_ml ml</p>
+
+                        <div class="mt-auto d-flex flex-column">
+                            <button class="btn-eterea mb-2">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="btn-eterea">
+                                <i class="fas fa-cart-plus"></i> Agregar al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Paginación simple -->
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Anterior</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+        </ul>
+    </nav>
+
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(249, 230, 225);
+    }
+
+    .carousel-inner img {
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            transform: translateY(-6px);
+        }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .custom-img {
+        height: 140px; /* Imagen más chica */
+        width: auto; /* Mantiene proporción */
+        display: block;
+        margin: 0 auto; /* Centra horizontalmente */
+        border-radius: 12px;
+    }
+
+    .card-body {
+        background-color: #fff;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-align: center; /* <-- Esto centra el contenido de texto */
+    }
+
+    .btn-eterea {
+        background-color: rgb(209, 167, 180);
+        color: white;
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .btn-eterea:hover {
+            background-color: rgb(189, 147, 160);
+            transform: scale(1.02);
+            color: white;
+        }
+</style>

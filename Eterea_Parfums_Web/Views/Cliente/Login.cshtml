@@ -2,34 +2,121 @@
     ViewBag.Title = "Login";
 }
 
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 10px auto 30px auto; /* MENOR margen superior e inferior */
+        padding: 30px 25px;
+        background-color: #fef6f8;
+        border: 1px solid #e0bfc7;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+        .login-container h2 {
+            text-align: center;
+            color: #a0435c;
+            margin-bottom: 10px;
+        }
+
+    .separator {
+        border: none;
+        height: 2px;
+        background-color: #d1a7b4;
+        margin: 15px 0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #5a2a39;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d9b8c1;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+            .form-group input:focus {
+                border-color: #a0435c;
+                outline: none;
+            }
+
+    .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: #d1a7b4;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .btn-login:hover {
+            background-color: #a0435c;
+        }
+
+    .error-message {
+        color: #b1002c;
+        margin-top: 10px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .register-message {
+        text-align: center;
+        margin-top: 15px;
+        color: #5a2a39;
+    }
+
+        .register-message a {
+            color: #a0435c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            .register-message a:hover {
+                text-decoration: underline;
+            }
+</style>
 
 <div class="login-container">
 
-    <h2 id="title">@ViewBag.Title</h2>
-    <hr class="separator">
+    <h2>@ViewBag.Title</h2>
+    <hr class="separator" />
 
     <form id="login-form" method="post" action="/Cliente/Login">
 
         <div class="form-group">
             <label for="usuario">Usuario:</label>
-        </div>
-        <div class="form-group">
-            <input type="text" id="usuario" name="usuario" required>
+            <input type="text" id="usuario" name="usuario" required />
         </div>
 
         <div class="form-group">
             <label for="clave">Contraseña:</label>
-        </div>
-        <div class="form-group">
-            <input type="password" id="clave" name="clave" required>
+            <input type="password" id="clave" name="clave" required />
         </div>
 
-        <hr class="separator">
+        <hr class="separator" />
 
         <button type="submit" class="btn-login">Iniciar sesión</button>
         <div class="error-message">@ViewData["Error"]</div>
     </form>
-    <hr class="separator">
+
+    <hr class="separator" />
 
     <div class="register-message">
         ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!

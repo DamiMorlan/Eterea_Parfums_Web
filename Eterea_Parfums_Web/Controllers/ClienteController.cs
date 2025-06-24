@@ -43,6 +43,13 @@ namespace Eterea_Parfums_Web.Controllers
             return View();
         }
 
+        public ActionResult Logout()
+        {
+            Session.Clear(); // Elimina todos los datos de sesión (incluye UsuarioId, etc.)
+
+            return RedirectToAction("Index", "Home"); // Redirige a la pantalla principal
+        }
+
         // GET: Cliente/Registrar
         public ActionResult Registrar()
         {
