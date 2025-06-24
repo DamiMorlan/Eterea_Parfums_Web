@@ -15,7 +15,11 @@ namespace Eterea_Parfums_Web.Controllers
         {
             int clienteId = 2; // Simulación de cliente logueado
 
-            using (var db = new etereaEntities1())
+            string nombreConexion = Session["ConexionActiva"]?.ToString() ?? "eterea_local_adrian";
+
+            using (var db = new etereaEntities1("name=" + nombreConexion))
+
+
             {
                 // Obtener perfumes en el carrito con datos relacionados
                 var perfumesEnCarrito = db.carrito

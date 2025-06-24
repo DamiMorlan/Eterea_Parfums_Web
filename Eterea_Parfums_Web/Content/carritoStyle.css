@@ -53,7 +53,8 @@ body {
     }
 
 .producto-precio {
-    text-align: right;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
 .precio-original {
@@ -115,6 +116,61 @@ select {
     font-weight: bold;
 }
 
+.contenedor-producto {
+    flex: 1;
+    display: flex;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: #fafafa;
+}
+
+    .contenedor-producto img {
+        width: 150px;
+        height: auto;
+        border-radius: 10px;
+    }
+
+
+.contenido-izquierdo {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    gap: 20px;
+}
+
+.producto-detalles {
+    margin-left: 20px;
+    flex: 1;
+}
+
+.fila-producto {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 20px;
+    gap: 10px; /* separación entre perfume y tacho */
+}
+
+.contenedor-eliminar {
+    width: 100px;
+    min-width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    background-color: #f8d7da;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.titulo-carrito {
+    text-align: left;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #D1A7B4;
+}
 
 
 

@@ -1,6 +1,8 @@
-﻿@{
+﻿@model List<Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel>
+
+@{
     ViewBag.Title = "Carrito";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Asegurate de tener este layout
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Styles {
@@ -8,41 +10,76 @@
 }
 
 <div class="carrito-container">
-    <!-- Producto Ejemplo -->
-    <div class="producto-item">
-        <div class="eliminar">🗑️</div>
-        <img src="~/Content/Images/perfume.jpg" alt="Perfume agregado" />
-        <div class="producto-detalles">
-            <h3>Nombre del Perfume</h3>
-            <p>Tipo: Eau de Parfum</p>
-            <p>Presentación: 100ml</p>
-            <p>Género: Unisex</p>
-            <p class="precio-original">$15.000</p>
-            <p class="precio-descuento">$12.000</p>
-            <label for="cantidad">Cantidad: </label>
-            <select name="cantidad" id="cantidad">
-                <option value="0">0 (Eliminar)</option>
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
-        </div>
-        <div class="producto-precio">
-            <p>Total: $12.000</p>
-        </div>
-    </div>
 
-    <!-- Resumen del carrito -->
-    <div class="resumen-carrito">
-        <div>Subtotal (sin descuento): $15.000</div>
-        <div>Descuentos aplicados: -$3.000</div>
-        <div class="total-final">Total a pagar: $12.000</div>
-        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-        <button class="btn-finalizar">Finalizar pedido</button>
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
-            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $10.000.
-        </p>
-    </div>
+    <h1 class="titulo-carrito">Tu carrito</h1>
+
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="fila-producto">
+                <div class="contenedor-producto">
+                    <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
+                    <div class="producto-detalles">
+                        <h3>@item.Nombre</h3>
+                        <p>Tipo: @item.TipoDePerfume</p>
+                        <p>Presentación: @item.Presentacion ml</p>
+                        <p>Género: @item.Genero</p>
+                        @if (item.TienePromo)
+                        {
+                            <p class="precio-original">$@item.PrecioOriginal</p>
+                            <p class="precio-descuento">$@item.PrecioConDescuento</p>
+                        }
+                        else
+                        {
+                            <p class="precio-descuento">$@item.PrecioOriginal</p>
+                        }
+                        <label for="cantidad">Cantidad: </label>
+                        <select name="cantidad" id="cantidad">
+                            @for (int i = 0; i <= 3; i++)
+                            {
+                                <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                            }
+                        </select>
+                        <div class="producto-precio">
+                            <p>Total: $@item.Total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contenedor-eliminar">
+                    🗑️
+                </div>
+            </div>
+        }
+
+        <div class="resumen-carrito">
+            @{
+                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
+                var total = Model.Sum(m => m.Total);
+                var descuento = subtotal - total;
+            }
+
+            <div>Subtotal (sin descuento): $@subtotal</div>
+            <div>Descuentos aplicados: -$@descuento</div>
+            <div class="total-final">Total a pagar: $@total</div>
+
+            @if (total >= 10000)
+            {
+                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+            }
+
+            <button class="btn-finalizar">Finalizar pedido</button>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $10.000.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; padding: 50px;">
+            <div style="font-size: 100px;">🛒</div>
+            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+        </div>
+    }
 </div>
-
-

@@ -10,22 +10,28 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class HomeController : Controller
     {
-        private etereaEntities1 db = new etereaEntities1();
+
 
         public ActionResult Index()
         {
-            var perfumes = db.perfume
-                             .Where(p => p.activo == true)
-                             .Select(p => new PerfumeViewModel
-                             {
-                                 Nombre = p.nombre,
-                                 Imagen1 = p.imagen1
-                             }).ToList();
+            string nombreConexion = Session["ConexionActiva"]?.ToString() ?? "eterea_local_adrian";
 
-            return View(perfumes);
+            using (var db = new etereaEntities1("name=" + nombreConexion))
+            {
+                var perfumes = db.perfume
+                                 .Where(p => p.activo == true)
+                                 .Select(p => new PerfumeViewModel
+                                 {
+                                     Nombre = p.nombre,
+                                     Imagen1 = p.imagen1
+                                 }).ToList();
+
+                return View(perfumes);
+            }
         }
 
-            public ActionResult About()
+
+        public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 

@@ -19,7 +19,13 @@ namespace Eterea_Parfums_Web.Models
             : base("name=etereaEntities1")
         {
         }
-    
+
+        public etereaEntities1(string nameOrConnectionString)
+            : base(nameOrConnectionString)
+        {
+        }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

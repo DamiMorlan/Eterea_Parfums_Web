@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using Eterea_Parfums_Web.Models;
 
+
+
 namespace Eterea_Parfums_Web.Controllers
 {
     public class ClienteController : Controller
@@ -21,8 +23,9 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
-             using (etereaEntities1 db = new etereaEntities1())
-             {
+            var nombreConexion = Session["ConexionActiva"]?.ToString() ?? "etereaEntities";
+            using (var db = new etereaEntities1(nombreConexion))
+            {
                  cliente usuarioLogueado = db.cliente.FirstOrDefault(a => a.usuario == usuario && a.clave == clave);
 
                  if (usuarioLogueado != null)

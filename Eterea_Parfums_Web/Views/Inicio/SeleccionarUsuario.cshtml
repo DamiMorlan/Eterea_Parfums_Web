@@ -1,0 +1,21 @@
+﻿@model Eterea_Parfums_Web.ViewModels.SeleccionarUsuarioViewModel
+
+@section Styles {
+    <link href="~/Content/carritoStyle.css" rel="stylesheet" type="text/css" />
+}
+
+@{
+    ViewBag.Title = "Seleccionar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Seleccionar Usuario</h2>
+
+@using (Html.BeginForm())
+{
+    <label for="usuario">Usuario:</label>
+    @Html.DropDownListFor(model => model.UsuarioSeleccionado,
+        new SelectList(Model.UsuariosDisponibles), "Seleccione un usuario")
+    <br />
+    <button type="submit">Continuar</button>
+}
