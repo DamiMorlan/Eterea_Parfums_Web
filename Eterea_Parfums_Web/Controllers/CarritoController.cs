@@ -20,6 +20,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             var perfumesEnCarrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
+                .OrderByDescending(c => c.id)
                 .Select(c => new
                 {
                     c.cantidad,
