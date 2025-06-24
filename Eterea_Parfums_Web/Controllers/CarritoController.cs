@@ -14,9 +14,15 @@ namespace Eterea_Parfums_Web.Controllers
         // GET: Carrito
         public ActionResult Index()
         {
-            int clienteId = 2; // Simulación de cliente logueado
+            //int clienteId = 2; // Simulación de cliente logueado
 
-            //int clienteId = Convert.ToInt32(Session["clienteId"]);
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
+
+            int clienteId = Convert.ToInt32(Session["clienteId"]);
+
 
             var perfumesEnCarrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
@@ -101,7 +107,14 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
-            int clienteId = 2; // Simulado
+            //int clienteId = 2; // Simulado
+            if (Session["clienteId"] == null)
+            {
+                return Json(new { redirect = Url.Action("Login", "Cliente") });
+            }
+
+            int clienteId = Convert.ToInt32(Session["clienteId"]);
+
 
             var item = db.carrito.FirstOrDefault(c => c.perfume_id == perfumeId && c.cliente_id == clienteId);
             if (item != null)
@@ -175,7 +188,15 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public JsonResult Agregar(int perfumeId)
         {
-            int clienteId = 2; // simulado
+            //int clienteId = 2; // simulado
+
+            if (Session["clienteId"] == null)
+            {
+                return Json(new { redirect = Url.Action("Login", "Cliente") });
+            }
+
+            int clienteId = Convert.ToInt32(Session["clienteId"]);
+
 
             var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
             if (item != null)

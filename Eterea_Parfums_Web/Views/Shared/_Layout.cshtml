@@ -97,7 +97,7 @@
                 <ul class="navbar-nav">
                     @if (Session["usuarioLogueado"] != null)
                     {
-                        <!-- Carrito solo si está logueado -->
+                        <!-- Mostrar carrito -->
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Carrito")" class="nav-link">
                                 <i class="fas fa-shopping-cart"></i> Carrito
@@ -110,6 +110,17 @@
                                 <i class="fas fa-id-badge"></i> Mi perfil
                             </a>
                         </li>
+
+                        <!-- Saludo -->
+                        if (Session["clienteNombre"] != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-white">Hola, @Session["clienteNombre"]</span>
+                            </li>
+                        }
+
+                     
+
 
                         <!-- Cerrar sesión -->
                         <li class="nav-item">

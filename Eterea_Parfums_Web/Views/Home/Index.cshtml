@@ -183,7 +183,6 @@
             border-radius: 10px;
             margin: 10px 0;
         }
-
 </style>
 
 @section Scripts {
@@ -191,20 +190,23 @@
     document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
         btn.parentElement.addEventListener('click', function () {
             const card = btn.closest('.card');
-            const perfumeId = card.querySelector('select')?.dataset?.id || card.querySelector('[data-id]')?.dataset?.id;
-
-            // Si no encontrás el ID con dataset, extraelo por alguna otra vía
-            const id = card.getAttribute('data-id') || perfumeId;
+            const perfumeId = card.getAttribute('data-id');
 
             fetch('@Url.Action("Agregar", "Carrito")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `perfumeId=${id}`
+                body: `perfumeId=${perfumeId}`
             })
             .then(res => res.json())
             .then(data => {
+                // ✅ Redirigir al login si el backend lo indica
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `
                     <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
@@ -217,7 +219,6 @@
                              : `<strong>$${data.precioOriginal}</strong>`
                     }</p>
                     ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
-
                 `;
 
                 document.getElementById("carrito-offcanvas").classList.add("show");
@@ -225,6 +226,10 @@
                 setTimeout(() => {
                     document.getElementById("carrito-offcanvas").classList.remove("show");
                 }, 6000); // cerrar después de 6 seg
+            })
+            .catch(err => {
+                console.error('Error en la solicitud:', err);
+                alert("Hubo un error al intentar agregar el perfume al carrito.");
             });
         });
     });

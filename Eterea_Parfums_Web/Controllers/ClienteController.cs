@@ -18,30 +18,26 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // POST: Cliente/Login
+
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
-             using (etereaEntities1 db = new etereaEntities1())
-             {
-                 cliente usuarioLogueado = db.cliente.FirstOrDefault(a => a.usuario == usuario && a.clave == clave);
+            var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario && c.clave == clave);
 
-                 if (usuarioLogueado != null)
-                 {
-                     // Si el usuario se autentica correctamente
-                     // Guardar el objeto Cliente en la sesión
-                     Session["usuarioLogueado"] = usuarioLogueado;
-                     // Usuario y contraseña válidos, redirigir a la página Index de la carpeta Carrito
-                     return RedirectToAction("Index", "Perfume");
-                 }
-                 else
-                 {
-                     // Usuario o contraseña inválidos, volver a cargar la página de login con un mensaje de error
-                     ViewData["Error"] = "Usuario o contraseña incorrectos";
-                     return View();
-                 }
-             }
+            if (cliente != null)
+            {
+                Session["clienteId"] = cliente.id;               // 👈 ID
+                Session["usuarioLogueado"] = cliente.usuario;    // 👈 o guardar cliente directamente si lo usás más
+                Session["clienteNombre"] = cliente.nombre;
+
+
+                return RedirectToAction("Index", "Home"); // o "Perfume" si preferís
+            }
+
+            ViewData["Error"] = "Usuario o contraseña incorrectos.";
             return View();
         }
+
 
         public ActionResult Logout()
         {

@@ -225,10 +225,6 @@
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\eterea.mdf" />
-    <Content Include="App_Data\eterea_log.ldf">
-      <DependentUpon>eterea.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -524,7 +520,9 @@
     <Content Include="Views\Cliente\Perfil.cshtml" />
     <Content Include="Views\Perfume\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
