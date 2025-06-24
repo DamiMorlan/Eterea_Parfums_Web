@@ -18,5 +18,7 @@ namespace Eterea_Parfums_Web.ViewModels
         public int Cantidad { get; set; }
         public double Total { get; set; }
         public bool TienePromo { get; set; }
+        public string LeyendaPromo { get; set; }
+
     }
 }

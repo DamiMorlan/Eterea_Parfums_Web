@@ -13,7 +13,6 @@
 
     <h1 class="titulo-carrito">Tu carrito</h1>
 
-
     @if (Model != null && Model.Any())
     {
         foreach (var item in Model)
@@ -26,54 +25,76 @@
                         <p>Tipo: @item.TipoDePerfume</p>
                         <p>Presentación: @item.Presentacion ml</p>
                         <p>Género: @item.Genero</p>
-                        @if (item.TienePromo)
+
+                        @if (item.TienePromo && item.PrecioOriginal != item.PrecioConDescuento)
                         {
-                            <p class="precio-original">$@item.PrecioOriginal</p>
-                            <p class="precio-descuento">$@item.PrecioConDescuento</p>
+                            <p class="precio-original" style="text-decoration: line-through; color: gray;">
+                                $@item.PrecioOriginal.ToString("N0")
+                            </p>
+                            <p class="precio-descuento">$@item.PrecioConDescuento.ToString("N0")</p>
+                            <p class="leyenda-promo">@item.LeyendaPromo</p>
+                        }
+                        else if (item.TienePromo && item.PrecioOriginal == item.PrecioConDescuento)
+                        {
+                            <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
+                            <p class="leyenda-promo">@item.LeyendaPromo</p>
                         }
                         else
                         {
-                            <p class="precio-descuento">$@item.PrecioOriginal</p>
+                            <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
                         }
-                        <label for="cantidad">Cantidad: </label>
-                        <select name="cantidad" id="cantidad">
-                            @for (int i = 0; i <= 3; i++)
-                            {
-                                <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
-                            }
-                        </select>
+
+                        <form action="@Url.Action("ActualizarCantidad", "Carrito")" method="post" style="display:inline;">
+                            <input type="hidden" name="perfumeId" value="@item.PerfumeId" />
+                            <label for="cantidad">Cantidad: </label>
+                            <select name="cantidad" onchange="this.form.submit()">
+                                @for (int i = 0; i <= 10; i++)
+                                {
+                                    <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                                }
+                            </select>
+                        </form>
+
                         <div class="producto-precio">
-                            <p>Total: $@item.Total</p>
+                            <p>Total: $@item.Total.ToString("N0")</p>
                         </div>
                     </div>
                 </div>
                 <div class="contenedor-eliminar">
-                    🗑️
+                    <form action="@Url.Action("Eliminar", "Carrito")" method="post" style="display:inline;">
+                        <input type="hidden" name="perfumeId" value="@item.PerfumeId" />
+                        <button type="submit" style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                            🗑️
+                        </button>
+                    </form>
                 </div>
             </div>
         }
 
-        <div class="resumen-carrito">
-            @{
-                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
-                var total = Model.Sum(m => m.Total);
-                var descuento = subtotal - total;
-            }
+<div class="resumen-carrito">
+    @{
+        var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
+        var total = Model.Sum(m => m.Total);
+        var descuento = subtotal - total;
+    }
 
-            <div>Subtotal (sin descuento): $@subtotal</div>
-            <div>Descuentos aplicados: -$@descuento</div>
-            <div class="total-final">Total a pagar: $@total</div>
+    <div>Subtotal (sin descuento): $@subtotal.ToString("N0")</div>
+    <div>Descuentos aplicados: -$@descuento.ToString("N0")</div>
+    <div class="total-final">Total a pagar: $@total.ToString("N0")</div>
 
-            @if (total >= 10000)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
+    @if (total >= 50000)
+    {
+        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+    }
+    else
+    {
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+        </p>
+    }
 
-            <button class="btn-finalizar">Finalizar pedido</button>
-            <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
-                Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $10.000.
-            </p>
-        </div>
+    <button class="btn-finalizar">Finalizar pedido</button>
+</div>
     }
     else
     {
@@ -83,3 +104,4 @@
         </div>
     }
 </div>
+

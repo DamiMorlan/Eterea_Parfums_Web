@@ -172,5 +172,11 @@ select {
     color: #D1A7B4;
 }
 
+.leyenda-promo {
+    font-size: 0.85rem;
+    color: #B45F8C; /* tono acorde a tu paleta */
+    font-style: italic;
+    margin-top: -8px;
+}
 
 
