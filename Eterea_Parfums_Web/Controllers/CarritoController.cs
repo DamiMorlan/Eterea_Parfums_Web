@@ -65,9 +65,11 @@ namespace Eterea_Parfums_Web.Controllers
                         total = (cantidadConDescuento * precioOriginal * porcentaje) +
                                 (cantidadSinDescuento * precioOriginal);
 
-                        leyendaPromo = (promo.descuento * 2 == 100)
+                        int descuentoSegundaUnidad = promo.descuento * 2;
+
+                        leyendaPromo = (descuentoSegundaUnidad == 100)
                             ? "Promoción 2 x 1"
-                            : $"Promoción segunda unidad al {promo.descuento}%";
+                            : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
                     }
                 }
                 else
@@ -168,6 +170,86 @@ namespace Eterea_Parfums_Web.Controllers
                 perfumeId = perfumeId
             });
         }
+
+
+        [HttpPost]
+        public JsonResult Agregar(int perfumeId)
+        {
+            int clienteId = 2; // simulado
+
+            var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+            if (item != null)
+            {
+                item.cantidad++;
+            }
+            else
+            {
+                int nuevoId = 1;
+                if (db.carrito.Any())
+                {
+                    nuevoId = db.carrito.Max(c => c.id) + 1;
+                }
+
+                db.carrito.Add(new carrito
+                {
+                    id = nuevoId,
+                    cliente_id = clienteId,
+                    perfume_id = perfumeId,
+                    cantidad = 1
+                });
+            }
+            db.SaveChanges();
+
+            var perfume = db.perfume.Find(perfumeId);
+            int cantidad = item != null ? item.cantidad : 1;
+
+            var promo = perfume.promocion.FirstOrDefault(pr =>
+                pr.id != 1 &&
+                pr.activo &&
+                pr.fecha_inicio <= DateTime.Now &&
+                pr.fecha_fin >= DateTime.Now);
+
+            double precioOriginal = perfume.precio_en_pesos;
+            double precioConDescuento = precioOriginal;
+            string leyendaPromo = "";
+            bool tienePromo = false;
+
+            if (promo != null)
+            {
+                tienePromo = true;
+
+                if (promo.descuento == 10)
+                {
+                    precioConDescuento = precioOriginal * 0.9;
+                    leyendaPromo = "Promoción 10% OFF";
+                }
+                else
+                {
+                    // Para promociones tipo 2x1 o 2x60%
+                    int descuentoSegundaUnidad = promo.descuento * 2;
+
+                    leyendaPromo = (descuentoSegundaUnidad == 100)
+                        ? "Promoción 2 x 1"
+                        : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
+                }
+            }
+
+            return Json(new
+            {
+                nombre = perfume.nombre,
+                imagen = perfume.imagen1,
+                tipo = perfume.tipo_de_perfume.tipo_de_perfume1,
+                presentacion = perfume.presentacion_ml,
+                genero = perfume.genero.genero1,
+                precioOriginal = precioOriginal.ToString("N0"),
+                precioDescuento = (tienePromo && promo.descuento == 10)
+                    ? precioConDescuento.ToString("N0")
+                    : null,
+                tienePromo = tienePromo,
+                leyenda = tienePromo ? leyendaPromo : null
+            });
+        }
+
 
 
 

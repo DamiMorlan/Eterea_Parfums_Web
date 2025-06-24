@@ -39,7 +39,7 @@
         @foreach (var perfume in Model)
         {
             <div class="col-md-3 mb-4 d-flex">
-                <div class="card w-100">
+                <div class="card w-100" data-id="@perfume.id">
                     <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@perfume.nombre</h5>
@@ -75,6 +75,17 @@
     </nav>
 
 </div>
+
+<div id="carrito-offcanvas" class="offcanvas-carrito">
+    <div class="offcanvas-contenido">
+        <h4>🛒 Se agregó a tu carrito</h4>
+        <div id="info-perfume-agregado"></div>
+        <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
+    </div>
+</div>
+
+
+
 
 <style>
     body {
@@ -141,4 +152,81 @@
             transform: scale(1.02);
             color: white;
         }
+
+    .offcanvas-carrito {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 33%;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1050;
+        transition: right 0.4s ease;
+        padding: 20px;
+    }
+
+        .offcanvas-carrito.show {
+            right: 0;
+        }
+
+    .offcanvas-contenido {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+        .offcanvas-contenido img {
+            width: 100px;
+            height: auto;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
 </style>
+
+@section Scripts {
+    <script>
+    document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
+        btn.parentElement.addEventListener('click', function () {
+            const card = btn.closest('.card');
+            const perfumeId = card.querySelector('select')?.dataset?.id || card.querySelector('[data-id]')?.dataset?.id;
+
+            // Si no encontrás el ID con dataset, extraelo por alguna otra vía
+            const id = card.getAttribute('data-id') || perfumeId;
+
+            fetch('@Url.Action("Agregar", "Carrito")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `perfumeId=${id}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                const contenedor = document.getElementById("info-perfume-agregado");
+                contenedor.innerHTML = `
+                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                    <p><strong>${data.nombre}</strong></p>
+                    <p>${data.tipo} - ${data.presentacion} ml</p>
+                    <p>Género: ${data.genero}</p>
+                    <p>Precio: ${
+                        data.precioDescuento
+                             ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                             : `<strong>$${data.precioOriginal}</strong>`
+                    }</p>
+                    ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+
+                `;
+
+                document.getElementById("carrito-offcanvas").classList.add("show");
+
+                setTimeout(() => {
+                    document.getElementById("carrito-offcanvas").classList.remove("show");
+                }, 6000); // cerrar después de 6 seg
+            });
+        });
+    });
+    </script>
+}
