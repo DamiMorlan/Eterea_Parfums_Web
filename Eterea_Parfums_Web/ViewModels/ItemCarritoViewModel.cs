@@ -13,10 +13,10 @@ namespace Eterea_Parfums_Web.ViewModels
         public int Presentacion { get; set; }
         public string Genero { get; set; }
         public string Imagen { get; set; }
-        public decimal PrecioOriginal { get; set; }
-        public decimal PrecioConDescuento { get; set; }
+        public double PrecioOriginal { get; set; }
+        public double PrecioConDescuento { get; set; }
         public int Cantidad { get; set; }
-        public decimal Total { get; set; }
+        public double Total { get; set; }
         public bool TienePromo { get; set; }
     }
 }
