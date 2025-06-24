@@ -62,12 +62,16 @@
                     <label for="pais">País:</label>
                     <select id="pais" name="pais" class="form-control" required>
                         <option value="">Seleccione un país</option>
+                        @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
+                        {
+                            <option value="@pais.Value">@pais.Text</option>
+                        }
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia" class="form-control" required>
+                    <select id="provincia" name="provincia" class="form-control">
                         <option value="">Seleccione una provincia</option>
                     </select>
                 </div>
