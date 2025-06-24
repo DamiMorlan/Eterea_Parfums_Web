@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Perfil";
+}
+
+
+
+<div class="register-container">
+    <h2 id="title" class="text-center">@ViewBag.Title</h2>
+    <hr class="separator">
+    @Html.ActionLink("Ver Compras realizadas", "Index", "Historial", null, new { @class = "btn btn-primary" })
+    <!-- MODIFICAR el class = "perfil-form" cuando este el CSS -->
+    @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "perfil-form" }))
+    {
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="apellido">Apellido:</label>
+                    <input type="text" id="apellido" name="apellido" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="usuario">Nombre de Usuario:</label>
+                    <input type="text" id="usuario" name="usuario" class="form-control" required />
+                    @Html.ValidationMessage("usuario")
+                </div>
+
+                <div class="form-group">
+                    <label for="clave">Contraseña:</label>
+                    <input type="password" id="clave" name="clave" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" class="form-control" required />
+                    @Html.ValidationMessage("email")
+                </div>
+
+                <div class="form-group">
+                    <label for="dni">DNI:</label>
+                    <input type="text" id="dni" name="dni" class="form-control" required />
+                    @Html.ValidationMessage("dni")
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="form-control" required />
+                    @Html.ValidationMessage("fechaNacimiento")
+                </div>
+
+                <div class="form-group">
+                    <label for="celular">Celular:</label>
+                    <input type="text" id="celular" name="celular" class="form-control" required />
+                    @Html.ValidationMessage("celular")
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pais">País:</label>
+                    <select id="pais" name="pais" class="form-control" required>
+                        <option value="">Seleccione un país</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="provincia">Provincia:</label>
+                    <select id="provincia" name="provincia" class="form-control" required>
+                        <option value="">Seleccione una provincia</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="localidad">Localidad:</label>
+                    <select id="localidad" name="localidad" class="form-control" required>
+                        <option value="">Seleccione una localidad</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="calle">Calle:</label>
+                    <select id="calle" name="calle" class="form-control" required>
+                        <option value="">Seleccione una calle</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="numeracion">Numeración:</label>
+                    <input type="text" id="numeracion" name="numeracion" class="form-control" required />
+                    @Html.ValidationMessage("numeracion")
+                </div>
+
+                <div class="form-group">
+                    <label for="piso">Piso:</label>
+                    <input type="text" id="piso" name="piso" class="form-control" />
+                    @Html.ValidationMessage("piso")
+                </div>
+
+                <div class="form-group">
+                    <label for="departamento">Departamento:</label>
+                    <input type="text" id="departamento" name="departamento" class="form-control" />
+                    @Html.ValidationMessage("departamento")
+                </div>
+
+                <div class="form-group">
+                    <label for="codigopostal">Código Postal:</label>
+                    <input type="text" id="codigopostal" name="codigopostal" class="form-control" />
+                    @Html.ValidationMessage("codigopostal")
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="comentarios">Comentario del domicilio:</label>
+                <textarea id="comentarios" name="comentarios" class="form-control" rows="3" maxlength="50"></textarea>
+                @Html.ValidationMessage("comentarios")
+            </div>
+        </div>
+
+        <hr class="separator">
+
+        <button type="submit" class="btn-register">Guardar cambios</button>
+    }
+</div>
+
+<div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->
