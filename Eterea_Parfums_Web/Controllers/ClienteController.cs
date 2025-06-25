@@ -86,6 +86,22 @@ namespace Eterea_Parfums_Web.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult ObtenerLocalidades(int provinciaId)
+        {
+            using (var db = new etereaEntities1())
+            {
+                var localidades = db.localidad
+                    .Where(l => l.provincia_id == provinciaId)
+                    .Select(l => new {
+                        id = l.id,
+                        nombre = l.nombre
+                    }).ToList();
+
+                return Json(localidades, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         // POST: Cliente/Registrar
         [HttpPost]
         public ActionResult Registrar(cliente nuevoCliente)

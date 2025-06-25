@@ -27,7 +27,7 @@ namespace Eterea_Parfums_Web
                       "~/Content/site.css"));
             // Script para mostrar las provincias segun el pais seleccionado
             bundles.Add(new ScriptBundle("~/bundles/customScripts").Include(
-            "~/Scripts/custom/provinciaDropdown.js"));
+            "~/Scripts/custom/Dropdown.js"));
         }
     }
 }
