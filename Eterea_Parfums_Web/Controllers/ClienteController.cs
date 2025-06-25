@@ -44,28 +44,7 @@ namespace Eterea_Parfums_Web.Controllers
         // GET: Cliente/Registrar
         public ActionResult Registrar()
         {
-            using (var db = new etereaEntities1())
-            {
-
-                var paises = db.pais
-                                .Select(p => new SelectListItem
-                                {
-                                    Value = p.id.ToString(),
-                                    Text = p.nombre,
-                                }).ToList();
-                // Traer lista de provincias
-                var provincias = db.provincia
-                                  .Select(p => new SelectListItem
-                                  {
-                                      Value = p.id.ToString(),  // o el nombre del campo PK
-                                      Text = p.nombre,     
-                                  }).ToList();
-
-                // Guardar en ViewBag para la vista
-                ViewBag.Paises = paises;
-                ViewBag.Provincias = provincias;
-
-            }
+            CargarPaises();
 
             return View();
         }
@@ -102,18 +81,50 @@ namespace Eterea_Parfums_Web.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult ObtenerCalles(int localidadId)
+        {
+            using (var db = new etereaEntities1())
+            {
+                var calles = db.calle
+                    .Where(c => c.localidad_id == localidadId)
+                    .Select(c => new {
+                        id = c.id,
+                        nombre = c.nombre
+                    }).ToList();
+
+                return Json(calles, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private void CargarPaises()
+        {
+            using (var db = new etereaEntities1())
+            {
+                ViewBag.Paises = db.pais
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.id.ToString(),
+                        Text = p.nombre
+                    }).ToList();
+            }
+        }
+
         // POST: Cliente/Registrar
         [HttpPost]
         public ActionResult Registrar(cliente nuevoCliente)
         {
-            if (!ModelState.IsValid) 
-            {
-                return View(nuevoCliente);
-            }
-
+            
             if (nuevoCliente.dni.ToString().Length != 8)
             {
                 ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
+                CargarPaises();
+                return View(nuevoCliente);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                CargarPaises();
                 return View(nuevoCliente);
             }
 
@@ -123,6 +134,7 @@ namespace Eterea_Parfums_Web.Controllers
                 if (usuarioExiste)
                 {
                     ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
+                    CargarPaises();
                     return View(nuevoCliente); 
                 }
 
@@ -130,6 +142,7 @@ namespace Eterea_Parfums_Web.Controllers
                 if (dniExiste)
                 {
                     ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
+                    CargarPaises();
                     return View(nuevoCliente); 
                 }
 
@@ -137,6 +150,7 @@ namespace Eterea_Parfums_Web.Controllers
                 if (emailExiste) 
                 {
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
+                    CargarPaises();
                     return View(nuevoCliente);
                 }
 

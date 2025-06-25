@@ -11,7 +11,8 @@ namespace Eterea_Parfums_Web.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class cliente
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,20 +23,33 @@ namespace Eterea_Parfums_Web.Models
         }
     
         public int id { get; set; }
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
         public string usuario { get; set; }
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
         public string clave { get; set; }
+        [Required(ErrorMessage = "El nombre es obligatorio")]
         public string nombre { get; set; }
+        [Required(ErrorMessage = "El apellido es obligatorio")]
         public string apellido { get; set; }
+        [Required(ErrorMessage = "El DNI es obligatorio")]
         public long dni { get; set; }
         public string condicion_frente_al_iva { get; set; }
         public System.DateTime fecha_nacimiento { get; set; }
+        [Required(ErrorMessage = "El celuar es obligatorio")]
         public string celular { get; set; }
+        [Required(ErrorMessage = "El E_mail es obligatorio")]
+        [EmailAddress(ErrorMessage = "Debe ingresar un correo electrónico válido")]
         public string e_mail { get; set; }
+        [Required(ErrorMessage = "El pais es obligatorio")]
         public int pais_id { get; set; }
+        [Required(ErrorMessage = "La provincia es obligatoria")]
         public int provincia_id { get; set; }
+        [Required(ErrorMessage = "La localidad es obligatoria")]
         public int localidad_id { get; set; }
         public Nullable<int> codigo_postal { get; set; }
+        [Required(ErrorMessage = "La calle es obligatoria")]
         public int calle_id { get; set; }
+        [Required(ErrorMessage = "La numeración de calle es obligatoria")]
         public int numeracion_calle { get; set; }
         public string piso { get; set; }
         public string departamento { get; set; }

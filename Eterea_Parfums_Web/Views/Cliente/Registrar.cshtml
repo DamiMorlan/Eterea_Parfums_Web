@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Registro";
 }
+@model Eterea_Parfums_Web.Models.cliente
+
 
 
 
@@ -13,18 +15,20 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" class="form-control" required />
+                    @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     <label for="apellido">Apellido:</label>
-                    <input type="text" id="apellido" name="apellido" class="form-control" required />
+                    @Html.TextBoxFor(m => m.apellido, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.apellido, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="usuario">Nombre de Usuario:</label>
-                    <input type="text" id="usuario" name="usuario" class="form-control" required />
-                    @Html.ValidationMessage("usuario")
+                    <label for="usuario">Nombre de usuario:</label>
+                    @Html.TextBoxFor(m => m.usuario, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.usuario, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
@@ -34,14 +38,15 @@
 
                 <div class="form-group">
                     <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" class="form-control" required />
+                    @Html.TextBoxFor(m => m.e_mail, new { @class = "form-control", type = "email", required = "required" })
+                    @Html.ValidationMessageFor(m => m.e_mail, "", new { @class = "text-danger" })
                     @Html.ValidationMessage("email")
                 </div>
 
                 <div class="form-group">
                     <label for="dni">DNI:</label>
-                    <input type="text" id="dni" name="dni" class="form-control" required />
-                    @Html.ValidationMessage("dni")
+                    @Html.TextBoxFor(m => m.dni, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.dni, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
@@ -52,8 +57,8 @@
 
                 <div class="form-group">
                     <label for="celular">Celular:</label>
-                    <input type="text" id="celular" name="celular" class="form-control" required />
-                    @Html.ValidationMessage("celular")
+                    @Html.TextBoxFor(m => m.celular, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.celular, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -71,7 +76,7 @@
 
                 <div class="form-group">
                     <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia" class="form-control">
+                    <select id="provincia" name="provincia" class="form-control" required>
                         <option value="">Seleccione una provincia</option>
                     </select>
                 </div>
@@ -92,35 +97,36 @@
 
                 <div class="form-group">
                     <label for="numeracion">Numeración:</label>
-                    <input type="text" id="numeracion" name="numeracion" class="form-control" required />
-                    @Html.ValidationMessage("numeracion")
+                    @Html.TextBoxFor(m => m.numeracion_calle, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.numeracion_calle, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     <label for="piso">Piso:</label>
-                    <input type="text" id="piso" name="piso" class="form-control" />
-                    @Html.ValidationMessage("piso")
+                    @Html.TextBoxFor(m => m.piso, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.piso, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     <label for="departamento">Departamento:</label>
-                    <input type="text" id="departamento" name="departamento" class="form-control" />
-                    @Html.ValidationMessage("departamento")
+                    @Html.TextBoxFor(m => m.departamento, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.departamento, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     <label for="codigopostal">Código Postal:</label>
-                    <input type="text" id="codigopostal" name="codigopostal" class="form-control" />
-                    @Html.ValidationMessage("codigopostal")
+                    @Html.TextBoxFor(m => m.codigo_postal, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.codigo_postal, "", new { @class = "text-danger" })
                 </div>
             </div>
-                <div class="form-group">
-                    <label for="comentarios">Comentario del domicilio:</label>
-                    <textarea id="comentarios" name="comentarios" class="form-control" rows="3" maxlength="50"></textarea>
-                    @Html.ValidationMessage("comentarios")
-                </div>
+
+            <div class="form-group">
+                <label for="comentarios">Comentarios del domicilio:</label>
+                @Html.TextAreaFor(m => m.comentarios_domicilio, new { @class = "form-control", rows = 3, maxlength = 50 })
+                @Html.ValidationMessageFor(m => m.comentarios_domicilio, "", new { @class = "text-danger" })
             </div>
-        
+        </div>
+
 
 
         <hr class="separator">
@@ -129,4 +135,4 @@
     }
 </div>
 
-            <div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->
+<div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->

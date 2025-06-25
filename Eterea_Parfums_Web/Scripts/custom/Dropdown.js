@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var paisSelect = document.getElementById("pais");
     var provinciaSelect = document.getElementById("provincia");
     var localidadSelect = document.getElementById("localidad");
+    var calleSelect = document.getElementById("calle");
 
     // Cuando cambie el país
     paisSelect.addEventListener("change", function () {
@@ -55,4 +56,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
     });
+
+    localidadSelect.addEventListener("change", function () {
+        var localidadId = this.value;
+
+        calleSelect.innerHTML = '<option value="">Seleccione una calle</option>';
+
+        if (localidadId) {
+            fetch(`/Cliente/ObtenerCalles?localidadId=${localidadId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Error en la solicitud");
+                    return response.json();
+                })
+                .then(data => {
+                    data.forEach(c => {
+                        var option = document.createElement("option");
+                        option.value = c.id;
+                        option.text = c.nombre;
+                        calleSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error al cargar calles:", error);
+                });
+        }
+    });
+
 });
