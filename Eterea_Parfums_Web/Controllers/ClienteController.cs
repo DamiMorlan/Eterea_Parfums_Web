@@ -116,7 +116,7 @@ namespace Eterea_Parfums_Web.Controllers
         public ActionResult Registrar(cliente nuevoCliente)
         {
             
-           /* if (nuevoCliente.dni.ToString().Length != 8)
+            if (nuevoCliente.dni.ToString().Length != 8)
             {
                 ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
                 CargarPaises();
@@ -128,10 +128,10 @@ namespace Eterea_Parfums_Web.Controllers
                 CargarPaises();
                 return View(nuevoCliente);
             }
-           */
+           
             using (var db = new etereaEntities1())
             {
-             /*   bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
+                bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
                 if (usuarioExiste)
                 {
                     ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
@@ -153,7 +153,7 @@ namespace Eterea_Parfums_Web.Controllers
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
                     CargarPaises();
                     return View(nuevoCliente);
-                }*/
+                }
 
                 // Si todo está bien, lo guardás en la base:
                 nuevoCliente.activo = true;
@@ -197,6 +197,12 @@ namespace Eterea_Parfums_Web.Controllers
         public ActionResult Perfil()
         {
             return View();
+        }
+
+        public ActionResult CerrarSesion()
+        {
+            Session.Clear(); 
+            return RedirectToAction("Index", "Home"); 
         }
     }
 }

@@ -1,37 +1,41 @@
 ﻿@{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Iniciar Sesión";
+}
+@section Styles {
+    <link href="~/Content/LoginStyle.css" rel="stylesheet" type="text/css" />
 }
 
-
 <div class="login-container">
+    <div class="login-box">
 
-    <h2 id="title">@ViewBag.Title</h2>
-    <hr class="separator">
-
-    <form id="login-form" method="post" action="/Cliente/Login">
-
-        <div class="form-group">
-            <label for="usuario">Usuario:</label>
-        </div>
-        <div class="form-group">
-            <input type="text" id="usuario" name="usuario" required>
-        </div>
-
-        <div class="form-group">
-            <label for="clave">Contraseña:</label>
-        </div>
-        <div class="form-group">
-            <input type="password" id="clave" name="clave" required>
-        </div>
-
+        <h2 id="title" class="centrado">@ViewBag.Title</h2>
         <hr class="separator">
 
-        <button type="submit" class="btn-login">Iniciar sesión</button>
-        <div class="error-message">@ViewData["Error"]</div>
-    </form>
-    <hr class="separator">
+        <form id="login-form" method="post" action="/Cliente/Login">
 
-    <div class="register-message">
-        ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!
+            <div class="centrado">
+                <label for="usuario">Usuario:</label>
+            </div>
+            <div class="centrado">
+                <input type="text" id="usuario" name="usuario" required>
+            </div>
+
+            <div class="centrado">
+                <label for="clave">Contraseña:</label>
+            </div>
+            <div class="centrado">
+                <input type="password" id="clave" name="clave" required>
+            </div>
+
+            <hr class="separator">
+
+            <button type="submit" class="btn-centrado">Iniciar sesión</button>
+            <div class="centrado">@ViewData["Error"]</div>
+        </form>
+        <hr class="separator">
+
+        <div class="centrado">
+            ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!
+        </div>
     </div>
 </div>

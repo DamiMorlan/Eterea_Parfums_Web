@@ -1,0 +1,48 @@
+:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background-color: var(--rosa-suave);
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px; 
+    background-color: #f0f0f0; 
+}
+
+.login-box {
+    width: 400px;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 8px;
+}
+
+.centrado {
+    text-align: center;
+}
+
+.btn-centrado {
+    display: block;
+    margin: 0 auto;
+}
+
+.register-container {
+    width: 90%;
+    max-width: 900px; /* opcional: limita el ancho */
+    margin: 50px auto; /* centra horizontalmente y baja un poco */
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 8px;
+}
+
