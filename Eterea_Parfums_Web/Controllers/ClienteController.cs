@@ -196,7 +196,13 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult Perfil()
         {
-            return View();
+            var cliente = Session["usuarioLogueado"] as cliente;
+
+            if (cliente == null)
+            {
+                return RedirectToAction("Login", "Cliente"); 
+            }
+            return View(cliente); 
         }
 
         public ActionResult CerrarSesion()
