@@ -1,0 +1,402 @@
+﻿
+@model Eterea_Parfums_Web.Models.perfume
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+
+    .detalle {
+        height: 500px;
+    }
+
+    .gallery-thumbs-vertical {
+        height: 300px; /* Ajustalo según tu diseño */
+    }
+
+    .swiper-slide img {
+        object-fit: contain;
+        max-height: 100%;
+    }
+
+    .gallery-thumbs-horizontal {
+        height: auto; /* Opcional */
+        padding: 5px 0;
+    }
+
+        .gallery-thumbs-horizontal .swiper-slide img {
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .gallery-thumbs-horizontal .swiper-slide {
+            width: auto !important; /* ← clave */
+        }
+
+    .swiper-zoom-container img {
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: rgb(209, 167, 180) !important;
+    }
+
+
+    .swiper-slide {
+        width: 250px;
+    }
+
+
+    .swiper-pagination-bullet-active {
+        background-color: #000;
+    }
+</style>
+
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+}
+
+
+
+<div class="container my-5">
+    <div class="row gap-4">
+        <div class="col-sm-12 col-md-6 row">
+            <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
+            <div class="col-md-2 d-none d-md-block">
+                <div class="swiper gallery-thumbs-vertical">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMAGEN PRINCIPAL -->
+            <div class="col-md-10 col-12">
+                <div class="swiper gallery-top">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide text-center">
+                            <div class="swiper-zoom-container">
+                                <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                            </div>
+                        </div>
+                        <div class="swiper-slide text-center">
+                            <div class="swiper-zoom-container">
+                                <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+
+                <!-- MINIATURAS EN MODO MÓVIL (horizontal) -->
+                <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles del perfume -->
+        <section class="col-sm-12 col-md-6 mt-4">
+            <p class="card-text mb-1">Marca: @Model.marca.nombre</p>
+            <p class="card-text mb-1">Nombre: @Model.nombre</p>
+            <p class="card-text fw-bold mt-auto">$@Model.precio_en_pesos</p>
+            <hr />
+            <p class="card-text mb-1">Tamaño: @Model.presentacion_ml ml</p>
+            <p>Tamaño</p>
+            <div class="">
+                <a href="">50ML</a>
+                <a href="">200ML</a>
+                <a href="">250ML</a>
+            </div>
+            <div>
+                <p>Promos</p>
+            </div>
+            <p>Cantidad</p>
+            <div class="d-flex">
+                <p>-</p>
+                <p>1</p>
+                <p>+</p>
+            </div>
+            <button class="btn-eterea">
+                <i class="fas fa-cart-plus"></i> Agregar al carrito
+            </button>
+        </section>
+    </div>
+    <!--  -->
+    <div class="mt-5">
+        <div class="w3-row w3-margin-top">
+            <a href="javascript:void(0)" onclick="openCity(event, 'detalle');">
+                <div class="w3-quarter w3-center tablink w3-border-black w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
+            </a>
+            <a href="javascript:void(0)" onclick="openCity(event, 'especificaciones');">
+                <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
+            </a>
+            <a href="javascript:void(0)" onclick="openCity(event, 'opiniones');">
+                <div class="w3-quarter w3-center tablink w3-padding">OPINIONES</div>
+            </a>
+        </div>
+
+        <div id="detalle" class="w3-container box mt-5" style="display:block">
+            <p>@Model.descripcion</p>
+        </div>
+
+        <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
+            <div class="d-flex w-50">
+                <p class="fs-6">Familia Olfativa:</p>
+                @if (Model.tipo_de_aroma != null && Model.tipo_de_aroma.Any())
+                {
+                    <ul class="fs-6 ms-5">
+                        @foreach (var aroma in Model.tipo_de_aroma)
+                        {
+                            <li class="">@aroma.nombre</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No hay tipos de aroma asociados.</p>
+                }
+            </div>
+            <div class="d-flex">
+                <p class="fs-6">Tipo:</p>
+                <p class="fs-6 ms-5">@Model.tipo_de_perfume.tipo_de_perfume1</p>
+            </div>
+        </div>
+
+        <div id="opiniones" class="w3-container box" style="display:none">
+            <h2>Tokyo</h2>
+            <p>Tokyo is the capital of Japan.</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="swiper my-product-slider">
+            <div class="swiper-wrapper">
+
+                <!-- Ejemplo de tarjeta -->
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card h-100 text-center p-3">
+                        <span class="badge bg-dark">LANZAMIENTO</span>
+                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <div class="card-body">
+                            <h6 class="text-uppercase">BANDERAS</h6>
+                            <p class="small">The Icon Supreme EDP</p>
+                            <p class="fw-bold">$31.200</p>
+                            <p class="text-success small">Llega en 1 día hábil</p>
+                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copiá más tarjetas aquí o con  -->
+            </div>
+
+            <!-- Flechas y paginación -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <script>
+        let thumbsSwiper;
+        let mainGallery;
+
+        function initSwipers() {
+            if (thumbsSwiper) thumbsSwiper.destroy(true, true);
+            if (mainGallery) mainGallery.destroy(true, true);
+
+            const isDesktop = window.innerWidth >= 768;
+
+            if (isDesktop) {
+                thumbsSwiper = new Swiper('.gallery-thumbs-vertical', {
+                    direction: 'vertical',
+                    spaceBetween: 10,
+                    slidesPerView: 2,
+                    watchSlidesProgress: true,
+                });
+            } else {
+                thumbsSwiper = new Swiper('.gallery-thumbs-horizontal', {
+                    direction: 'horizontal',
+                    spaceBetween: 10,
+                    slidesPerView: 'auto',
+                    watchSlidesProgress: true,
+                    freeMode: true
+                });
+            }
+
+            mainGallery = new Swiper('.gallery-top', {
+                spaceBetween: 10,
+                zoom: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                thumbs: {
+                    swiper: thumbsSwiper
+                }
+            });
+        }
+
+        $(window).on('load', function () {
+            initSwipers();
+        });
+
+        // Opcional: reinicializar si redimensionás la ventana
+        let resizeTimer;
+        $(window).on('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                initSwipers();
+            }, 300);
+        });
+    </script>
+    <script>
+        function openCity(evt, cityName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("box");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+
+                tablinks[i].className = tablinks[i].className.replace(" w3-border-black", "");
+                tablinks[i].className = tablinks[i].className.replace(" w3-bottombar", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.firstElementChild.className += " w3-border-black w3-bottombar";
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            new Swiper('.my-product-slider', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                breakpoints: {
+                    576: { slidesPerView: 2 },
+                    768: { slidesPerView: 3 },
+                    992: { slidesPerView: 4 },
+                    1200: { slidesPerView: 5 }
+                }
+            });
+        });
+    </script>
+}
+
+
