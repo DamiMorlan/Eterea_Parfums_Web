@@ -155,12 +155,26 @@ namespace Eterea_Parfums_Web.Controllers
                 }
 
                 // Si todo está bien, lo guardás en la base:
+                nuevoCliente.activo = true;
+                nuevoCliente.rol = "cliente";
+                nuevoCliente.id = ObtenerProximoIdDelCliente();
                 db.cliente.Add(nuevoCliente);
                 db.SaveChanges();
 
                 // Redireccionar a otra vista
                 return RedirectToAction("Login", "Cliente");
             }
+        }
+
+        public int ObtenerProximoIdDelCliente()
+        {
+            using (var db = new etereaEntities1())
+                if (db.cliente.Any())
+                {
+                    return db.cliente.Max(i => i.id) + 1;
+                }else {
+                    return 1;
+                }
         }
 
         public ActionResult Perfil()
