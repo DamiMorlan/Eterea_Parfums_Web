@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -115,7 +116,7 @@ namespace Eterea_Parfums_Web.Controllers
         public ActionResult Registrar(cliente nuevoCliente)
         {
             
-            if (nuevoCliente.dni.ToString().Length != 8)
+           /* if (nuevoCliente.dni.ToString().Length != 8)
             {
                 ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
                 CargarPaises();
@@ -127,10 +128,10 @@ namespace Eterea_Parfums_Web.Controllers
                 CargarPaises();
                 return View(nuevoCliente);
             }
-
+           */
             using (var db = new etereaEntities1())
             {
-                bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
+             /*   bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
                 if (usuarioExiste)
                 {
                     ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
@@ -152,14 +153,30 @@ namespace Eterea_Parfums_Web.Controllers
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
                     CargarPaises();
                     return View(nuevoCliente);
-                }
+                }*/
 
                 // Si todo está bien, lo guardás en la base:
                 nuevoCliente.activo = true;
                 nuevoCliente.rol = "cliente";
                 nuevoCliente.id = ObtenerProximoIdDelCliente();
-                db.cliente.Add(nuevoCliente);
-                db.SaveChanges();
+                nuevoCliente.condicion_frente_al_iva = "Consumidor final";
+                try
+                {
+                    db.cliente.Add(nuevoCliente);
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var eve in ex.EntityValidationErrors)
+                    {
+                        Console.WriteLine($"Entidad de tipo {eve.Entry.Entity.GetType().Name} con estado {eve.Entry.State} tiene errores de validación:");
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
+                        }
+                    }
+                    throw; // Opcional: para que el error siga propagándose después de loguearlo
+                }
 
                 // Redireccionar a otra vista
                 return RedirectToAction("Login", "Cliente");

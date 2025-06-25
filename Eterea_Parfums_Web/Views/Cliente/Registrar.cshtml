@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="form-control" required />
+                    <input type="date" id="fechaNacimiento" name="fecha_nacimiento" class="form-control" required />
                     @Html.ValidationMessage("fechaNacimiento")
                 </div>
 
@@ -65,7 +65,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="pais">País:</label>
-                    <select id="pais" name="pais" class="form-control" required>
+                    <select id="pais" name="pais_id" class="form-control" required>
                         <option value="">Seleccione un país</option>
                         @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
                         {
@@ -76,21 +76,21 @@
 
                 <div class="form-group">
                     <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia" class="form-control" required>
+                    <select id="provincia" name="provincia_id" class="form-control" required>
                         <option value="">Seleccione una provincia</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="localidad">Localidad:</label>
-                    <select id="localidad" name="localidad" class="form-control" required>
+                    <select id="localidad" name="localidad_id" class="form-control" required>
                         <option value="">Seleccione una localidad</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="calle">Calle:</label>
-                    <select id="calle" name="calle" class="form-control" required>
+                    <select id="calle" name="calle_id" class="form-control" required>
                         <option value="">Seleccione una calle</option>
                     </select>
                 </div>
@@ -126,8 +126,6 @@
                 @Html.ValidationMessageFor(m => m.comentarios_domicilio, "", new { @class = "text-danger" })
             </div>
         </div>
-
-
 
         <hr class="separator">
 
