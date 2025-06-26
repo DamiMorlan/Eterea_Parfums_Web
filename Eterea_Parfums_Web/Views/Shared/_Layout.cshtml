@@ -77,6 +77,41 @@
             font-weight: bold;
             font-size: 1.5em;
         }
+
+        /* Estilo para el dropdown del usuario */
+        .dropdown-menu {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: none;
+            min-width: 220px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+        }
+
+            .dropdown-menu .dropdown-item {
+                padding: 10px 20px;
+                color: rgb(80, 80, 80);
+                transition: background-color 0.3s ease, color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .dropdown-menu .dropdown-item i {
+                    color: rgb(209, 167, 180);
+                    font-size: 1rem;
+                }
+
+                .dropdown-menu .dropdown-item:hover {
+                    background-color: rgb(249, 230, 225);
+                    color: black;
+                }
+
+        .dropdown-divider {
+            margin: 6px 0;
+            border-top: 1px solid rgb(230, 230, 230);
+        }
     </style>
 </head>
 <body>
@@ -100,9 +135,7 @@
                     <li class="nav-item">
                         @Html.ActionLink("Contacto", "Contact", "Home", null, new { @class = "nav-link" })
                     </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("Carrito", "Index", "Carrito", null, new { @class = "nav-link" })
-                    </li>
+                    
                 </ul>
 
                 <ul class="navbar-nav">
@@ -114,12 +147,6 @@
                                 <i class="fas fa-shopping-cart"></i> Carrito
                             </a>
                         </li>
-
-
-                    
-
-
-
 
                         if (Session["clienteNombre"] != null)
                         {
