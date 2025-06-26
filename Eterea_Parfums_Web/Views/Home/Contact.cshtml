@@ -2,6 +2,10 @@
     ViewBag.Title = "Contacto";
 }
 
+@section Styles {
+    <link href="~/Content/contactoStyle.css" rel="stylesheet" type="text/css" />
+}
+
 <div class="contact-section">
     <h2 class="section-title">@ViewBag.Title</h2>
 
@@ -64,122 +68,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    body {
-        background-color: rgb(249, 230, 225);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .contact-section {
-        background-color: #fff;
-        padding: 40px;
-        border-radius: 15px;
-        max-width: 1200px;
-        margin: 40px auto;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .section-title {
-        text-align: center;
-        font-size: 2.5rem;
-        color: rgb(209, 167, 180);
-        margin-bottom: 10px;
-    }
-
-    .intro-text {
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-        color: #444;
-    }
-
-    .contact-box h3,
-    .contact-form-box h3 {
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 1.5rem;
-    }
-
-    .contact-list {
-        list-style: none;
-        padding-left: 0;
-    }
-
-        .contact-list li {
-            margin-bottom: 15px;
-            font-size: 1rem;
-            color: #555;
-        }
-
-        .contact-list a {
-            color: rgb(209, 167, 180);
-            text-decoration: none;
-        }
-
-            .contact-list a:hover {
-                text-decoration: underline;
-            }
-
-    .social-icons {
-        margin-top: 10px;
-    }
-
-        .social-icons a {
-            margin-right: 15px;
-            font-size: 1.5rem;
-            color: rgb(209, 167, 180);
-            transition: transform 0.3s ease;
-        }
-
-            .social-icons a:hover {
-                transform: scale(1.2);
-                color: #a64d6c;
-            }
-
-    .contact-form-box {
-        background-color: #f9f9f9;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-    button[type="submit"] {
-        background-color: rgb(209, 167, 180);
-        color: white;
-        padding: 10px 20px;
-        font-size: 1rem;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-        button[type="submit"]:hover {
-            background-color: rgb(189, 147, 160);
-        }
-</style>

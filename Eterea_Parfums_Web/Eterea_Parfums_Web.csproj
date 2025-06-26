@@ -225,6 +225,7 @@
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\aboutStyle.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -242,6 +243,9 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\carritoStyle.css" />
+    <Content Include="Content\contactoStyle.css" />
+    <Content Include="Content\homeStyle.css" />
+    <Content Include="Content\perfumeStyle.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />

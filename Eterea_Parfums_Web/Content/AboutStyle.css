@@ -1,0 +1,84 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background-color: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.about-section {
+    background-color: #fff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    max-width: 1100px;
+    margin: 40px auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.8rem;
+    margin-bottom: 25px;
+    color: #2d2d2d;
+    font-weight: 700;
+}
+
+.about-content {
+    line-height: 1.8;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.intro-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+.mission-section, .community-section {
+    margin-top: 35px;
+}
+
+    .mission-section h3,
+    .community-section h3 {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+        color: #2b2b2b;
+    }
+
+.benefits-list,
+.community-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+    .benefits-list li,
+    .community-list li {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .benefits-list i,
+    .community-list i {
+        color: #d1a7b4;
+        margin-right: 10px;
+        font-size: 1.2rem;
+        min-width: 25px;
+    }
+
+.team-signature {
+    text-align: center;
+    font-style: italic;
+    margin-top: 40px;
+    font-size: 1.15rem;
+    color: #666;
+}
