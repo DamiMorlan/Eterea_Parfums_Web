@@ -132,6 +132,7 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImagenesController.cs" />
     <Compile Include="Controllers\PerfumeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

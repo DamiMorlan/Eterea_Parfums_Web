@@ -297,7 +297,19 @@
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="tipo_de_perfume" Type="varchar" MaxLength="15" Nullable="false" />
         </EntityType>
-        <Association Name="FK__aroma_del__tipo___5CD6CB2B">
+        <Association Name="FK__aroma_del__tipo___29221CFB">
+          <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="1" />
+          <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_aroma">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="aroma_del_perfume">
+              <PropertyRef Name="tipo_de_aroma_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__aroma_del__tipo___6A30C649">
           <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="1" />
           <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
           <ReferentialConstraint>
@@ -501,7 +513,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__nota_con___nota___72C60C4A">
+        <Association Name="FK__nota_con___nota___2A164134">
           <End Role="nota" Type="Self.nota" Multiplicity="1" />
           <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
           <ReferentialConstraint>
@@ -513,7 +525,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__nota_con___tipo___73BA3083">
+        <Association Name="FK__nota_con___nota___7F2BE32F">
+          <End Role="nota" Type="Self.nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__nota_con___tipo___00200768">
           <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
           <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
           <ReferentialConstraint>
@@ -525,7 +549,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__notas_del__nota___74AE54BC">
+        <Association Name="FK__nota_con___tipo___2B0A656D">
+          <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__notas_del__nota___01142BA1">
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="1" />
+          <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="notas_del_perfume">
+              <PropertyRef Name="nota_con_tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__notas_del__nota___2BFE89A6">
           <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="1" />
           <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
           <ReferentialConstraint>
@@ -816,7 +864,11 @@
           <EntitySet Name="tipo_de_aroma" EntityType="Self.tipo_de_aroma" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_nota" EntityType="Self.tipo_de_nota" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_perfume" EntityType="Self.tipo_de_perfume" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__aroma_del__tipo___5CD6CB2B" Association="Self.FK__aroma_del__tipo___5CD6CB2B">
+          <AssociationSet Name="FK__aroma_del__tipo___29221CFB" Association="Self.FK__aroma_del__tipo___29221CFB">
+            <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
+            <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__aroma_del__tipo___6A30C649" Association="Self.FK__aroma_del__tipo___6A30C649">
             <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
             <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
           </AssociationSet>
@@ -884,15 +936,27 @@
             <End Role="sucursal" EntitySet="sucursal" />
             <End Role="factura" EntitySet="factura" />
           </AssociationSet>
-          <AssociationSet Name="FK__nota_con___nota___72C60C4A" Association="Self.FK__nota_con___nota___72C60C4A">
+          <AssociationSet Name="FK__nota_con___nota___2A164134" Association="Self.FK__nota_con___nota___2A164134">
             <End Role="nota" EntitySet="nota" />
             <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
           </AssociationSet>
-          <AssociationSet Name="FK__nota_con___tipo___73BA3083" Association="Self.FK__nota_con___tipo___73BA3083">
+          <AssociationSet Name="FK__nota_con___nota___7F2BE32F" Association="Self.FK__nota_con___nota___7F2BE32F">
+            <End Role="nota" EntitySet="nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK__nota_con___tipo___00200768" Association="Self.FK__nota_con___tipo___00200768">
             <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
             <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
           </AssociationSet>
-          <AssociationSet Name="FK__notas_del__nota___74AE54BC" Association="Self.FK__notas_del__nota___74AE54BC">
+          <AssociationSet Name="FK__nota_con___tipo___2B0A656D" Association="Self.FK__nota_con___tipo___2B0A656D">
+            <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK__notas_del__nota___01142BA1" Association="Self.FK__notas_del__nota___01142BA1">
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+            <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__notas_del__nota___2BFE89A6" Association="Self.FK__notas_del__nota___2BFE89A6">
             <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
             <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
           </AssociationSet>
