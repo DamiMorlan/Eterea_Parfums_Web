@@ -193,17 +193,28 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
-        public ActionResult Perfil()
-        {
-            var cliente = Session["usuarioLogueado"] as cliente;
+       public ActionResult Perfil()
+{
+    if (Session["clienteId"] == null)
+    {
+        return RedirectToAction("Login", "Cliente");
+    }
 
-            if (cliente == null)
-            {
-                return RedirectToAction("Login", "Cliente");
-            }
-            CargarPaises();
-            return View(cliente);
+    int clienteId = (int)Session["clienteId"];
+
+    using (var db = new etereaEntities1())
+    {
+        var cliente = db.cliente.Find(clienteId);
+
+        if (cliente == null)
+        {
+            return RedirectToAction("Login", "Cliente");
         }
+
+        CargarPaises();
+        return View(cliente);
+    }
+}
 
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)
