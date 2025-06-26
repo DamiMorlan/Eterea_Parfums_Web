@@ -6,11 +6,10 @@
     <link href="~/Content/LoginStyle.css" rel="stylesheet" type="text/css" />
 }
 
-
+@Html.ActionLink("Ver Compras realizadas", "Index", "Historial", null, new { @class = "btn btn-primary" })
 <div class="register-container">
     <h2 id="title" class="text-center">@ViewBag.Title</h2>
     <hr class="separator">
-    @Html.ActionLink("Ver Compras realizadas", "Index", "Historial", null, new { @class = "btn btn-primary" })
     <!-- MODIFICAR el class = "perfil-form" cuando este el CSS -->
     @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "perfil-form" }))
     {
@@ -23,7 +22,7 @@
 
                 <div class="form-group">
                     <label for="apellido">Apellido:</label>
-                    @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", required = "required" })
+                    @Html.TextBoxFor(m => m.apellido, new { @class = "form-control", required = "required" })
                 </div>
 
                 <div class="form-group">
@@ -51,7 +50,7 @@
 
                 <div class="form-group">
                     <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-                    <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="form-control" required />
+                    <input type="date" class="form-control" name="fecha_nacimiento" value="@Model.fecha_nacimiento.ToString("yyyy-MM-dd")" required />
                     @Html.ValidationMessage("fechaNacimiento")
                 </div>
 
@@ -65,28 +64,33 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="pais">País:</label>
-                    <select id="pais" name="pais" class="form-control" required>
-                        <option value="">Seleccione un país</option>
+                    <select id="pais" name="pais_id" class="form-control" data-selected="@Model.pais_id" required>
+                        @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
+                        {
+                            <option value="@pais.Value" @(pais.Value == Model.pais_id.ToString() ? "selected" : "")>
+                                @pais.Text
+                            </option>
+                        }
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia" class="form-control" required>
+                    <select id="provincia" name="provincia_id" class="form-control" data-selected="@Model.provincia_id" required>
                         <option value="">Seleccione una provincia</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="localidad">Localidad:</label>
-                    <select id="localidad" name="localidad" class="form-control" required>
+                    <select id="localidad" name="localidad_id" class="form-control" data-selected="@Model.localidad_id" required>
                         <option value="">Seleccione una localidad</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="calle">Calle:</label>
-                    <select id="calle" name="calle" class="form-control" required>
+                    <select id="calle" name="calle_id" class="form-control" data-selected="@Model.calle_id" required>
                         <option value="">Seleccione una calle</option>
                     </select>
                 </div>

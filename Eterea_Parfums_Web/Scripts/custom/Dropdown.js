@@ -82,4 +82,66 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    //Script para cargar paises, provincias, localidades y calles cuando se carga la pagina
+    $(document).ready(function () {
+        // Al cargar la página, cargar provincias según el país seleccionado en data-selected
+        var paisSeleccionado = $('#pais').val();
+        if (paisSeleccionado) {
+            cargarProvincias(paisSeleccionado, $('#provincia').data('selected'));
+        }
+
+        $('#pais').change(function () {
+            cargarProvincias($(this).val(), null);
+        });
+
+        $('#provincia').change(function () {
+            cargarLocalidades($(this).val(), null);
+        });
+
+        $('#localidad').change(function () {
+            cargarCalles($(this).val(), null);
+        });
+
+        function cargarProvincias(paisId, provinciaSeleccionada) {
+            $.getJSON('/Cliente/ObtenerProvincias', { paisId: paisId }, function (data) {
+                var select = $('#provincia');
+                select.empty();
+                select.append('<option value="">Seleccione una provincia</option>');
+                $.each(data, function (i, provincia) {
+                    var selected = provincia.id == provinciaSeleccionada ? 'selected' : '';
+                    select.append('<option value="' + provincia.id + '" ' + selected + '>' + provincia.nombre + '</option>');
+                });
+                if (provinciaSeleccionada) {
+                    cargarLocalidades(provinciaSeleccionada, $('#localidad').data('selected'));
+                }
+            });
+        }
+
+        function cargarLocalidades(provinciaId, localidadSeleccionada) {
+            $.getJSON('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, function (data) {
+                var select = $('#localidad');
+                select.empty();
+                select.append('<option value="">Seleccione una localidad</option>');
+                $.each(data, function (i, localidad) {
+                    var selected = localidad.id == localidadSeleccionada ? 'selected' : '';
+                    select.append('<option value="' + localidad.id + '" ' + selected + '>' + localidad.nombre + '</option>');
+                });
+                if (localidadSeleccionada) {
+                    cargarCalles(localidadSeleccionada, $('#calle').data('selected'));
+                }
+            });
+        }
+
+        function cargarCalles(localidadId, calleSeleccionada) {
+            $.getJSON('/Cliente/ObtenerCalles', { localidadId: localidadId }, function (data) {
+                var select = $('#calle');
+                select.empty();
+                select.append('<option value="">Seleccione una calle</option>');
+                $.each(data, function (i, calle) {
+                    var selected = calle.id == calleSeleccionada ? 'selected' : '';
+                    select.append('<option value="' + calle.id + '" ' + selected + '>' + calle.nombre + '</option>');
+                });
+            });
+        }
+    });
 });

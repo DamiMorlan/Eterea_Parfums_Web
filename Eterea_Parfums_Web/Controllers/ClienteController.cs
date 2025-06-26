@@ -175,7 +175,7 @@ namespace Eterea_Parfums_Web.Controllers
                             Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
                         }
                     }
-                    throw; // Opcional: para que el error siga propagándose después de loguearlo
+                    throw;
                 }
 
                 // Redireccionar a otra vista
@@ -202,9 +202,109 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 return RedirectToAction("Login", "Cliente"); 
             }
+            CargarPaises();
             return View(cliente); 
         }
 
+        [HttpPost]
+        public ActionResult Perfil(cliente clienteEditado)
+        {
+            if (clienteEditado.dni.ToString().Length != 8)
+            {
+                ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
+                CargarPaises();
+                return View(clienteEditado);
+            }
+
+            if (!ModelState.IsValid)
+            {
+
+                Console.WriteLine("Hay errores de validación.");
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                CargarPaises();
+                return View(clienteEditado);
+            }
+
+            using (var db = new etereaEntities1())
+            {
+                var usuarioLogueado = Session["usuarioLogueado"] as cliente;
+                bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.id != usuarioLogueado.id);
+                if (usuarioExiste)
+                 {
+                     ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
+                     CargarPaises();
+                     return View(clienteEditado);
+                 }
+
+                  bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni == usuarioLogueado.dni);
+                  if (dniExiste)
+                  {
+                      ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
+                      CargarPaises();
+                      return View(clienteEditado);
+                  }
+
+                  bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail == usuarioLogueado.e_mail);
+                  if (emailExiste)
+                  {
+                      ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
+                      CargarPaises();
+                      return View(clienteEditado);
+                  }
+
+                
+                var clienteExistente = db.cliente.Find(usuarioLogueado.id);
+                if (clienteExistente == null)
+                {
+                    return RedirectToAction("Login", "Cliente");
+                }
+                clienteExistente.nombre = clienteEditado.nombre;
+                clienteExistente.apellido = clienteEditado.apellido;
+                clienteExistente.usuario = clienteEditado.usuario;
+                clienteExistente.clave = clienteEditado.clave;
+                clienteExistente.e_mail = clienteEditado.e_mail;
+                clienteExistente.dni = clienteEditado.dni;
+                clienteExistente.fecha_nacimiento = clienteEditado.fecha_nacimiento;
+                clienteExistente.celular = clienteEditado.celular;
+                clienteExistente.pais_id = clienteEditado.pais_id;
+                clienteExistente.provincia_id = clienteEditado.provincia_id;
+                clienteExistente.localidad_id = clienteEditado.localidad_id;
+                clienteExistente.calle_id = clienteEditado.calle_id;
+                clienteExistente.numeracion_calle = clienteEditado.numeracion_calle;
+                clienteExistente.piso = clienteEditado.piso;
+                clienteExistente.departamento = clienteEditado.departamento;
+                clienteExistente.codigo_postal = clienteEditado.codigo_postal;
+                clienteExistente.comentarios_domicilio = clienteEditado.comentarios_domicilio;
+
+                clienteExistente.activo = usuarioLogueado.activo;
+                clienteExistente.rol = usuarioLogueado.rol;
+                clienteExistente.id = usuarioLogueado.id;
+                clienteExistente.condicion_frente_al_iva = usuarioLogueado.condicion_frente_al_iva;
+                try
+                {
+                    Session["usuarioLogueado"] = clienteExistente;
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var eve in ex.EntityValidationErrors)
+                    {
+                        Console.WriteLine($"Entidad de tipo {eve.Entry.Entity.GetType().Name} con estado {eve.Entry.State} tiene errores de validación:");
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
+                        }
+                    }
+                    throw;
+                }
+
+                // Redireccionar a otra vista
+                return RedirectToAction("Index", "Home");
+            }
+        }
         public ActionResult CerrarSesion()
         {
             Session.Clear(); 
