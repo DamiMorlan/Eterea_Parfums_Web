@@ -240,8 +240,9 @@ namespace Eterea_Parfums_Web.Controllers
 
             using (var db = new etereaEntities1())
             {
-                var usuarioLogueado = Session["usuarioLogueado"] as cliente;
-                bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.id != usuarioLogueado.id);
+                int clienteId = (int)Session["clienteId"];
+                var usuarioLogueado = db.cliente.Find(clienteId);
+                bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.usuario != usuarioLogueado.usuario);
                 if (usuarioExiste)
                 {
                     ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
@@ -249,7 +250,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni == usuarioLogueado.dni);
+                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni != usuarioLogueado.dni);
                 if (dniExiste)
                 {
                     ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
@@ -257,7 +258,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail == usuarioLogueado.e_mail);
+                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail != usuarioLogueado.e_mail);
                 if (emailExiste)
                 {
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
@@ -266,36 +267,31 @@ namespace Eterea_Parfums_Web.Controllers
                 }
 
 
-                var clienteExistente = db.cliente.Find(usuarioLogueado.id);
-                if (clienteExistente == null)
+
+                if (usuarioLogueado == null)
                 {
                     return RedirectToAction("Login", "Cliente");
                 }
-                clienteExistente.nombre = clienteEditado.nombre;
-                clienteExistente.apellido = clienteEditado.apellido;
-                clienteExistente.usuario = clienteEditado.usuario;
-                clienteExistente.clave = clienteEditado.clave;
-                clienteExistente.e_mail = clienteEditado.e_mail;
-                clienteExistente.dni = clienteEditado.dni;
-                clienteExistente.fecha_nacimiento = clienteEditado.fecha_nacimiento;
-                clienteExistente.celular = clienteEditado.celular;
-                clienteExistente.pais_id = clienteEditado.pais_id;
-                clienteExistente.provincia_id = clienteEditado.provincia_id;
-                clienteExistente.localidad_id = clienteEditado.localidad_id;
-                clienteExistente.calle_id = clienteEditado.calle_id;
-                clienteExistente.numeracion_calle = clienteEditado.numeracion_calle;
-                clienteExistente.piso = clienteEditado.piso;
-                clienteExistente.departamento = clienteEditado.departamento;
-                clienteExistente.codigo_postal = clienteEditado.codigo_postal;
-                clienteExistente.comentarios_domicilio = clienteEditado.comentarios_domicilio;
+                usuarioLogueado.nombre = clienteEditado.nombre;
+                usuarioLogueado.apellido = clienteEditado.apellido;
+                usuarioLogueado.usuario = clienteEditado.usuario;
+                usuarioLogueado.clave = clienteEditado.clave;
+                usuarioLogueado.e_mail = clienteEditado.e_mail;
+                usuarioLogueado.dni = clienteEditado.dni;
+                usuarioLogueado.fecha_nacimiento = clienteEditado.fecha_nacimiento;
+                usuarioLogueado.celular = clienteEditado.celular;
+                usuarioLogueado.pais_id = clienteEditado.pais_id;
+                usuarioLogueado.provincia_id = clienteEditado.provincia_id;
+                usuarioLogueado.localidad_id = clienteEditado.localidad_id;
+                usuarioLogueado.calle_id = clienteEditado.calle_id;
+                usuarioLogueado.numeracion_calle = clienteEditado.numeracion_calle;
+                usuarioLogueado.piso = clienteEditado.piso;
+                usuarioLogueado.departamento = clienteEditado.departamento;
+                usuarioLogueado.codigo_postal = clienteEditado.codigo_postal;
+                usuarioLogueado.comentarios_domicilio = clienteEditado.comentarios_domicilio;
 
-                clienteExistente.activo = usuarioLogueado.activo;
-                clienteExistente.rol = usuarioLogueado.rol;
-                clienteExistente.id = usuarioLogueado.id;
-                clienteExistente.condicion_frente_al_iva = usuarioLogueado.condicion_frente_al_iva;
                 try
                 {
-                    Session["usuarioLogueado"] = clienteExistente;
                     db.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
