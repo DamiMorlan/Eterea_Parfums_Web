@@ -86,7 +86,7 @@
                                 <p class="card-text fw-bold mt-auto">$@perfume.precio_en_pesos</p>
 
                                 <div class="d-flex flex-column mt-3">
-                                    <button class="btn btn-eterea mb-2">
+                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.id })'" class="btn btn-eterea mb-2">
                                         <i class="fas fa-eye"></i> Ver
                                     </button>
                                     <button class="btn btn-eterea">
