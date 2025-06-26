@@ -3,9 +3,18 @@
 }
 
 <style>
+    /* Contenedor que centra todo en pantalla, sin superponerse al navbar/footer */
+    .login-wrapper {
+        min-height: calc(100vh - 160px); /* Ajuste para navbar + footer */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 15px;
+    }
+
     .login-container {
         max-width: 400px;
-        margin: 10px auto 30px auto; /* MENOR margen superior e inferior */
+        width: 100%;
         padding: 30px 25px;
         background-color: #fef6f8;
         border: 1px solid #e0bfc7;
@@ -14,11 +23,11 @@
         font-family: 'Segoe UI', sans-serif;
     }
 
-        .login-container h2 {
-            text-align: center;
-            color: #a0435c;
-            margin-bottom: 10px;
-        }
+    .login-container h2 {
+        text-align: center;
+        color: #a0435c;
+        margin-bottom: 10px;
+    }
 
     .separator {
         border: none;
@@ -91,34 +100,39 @@
             .register-message a:hover {
                 text-decoration: underline;
             }
+
+   
+    
 </style>
 
-<div class="login-container">
+<div class="login-wrapper">
+    <div class="login-container">
 
-    <h2>@ViewBag.Title</h2>
-    <hr class="separator" />
+        <h2>@ViewBag.Title</h2>
+        <hr class="separator" />
 
-    <form id="login-form" method="post" action="/Cliente/Login">
+        <form id="login-form" method="post" action="/Cliente/Login">
 
-        <div class="form-group">
-            <label for="usuario">Usuario:</label>
-            <input type="text" id="usuario" name="usuario" required />
-        </div>
+            <div class="form-group">
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="usuario" name="usuario" required />
+            </div>
 
-        <div class="form-group">
-            <label for="clave">Contraseña:</label>
-            <input type="password" id="clave" name="clave" required />
-        </div>
+            <div class="form-group">
+                <label for="clave">Contraseña:</label>
+                <input type="password" id="clave" name="clave" required />
+            </div>
+
+            <hr class="separator" />
+
+            <button type="submit" class="btn-login">Iniciar sesión</button>
+            <div class="error-message">@ViewData["Error"]</div>
+        </form>
 
         <hr class="separator" />
 
-        <button type="submit" class="btn-login">Iniciar sesión</button>
-        <div class="error-message">@ViewData["Error"]</div>
-    </form>
-
-    <hr class="separator" />
-
-    <div class="register-message">
-        ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!
+        <div class="register-message">
+            ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!
+        </div>
     </div>
 </div>
