@@ -7,6 +7,11 @@
 
 <style>
 
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgb(249, 230, 225);
+    }
+
     .detalle {
         height: 500px;
     }
@@ -117,9 +122,9 @@
         </div>
 
         <!-- Detalles del perfume -->
-        <section class="col-sm-12 col-md-6 mt-4">
-            <p class="card-text mb-1">Marca: @Model.marca.nombre</p>
-            <p class="card-text mb-1">Nombre: @Model.nombre</p>
+        <section class="col-sm-12 col-md-6 px-3">
+            <h1 class="fs-2 mb-1">@Model.marca.nombre</h1>
+            <h2 class="fs-3 mb-1">@Model.nombre</h2>
             <p class="card-text fw-bold mt-auto">$@Model.precio_en_pesos</p>
             <hr />
             <p class="card-text mb-1">Tamaño: @Model.presentacion_ml ml</p>
@@ -134,9 +139,9 @@
             </div>
             <p>Cantidad</p>
             <div class="d-flex">
-                <p>-</p>
-                <p>1</p>
-                <p>+</p>
+                <button>-</button>
+                <button>1</button>
+                <button>+</button>
             </div>
             <button class="btn-eterea">
                 <i class="fas fa-cart-plus"></i> Agregar al carrito
@@ -145,9 +150,10 @@
     </div>
     <!--  -->
     <div class="mt-5">
+        <h5 class="text-center">Perfumes similares</h5>
         <div class="w3-row w3-margin-top">
             <a href="javascript:void(0)" onclick="openCity(event, 'detalle');">
-                <div class="w3-quarter w3-center tablink w3-border-black w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
+                <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
             </a>
             <a href="javascript:void(0)" onclick="openCity(event, 'especificaciones');">
                 <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
@@ -185,8 +191,7 @@
         </div>
 
         <div id="opiniones" class="w3-container box" style="display:none">
-            <h2>Tokyo</h2>
-            <p>Tokyo is the capital of Japan.</p>
+            <h2>Opiniones</h2>
         </div>
     </div>
 
@@ -198,7 +203,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -211,7 +216,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -224,7 +229,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -237,7 +242,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -250,7 +255,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -263,7 +268,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -276,7 +281,7 @@
                 <div class="swiper-slide">
                     <div class="card h-100 text-center p-3">
                         <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/perfume1.jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
                         <div class="card-body">
                             <h6 class="text-uppercase">BANDERAS</h6>
                             <p class="small">The Icon Supreme EDP</p>
@@ -368,11 +373,11 @@
             tablinks = document.getElementsByClassName("tablink");
             for (i = 0; i < x.length; i++) {
 
-                tablinks[i].className = tablinks[i].className.replace(" w3-border-black", "");
+                tablinks[i].className = tablinks[i].className.replace(" w3-border-pale-amber", "");
                 tablinks[i].className = tablinks[i].className.replace(" w3-bottombar", "");
             }
             document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.firstElementChild.className += " w3-border-black w3-bottombar";
+            evt.currentTarget.firstElementChild.className += " w3-border-pale-amber w3-bottombar";
         }
     </script>
     <script>
