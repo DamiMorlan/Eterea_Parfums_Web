@@ -1,0 +1,42 @@
+@model Eterea_Parfums_Web.Models.cliente
+@{
+    ViewBag.Title = "Mi Perfil";
+}
+
+<div class="register-container">
+    <h2 class="text-center">@ViewBag.Title</h2>
+    <hr class="separator" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Nombre:</strong> @Html.DisplayFor(m => m.nombre)</p>
+            <p><strong>Apellido:</strong> @Html.DisplayFor(m => m.apellido)</p>
+            <p><strong>Usuario:</strong> @Html.DisplayFor(m => m.usuario)</p>
+            <p><strong>Email:</strong> @Html.DisplayFor(m => m.e_mail)</p>
+            <p><strong>DNI:</strong> @Html.DisplayFor(m => m.dni)</p>
+            <p><strong>Fecha de Nacimiento:</strong> @Model.fecha_nacimiento.ToString("dd/MM/yyyy")</p>
+            <p><strong>Celular:</strong> @Html.DisplayFor(m => m.celular)</p>
+        </div>
+
+        <div class="col-md-6">
+            <p><strong>País:</strong> @ViewBag.NombrePais</p>
+            <p><strong>Provincia:</strong> @ViewBag.NombreProvincia</p>
+            <p><strong>Localidad:</strong> @ViewBag.NombreLocalidad</p>
+            <p><strong>Calle:</strong> @ViewBag.NombreCalle</p>
+            <p><strong>Numeración:</strong> @Html.DisplayFor(m => m.numeracion_calle)</p>
+            <p><strong>Piso:</strong> @Html.DisplayFor(m => m.piso)</p>
+            <p><strong>Departamento:</strong> @Html.DisplayFor(m => m.departamento)</p>
+            <p><strong>Código Postal:</strong> @Html.DisplayFor(m => m.codigo_postal)</p>
+        </div>
+    </div>
+
+    <hr class="separator" />
+
+    <div>
+        <p><strong>Comentario del domicilio:</strong> @Html.DisplayFor(m => m.comentarios_domicilio)</p>
+    </div>
+
+    <div class="text-center" style="margin-top: 20px;">
+        @Html.ActionLink("Editar perfil", "Perfil", "Cliente", null, new { @class = "btn btn-primary" })
+    </div>
+</div>

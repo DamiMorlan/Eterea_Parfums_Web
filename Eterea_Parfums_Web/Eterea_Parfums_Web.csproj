@@ -520,6 +520,7 @@
     <Content Include="Views\Historial\Index.cshtml" />
     <Content Include="Views\Cliente\Perfil.cshtml" />
     <Content Include="Views\Perfume\Index.cshtml" />
+    <Content Include="Views\Cliente\VerPerfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

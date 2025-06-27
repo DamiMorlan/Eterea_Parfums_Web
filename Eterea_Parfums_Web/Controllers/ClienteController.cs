@@ -311,6 +311,30 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        public ActionResult VerPerfil()
+        {
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities1())
+            {
+                var cliente = db.cliente.Find(clienteId);
+
+                ViewBag.NombrePais = db.pais.Find(cliente.pais_id)?.nombre ?? "";
+                ViewBag.NombreProvincia = db.provincia.Find(cliente.provincia_id)?.nombre ?? "";
+                ViewBag.NombreLocalidad = db.localidad.Find(cliente.localidad_id)?.nombre ?? "";
+                ViewBag.NombreCalle = db.calle.Find(cliente.calle_id)?.nombre ?? "";
+
+                return View(cliente);
+            }
+        }
+
+
+
         public ActionResult Logout()
         {
             Session.Clear(); // Elimina todos los datos de sesión (incluye UsuarioId, etc.)
