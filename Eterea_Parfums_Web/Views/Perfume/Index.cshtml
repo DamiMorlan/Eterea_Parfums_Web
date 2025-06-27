@@ -210,5 +210,32 @@
             });
         });
     });
+
+       window.addEventListener('load', () => {
+        const hash = window.location.hash;
+
+        if (hash) {
+            const target = document.querySelector(hash);
+            if (target) {
+                // Usamos getBoundingClientRect para ubicar el elemento
+                const headerOffset = 100; // altura aproximada de un navbar si tenés
+                const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+
+                // Animación para que se note el foco visual
+                target.style.transition = "box-shadow 0.6s ease";
+                target.style.boxShadow = "0 0 0 4px rgba(255, 99, 132, 0.4)";
+
+                setTimeout(() => {
+                    target.style.boxShadow = "none";
+                }, 2000);
+            }
+        }
+    });
     </script>
 }
