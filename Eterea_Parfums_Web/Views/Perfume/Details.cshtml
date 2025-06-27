@@ -6,37 +6,46 @@
 }
 
 <style>
-
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: rgb(249, 230, 225);
+        background-color: #fef6f8;
+        color: #5a2a39;
     }
 
-    .detalle {
-        height: 500px;
+    h1, h2, h6 {
+        color: #a0435c;
     }
 
-    .gallery-thumbs-vertical {
-        height: 300px; /* Ajustalo según tu diseño */
+    .detalle-container {
+        background-color: #fff;
+        border: 1px solid #e0bfc7;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #a0435c !important;
     }
 
     .swiper-slide img {
         object-fit: contain;
         max-height: 100%;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .gallery-thumbs-vertical {
+        height: 300px;
     }
 
     .gallery-thumbs-horizontal {
-        height: auto; /* Opcional */
         padding: 5px 0;
     }
 
-        .gallery-thumbs-horizontal .swiper-slide img {
-            max-height: 100%;
-            object-fit: contain;
-        }
-
         .gallery-thumbs-horizontal .swiper-slide {
-            width: auto !important; /* ← clave */
+            width: auto !important;
         }
 
     .swiper-zoom-container img {
@@ -44,19 +53,105 @@
         cursor: zoom-in;
     }
 
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: rgb(209, 167, 180) !important;
+    .swiper-pagination-bullet-active {
+        background-color: #a0435c;
     }
 
+    .card {
+        border: none;
+        border-radius: 15px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    }
+
+        .card h6 {
+            color: #a0435c;
+        }
+
+        .card p {
+            margin: 5px 0;
+        }
+
+    .btn-eterea {
+        background-color: #d1a7b4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-eterea:hover {
+            background-color: #a0435c;
+        }
+
+    .btn-dark.btn-sm {
+        background-color: #a0435c;
+        border: none;
+    }
+
+        .btn-dark.btn-sm:hover {
+            background-color: #5a2a39;
+        }
+
+    .tablink {
+        border-bottom: 3px solid transparent;
+        transition: 0.3s;
+    }
+
+    .w3-border-pale-amber {
+        border-color: #a0435c !important;
+    }
+
+    .w3-bottombar {
+        border-bottom: 3px solid #a0435c !important;
+    }
+
+    .box {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #e0bfc7;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .fs-6 {
+        font-weight: bold;
+        color: #5a2a39;
+    }
 
     .swiper-slide {
         width: 250px;
     }
 
+    a {
+        text-decoration: none;
+        color: #a0435c;
+        font-weight: bold;
+        margin-right: 10px;
+    }
 
-    .swiper-pagination-bullet-active {
-        background-color: #000;
+        a:hover {
+            text-decoration: underline;
+        }
+
+    button {
+        background-color: #d1a7b4;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        margin: 0 5px;
+    }
+
+        button:hover {
+            background-color: #a0435c;
+        }
+
+    .badge.bg-dark {
+        background-color: #a0435c !important;
     }
 </style>
 
