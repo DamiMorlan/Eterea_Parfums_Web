@@ -184,3 +184,48 @@ select {
 .resumen-carrito {
     transition: opacity 0.4s ease;
 }
+
+.fila-resumen {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+    .fila-resumen .etiqueta {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .fila-resumen .valor {
+        font-weight: 600;
+        color: #333;
+        text-align: right;
+        min-width: 150px;
+    }
+
+    .fila-resumen.total .etiqueta,
+    .fila-resumen.total .valor {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .fila-resumen .valor.descuento {
+        color: #c0392b;
+    }
+
+.envio-gratis {
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.contenedor-boton-finalizar {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}

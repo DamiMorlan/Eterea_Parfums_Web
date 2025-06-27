@@ -91,9 +91,18 @@
                 var descuento = subtotal - total;
             }
 
-            <div>Subtotal (sin descuento): $@subtotal.ToString("N0")</div>
-            <div>Descuentos aplicados: -$@descuento.ToString("N0")</div>
-            <div class="total-final">Total a pagar: $@total.ToString("N0")</div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Subtotal (sin descuento):</span>
+                <span class="valor">$@subtotal.ToString("N0")</span>
+            </div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Descuentos aplicados:</span>
+                <span class="valor descuento">-$@descuento.ToString("N0")</span>
+            </div>
+            <div class="fila-resumen total">
+                <span class="etiqueta">Total a pagar:</span>
+                <span class="valor">$@total.ToString("N0")</span>
+            </div>
 
             @if (total >= 50000)
             {
@@ -101,13 +110,16 @@
             }
             else
             {
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
                     Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
                 </p>
             }
 
-            <button class="btn-finalizar">Finalizar pedido</button>
+            <div class="contenedor-boton-finalizar">
+                <button class="btn-finalizar">Finalizar pedido</button>
+            </div>
         </div>
+
     }
     else
     {
