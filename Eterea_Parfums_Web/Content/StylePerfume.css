@@ -119,3 +119,9 @@ body {
     align-items: center;
     text-align: center;
 }
+
+.resaltado {
+    border: 2px solid #a0435c;
+    box-shadow: 0 0 12px #d1a7b4;
+    transition: all 0.5s ease;
+}

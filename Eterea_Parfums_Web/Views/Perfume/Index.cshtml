@@ -81,11 +81,12 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                 @foreach (var item in Model)
                 {
+
                     var perfume = item.Perfume;
                     var stock = item.StockDisponibleParaWeb;
 
                     <div class="col-md-3 mb-4 d-flex">
-                        <div class="card w-100" data-id="@perfume.id">
+                       <div id="perfume-@perfume.id" class="card w-100" data-id="@perfume.id">
                             <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">@perfume.nombre</h5>

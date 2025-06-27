@@ -556,6 +556,21 @@
                     return;
                 }
 
+                if (data.error) {
+                    const contenedor = document.getElementById("info-perfume-agregado");
+                    contenedor.innerHTML = `
+                    <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                    <p>${data.error}</p>
+                `;
+
+                    document.getElementById("carrito-offcanvas").classList.add("show");
+
+                    setTimeout(() => {
+                        document.getElementById("carrito-offcanvas").classList.remove("show");
+                    }, 5000);
+                    return;
+                }
+
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `
                     <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
