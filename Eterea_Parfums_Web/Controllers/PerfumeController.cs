@@ -19,17 +19,22 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // GET: Perfume/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index"); // o return HttpNotFound();
+            }
+
             var perfume = db.perfume.Find(id);
             if (perfume == null)
             {
                 return HttpNotFound();
             }
+
             return View(perfume);
-
-
         }
+
 
         // GET: Perfume/Create
         public ActionResult Create()

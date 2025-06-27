@@ -153,6 +153,42 @@
     .badge.bg-dark {
         background-color: #a0435c !important;
     }
+
+    #carrito-offcanvas {
+        position: fixed;
+        top: 20px;
+        right: -350px;
+        width: 300px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        padding: 20px;
+        z-index: 2000;
+        transition: right 0.5s ease-in-out;
+    }
+
+        #carrito-offcanvas.show {
+            right: 20px;
+        }
+
+    .offcanvas-contenido img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .offcanvas-contenido p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .cantidad-control {
+        margin-bottom: 20px;
+    }
+
+
 </style>
 
 
@@ -233,14 +269,15 @@
                 <p>Promos</p>
             </div>
             <p>Cantidad</p>
-            <div class="d-flex">
+            <div class="d-flex cantidad-control gap-2">
                 <button>-</button>
                 <button>1</button>
                 <button>+</button>
             </div>
-            <button class="btn-eterea">
+            <button class="btn-eterea agregar-al-carrito" data-id="@Model.id">
                 <i class="fas fa-cart-plus"></i> Agregar al carrito
             </button>
+
         </section>
     </div>
     <!--  -->
@@ -496,7 +533,59 @@
                 }
             });
         });
+
+         document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const perfumeId = btn.getAttribute('data-id');
+
+            fetch('@Url.Action("Agregar", "Carrito")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `perfumeId=${perfumeId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                const contenedor = document.getElementById("info-perfume-agregado");
+                contenedor.innerHTML = `
+                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                    <p><strong>${data.nombre}</strong></p>
+                    <p>${data.tipo} - ${data.presentacion} ml</p>
+                    <p>Género: ${data.genero}</p>
+                    <p>Precio: ${
+                        data.precioDescuento
+                            ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                            : `<strong>$${data.precioOriginal}</strong>`
+                    }</p>
+                    ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                `;
+
+                const offcanvas = document.getElementById("carrito-offcanvas");
+                offcanvas.classList.add("show");
+
+                setTimeout(() => {
+                    offcanvas.classList.remove("show");
+                }, 6000);
+            })
+            .catch(err => {
+                console.error('Error en la solicitud:', err);
+                alert("Hubo un error al intentar agregar el perfume al carrito.");
+            });
+        });
+    });
     </script>
 }
 
-
+<div id="carrito-offcanvas" class="offcanvas-carrito">
+    <div class="offcanvas-contenido">
+        <h4>🛒 Se agregó a tu carrito</h4>
+        <div id="info-perfume-agregado"></div>
+        <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
+    </div>
+</div>

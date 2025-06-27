@@ -77,3 +77,33 @@ body {
     border-color: rgb(209, 167, 180);
     color: white;
 }
+
+#carrito-offcanvas {
+    position: fixed;
+    top: 20px;
+    right: -350px;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    padding: 20px;
+    z-index: 2000;
+    transition: right 0.5s ease-in-out;
+}
+
+    #carrito-offcanvas.show {
+        right: 20px; /* se desliza desde la derecha */
+    }
+
+.offcanvas-contenido img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.offcanvas-contenido p {
+    margin: 0;
+    font-size: 14px;
+}

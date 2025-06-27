@@ -52,9 +52,10 @@
                         <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.presentacion_ml ml</p>
 
                         <div class="mt-auto d-flex flex-column">
-                            <button class="btn-eterea mb-2">
+                            <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.id })'" class="btn-eterea mb-2">
                                 <i class="fas fa-eye"></i> Ver
                             </button>
+
                             <button class="btn-eterea">
                                 <i class="fas fa-cart-plus"></i> Agregar al carrito
                             </button>
