@@ -151,18 +151,22 @@
                     if (data.success) {
                         if (cantidad === "0") {
                             const fila = document.getElementById(`perfume-${perfumeId}`);
-                            if (fila) fila.remove();
+                            if (fila) {
+                                fila.classList.add("fade-out");
+                                setTimeout(() => {
+                                    fila.remove();
 
-                            if (document.querySelectorAll('.fila-producto').length === 0) {
-                                document.querySelector('.carrito-container').innerHTML = `
-                    <div style="text-align: center; padding: 50px;">
-                        <div style="font-size: 100px;">🛒</div>
-                        <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                    </div>`;
+                                    if (document.querySelectorAll('.fila-producto').length === 0) {
+                                        document.querySelector('.carrito-container').innerHTML = `
+                                            <div style="text-align: center; padding: 50px;">
+                                                <div style="font-size: 100px;">🛒</div>
+                                                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                                            </div>`;
+                                    }
+                                }, 500); // Esperamos a que termine la transición
                             }
                             return;
                         }
-
                         // ✅ Actualizar resumen general
                         resumen.innerHTML = `
                             <div>Subtotal (sin descuento): $${data.subtotal}</div>
