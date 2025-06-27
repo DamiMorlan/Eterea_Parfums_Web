@@ -257,9 +257,14 @@
             <h1 class="fs-2 mb-1">@Model.marca.nombre</h1>
             <h2 class="fs-3 mb-1">@Model.nombre</h2>
             <p class="card-text fw-bold mt-auto">$@Model.precio_en_pesos</p>
-            <hr />
+    
+            @if (ViewBag.StockDisponibleParaWeb != null && ViewBag.StockDisponibleParaWeb == 1)
+            {
+                <p class="text-danger fw-bold">¡Último disponible!</p>
+            }
+        
             <p class="card-text mb-1">Tamaño: @Model.presentacion_ml ml</p>
-            <p>Tamaño</p>
+           
             <div class="">
                 <a href="">50ML</a>
                 <a href="">200ML</a>

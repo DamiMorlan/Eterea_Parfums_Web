@@ -78,11 +78,16 @@ body {
     color: white;
 }
 
+.text-danger.fw-bold {
+    color: #c0392b !important;
+    font-size: 0.95rem;
+}
+
 #carrito-offcanvas {
     position: fixed;
     top: 20px;
     right: -350px;
-    width: 300px;
+    width: 350px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 12px;
@@ -106,4 +111,11 @@ body {
 .offcanvas-contenido p {
     margin: 0;
     font-size: 14px;
+}
+
+.offcanvas-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }

@@ -14,11 +14,40 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult Index()
         {
-            var perfumes = db.perfume.ToList(); // Obtiene todos los perfumes
-            return View(perfumes);
+            var perfumes = db.perfume
+                .Where(p => p.activo)
+                .ToList();
+
+            var stock = db.stock.ToList();
+
+            var stockDisponiblePorPerfume = stock
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
+                );
+
+            // Proyectar a ViewModel solo perfumes con stock > 0
+            var perfumesDisponibles = perfumes
+                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
+                .Select(p => new PerfumeHomeViewModel
+                {
+                    Id = p.id,
+                    Nombre = p.nombre,
+                    Imagen = p.imagen1,
+                    Marca = p.marca.nombre,
+                    Precio = p.precio_en_pesos,
+                    Presentacion = p.presentacion_ml,
+                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id]
+                })
+                .ToList();
+
+            return View(perfumesDisponibles);
         }
 
-            public ActionResult About()
+
+
+        public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 

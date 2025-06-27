@@ -13,6 +13,13 @@
 
     <h1 class="titulo-carrito">Tu carrito</h1>
 
+    @if (ViewBag.MensajeStockActualizado != null)
+    {
+        <div class="alert alert-warning text-center mt-3">
+            @ViewBag.MensajeStockActualizado
+        </div>
+    }
+
     @if (Model != null && Model.Any())
     {
         foreach (var item in Model)
@@ -25,6 +32,12 @@
                         <p>Tipo: @item.TipoDePerfume</p>
                         <p>Presentación: @item.Presentacion ml</p>
                         <p>Género: @item.Genero</p>
+
+                        @if (item.StockDisponibleParaVentaWeb == 1)
+                        {
+                            <p style="color: red; font-weight: bold;">¡Último disponible!</p>
+                        }
+
 
                         @if (item.TienePromo && item.PrecioOriginal != item.PrecioConDescuento)
                         {
@@ -46,7 +59,7 @@
 
                         <label for="cantidad-@item.PerfumeId">Cantidad: </label>
                         <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
-                            @for (int i = 0; i <= 10; i++)
+                            @for (int i = 0; i <= item.StockDisponibleParaVentaWeb; i++)
                             {
                                 <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
                             }

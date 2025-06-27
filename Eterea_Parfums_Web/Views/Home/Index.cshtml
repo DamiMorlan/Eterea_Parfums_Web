@@ -1,4 +1,4 @@
-﻿@model List<Eterea_Parfums_Web.Models.perfume>
+﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeHomeViewModel>
 
 @{
     ViewBag.Title = "Home Page";
@@ -43,16 +43,23 @@
         @foreach (var perfume in Model)
         {
             <div class="col-md-3 mb-4 d-flex">
-                <div class="card w-100" data-id="@perfume.id">
-                    <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
+                <div class="card w-100" data-id="@perfume.Id">
+                    <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@perfume.nombre</h5>
-                        <p class="card-text mb-1"><strong>Marca:</strong> @perfume.marca.nombre</p>
-                        <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.precio_en_pesos</p>
-                        <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.presentacion_ml ml</p>
+                        <h5 class="card-title">@perfume.Nombre</h5>
+                        <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+                        <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
+                       
+                       
+                        <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
+
+                        @if (perfume.StockDisponibleParaWeb == 1)
+                        {
+                            <p class="text-danger fw-bold">¡Último disponible!</p>
+                        }
 
                         <div class="mt-auto d-flex flex-column">
-                            <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.id })'" class="btn-eterea mb-2">
+                            <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
                                 <i class="fas fa-eye"></i> Ver
                             </button>
 
@@ -110,6 +117,22 @@
                     window.location.href = data.redirect;
                     return;
                 }
+
+                if (data.error) {
+                    const contenedor = document.getElementById("info-perfume-agregado");
+                    contenedor.innerHTML = `
+                    <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                    <p>${data.error}</p>
+                `;
+
+                    document.getElementById("carrito-offcanvas").classList.add("show");
+
+                    setTimeout(() => {
+                        document.getElementById("carrito-offcanvas").classList.remove("show");
+                    }, 5000);
+                    return;
+                }
+
 
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `

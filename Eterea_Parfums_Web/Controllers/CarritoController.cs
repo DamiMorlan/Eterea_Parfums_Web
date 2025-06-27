@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -14,8 +15,6 @@ namespace Eterea_Parfums_Web.Controllers
         // GET: Carrito
         public ActionResult Index()
         {
-            //int clienteId = 2; // Simulación de cliente logueado
-
             if (Session["clienteId"] == null)
             {
                 return RedirectToAction("Login", "Cliente");
@@ -23,7 +22,53 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
+            // Paso 1: Obtener el carrito completo con perfumes
+            var carrito = db.carrito
+                .Include(c => c.perfume)
+                .Where(c => c.cliente_id == clienteId)
+                .OrderByDescending(c => c.id)
+                .ToList();
 
+            var perfumeIds = carrito.Select(c => c.perfume_id).ToList();
+
+            // Paso 2: Calcular stock disponible para cada perfume
+            var stockPorPerfume = db.stock
+                .Where(s => perfumeIds.Contains(s.perfume_id))
+                .ToList()
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
+                );
+
+            bool huboCambios = false;
+
+            // Paso 3: Ajustar carrito en memoria y DB según el stock
+            foreach (var item in carrito.ToList())
+            {
+                int stockDisponible = stockPorPerfume.ContainsKey(item.perfume_id) ? stockPorPerfume[item.perfume_id] : 0;
+
+                if (stockDisponible <= 0)
+                {
+                    db.carrito.Remove(item); // eliminar si ya no hay stock
+                    huboCambios = true;
+                    continue;
+                }
+
+                if (item.cantidad > stockDisponible)
+                {
+                    item.cantidad = stockDisponible; // ajustar cantidad
+                    huboCambios = true;
+                }
+            }
+
+            if (huboCambios)
+            {
+                db.SaveChanges();
+                ViewBag.MensajeStockActualizado = "Algunos productos del carrito fueron ajustados por cambios en el stock.";
+            }
+
+            // Paso 4: Volver a armar el carrito actualizado
             var perfumesEnCarrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
                 .OrderByDescending(c => c.id)
@@ -34,9 +79,25 @@ namespace Eterea_Parfums_Web.Controllers
                 })
                 .ToList();
 
+            perfumeIds = perfumesEnCarrito.Select(p => p.Perfume.id).ToList();
+
+            stockPorPerfume = db.stock
+                .Where(s => perfumeIds.Contains(s.perfume_id))
+                .ToList()
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
+                );
+
+            // Paso 5: Armar ViewModel
             var viewModel = perfumesEnCarrito.Select(p =>
             {
                 var perfume = p.Perfume;
+
+                int stockDisponible = stockPorPerfume.ContainsKey(perfume.id)
+                    ? stockPorPerfume[perfume.id]
+                    : 0;
 
                 var promo = perfume.promocion
                     .Where(pr => pr.id != 1 &&
@@ -96,7 +157,8 @@ namespace Eterea_Parfums_Web.Controllers
                     Cantidad = cantidad,
                     Total = total,
                     TienePromo = tienePromo,
-                    LeyendaPromo = leyendaPromo
+                    LeyendaPromo = leyendaPromo,
+                    StockDisponibleParaVentaWeb = stockDisponible
                 };
             }).ToList();
 
@@ -188,8 +250,6 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public JsonResult Agregar(int perfumeId)
         {
-            //int clienteId = 2; // simulado
-
             if (Session["clienteId"] == null)
             {
                 return Json(new { redirect = Url.Action("Login", "Cliente") });
@@ -197,20 +257,37 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
-
-            var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
-            if (item != null)
+            // Obtener perfume
+            var perfume = db.perfume.Find(perfumeId);
+            if (perfume == null || !perfume.activo)
             {
-                item.cantidad++;
+                return Json(new { error = "El perfume no existe o está inactivo." });
+            }
+
+            // Obtener stock total disponible para la venta web
+            var stockDisponible = db.stock
+                .Where(s => s.perfume_id == perfumeId)
+                .ToList()
+                .Select(s => Math.Max(0, s.cantidad - 5))
+                .Sum();
+
+            // Ver cuántas unidades de este perfume ya tiene el cliente en su carrito
+            var itemEnCarrito = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+            int cantidadEnCarrito = itemEnCarrito?.cantidad ?? 0;
+
+            if (cantidadEnCarrito >= stockDisponible)
+            {
+                return Json(new { error = "Ya agregaste todas las unidades disponibles de este perfume." });
+            }
+
+            // Agregar o incrementar
+            if (itemEnCarrito != null)
+            {
+                itemEnCarrito.cantidad++;
             }
             else
             {
-                int nuevoId = 1;
-                if (db.carrito.Any())
-                {
-                    nuevoId = db.carrito.Max(c => c.id) + 1;
-                }
-
+                int nuevoId = db.carrito.Any() ? db.carrito.Max(c => c.id) + 1 : 1;
                 db.carrito.Add(new carrito
                 {
                     id = nuevoId,
@@ -219,16 +296,12 @@ namespace Eterea_Parfums_Web.Controllers
                     cantidad = 1
                 });
             }
+
             db.SaveChanges();
 
-            var perfume = db.perfume.Find(perfumeId);
-            int cantidad = item != null ? item.cantidad : 1;
-
+            // Promo
             var promo = perfume.promocion.FirstOrDefault(pr =>
-                pr.id != 1 &&
-                pr.activo &&
-                pr.fecha_inicio <= DateTime.Now &&
-                pr.fecha_fin >= DateTime.Now);
+                pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now);
 
             double precioOriginal = perfume.precio_en_pesos;
             double precioConDescuento = precioOriginal;
@@ -246,9 +319,7 @@ namespace Eterea_Parfums_Web.Controllers
                 }
                 else
                 {
-                    // Para promociones tipo 2x1 o 2x60%
                     int descuentoSegundaUnidad = promo.descuento * 2;
-
                     leyendaPromo = (descuentoSegundaUnidad == 100)
                         ? "Promoción 2 x 1"
                         : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
@@ -270,7 +341,6 @@ namespace Eterea_Parfums_Web.Controllers
                 leyenda = tienePromo ? leyendaPromo : null
             });
         }
-
 
 
 

@@ -222,6 +222,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
+    <Compile Include="ViewModels\PerfumeHomeViewModel.cs" />
+    <Compile Include="ViewModels\PerfumeConStockViewModel.cs" />
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
