@@ -1,0 +1,115 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background-color: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.carousel-inner img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+    .card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        transform: translateY(-6px);
+    }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.custom-img {
+    height: 140px; /* Imagen más chica */
+    width: auto; /* Mantiene proporción */
+    display: block;
+    margin: 0 auto; /* Centra horizontalmente */
+    border-radius: 12px;
+}
+
+.card-body {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center; /* <-- Esto centra el contenido de texto */
+}
+
+.btn-eterea {
+    background-color: rgb(209, 167, 180);
+    color: white;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-eterea:hover {
+        background-color: rgb(189, 147, 160);
+        transform: scale(1.02);
+        color: white;
+    }
+
+.offcanvas-carrito {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 33%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1050;
+    transition: right 0.4s ease;
+    padding: 20px;
+}
+
+    .offcanvas-carrito.show {
+        right: 0;
+    }
+
+.offcanvas-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+    .offcanvas-contenido img {
+        width: 100px;
+        height: auto;
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+
+.pagination .page-link {
+    color: rgb(209, 167, 180);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: rgb(209, 167, 180);
+    border-color: rgb(209, 167, 180);
+    color: white;
+}
