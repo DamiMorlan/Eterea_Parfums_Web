@@ -289,13 +289,13 @@
     <div class="mt-5">
 
         <div class="w3-row w3-margin-top">
-            <a href="javascript:void(0)" onclick="openCity(event, 'detalle');">
+            <a href="javascript:void(0)" onclick="openCity(this, 'detalle');">
                 <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
             </a>
-            <a href="javascript:void(0)" onclick="openCity(event, 'especificaciones');">
+            <a href="javascript:void(0)" onclick="openCity(this, 'especificaciones');">
                 <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
             </a>
-            <a href="javascript:void(0)" onclick="openCity(event, 'opiniones');">
+            <a href="javascript:void(0)" onclick="openCity(this, 'opiniones');">
                 <div class="w3-quarter w3-center tablink w3-padding">OPINIONES</div>
             </a>
         </div>
@@ -501,21 +501,20 @@
         });
     </script>
     <script>
-        function openCity(evt, cityName) {
+        function openCity(element, cityName, event) {
             var i, x, tablinks;
             x = document.getElementsByClassName("box");
             for (i = 0; i < x.length; i++) {
                 x[i].style.display = "none";
             }
             tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < x.length; i++) {
-
-                tablinks[i].className = tablinks[i].className.replace(" w3-border-pale-amber", "");
-                tablinks[i].className = tablinks[i].className.replace(" w3-bottombar", "");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-border-pale-amber", "").replace(" w3-bottombar", "");
             }
             document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.firstElementChild.className += " w3-border-pale-amber w3-bottombar";
+            element.firstElementChild.className += " w3-border-pale-amber w3-bottombar";
         }
+
     </script>
     <script>
         $(document).ready(function () {
