@@ -26,7 +26,7 @@
         {
             <div class="fila-producto" id="perfume-@item.PerfumeId">
                 <div class="contenedor-producto">
-                    <a href="@($"{Url.Action("Index", "Perfume")}#perfume-{item.PerfumeId}")">
+                    <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
                         <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
                     </a>
                     <div class="producto-detalles">
