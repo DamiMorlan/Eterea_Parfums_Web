@@ -186,9 +186,10 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         [HttpPost]
-        public JsonResult Agregar(int perfumeId)
+        public JsonResult Agregar(int perfumeId, int? cantidad=0)
         {
             //int clienteId = 2; // simulado
+            
 
             if (Session["clienteId"] == null)
             {
@@ -197,11 +198,19 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
-
+            int cantidadFinal = 1;
             var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
             if (item != null)
             {
-                item.cantidad++;
+                if(cantidad != 0)
+                {
+                    item.cantidad += (int)cantidad;
+                }
+                else
+                {
+                    item.cantidad++;
+                }
+                cantidadFinal = item.cantidad;
             }
             else
             {
@@ -211,18 +220,22 @@ namespace Eterea_Parfums_Web.Controllers
                     nuevoId = db.carrito.Max(c => c.id) + 1;
                 }
 
+                cantidadFinal = (int)(cantidad != 0 ? cantidad : 1);
+
                 db.carrito.Add(new carrito
                 {
                     id = nuevoId,
                     cliente_id = clienteId,
                     perfume_id = perfumeId,
-                    cantidad = 1
+                    cantidad = cantidadFinal
                 });
+
+
             }
             db.SaveChanges();
 
             var perfume = db.perfume.Find(perfumeId);
-            int cantidad = item != null ? item.cantidad : 1;
+            cantidad = item != null ? item.cantidad : 1;
 
             var promo = perfume.promocion.FirstOrDefault(pr =>
                 pr.id != 1 &&

@@ -1,5 +1,6 @@
 ﻿
-@model Eterea_Parfums_Web.Models.perfume
+@model Eterea_Parfums_Web.ViewModels.PerfumeDetailsViewModel
+
 
 @{
     ViewBag.Title = "Details";
@@ -187,8 +188,6 @@
     .cantidad-control {
         margin-bottom: 20px;
     }
-
-
 </style>
 
 
@@ -200,37 +199,37 @@
 
 
 <div class="container my-5">
-    <div class="row gap-4">
-        <div class="col-sm-12 col-md-6 row">
+    <div class="row gap-0">
+        <div class="col-sm-12 col-md-7 row">
             <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
-            <div class="col-md-2 d-none d-md-block">
+            <div class="col-md-4 col-lg-3 col-xl-3 d-none d-md-block">
                 <div class="swiper gallery-thumbs-vertical">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- IMAGEN PRINCIPAL -->
-            <div class="col-md-10 col-12">
+            <div class="col-md-8 col-lg-9 col-xl-9 col-12">
                 <div class="swiper gallery-top">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide text-center">
                             <div class="swiper-zoom-container">
-                                <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                             </div>
                         </div>
                         <div class="swiper-slide text-center">
                             <div class="swiper-zoom-container">
-                                <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                             </div>
                         </div>
                     </div>
@@ -242,10 +241,10 @@
                 <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                     </div>
                 </div>
@@ -253,12 +252,12 @@
         </div>
 
         <!-- Detalles del perfume -->
-        <section class="col-sm-12 col-md-6 px-3">
-            <h1 class="fs-2 mb-1">@Model.marca.nombre</h1>
-            <h2 class="fs-3 mb-1">@Model.nombre</h2>
-            <p class="card-text fw-bold mt-auto">$@Model.precio_en_pesos</p>
+        <section class="card pb-5 col-sm-12 col-md-5 ps-3 px-3" data-id="@Model.Perfume.id">
+            <h1 class="fs-2 mb-1">@Model.Perfume.marca.nombre</h1>
+            <h2 class="fs-3 mb-1">@Model.Perfume.nombre</h2>
+            <p class="card-text fw-bold mt-auto">$@Model.Perfume.precio_en_pesos</p>
             <hr />
-            <p class="card-text mb-1">Tamaño: @Model.presentacion_ml ml</p>
+            <p class="card-text mb-1">Tamaño: @Model.Perfume.presentacion_ml ml</p>
             <p>Tamaño</p>
             <div class="">
                 <a href="">50ML</a>
@@ -267,14 +266,15 @@
             </div>
             <div>
                 <p>Promos</p>
+                <p>@Model.Perfume.promocion</p>
             </div>
             <p>Cantidad</p>
             <div class="d-flex cantidad-control gap-2">
                 <button>-</button>
-                <button>1</button>
+                <p>1</p>
                 <button>+</button>
             </div>
-            <button class="btn-eterea agregar-al-carrito" data-id="@Model.id">
+            <button class="btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
                 <i class="fas fa-cart-plus"></i> Agregar al carrito
             </button>
 
@@ -290,22 +290,19 @@
             <a href="javascript:void(0)" onclick="openCity(event, 'especificaciones');">
                 <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
             </a>
-            <a href="javascript:void(0)" onclick="openCity(event, 'opiniones');">
-                <div class="w3-quarter w3-center tablink w3-padding">OPINIONES</div>
-            </a>
         </div>
 
         <div id="detalle" class="w3-container box mt-5" style="display:block">
-            <p>@Model.descripcion</p>
+            <p>@Model.Perfume.descripcion</p>
         </div>
 
         <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
             <div class="d-flex w-50">
                 <p class="fs-6">Familia Olfativa:</p>
-                @if (Model.tipo_de_aroma != null && Model.tipo_de_aroma.Any())
+                @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
                 {
                     <ul class="fs-6 ms-5">
-                        @foreach (var aroma in Model.tipo_de_aroma)
+                        @foreach (var aroma in Model.Perfume.tipo_de_aroma)
                         {
                             <li class="">@aroma.nombre</li>
                         }
@@ -318,119 +315,58 @@
             </div>
             <div class="d-flex">
                 <p class="fs-6">Tipo:</p>
-                <p class="fs-6 ms-5">@Model.tipo_de_perfume.tipo_de_perfume1</p>
+                <p class="fs-6 ms-5">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
             </div>
-        </div>
-
-        <div id="opiniones" class="w3-container box" style="display:none">
-            <h2>Opiniones</h2>
         </div>
     </div>
 
-    <div class="container my-5">
+    <div class="my-5">
+        <h3 class="mb-4">Perfumes relacionados</h3>
+
         <div class="swiper my-product-slider">
             <div class="swiper-wrapper">
+                @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
+                {
+                    foreach (var p in Model.PerfumesRelacionados)
+                    {
+                        <div class="swiper-slide">
+                            <div class="card h-100 text-center p-3">
+                                <span class="badge bg-dark">LANZAMIENTO</span>
+                                <img src="@Url.Content("~/Imagenes/" + p.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
+                                <div class="card-body">
+                                    <h6 class="text-uppercase">@p.nombre</h6>
+                                    <p class="small">Notas en común: @p.NotasComunes</p>
+                                    <p class="small">Aromas en común: @p.AromasComunes</p>
+                                    <p class="fw-bold">$@String.Format("{0:N0}", p.precio_en_pesos)</p>
+                                    <p class="text-success small">Stock: @p.TotalStock</p>
 
-                <!-- Ejemplo de tarjeta -->
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                                    <a href="@Url.Action("Details", "Perfume", new { id = p.id })" class="btn btn-dark btn-sm">
+                                        VER DETALLE
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Copiá más tarjetas aquí o con  -->
+                    }
+                }
+                else
+                {
+                    <p>No perfumes similares.</p>
+                }
             </div>
 
             <!-- Flechas y paginación -->
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
             <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+
+    <div id="carrito-offcanvas" class="offcanvas-carrito">
+        <div class="offcanvas-contenido">
+            <h4>🛒 Se agregó a tu carrito</h4>
+            <div id="info-perfume-agregado"></div>
+            <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
         </div>
     </div>
 
@@ -537,13 +473,14 @@
          document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
         btn.addEventListener('click', function () {
             const perfumeId = btn.getAttribute('data-id');
-
+            const cantidad = '2';
             fetch('@Url.Action("Agregar", "Carrito")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `perfumeId=${perfumeId}`
+                body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${cantidad != null ? encodeURIComponent(cantidad) : '0'}`
+
             })
             .then(res => res.json())
             .then(data => {
@@ -580,12 +517,54 @@
         });
     });
     </script>
+    <script>
+  document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
+      btn.parentElement.addEventListener('click', function () {
+          const card = btn.closest('.card');
+          const perfumeId = card.getAttribute('data-id');
+
+          fetch('@Url.Action("Agregar", "Carrito")', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${encodeURIComponent(cantidad)}`
+          })
+          .then(res => res.json())
+          .then(data => {
+              // ✅ Redirigir al login si el backend lo indica
+              if (data.redirect) {
+                  window.location.href = data.redirect;
+                  return;
+              }
+
+              const contenedor = document.getElementById("info-perfume-agregado");
+              contenedor.innerHTML = `
+                  <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                  <p><strong>${data.nombre}</strong></p>
+                  <p>${data.tipo} - ${data.presentacion} ml</p>
+                  <p>Género: ${data.genero}</p>
+                  <p>Precio: ${
+                      data.precioDescuento
+                           ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                           : `<strong>$${data.precioOriginal}</strong>`
+                  }</p>
+                  ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+              `;
+
+              document.getElementById("carrito-offcanvas").classList.add("show");
+
+              setTimeout(() => {
+                  document.getElementById("carrito-offcanvas").classList.remove("show");
+              }, 6000); // cerrar después de 6 seg
+          })
+          .catch(err => {
+              console.error('Error en la solicitud:', err);
+              alert("Hubo un error al intentar agregar el perfume al carrito.");
+          });
+      });
+  });
+    </script>
 }
 
-<div id="carrito-offcanvas" class="offcanvas-carrito">
-    <div class="offcanvas-contenido">
-        <h4>🛒 Se agregó a tu carrito</h4>
-        <div id="info-perfume-agregado"></div>
-        <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
-    </div>
-</div>
+
