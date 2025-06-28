@@ -11,7 +11,7 @@ namespace Eterea_Parfums_Web.ViewModels
     {
         public int id { get; set; }
         public string codigo { get; set; }
-        public int marca_id { get; set; }
+        public string marca { get; set; }
         public string nombre { get; set; }
         public int tipo_de_perfume_id { get; set; }
         public int genero_id { get; set; }
@@ -35,6 +35,7 @@ namespace Eterea_Parfums_Web.ViewModels
     public class PerfumeDetailsViewModel
     {
         public perfume Perfume { get; set; }
+        public int StockDisponibleParaWeb { get; set; }
         public List<PerfumeRelacionadoDto> PerfumesRelacionados { get; set; }
     }
 }
