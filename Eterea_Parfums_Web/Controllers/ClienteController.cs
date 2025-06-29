@@ -194,27 +194,27 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
        public ActionResult Perfil()
-{
-    if (Session["clienteId"] == null)
-    {
-        return RedirectToAction("Login", "Cliente");
-    }
-
-    int clienteId = (int)Session["clienteId"];
-
-    using (var db = new etereaEntities1())
-    {
-        var cliente = db.cliente.Find(clienteId);
-
-        if (cliente == null)
         {
-            return RedirectToAction("Login", "Cliente");
-        }
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
 
-        CargarPaises();
-        return View(cliente);
-    }
-}
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities1())
+            {
+                var cliente = db.cliente.Find(clienteId);
+
+                if (cliente == null)
+                {
+                    return RedirectToAction("Login", "Cliente");
+                }
+
+                CargarPaises();
+                return View(cliente);
+            }
+        }
 
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)
@@ -313,6 +313,34 @@ namespace Eterea_Parfums_Web.Controllers
 
                 // Redireccionar a otra vista
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public ActionResult VerPerfil()
+        {
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
+
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities1())
+            {
+                var cliente = db.cliente.Find(clienteId);
+                ViewBag.NombrePais = db.pais.Find(cliente.pais_id)?.nombre ?? "";
+                ViewBag.NombreProvincia = db.provincia.Find(cliente.provincia_id)?.nombre ?? "";
+                ViewBag.NombreLocalidad = db.localidad.Find(cliente.localidad_id)?.nombre ?? "";
+                ViewBag.NombreCalle = db.calle.Find(cliente.calle_id)?.nombre ?? "";
+
+
+                if (cliente == null)
+                {
+                    return RedirectToAction("Login", "Cliente");
+                }
+
+                CargarPaises();
+                return View(cliente);
             }
         }
         public ActionResult Logout()
