@@ -1,49 +1,40 @@
-﻿@{
+﻿@model Eterea_Parfums_Web.ViewModels.HistorialViewModel
+@{
     ViewBag.Title = "Historial de compras";
 }
 
 
-@if (Model != null && Model.Count > 0)
+@if (Model != null && Model.Facturas != null && Model.Facturas.Count > 0)
 {
     <div class="personal-data-container">
         <h3>Datos personales</h3>
-        <p><strong>Nombre:</strong> @ViewBag.UsuarioLogueado.nombre</p>
-        <p><strong>Apellido:</strong> @ViewBag.UsuarioLogueado.apellido</p>
-        <p><strong>DNI:</strong> @ViewBag.UsuarioLogueado.dni</p>
-        <p><strong>Email:</strong> @ViewBag.UsuarioLogueado.e_mail</p>
+        <p><strong>Nombre:</strong> @Model.Nombre</p>
+        <p><strong>Apellido:</strong> @Model.Apellido</p>
+        <p><strong>DNI:</strong> @Model.Dni</p>
+        <p><strong>Email:</strong> @Model.Email</p>
     </div>
 
     <h2>@ViewBag.Title</h2>
-
     <hr class="separator">
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Número de Factura</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Detalles</th> <!-- Nueva columna para mostrar detalles -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var factura in Model)
-            {
-                <tr>
-                    <td>@factura.num_factura</td>
-                    <td>@factura.fecha.ToString("dd/MM/yy")</td>
-                    <td>$ @factura.precio_total</td>
-                    <td>
-                        @using (Html.BeginForm("DetalleFactura", "Historial"))
-                        {
-                            <input type="hidden" name="numFactura" value="@factura.num_factura" />
-                            <button type="submit" class="btn btn-primary">Ver Detalles</button>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row">
+        @foreach (var factura in Model.Facturas)
+        {
+            <div class="col-md-4">
+                <div class="card p-3 mb-4 shadow-sm border rounded">
+                    <h5 class="card-title">Factura N°@factura.num_factura</h5>
+                    <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
+
+                    @using (Html.BeginForm("DetalleFactura", "Historial"))
+                    {
+                        <input type="hidden" name="numFactura" value="@factura.num_factura" />
+                        <button type="submit" class="btn btn-primary">Ver Detalles</button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
     <hr class="separator">
 }
 else
