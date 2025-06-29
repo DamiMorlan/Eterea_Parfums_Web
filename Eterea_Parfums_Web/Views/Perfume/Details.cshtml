@@ -17,6 +17,8 @@
         color: #a0435c;
     }
 
+
+
     .detalle-container {
         background-color: #fff;
         border: 1px solid #e0bfc7;
@@ -233,6 +235,12 @@
     .cantidad-control {
         margin-bottom: 20px;
     }
+
+    select {
+        margin-top: 8px;
+        padding: 5px;
+        border-radius: 5px;
+    }
 </style>
 
 
@@ -335,7 +343,8 @@
             </div>
             <div class="mt-4">
                 @{
-                    var promosActivas = Model.Perfume.promocion?.Where(p => p.id != 1 && p.activo).ToList();
+                    var promosActivas = Model.Perfume.promocion?.Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now &&
+                    p.fecha_fin >= DateTime.Now).ToList();
                 }
 
                 @if (promosActivas != null && promosActivas.Any())
@@ -360,15 +369,38 @@
                 <p class="text-danger fw-bold">¡Último disponible!</p>
             }
 
-            <p>Cantidad</p>
-            <div class="d-flex cantidad-control gap-2">
-                <button>-</button>
-                <p>1</p>
-                <button>+</button>
-            </div>
-            <button class="btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
-                <i class="fas fa-cart-plus"></i> Agregar al carrito
-            </button>
+            @if (@Model.StockDisponibleParaWeb != 0)
+            {
+                <div class="my-3">
+                    <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
+                    <select id="cantidad-@Model.Perfume.id">
+                        @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
+                        {
+                            <option value="@i">@i</option>
+
+                        }
+                    </select>
+                </div>
+
+            }
+            else
+            {
+                <p class="text-danger fw-bold">Sin stock</p>
+            }
+
+            @if (@Model.StockDisponibleParaWeb == 0)
+            {
+                <button class="btn-eterea agregar-al-carrito" disabled data-id="@Model.Perfume.id">
+                    <i class="fas fa-cart-plus"></i> Agregar al carrito
+                </button>
+            }
+            else
+            {
+                <button class="btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
+                    <i class="fas fa-cart-plus"></i> Agregar al carrito
+                </button>
+            }
+
 
         </section>
     </div>
@@ -574,15 +606,18 @@
         });
 
          document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const perfumeId = btn.getAttribute('data-id');
-            const cantidad = '2';
+             btn.addEventListener('click', function () {
+
+                 const perfumeId = btn.getAttribute('data-id');
+                 const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
+                 const cantidad = selectCantidad ? selectCantidad.value : '1';
+    
             fetch('@Url.Action("Agregar", "Carrito")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${cantidad != null ? encodeURIComponent(cantidad) : '0'}`
+                body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${encodeURIComponent(cantidad)}`
 
             })
             .then(res => res.json())
