@@ -14,12 +14,20 @@ namespace Eterea_Parfums_Web.Controllers
         // GET: Historial
         public ActionResult Index()
         {
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
             return View();
         }
 
         // GET: Historial/DetalleFactura
         public ActionResult DetalleFactura()
         {
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
             return View();
         }
 

@@ -219,9 +219,10 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)
         {
-            if (clienteEditado.dni.ToString().Length != 8)
+            string dniStr = clienteEditado.dni.ToString();
+            if (dniStr.Length != 8 && dniStr.Length != 11)
             {
-                ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
+                ModelState.AddModelError("dni", "El DNI/CUIT debe tener 8 o 11 digitos.");
                 CargarPaises();
                 return View(clienteEditado);
             }
@@ -240,7 +241,8 @@ namespace Eterea_Parfums_Web.Controllers
 
             using (var db = new etereaEntities1())
             {
-                var usuarioLogueado = Session["usuarioLogueado"] as cliente;
+                int clienteId = (int)Session["clienteId"];
+                var usuarioLogueado = db.cliente.Find(clienteId);
                 bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.id != usuarioLogueado.id);
                 if (usuarioExiste)
                 {
@@ -249,7 +251,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni == usuarioLogueado.dni);
+                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni != usuarioLogueado.dni);
                 if (dniExiste)
                 {
                     ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
@@ -257,7 +259,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail == usuarioLogueado.e_mail);
+                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail != usuarioLogueado.e_mail);
                 if (emailExiste)
                 {
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
