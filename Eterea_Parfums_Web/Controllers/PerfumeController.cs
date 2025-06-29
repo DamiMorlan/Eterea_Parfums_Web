@@ -56,6 +56,15 @@ namespace Eterea_Parfums_Web.Controllers
                 : 0;
 
 
+            //Obtener los perfumes iguales al perfume con distinta presentacion en ml
+
+            var perfumesIgualesConDistintaPresentacion = db.perfume
+                .Where(p => p.nombre == perfume.nombre
+                      && p.marca.nombre == perfume.marca.nombre)
+                .OrderBy(p => p.presentacion_ml)
+                .ToList();
+
+
             // Obtener notas y aromas directamente del perfume cargado
             var notasComparar = perfume.nota_con_tipo_de_nota.Select(n => n.nota_id).ToList();
             var aromasComparar = perfume.tipo_de_aroma.Select(a => a.id).ToList();
@@ -113,7 +122,8 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 Perfume = perfume,
                 StockDisponibleParaWeb = stockPerfumeActual,
-                PerfumesRelacionados = perfumesRelacionados
+                PerfumesRelacionados = perfumesRelacionados,
+                perfumesIgualesEnPresentacioMl = perfumesIgualesConDistintaPresentacion
             };
 
             return View(viewModel);

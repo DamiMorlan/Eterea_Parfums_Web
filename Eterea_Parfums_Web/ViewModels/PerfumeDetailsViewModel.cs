@@ -37,5 +37,6 @@ namespace Eterea_Parfums_Web.ViewModels
         public perfume Perfume { get; set; }
         public int StockDisponibleParaWeb { get; set; }
         public List<PerfumeRelacionadoDto> PerfumesRelacionados { get; set; }
+        public List<perfume> perfumesIgualesEnPresentacioMl { get; set; }
     }
 }
