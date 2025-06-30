@@ -27,6 +27,16 @@ namespace Eterea_Parfums_Web.Controllers
                     g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
                 );
 
+            var promociones = db.promocion
+                .Where(p => p.activo)
+                .Select(p => new PromocionViewModel
+                {
+                    id = p.id,
+                    nombre = p.nombre,  // opcional
+                    banner = p.banner // asegurate de que el campo se llame así                  
+                })
+                .ToList();
+
             // Proyectar a ViewModel solo perfumes con stock > 0
             var perfumesDisponibles = perfumes
                 .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
@@ -42,7 +52,13 @@ namespace Eterea_Parfums_Web.Controllers
                 })
                 .ToList();
 
-            return View(perfumesDisponibles);
+            var viewModel = new HomeViewModel
+            {
+                Perfumes = perfumesDisponibles,
+                Promociones = promociones
+            };
+
+            return View(viewModel);
         }
 
 

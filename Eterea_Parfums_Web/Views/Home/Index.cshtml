@@ -1,4 +1,4 @@
-﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeHomeViewModel>
+﻿@model Eterea_Parfums_Web.ViewModels.HomeViewModel
 
 @{
     ViewBag.Title = "Home Page";
@@ -10,24 +10,28 @@
 
 <div class="container">
 
-    <!-- Carousel -->
     <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            @for (int i = 0; i < Model.Promociones.Count; i++)
+            {
+                <button type="button"
+                        data-bs-target="#myCarousel"
+                        data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")"
+                        aria-current="@(i == 0 ? "true" : "false")"
+                        aria-label="Slide @(i + 1)">
+                </button>
+            }
         </div>
 
         <div class="carousel-inner rounded-4 overflow-hidden shadow">
-            <div class="carousel-item active">
-                <img src="~/Content/Images/descarga2.png" class="d-block w-100" alt="Imagen 1">
-            </div>
-            <div class="carousel-item">
-                <img src="~/Content/Images/descarga1.png" class="d-block w-100" alt="Imagen 2">
-            </div>
-            <div class="carousel-item">
-                <img src="~/Content/Images/descarga3.png" class="d-block w-100" alt="Imagen 3">
-            </div>
+            @for (int i = 0; i < Model.Promociones.Count; i++)
+            {
+                var promo = Model.Promociones[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@Url.Content("~/Imagenes/" + promo.banner + ".jpg" )" class="d-block w-100" alt="@promo.nombre" />
+                </div>
+            }
         </div>
 
         <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
@@ -38,9 +42,11 @@
         </button>
     </div>
 
+    <h2 class="text-center mb-4 mt-5">Perfumes en Promoción</h2>
+
     <!-- Perfumes -->
     <div class="row">
-        @foreach (var perfume in Model)
+        @foreach (var perfume in Model.Perfumes)
         {
             <div class="col-md-3 mb-4 d-flex">
                 <div class="card w-100" data-id="@perfume.Id">
@@ -49,8 +55,8 @@
                         <h5 class="card-title">@perfume.Nombre</h5>
                         <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
                         <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
-                       
-                       
+
+
                         <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
 
                         @if (perfume.StockDisponibleParaWeb == 1)
