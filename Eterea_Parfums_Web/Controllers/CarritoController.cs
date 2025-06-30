@@ -99,50 +99,71 @@ namespace Eterea_Parfums_Web.Controllers
                     ? stockPorPerfume[perfume.id]
                     : 0;
 
-                var promo = perfume.promocion
-                    .Where(pr => pr.id != 1 &&
-                                 pr.activo &&
-                                 pr.fecha_inicio <= DateTime.Now &&
-                                 pr.fecha_fin >= DateTime.Now)
-                    .FirstOrDefault();
+                var promociones = perfume.promocion
+                  .Where(pr => pr.id != 1 &&
+                               pr.activo &&
+                               pr.fecha_inicio <= DateTime.Now &&
+                               pr.fecha_fin >= DateTime.Now)
+                  .ToList();
+
+                var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
+                var promoPorCantidad = promociones.FirstOrDefault(pr => pr.descuento > 10);
+
 
                 double precioOriginal = perfume.precio_en_pesos;
                 double precioConDescuento = precioOriginal;
                 double total = 0;
                 string leyendaPromo = "";
                 bool tienePromo = false;
+
                 int cantidad = p.cantidad;
 
-                if (promo != null)
+                if (promoPorCantidad != null && cantidad >= 2)
                 {
                     tienePromo = true;
 
-                    if (promo.descuento == 10)
+                    int cantidadConDescuento = (cantidad / 2) * 2;
+                    int cantidadSinDescuento = cantidad % 2;
+
+                    double porcentaje = (100 - promoPorCantidad.descuento) / 100.0;
+
+                    // Si hay impar (cantidadSinDescuento == 1), puede aplicar el 10% si la promo está
+                    if (cantidadSinDescuento == 1 && promo10 != null)
                     {
-                        precioConDescuento = precioOriginal * 0.9;
-                        total = precioConDescuento * cantidad;
-                        leyendaPromo = "Promoción 10% OFF";
+                        total = (cantidadConDescuento * precioOriginal * porcentaje) +
+                                (1 * precioOriginal * 0.9);
+
+                        precioConDescuento = precioOriginal * 0.9; // Para mostrar solo en 1 unidad
+                        leyendaPromo = $"Un perfume aplica solo el 10% de descuento. Los demás tienen la segunda unidad al {(promoPorCantidad.descuento * 2)}%.";
                     }
                     else
                     {
-                        int cantidadConDescuento = (cantidad / 2) * 2;
-                        int cantidadSinDescuento = cantidad % 2;
-
-                        double porcentaje = (100 - promo.descuento) / 100.0;
                         total = (cantidadConDescuento * precioOriginal * porcentaje) +
                                 (cantidadSinDescuento * precioOriginal);
 
-                        int descuentoSegundaUnidad = promo.descuento * 2;
-
-                        leyendaPromo = (descuentoSegundaUnidad == 100)
+                        leyendaPromo = (promoPorCantidad.descuento * 2 == 100)
                             ? "Promoción 2 x 1"
-                            : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
+                            : $"Promoción segunda unidad al {promoPorCantidad.descuento * 2}%";
+                    }
+                }
+                else if (promo10 != null)
+                {
+                    tienePromo = true;
+                    precioConDescuento = precioOriginal * 0.9;
+                    total = precioConDescuento * cantidad;
+                    leyendaPromo = "Promoción 10% OFF";
+
+                    if (promoPorCantidad != null)
+                    {
+                        leyendaPromo += $". Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento * 2}% de descuento.";
                     }
                 }
                 else
                 {
                     total = precioOriginal * cantidad;
                 }
+
+
 
                 return new ItemCarritoViewModel
                 {
@@ -234,6 +255,32 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
+            // Variables auxiliares
+            double precioOriginal = item.perfume.precio_en_pesos;
+            double precioUnitarioConDescuento = totalPerfume / item.cantidad;
+            bool mostrarPrecioTachado = false;
+
+            // Aplicar misma lógica que en ViewModel
+            var promociones = item.perfume.promocion
+                .Where(pr => pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now)
+                .ToList();
+
+            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
+            var promoCantidad = promociones.FirstOrDefault(pr => pr.descuento > 10);
+
+            if (promo10 != null && promoCantidad == null && item.cantidad == 1)
+            {
+                // Solo 10% aplica
+                mostrarPrecioTachado = true;
+            }
+            else if (promo10 != null && promoCantidad != null && item.cantidad == 1)
+            {
+                mostrarPrecioTachado = true; // Solo 10% aplica porque no alcanza para promo por cantidad
+            }
+
+            // Si hay más de 1 unidad, NUNCA se tacha
+            // => mostrarPrecioTachado = false;
+
             return Json(new
             {
                 success = true,
@@ -242,7 +289,11 @@ namespace Eterea_Parfums_Web.Controllers
                 descuento = (subtotal - total).ToString("N0"),
                 envioGratis = total >= 50000,
                 perfumeTotal = totalPerfume.ToString("N0"),
-                perfumeId = perfumeId
+                perfumeId = perfumeId,
+                precioOriginal = precioOriginal.ToString("N0"),
+                precioConDescuento = (mostrarPrecioTachado ? precioUnitarioConDescuento.ToString("N0") : null),
+                mostrarPrecioTachado = mostrarPrecioTachado,
+                leyendaPromo = ObtenerLeyendaPromoSegunCantidad(item, perfumeId)
             });
         }
 
@@ -424,6 +475,53 @@ namespace Eterea_Parfums_Web.Controllers
             }
             base.Dispose(disposing);
         }
+
+        private string ObtenerLeyendaPromoSegunCantidad(carrito item, int perfumeId)
+        {
+            var perfume = item.perfume;
+            int cantidad = item.cantidad;
+
+            var promociones = perfume.promocion
+                .Where(pr => pr.id != 1 &&
+                             pr.activo &&
+                             pr.fecha_inicio <= DateTime.Now &&
+                             pr.fecha_fin >= DateTime.Now)
+                .ToList();
+
+            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
+            var promoPorCantidad = promociones.FirstOrDefault(pr => pr.descuento > 10);
+
+            if (promoPorCantidad != null && cantidad >= 2)
+            {
+                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+
+                if (cantidad % 2 == 1 && promo10 != null)
+                {
+                    return $"Un perfume aplica solo el 10% de descuento. Los demás tienen la segunda unidad al {descuentoSegundaUnidad}%.";
+                }
+                else
+                {
+                    return (descuentoSegundaUnidad == 100)
+                        ? "Promoción 2 x 1"
+                        : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
+                }
+            }
+            else if (promo10 != null)
+            {
+                string leyenda = "Promoción 10% OFF";
+
+                if (promoPorCantidad != null)
+                {
+                    int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+                    leyenda += $". Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento.";
+                }
+
+                return leyenda;
+            }
+
+            return ""; // Sin promociones activas
+        }
+
 
     }
 }

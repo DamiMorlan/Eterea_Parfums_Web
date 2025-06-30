@@ -40,15 +40,23 @@
                             <p style="color: red; font-weight: bold;">¡Último disponible!</p>
                         }
 
-
                         @if (item.TienePromo && item.PrecioOriginal != item.PrecioConDescuento)
                         {
                             <p class="precio-original" style="text-decoration: line-through; color: gray;">
                                 $@item.PrecioOriginal.ToString("N0")
                             </p>
                             <p class="precio-descuento">$@item.PrecioConDescuento.ToString("N0")</p>
+                        }
+                        else
+                        {
+                            <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
+                        {
                             <p class="leyenda-promo">@item.LeyendaPromo</p>
                         }
+
                         else if (item.TienePromo && item.PrecioOriginal == item.PrecioConDescuento)
                         {
                             <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
@@ -133,72 +141,106 @@
 @section Scripts {
     <script>
         function actualizarCantidad(select) {
-            const perfumeId = select.dataset.id;
-            const cantidad = select.value;
+    const perfumeId = select.dataset.id;
+    const cantidad = select.value;
 
-            const resumen = document.querySelector('.resumen-carrito');
-            resumen.style.opacity = "0.5";
+    const resumen = document.querySelector('.resumen-carrito');
+    resumen.style.opacity = "0.5";
 
-            fetch('@Url.Action("ActualizarCantidad", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${perfumeId}&cantidad=${cantidad}`
-            })
-            .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        if (cantidad === "0") {
-                            const fila = document.getElementById(`perfume-${perfumeId}`);
-                            if (fila) {
-                                fila.classList.add("fade-out");
-                                setTimeout(() => {
-                                    fila.remove();
+    fetch('@Url.Action("ActualizarCantidad", "Carrito")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `perfumeId=${perfumeId}&cantidad=${cantidad}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (cantidad === "0") {
+                const fila = document.getElementById(`perfume-${perfumeId}`);
+                if (fila) {
+                    fila.classList.add("fade-out");
+                    setTimeout(() => {
+                        fila.remove();
 
-                                    if (document.querySelectorAll('.fila-producto').length === 0) {
-                                        document.querySelector('.carrito-container').innerHTML = `
-                                            <div style="text-align: center; padding: 50px;">
-                                                <div style="font-size: 100px;">🛒</div>
-                                                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                                            </div>`;
-                                    }
-                                }, 500); // Esperamos a que termine la transición
-                            }
-                            return;
+                        if (document.querySelectorAll('.fila-producto').length === 0) {
+                            document.querySelector('.carrito-container').innerHTML = `
+                                <div style="text-align: center; padding: 50px;">
+                                    <div style="font-size: 100px;">🛒</div>
+                                    <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                                </div>`;
                         }
-                        // ✅ Actualizar resumen general
-                        resumen.innerHTML = `
-                            <div>Subtotal (sin descuento): $${data.subtotal}</div>
-                            <div>Descuentos aplicados: -$${data.descuento}</div>
-                            <div class="total-final">Total a pagar: $${data.total}</div>
-                            ${data.envioGratis
-                                ? `<div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>`
-                                : `<p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
-                       Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                   </p>`}
-                            <button class="btn-finalizar">Finalizar pedido</button>
-                        `;
+                    }, 500);
+                }
+                return;
+            }
 
-                        // ✅ Actualizar total del perfume individual
-                        const totalElemento = document.getElementById(`total-perfume-${data.perfumeId}`);
-                        if (totalElemento) {
-                            totalElemento.innerText = `Total: $${data.perfumeTotal}`;
-                            totalElemento.style.transition = "background-color 0.3s";
-                            totalElemento.style.backgroundColor = "#ffffcc";
-                            setTimeout(() => {
-                                totalElemento.style.backgroundColor = "transparent";
-                            }, 500);
-                        }
+            // ✅ Actualizar resumen general
+            resumen.innerHTML = `
+                <div>Subtotal (sin descuento): $${data.subtotal}</div>
+                <div>Descuentos aplicados: -$${data.descuento}</div>
+                <div class="total-final">Total a pagar: $${data.total}</div>
+                ${data.envioGratis
+                    ? `<div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>`
+                    : `<p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                        Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+                    </p>`}
+                <button class="btn-finalizar">Finalizar pedido</button>
+            `;
+
+            // ✅ Actualizar total del perfume individual
+            const totalElemento = document.getElementById(`total-perfume-${data.perfumeId}`);
+            if (totalElemento) {
+                totalElemento.innerText = `Total: $${data.perfumeTotal}`;
+                totalElemento.style.transition = "background-color 0.3s";
+                totalElemento.style.backgroundColor = "#ffffcc";
+                setTimeout(() => {
+                    totalElemento.style.backgroundColor = "transparent";
+                }, 500);
+            }
+
+            // ✅ Actualizar leyenda y precios
+            const productoDiv = document.getElementById(`perfume-${data.perfumeId}`);
+            if (productoDiv) {
+                const precioOriginalEl = productoDiv.querySelector(".precio-original");
+                const precioDescuentoEl = productoDiv.querySelector(".precio-descuento");
+                const leyendaEl = productoDiv.querySelector(".leyenda-promo");
+
+                if (data.mostrarPrecioTachado === true) {
+                    // Mostrar precio original tachado y precio con descuento
+                    if (precioOriginalEl) {
+                        precioOriginalEl.textContent = `$${data.precioOriginal}`;
+                        precioOriginalEl.style.display = "block";
                     }
+                    if (precioDescuentoEl) {
+                        precioDescuentoEl.textContent = `$${data.precioConDescuento}`;
+                    }
+                } else {
+                    // Ocultar precio tachado, mostrar solo el precio original
+                    if (precioOriginalEl) {
+                        precioOriginalEl.style.display = "none";
+                    }
+                    if (precioDescuentoEl) {
+                        precioDescuentoEl.textContent = `$${data.precioOriginal}`;
+                    }
+                }
 
-                    resumen.style.opacity = "1";
-                })
-            .catch(() => {
-                resumen.style.opacity = "1";
-                alert("Error al actualizar el carrito");
-            });
+
+                if (leyendaEl) {
+                    leyendaEl.textContent = data.leyendaPromo || "";
+                }
+            }
         }
+
+        resumen.style.opacity = "1";
+    })
+    .catch(() => {
+        resumen.style.opacity = "1";
+        alert("Error al actualizar el carrito");
+    });
+}
+
     </script>
 }
 
