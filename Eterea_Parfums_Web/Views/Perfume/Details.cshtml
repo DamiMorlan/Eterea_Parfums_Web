@@ -223,10 +223,10 @@
     <div class="mt-md-5">
 
         <div class="w3-row">
-            <a href="javascript:void(0)" onclick="openCity(event, 'detalle');">
+            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
                 <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
             </a>
-            <a href="javascript:void(0)" onclick="openCity(event, 'especificaciones');">
+            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
                 <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
             </a>
         </div>
@@ -321,115 +321,23 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-
+    <script src="~/Scripts/custom/Perfume.details.js"></script>
     <script>
-        let thumbsSwiper;
-        let mainGallery;
+        document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
+    btn.addEventListener('click', function () {
 
-        function initSwipers() {
-            if (thumbsSwiper) thumbsSwiper.destroy(true, true);
-            if (mainGallery) mainGallery.destroy(true, true);
+        const perfumeId = btn.getAttribute('data-id');
+        const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
+        const cantidad = selectCantidad ? selectCantidad.value : '1';
 
-            const isDesktop = window.innerWidth >= 768;
+        fetch('@Url.Action("Agregar", "Carrito")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${encodeURIComponent(cantidad)}`
 
-            if (isDesktop) {
-                thumbsSwiper = new Swiper('.gallery-thumbs-vertical', {
-                    direction: 'vertical',
-                    spaceBetween: 10,
-                    slidesPerView: 2,
-                    watchSlidesProgress: true,
-                });
-            } else {
-                thumbsSwiper = new Swiper('.gallery-thumbs-horizontal', {
-                    direction: 'horizontal',
-                    spaceBetween: 10,
-                    slidesPerView: 'auto',
-                    watchSlidesProgress: true,
-                    freeMode: true
-                });
-            }
-
-            mainGallery = new Swiper('.gallery-top', {
-                spaceBetween: 10,
-                zoom: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                thumbs: {
-                    swiper: thumbsSwiper
-                }
-            });
-        }
-
-        $(window).on('load', function () {
-            initSwipers();
-        });
-
-        // Opcional: reinicializar si redimensionás la ventana
-        let resizeTimer;
-        $(window).on('resize', function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
-                initSwipers();
-            }, 300);
-        });
-    </script>
-    <script>
-        function openCity(evt, cityName) {
-            var i, x, tablinks;
-            x = document.getElementsByClassName("box");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < x.length; i++) {
-
-                tablinks[i].className = tablinks[i].className.replace(" w3-border-pale-amber", "");
-                tablinks[i].className = tablinks[i].className.replace(" w3-bottombar", "");
-            }
-            document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.firstElementChild.className += " w3-border-pale-amber w3-bottombar";
-        }
-    </script>
-    <script>
-        $(document).ready(function () {
-            new Swiper('.my-product-slider', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev'
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                breakpoints: {
-                    576: { slidesPerView: 2 },
-                    768: { slidesPerView: 3 },
-                    992: { slidesPerView: 4 },
-                    1200: { slidesPerView: 5 }
-                }
-            });
-        });
-
-         document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
-             btn.addEventListener('click', function () {
-
-                 const perfumeId = btn.getAttribute('data-id');
-                 const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
-                 const cantidad = selectCantidad ? selectCantidad.value : '1';
-
-            fetch('@Url.Action("Agregar", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${encodeURIComponent(cantidad)}`
-
-            })
+        })
             .then(res => res.json())
             .then(data => {
                 if (data.redirect) {
@@ -443,10 +351,9 @@
                     <p><strong>${data.nombre}</strong></p>
                     <p>${data.tipo} - ${data.presentacion} ml</p>
                     <p>Género: ${data.genero}</p>
-                    <p>Precio: ${
-                        data.precioDescuento
-                            ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                            : `<strong>$${data.precioOriginal}</strong>`
+                    <p>Precio: ${data.precioDescuento
+                        ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                        : `<strong>$${data.precioOriginal}</strong>`
                     }</p>
                     ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                 `;
@@ -462,8 +369,8 @@
                 console.error('Error en la solicitud:', err);
                 alert("Hubo un error al intentar agregar el perfume al carrito.");
             });
-        });
     });
+});
     </script>
 }
 
