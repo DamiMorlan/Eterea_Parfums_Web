@@ -229,3 +229,10 @@ select {
     justify-content: center;
     margin-top: 25px;
 }
+
+.leyenda-promo {
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 5px;
+    line-height: 1.3;
+}

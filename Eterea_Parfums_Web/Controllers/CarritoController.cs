@@ -133,8 +133,13 @@ namespace Eterea_Parfums_Web.Controllers
                         total = (cantidadConDescuento * precioOriginal * porcentaje) +
                                 (1 * precioOriginal * 0.9);
 
-                        precioConDescuento = precioOriginal * 0.9; // Para mostrar solo en 1 unidad
-                        leyendaPromo = $"Un perfume aplica solo el 10% de descuento. Los demás tienen la segunda unidad al {(promoPorCantidad.descuento * 2)}%.";
+                        precioConDescuento = precioOriginal * 0.9;
+
+                        int cantidadPromoCantidad = cantidad - 1; // la cantidad par
+                        int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+
+                        leyendaPromo = $"<span style='color: black;'>1 unidad:</span> Promoción 10% OFF<br />" +
+                                       $"<span style='color: black;'>{cantidadPromoCantidad} unidades:</span> Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
                     }
                     else
                     {
@@ -143,7 +148,7 @@ namespace Eterea_Parfums_Web.Controllers
 
                         leyendaPromo = (promoPorCantidad.descuento * 2 == 100)
                             ? "Promoción 2 x 1"
-                            : $"Promoción segunda unidad al {promoPorCantidad.descuento * 2}%";
+                            : $"Promoción {promoPorCantidad.descuento * 2}% de descuento en la segunda unidad";
                     }
                 }
                 else if (promo10 != null)
@@ -153,9 +158,10 @@ namespace Eterea_Parfums_Web.Controllers
                     total = precioConDescuento * cantidad;
                     leyendaPromo = "Promoción 10% OFF";
 
-                    if (promoPorCantidad != null)
+                    if (promoPorCantidad != null && stockDisponible > cantidad) // 🔍 SOLO si se puede agregar otra unidad
                     {
-                        leyendaPromo += $". Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento * 2}% de descuento.";
+                        int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+                        leyendaPromo += $"<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
                     }
                 }
                 else
@@ -373,7 +379,8 @@ namespace Eterea_Parfums_Web.Controllers
                     int descuentoSegundaUnidad = promo.descuento * 2;
                     leyendaPromo = (descuentoSegundaUnidad == 100)
                         ? "Promoción 2 x 1"
-                        : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
+                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
+                          
                 }
             }
 
@@ -497,13 +504,17 @@ namespace Eterea_Parfums_Web.Controllers
 
                 if (cantidad % 2 == 1 && promo10 != null)
                 {
-                    return $"Un perfume aplica solo el 10% de descuento. Los demás tienen la segunda unidad al {descuentoSegundaUnidad}%.";
+                    int cantidadPromoCantidad = cantidad - 1; // la parte par
+
+
+                    return $"<span style='color: black;'>1 unidad:</span> Promoción 10% OFF<br />" +
+                           $"<span style='color: black;'>{cantidadPromoCantidad} unidades:</span> Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
                 }
                 else
                 {
                     return (descuentoSegundaUnidad == 100)
                         ? "Promoción 2 x 1"
-                        : $"Promoción segunda unidad al {descuentoSegundaUnidad}%";
+                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
                 }
             }
             else if (promo10 != null)
@@ -513,7 +524,7 @@ namespace Eterea_Parfums_Web.Controllers
                 if (promoPorCantidad != null)
                 {
                     int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                    leyenda += $". Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento.";
+                    leyenda += $"<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
                 }
 
                 return leyenda;
