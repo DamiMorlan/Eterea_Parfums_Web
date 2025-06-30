@@ -6,252 +6,28 @@
     ViewBag.Title = "Details";
 }
 
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #fef6f8;
-        color: #5a2a39;
-    }
-
-    h1, h2, h6 {
-        color: #a0435c;
-    }
-
-
-
-    .detalle-container {
-        background-color: #fff;
-        border: 1px solid #e0bfc7;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #a0435c !important;
-    }
-
-    .swiper-slide{
-        cursor:pointer;
-    }
-
-    .swiper-slide img {
-        padding-top: 1rem;
-        object-fit: contain;
-        max-height: 100%;
-    }
-
-    .gallery-thumbs-vertical {
-        height: 300px;
-    }
-
-    .gallery-thumbs-horizontal {
-        padding: 5px 0;
-    }
-
-        .gallery-thumbs-horizontal .swiper-slide {
-            width: auto !important;
-        }
-
-    .swiper-zoom-container img {
-        transition: transform 0.3s ease;
-        cursor: zoom-in;
-    }
-
-    .swiper-pagination-bullet-active {
-        background-color: #a0435c;
-    }
-
-    .carousel-inner img {
-        height: 400px;
-        object-fit: cover;
-    }
-
-    .card {
-        border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        cursor: pointer;
-    }
-
-        .card:hover {
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-            transform: translateY(-6px);
-        }
-
-    .card-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-
-    .custom-img {
-        height: 140px; /* Imagen más chica */
-        width: auto; /* Mantiene proporción */
-        display: block;
-        margin: 0 auto; /* Centra horizontalmente */
-        border-radius: 12px;
-    }
-
-    .card-body {
-        background-color: #fff;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        text-align: center; /* <-- Esto centra el contenido de texto */
-    }
-
-
-
-    .btn-eterea {
-        background-color: #d1a7b4;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
-
-        .btn-eterea:hover {
-            background-color: #a0435c;
-        }
-
-    .btn-dark.btn-sm {
-        background-color: #a0435c;
-        border: none;
-    }
-
-        .btn-dark.btn-sm:hover {
-            background-color: #5a2a39;
-        }
-
-    .tablink {
-        border-bottom: 3px solid transparent;
-        transition: 0.3s;
-    }
-
-    .w3-border-pale-amber {
-        border-color: #a0435c !important;
-    }
-
-    .w3-bottombar {
-        border-bottom: 3px solid #a0435c !important;
-    }
-
-    .box {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #e0bfc7;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .fs-6 {
-        font-weight: bold;
-        color: #5a2a39;
-    }
-
-    .swiper-slide {
-        width: 250px;
-    }
-
-
-
-    .box-perfume-volumen a {
-        text-decoration: none;
-        color: #a0435c;
-        font-weight: bold;
-        padding: .5rem;
-        margin-right: 10px;
-        border-radius: 10px;
-        border: 2px solid #a0435c;
-    }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-    .box-perfume-volumen .select {
-        background-color: #a0435c;
-        color: aliceblue;
-        opacity:.7;
-    }
-
-
-    button {
-        background-color: #d1a7b4;
-        border: none;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        margin: 0 5px;
-    }
-
-        button:hover {
-            background-color: #a0435c;
-        }
-
-    .badge.bg-dark {
-        background-color: #a0435c !important;
-    }
-
-    #carrito-offcanvas {
-        position: fixed;
-        top: 20px;
-        right: -350px;
-        width: 300px;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        padding: 20px;
-        z-index: 2000;
-        transition: right 0.5s ease-in-out;
-    }
-
-        #carrito-offcanvas.show {
-            right: 20px;
-        }
-
-    .offcanvas-contenido img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-bottom: 10px;
-    }
-
-    .offcanvas-contenido p {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .cantidad-control {
-        margin-bottom: 20px;
-    }
-
-    select {
-        margin-top: 8px;
-        padding: 5px;
-        border-radius: 5px;
-    }
-</style>
 
 
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+    <link href="~/Content/StylePerfumeDetails.css" rel="stylesheet" type="text/css" />
 }
 
 
 
 <div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <div class="breadcrumb-custom">
+            <ul class="breadcrumb-nav">
+                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a></li>
+                <li><span>&gt;</span> <a href="@Url.Action("Index", "Perfume")">Perfumes</a></li>
+                <li><span>&gt;</span> <a href="#">@Model.Perfume.genero.genero1</a></li>
+                <li><span>&gt;</span> <span>@Model.Perfume.nombre</span></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="row gap-0">
         <div class="col-sm-12 col-md-7 row">
             <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
@@ -302,30 +78,86 @@
                     </div>
                 </div>
             </div>
+
+            @{
+                var promosActivas = Model.Perfume.promocion?
+                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                    .ToList();
+            }
+
+            @if (promosActivas != null && promosActivas.Any())
+            {
+                <div class="promo-box mt-4 p-3 rounded shadow-sm text-center text-md-start">
+                    <ul class="list-unstyled ms-4">
+                        @foreach (var promo in promosActivas)
+                        {
+                            <li class="promo-item">
+                            
+                               <p class="mt-2">
+                                   <i class="fas fa-tags me-2"></i>
+                                   <span class="promo-title">¡@promo.nombre!</span>
+                               </p>
+                              
+                                @promo.descripcion
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <!-- Separador personalizado -->
+                <hr class="d-md-none mt-4"/>
+            }
+
         </div>
 
         <!-- Detalles del perfume -->
-        <section class="pb-5 col-sm-12 col-md-5 ps-3 px-3">
+        <section class="detalle mb-md-5 col-sm-12 col-md-5 ps-3 px-3 text-center text-md-start">
             <!-- Encabezados de perfume -->
             <h1 class="fs-5 text-uppercase text-muted mb-1">@Model.Perfume.marca.nombre</h1>
 
-            <h2 class="fs-2 mb-1 fw-semibold" style="font-family: 'Georgia', serif; letter-spacing: 1px;">
+            <h2 class="fs-2 mb-1 fw-semibold">
                 @Model.Perfume.nombre
             </h2>
 
-            <p class="fs-3 fw-bold texte-grey mt-2" style="font-family: 'Arial Black', sans-serif;">
+            <h3 class="fs-3 fw-bold texte-grey mt-2">
                 $@Model.Perfume.precio_en_pesos
+            </h3>
+
+            <div class="box-tarjeta mt-4 px-2 py-3 rounded border border-2 border-dashed text-center text-md-start">
+                <p class="mb-0">OPCIONES DE PAGO</p>
+
+                <div class="mt-3 tarjeta">
+                    <div class="d-flex">
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/visa.png")" class="img-fluid" alt="visa debito" />
+                        </div>
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/mastercard.png")" class="img-fluid" alt="visa credito" />
+                        </div>
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/amex.png")" class="img-fluid" alt="amex" />
+                        </div>
+                        <div class="tarjeta-item d-flex flex-column justify-content-center">
+                            <div class="box-img-mercadolibre">
+                                <img src="@Url.Content("~/Imagenes/mp.png")" class="img-mercadolibre img-fluid" alt="Mercado pago" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="envio mt-4">
+                <i class="fa fa-truck me-2"></i>
+                <span class="">Llega GRATIS en hasta 1 día hábil</span>
             </p>
 
             <!-- Separador personalizado -->
-            <hr style="border-top: 3px solid #e0bfc7;" />
-
-            <!-- Título de la sección de tamaños -->
-            <p class="mt-2" style="font-size: 1.2rem; font-weight: bold; color: #7a4b53; font-family: 'Segoe UI', sans-serif;">
-                Tamaño
-            </p>
+            <hr />
 
             <div class="box-perfume-volumen">
+                <!-- Título de la sección de tamaños -->
+                <p class="mt-2">
+                    Tamaño
+                </p>
                 @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
                 {
                     foreach (var p in Model.perfumesIgualesEnPresentacioMl)
@@ -341,32 +173,12 @@
                     }
                 }
             </div>
-            <div class="mt-4">
-                @{
-                    var promosActivas = Model.Perfume.promocion?.Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now &&
-                    p.fecha_fin >= DateTime.Now).ToList();
-                }
 
-                @if (promosActivas != null && promosActivas.Any())
-                {
-                    <p style="font-size: 1.2rem; font-weight: bold; color: #7a4b53; font-family: 'Segoe UI', sans-serif;">Promos</p>
-                    <ul>
-                        @foreach (var promo in Model.Perfume.promocion)
-                        {
-                            if (promo.id != 1 && promo.activo)
-                            {
-                                <li>@promo.descripcion</li>
-                            }
-                            @* O cualquier campo de la promo *@
-                        }
-                    </ul>
-                }
-            </div>
 
 
             @if (@Model.StockDisponibleParaWeb == 1)
             {
-                <p class="text-danger fw-bold">¡Último disponible!</p>
+                <p class="mt-4 text-danger fw-bold">¡Último disponible!</p>
             }
 
             @if (@Model.StockDisponibleParaWeb != 0)
@@ -385,7 +197,7 @@
             }
             else
             {
-                <p class="text-danger fw-bold">Sin stock</p>
+                <p class="mt-4 text-danger fw-bold">Sin stock</p>
             }
 
             @if (@Model.StockDisponibleParaWeb == 0)
@@ -396,18 +208,21 @@
             }
             else
             {
-                <button class="btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
+                <button class="mt-2 btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
                     <i class="fas fa-cart-plus"></i> Agregar al carrito
                 </button>
             }
 
 
+            <!-- Separador personalizado -->
+            <hr class="d-md-none mt-4" />
+
         </section>
     </div>
     <!--  -->
-    <div class="mt-5">
+    <div class="mt-md-5">
 
-        <div class="w3-row w3-margin-top">
+        <div class="w3-row">
             <a href="javascript:void(0)" onclick="openCity(event, 'detalle');">
                 <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
             </a>
@@ -417,7 +232,7 @@
         </div>
 
         <div id="detalle" class="w3-container box mt-5" style="display:block">
-            <p>@Model.Perfume.descripcion</p>
+            <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
         </div>
 
         <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
@@ -425,10 +240,10 @@
                 <p class="fs-6">Familia Olfativa:</p>
                 @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
                 {
-                    <ul class="fs-6 ms-5">
+                    <ul class="fs-6 ms-1 list-unstyled d-flex">
                         @foreach (var aroma in Model.Perfume.tipo_de_aroma)
                         {
-                            <li class="">@aroma.nombre</li>
+                            <li class="ms-1">@aroma.nombre</li>
                         }
                     </ul>
                 }
@@ -439,19 +254,19 @@
             </div>
             <div class="d-flex">
                 <p class="fs-6">Tipo:</p>
-                <p class="fs-6 ms-5">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
+                <p class="fs-6 ms-1">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
             </div>
         </div>
     </div>
+    @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
+    {
+        <div class="my-5">
+            <h5 class="h3 mb-4 text-center text-md-start">Perfumes relacionados</h5>
 
-    <div class="my-5">
-        <h3 class="mb-4">Perfumes relacionados</h3>
+            <div class="swiper my-product-slider">
+                <div class="swiper-wrapper">
 
-        <div class="swiper my-product-slider">
-            <div class="swiper-wrapper">
-                @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
-                {
-                    foreach (var p in Model.PerfumesRelacionados)
+                    @foreach (var p in Model.PerfumesRelacionados)
                     {
                         <div class="swiper-slide">
                             <div id="perfume-@p.id" class="card w-100 d-flex flex-column">
@@ -469,33 +284,28 @@
                                         <p class="text-danger fw-bold">¡Último disponible!</p>
                                     }
 
-                                <div class="mt-auto d-flex flex-column">
-                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = p.id })'" class="btn-eterea mb-2">
-                                        <i class="fas fa-eye"></i> Ver
-                                    </button>
+                                    <div class="mt-auto d-flex flex-column">
+                                        <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = p.id })'" class="btn-eterea mb-2">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
 
-                                    <button class="btn-eterea agregar-al-carrito" data-id="@p.id">
-                                        <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                    </button>
-                                </div>
+                                        <button class="btn-eterea agregar-al-carrito" data-id="@p.id">
+                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     }
-                }
-                else
-                {
-                    <p>No hay perfumes similares.</p>
-                }
+                </div>
+
+                <!-- Flechas y paginación -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
             </div>
-
-            <!-- Flechas y paginación -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-pagination"></div>
         </div>
-    </div>
-
+    }
 
     <div id="carrito-offcanvas" class="offcanvas-carrito">
         <div class="offcanvas-contenido">
@@ -611,7 +421,7 @@
                  const perfumeId = btn.getAttribute('data-id');
                  const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
                  const cantidad = selectCantidad ? selectCantidad.value : '1';
-    
+
             fetch('@Url.Action("Agregar", "Carrito")', {
                 method: 'POST',
                 headers: {
