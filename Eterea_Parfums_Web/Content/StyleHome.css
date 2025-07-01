@@ -131,3 +131,20 @@ h2 {
     font-weight: bold;
 }
 
+#carouselMarcas .card {
+    background-color: var(--rosa-suave);
+    border: 1px solid var(--rosa-medio);
+    transition: transform 0.3s ease;
+    min-height: 100px;
+}
+
+    #carouselMarcas .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+#carouselMarcas h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
