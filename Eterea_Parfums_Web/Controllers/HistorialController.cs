@@ -49,14 +49,66 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         // GET: Historial/DetalleFactura
-        public ActionResult DetalleFactura()
+        public ActionResult DetalleFactura(int? factura_id)
         {
+            if (factura_id == null || factura_id == 0)
+            {
+                // Podés mostrar una vista de error o redirigir
+                TempData["Error"] = "Página inválida o factura no especificada.";
+                return RedirectToAction("Index", "Historial");
+            }
             if (Session["clienteId"] == null)
             {
                 return RedirectToAction("Login", "Cliente");
             }
-            return View();
+
+            using (var db = new etereaEntities1())
+            {
+                var factura = db.factura.FirstOrDefault(f => f.id == factura_id);
+                if (factura == null)
+                {
+                    return HttpNotFound("Factura no encontrada.");
+                }
+
+                var detalles = db.detalle_factura
+                                 .Where(d => d.factura_id == factura.id)
+                                 .ToList();
+
+                var perfumes = new List<DetallePerfumeViewModel>();
+
+                foreach (var d in detalles)
+                {
+                    var perfumeData = db.perfume.FirstOrDefault(p => p.id == d.perfume_id);
+                    if (perfumeData == null) continue;
+
+                    var marca = db.marca.FirstOrDefault(m => m.id == perfumeData.marca_id);
+                    var promocion = d.promocion_id != null
+                                    ? db.promocion.FirstOrDefault(promo => promo.id == d.promocion_id)
+                                    : null;
+
+                    perfumes.Add(new DetallePerfumeViewModel
+                    {
+                        Imagen1 = perfumeData.imagen1,
+                        Nombre = perfumeData.nombre,
+                        Marca = marca?.nombre ?? "Sin marca",
+                        Tamaño = perfumeData.presentacion_ml,
+                        PrecioUnitario = (decimal)d.precio_unitario,
+                        Cantidad = d.cantidad,
+                        Promocion = promocion?.nombre ?? "Sin promoción"
+                    });
+                }
+
+                var viewModel = new DetalleFacturaViewModel
+                {
+                    NumeroFactura = factura.num_factura.ToString(),
+                    Fecha = factura.fecha,
+                    Perfumes = perfumes
+                };
+
+                return View(viewModel);
+            }
         }
+
 
 
 

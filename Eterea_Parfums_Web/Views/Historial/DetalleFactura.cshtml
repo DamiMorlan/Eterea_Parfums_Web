@@ -7,62 +7,39 @@
 
 <hr class="separator">
 
-@if (Model != null && Model.Count > 0)
-{
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Foto del Perfume</th> <!-- Nueva columna para la foto del perfume -->
-                <th>Nombre del Perfume</th>
-                <th>Cantidad</th>
-                <th>Descuento</th>
-                <th>Precio Unitario</th>
-                <th>Subtotal</th>
+<div class="container mt-4">
+    <h2 class="mb-3">Factura N°@Model.NumeroFactura</h2>
+    <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</p>
+    <hr />
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var detalle in Model)
-            {
-                var perfume = detalle.Perfume; // Cargar el Perfume antes de cerrar el contexto de la base de datos
-                var perfumeNombre = detalle.Perfume.ToString().Split('.')[1];
-                <tr>
-                    <td>
-                        @if (perfume != null)
-                        {
-                            <img src="@Url.Content("~/Content/ImgPerfumes/ImgCh/" + perfume.imagen1 + ".jpg")" alt="@perfume.nombre" class="centrado" />
-                        }
-                        else
-                        {
-                            <span>Perfume no encontrado</span>
-                        }
-                    </td>
-                    <td>
-                        @if (perfume != null)
-                        {
-                            @perfume.nombre
-                        }
-                        else
-                        {
-                            <span>Perfume no encontrado</span>
-                        }
-                    </td>
-                    <td>@detalle.cantidad</td>
-                    <td>$ @detalle.precio_unitario</td>
-                    <td>
-                        <button class="btn btn-primary volver-comprar" data-perfume-nombre="@perfume.nombre" data-genero="@perfume.genero">Volver a comprar</button>
+    @if (Model.Perfumes != null && Model.Perfumes.Count > 0)
+    {
+        foreach (var perfume in Model.Perfumes)
+        {
+            <div class="card mb-3 p-3 shadow-sm border rounded">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="@Url.Content("~/Imagenes/" + perfume.Imagen1 + ".jpg")" class="img-fluid" />
+                    </div>
+                    <div class="col-md-9">
+                        <h5>@perfume.Nombre</h5>
+                        <p><strong>Marca:</strong> @perfume.Marca</p>
+                        <p><strong>Tamaño:</strong> @perfume.Tamaño ml</p>
+                        <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
+                        <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
+                        <p><strong>Promoción:</strong> @perfume.Promocion</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No se encontraron perfumes en esta factura.</p>
+    }
 
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <hr class="separator">
-}
-else
-{
-    <p>No hay detalles disponibles para esta factura.</p>
-}
+    <a href="@Url.Action("Index", "Historial")" class="btn btn-secondary mt-3">Volver al historial</a>
+</div>
 
 @section scripts {
     <script>

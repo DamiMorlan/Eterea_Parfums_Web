@@ -26,9 +26,9 @@
                     <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
                     <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
 
-                    @using (Html.BeginForm("DetalleFactura", "Historial"))
+                    @using (Html.BeginForm("DetalleFactura", "Historial", FormMethod.Post))
                     {
-                        <input type="hidden" name="numFactura" value="@factura.num_factura" />
+                        <input type="hidden" name="factura_id" value="@factura.id" />
                         <button type="submit" class="btn btn-primary">Ver Detalles</button>
                     }
                 </div>
