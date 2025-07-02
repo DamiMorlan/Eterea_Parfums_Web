@@ -13,8 +13,9 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         // GET: Historial
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
+            int pageSize = 5;
             if (Session["clienteId"] == null)
             {
                 return RedirectToAction("Login", "Cliente");
@@ -30,16 +31,25 @@ namespace Eterea_Parfums_Web.Controllers
                     return RedirectToAction("Login", "Cliente");
                 }
 
+                var query = db.factura
+                      .Where(f => f.cliente_id == clienteId)
+                      .OrderByDescending(f => f.fecha);
+
+                int totalFacturas = query.Count();
+
+                var facturasPaginadas = query
+                                        .Skip((page - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToList();
                 var model = new HistorialViewModel
                 {
                     Nombre = usuario.nombre,
                     Apellido = usuario.apellido,
                     Dni = usuario.dni.ToString(),
                     Email = usuario.e_mail,
-                    Facturas = db.factura
-                                 .Where(f => f.cliente_id == clienteId)
-                                 .OrderByDescending(f => f.fecha)
-                                 .ToList()
+                    Facturas = facturasPaginadas,
+                    PaginaActual = page,
+                    TotalPaginas = (int)Math.Ceiling((double)totalFacturas / pageSize)
                 };
 
                 return View(model);
@@ -99,11 +109,14 @@ namespace Eterea_Parfums_Web.Controllers
                     });
                 }
 
+                var total = perfumes.Sum(p => p.PrecioUnitario * p.Cantidad);
+
                 var viewModel = new DetalleFacturaViewModel
                 {
                     NumeroFactura = factura.num_factura.ToString(),
                     Fecha = factura.fecha,
-                    Perfumes = perfumes
+                    Perfumes = perfumes,
+                    PrecioTotal = total
                 };
 
                 return View(viewModel);

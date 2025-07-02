@@ -13,5 +13,7 @@ namespace Eterea_Parfums_Web.ViewModels
         public string Dni { get; set; }
         public string Email { get; set; }
         public List<factura> Facturas { get; set; }
+        public int PaginaActual { get; set; }
+        public int TotalPaginas { get; set; }
     }
 }

@@ -3,46 +3,215 @@
     ViewBag.Title = "Detalle de la Factura N° " + ViewBag.NumeroFactura; // Agregar el número de factura al título
 }
 
-<h2>@ViewBag.Title</h2>
+<style>
+    :root {
+        --rosa-claro: rgb(235, 199, 206);
+        --rosa-medio: rgb(228, 137, 164);
+        --rosa-fondo: rgb(249, 230, 225);
+        --rosa-profundo: rgb(209, 167, 180);
+        --rosa-suave: rgb(250, 236, 239);
+        --beige: #f5f5dc;
+        --moka: #b89b82;
+    }
 
-<hr class="separator">
+    body {
+        background: var(--rosa-suave);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    .small-heading {
+        font-size: 1.5rem;
+    }
+
+    /*  .factura-detalle-container {
+        background-color: #fff;
+        border: 1px solid var(--rosa-medio);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+        .factura-detalle-container h2,
+        .factura-detalle-container h3 {
+            color: var(--rosa-profundo);
+        }
+
+    .factura-total {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 1.25rem;
+        color: var(--rosa-profundo);
+        text-align: right;
+    }*/ 
+
+    .detalle-perfume-card {
+        background-color: #fff;
+        border: 1.5px solid var(--rosa-claro);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .detalle-perfume-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .detalle-perfume-card h5 {
+            font-size: 1.4rem; 
+            font-weight: 600;
+            color: var(--rosa-profundo);
+            margin-bottom: 12px;
+        }
+
+        .detalle-perfume-card p {
+            color: #444;
+            margin: 4px 0;
+            font-size: 15px;
+        }
+
+        .detalle-perfume-card img {
+            max-width: 100%;
+            max-height: 180px; 
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .detalle-perfume-card .btn-primary {
+            background-color: var(--rosa-medio);
+            border: none;
+            color: #fff;
+        }
+
+            .detalle-perfume-card .btn-primary:hover {
+                background-color: var(--rosa-profundo);
+            }
+
+
+    /* Botones */
+    .btn-primary {
+        background-color: var(--rosa-medio);
+        border: none;
+        color: #fff;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--rosa-profundo);
+        }
+
+    .btn-secondary {
+        background-color: var(--rosa-medio);
+        border: none;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--rosa-profundo);
+        }
+
+    .text-right2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end; /* Empuja el botón al fondo */
+        height: 100%;
+    }
+
+    .text-right {
+        text-align: right;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+</style>
+
+
+<style>
+    .factura-detalle-container {
+        background-color: #fff;
+        border: 1px solid var(--rosa-medio);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+
+        .factura-detalle-container h2,
+        .factura-detalle-container h3 {
+            color: var(--rosa-profundo);
+        }
+
+    .factura-total {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 1.25rem;
+        color: var(--rosa-profundo);
+        text-align: right;
+    }
+</style>
 
 <div class="container mt-4">
-    <h2 class="mb-3">Factura N°@Model.NumeroFactura</h2>
-    <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</p>
-    <hr />
+    <div class="factura-detalle-container">
+        <h2>@ViewBag.Title @Model.NumeroFactura</h2>
+        <h3 class="small-heading"><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</h3>
+        <hr class="separator" />
 
-    @if (Model.Perfumes != null && Model.Perfumes.Count > 0)
-    {
-        foreach (var perfume in Model.Perfumes)
+        @if (Model.Perfumes != null && Model.Perfumes.Count > 0)
         {
-            <div class="card mb-3 p-3 shadow-sm border rounded">
-                <div class="row">
-                    <div class="col-md-3">
-                        <img src="@Url.Content("~/Imagenes/" + perfume.Imagen1 + ".jpg")" class="img-fluid" />
+            foreach (var perfume in Model.Perfumes)
+            {
+                using (Html.BeginForm("Details", "Perfume", FormMethod.Post, new { @class = "Perfume-form" }))
+                {
+                    <div class="detalle-perfume-card" style="cursor:pointer;" onclick="this.closest('form').submit();">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen1 + ".jpg")" class="img-fluid" />
+                            </div>
+                            <div class="col-md-8">
+                                <h5>@perfume.Nombre</h5>
+                                <p><strong>Marca:</strong> @perfume.Marca</p>
+                                <p><strong>Tamaño:</strong> @perfume.Tamaño ml</p>
+                                <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
+                                <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
+                                <p><strong>Promoción:</strong> @perfume.Promocion</p>
+                            </div>
+                                <div class="col-md-2">
+                                    <input type="hidden" name="id" value="@perfume.Id" />
+                                    <div class="text-right2">
+                                        <button type="submit" class="btn btn-primary mt-2">Volver a comprar</button>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
-                    <div class="col-md-9">
-                        <h5>@perfume.Nombre</h5>
-                        <p><strong>Marca:</strong> @perfume.Marca</p>
-                        <p><strong>Tamaño:</strong> @perfume.Tamaño ml</p>
-                        <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
-                        <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
-                        <p><strong>Promoción:</strong> @perfume.Promocion</p>
-                        <a href="@Url.Action("Details", "Perfume", new { id = perfume.Id })" class="btn btn-primary mt-2">
-                            Volver a comprar
-                        </a>
-                    </div>
-                </div>
-            </div>
+                }
+            }
+        <div class="factura-total">
+            Precio Total: $@Model.PrecioTotal.ToString("N2")
+        </div>
         }
-    }
-    else
-                        {
+        else
+        {
         <p>No se encontraron perfumes en esta factura.</p>
-    }
-
-    <a href="@Url.Action("Index", "Historial")" class="btn btn-secondary mt-3">Volver al historial</a>
+        }
+    </div>
 </div>
+<div class="text-right">
+    <a href="@Url.Action("Index", "Historial")" class="btn-secondary">Volver al historial</a>
+</div>
+
 
 @section scripts {
     <script>

@@ -18,6 +18,7 @@ public class DetallePerfumeViewModel
 
 public class DetalleFacturaViewModel
 {
+    public decimal PrecioTotal { get; set; }
     public string NumeroFactura { get; set; }
     public DateTime Fecha { get; set; }
     public List<DetallePerfumeViewModel> Perfumes { get; set; }
