@@ -10,5 +10,6 @@ namespace Eterea_Parfums_Web.ViewModels
         public List<PerfumeHomeViewModel> Perfumes { get; set; }
         public List<PromocionViewModel> Promociones { get; set; }
         public List<MarcaViewModel> Marcas { get; set; }
+        public List<PerfumeHomeViewModel> MasVendidos { get; set; }
     }
 }

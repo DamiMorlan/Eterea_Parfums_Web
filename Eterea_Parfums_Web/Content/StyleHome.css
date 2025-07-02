@@ -148,3 +148,26 @@ h2 {
     font-weight: bold;
 }
 
+#carouselMasVendidos .card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    min-height: 300px; /* ajusta si hace falta */
+}
+
+
+
+#carouselMasVendidos .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+#carouselMasVendidos .card img.custom-img {
+    height: 140px; /* Fijar altura imagen */
+    object-fit: cover;
+}

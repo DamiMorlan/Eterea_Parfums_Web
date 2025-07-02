@@ -70,12 +70,44 @@ namespace Eterea_Parfums_Web.Controllers
                 })
                 .ToList();
 
-            // 8. ViewModel combinado
+            //8. Obtener perfumes más vendidos (TOP 8)
+            var perfumesMasVendidos = db.detalle_factura
+                .GroupBy(df => df.perfume_id)
+                .Select(g => new
+                {
+                    PerfumeId = g.Key,
+                    TotalVendido = g.Sum(x => x.cantidad)
+                })
+                .OrderByDescending(g => g.TotalVendido)
+                .Take(8)
+                .ToList();
+
+            //9. Convertir a ViewModel solo los perfumes activos y con stock
+            var perfumesTop = perfumesMasVendidos
+                .Join(db.perfume.Where(p => p.activo),
+                      top => top.PerfumeId,
+                      p => p.id,
+                      (top, p) => new { Perfume = p, top.TotalVendido })
+                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.Perfume.id) && stockDisponiblePorPerfume[p.Perfume.id] > 0)
+                .Select(p => new PerfumeHomeViewModel
+                {
+                    Id = p.Perfume.id,
+                    Nombre = p.Perfume.nombre,
+                    Imagen = p.Perfume.imagen1,
+                    Marca = p.Perfume.marca.nombre,
+                    Precio = p.Perfume.precio_en_pesos,
+                    Presentacion = p.Perfume.presentacion_ml,
+                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.Perfume.id]
+                })
+                .ToList();
+
+            // 10. ViewModel combinado
             var viewModel = new HomeViewModel
             {
                 Perfumes = perfumesConStock,
                 Promociones = promociones,
-                Marcas = marcas
+                Marcas = marcas,
+                MasVendidos = perfumesTop
             };
 
             return View(viewModel);
