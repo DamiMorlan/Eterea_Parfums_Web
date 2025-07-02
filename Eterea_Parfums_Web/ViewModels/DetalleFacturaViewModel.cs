@@ -6,6 +6,7 @@ using Eterea_Parfums_Web.Models;
 
 public class DetallePerfumeViewModel
 {
+    public int Id { get; set; }
     public string Imagen1 { get; set; }
     public string Nombre { get; set; }
     public string Marca { get; set; }

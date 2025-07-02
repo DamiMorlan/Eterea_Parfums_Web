@@ -28,13 +28,16 @@
                         <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
                         <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
                         <p><strong>Promoción:</strong> @perfume.Promocion</p>
+                        <a href="@Url.Action("Details", "Perfume", new { id = perfume.Id })" class="btn btn-primary mt-2">
+                            Volver a comprar
+                        </a>
                     </div>
                 </div>
             </div>
         }
     }
     else
-    {
+                        {
         <p>No se encontraron perfumes en esta factura.</p>
     }
 

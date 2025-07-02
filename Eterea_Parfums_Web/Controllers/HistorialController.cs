@@ -88,6 +88,7 @@ namespace Eterea_Parfums_Web.Controllers
 
                     perfumes.Add(new DetallePerfumeViewModel
                     {
+                        Id = perfumeData.id,
                         Imagen1 = perfumeData.imagen1,
                         Nombre = perfumeData.nombre,
                         Marca = marca?.nombre ?? "Sin marca",
