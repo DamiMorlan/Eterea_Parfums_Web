@@ -82,19 +82,40 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-
         [HttpPost]
-        public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos)
+        public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos, string montoFinal)
         {
-            string accessToken = "TEST-5038567099517736-070123-746239afa62e81d9d67bce507d09076f-130528138"; // ⚠️ 
-
-            var items = productos.Select(p => new
+            if (string.IsNullOrWhiteSpace(montoFinal))
             {
-                title = p.Nombre,
-                quantity = p.Cantidad,
-                unit_price = (decimal)p.Precio,
-                currency_id = "ARS"
-            }).ToList();
+                TempData["ErrorPago"] = "No se pudo iniciar el pago. montoFinal vacío.";
+                return RedirectToAction("Index", "Carrito");
+            }
+
+            decimal montoDecimal;
+            bool ok = decimal.TryParse(
+                montoFinal.Replace(",", "."), // Fuerza punto decimal
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out montoDecimal
+            );
+
+            if (!ok)
+            {
+                TempData["ErrorPago"] = "No se pudo interpretar el monto.";
+                return RedirectToAction("Index", "Carrito");
+            }
+
+            // 👇 AQUÍ va esta parte (una vez que montoDecimal está listo)
+            var items = new[]
+            {
+        new
+        {
+            title = "Compra en Etérea Parfums",
+            quantity = 1,
+            unit_price = montoDecimal,
+            currency_id = "ARS"
+        }
+    };
 
             var preference = new
             {
@@ -110,7 +131,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "TEST-5038567099517736-070123-746239afa62e81d9d67bce507d09076f-130528138");
                 var content = new StringContent(JsonConvert.SerializeObject(preference), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
 
@@ -118,17 +139,17 @@ namespace Eterea_Parfums_Web.Controllers
                 {
                     var result = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     string initPoint = result.init_point;
-                    return Redirect(initPoint); // ✅ redirección real a Mercado Pago
+                    return Redirect(initPoint);
                 }
                 else
                 {
-                    var responseText = await response.Content.ReadAsStringAsync();
-                    // Manejo de error: redirige al carrito con mensaje de error
                     TempData["ErrorPago"] = "No se pudo iniciar el pago. Intente nuevamente.";
                     return RedirectToAction("Index", "Carrito");
                 }
             }
         }
+
+
 
 
         public ActionResult PagoExitoso()

@@ -148,6 +148,13 @@
                     <input type="hidden" name="productos[@i].Precio" value="@Model.ItemsCarrito[i].Precio" />
                 }
 
+                // Total final calculado con promociones
+
+
+                @* Total final calculado con promociones *@
+                <input type="hidden" name="montoFinal" value="@Model.Total.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+
+
                 <button type="submit" class="btn btn-success mt-3">Ir a Pagar</button>
             }
 
