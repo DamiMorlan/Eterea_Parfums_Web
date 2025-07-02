@@ -170,29 +170,66 @@ h2 {
 }
 
 /* ----- Carrusel y cards de Marcas ----- */
-#carouselMarcas .card {
-    background-color: var(--rosa-suave);
-    border: 1px solid var(--rosa-medio);
-    transition: transform 0.3s ease;
-    min-height: 45px;
-}
-
-    #carouselMarcas .card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-#carouselMarcas h5 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-}
-
 .bg-marcas {
-    background-color: var(--rosa-fondo); /* color clarito */
+    background-color: var(--rosa-fondo);
     padding-top: 20px;
     padding-bottom: 20px;
+    padding-left: 3.5rem; /* más espacio para flechas */
+    padding-right: 3.5rem;
+    position: relative;
 }
+
+#carouselMarcas {
+    position: relative;
+}
+
+    #carouselMarcas .carousel-control-prev,
+    #carouselMarcas .carousel-control-next {
+        width: 3rem;
+        height: 3rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+    }
+
+    #carouselMarcas .carousel-control-prev {
+        left: -3rem; /* mueve hacia afuera */
+    }
+
+    #carouselMarcas .carousel-control-next {
+        right: -3rem; /* mueve hacia afuera */
+    }
+
+    #carouselMarcas .carousel-inner .row {
+        margin-left: 0;
+        margin-right: 0;
+        /* margen interno para que no pegue con las flechas */
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        z-index: 20; /* cards arriba de flechas */
+    }
+
+    #carouselMarcas .card {
+        background-color: var(--rosa-suave);
+        border: 1px solid var(--rosa-medio);
+        transition: transform 0.3s ease;
+        min-height: 45px;
+        z-index: 20;
+    }
+
+        #carouselMarcas .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative; /* para que el z-index funcione */
+            z-index: 30;
+        }
+
+    #carouselMarcas h5 {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
 
 /* ----- Carrusel y cards de perfumes en promoción ----- */
 #carouselPerfumesEnPromo .card {

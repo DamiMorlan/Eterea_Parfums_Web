@@ -51,7 +51,7 @@
         <div id="carouselMarcas" class="carousel slide" data-bs-ride="false">
             <div class="carousel-inner">
                 @{
-                    var itemsPorSlide = 3;
+                    var itemsPorSlide = 4;
                     int totalItems = Model.Marcas.Count;
                     int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
                     for (int i = 0; i < totalSlides; i++)
@@ -61,7 +61,7 @@
                                 @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
                                 {
                                     var marca = Model.Marcas[i * itemsPorSlide + j];
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-3 col-md-3">
                                         <div class="card text-center mb-3 border-0 shadow-sm rounded">
                                             <div class="card-body">
                                                 <h5 class="card-title" style="font-family: 'Georgia', serif;">@marca.Nombre</h5>
