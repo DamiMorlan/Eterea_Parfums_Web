@@ -3,6 +3,24 @@
 }
 
 <style>
+
+    :root {
+        --rosa-claro: rgb(235, 199, 206);
+        --rosa-medio: rgb(228, 137, 164);
+        --rosa-fondo: rgb(249, 230, 225);
+        --rosa-profundo: rgb(209, 167, 180);
+        --rosa-suave: rgb(250, 236, 239);
+        --beige: #f5f5dc;
+        --moka: #b89b82;
+    }
+
+
+    body {
+        background: var(--rosa-suave);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+
     .register-container {
         max-width: 950px;
         margin: 10px auto 30px auto;
@@ -27,6 +45,11 @@
         margin: 20px 0;
     }
 
+    .subtitulo{
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
     .form-group label {
         font-weight: 600;
         margin-bottom: 5px;
@@ -47,6 +70,7 @@
         }
 
     .btn-register {
+        display: block; 
         width: 100%;
         padding: 12px;
         background-color: #d1a7b4;
@@ -58,10 +82,13 @@
         cursor: pointer;
         transition: background-color 0.3s;
         margin-top: 10px;
+        text-decoration: none;
+        text-align: center; 
     }
 
         .btn-register:hover {
             background-color: #a0435c;
+            text-decoration: none;
         }
 
     .text-center {
@@ -83,22 +110,25 @@
     <h2 class="text-center">@ViewBag.Title</h2>
     <hr class="separator">
 
-    <h4 class="text-center">Información Personal</h4>
+    <h4 class="subtitulo">Información Personal</h4>
     <div class="row">
         <div class="col-md-6">
             <p><strong>Nombre:</strong> @Model.nombre</p>
             <p><strong>Apellido:</strong> @Model.apellido</p>
             <p><strong>Usuario:</strong> @Model.usuario</p>
             <p><strong>Email:</strong> @Model.e_mail</p>
+        </div>
+        <div class="col-md-6">
             <p><strong>DNI:</strong> @Model.dni</p>
             <p><strong>Fecha de Nacimiento:</strong> @Model.fecha_nacimiento.ToString("dd/MM/yyyy")</p>
             <p><strong>Celular:</strong> @Model.celular</p>
         </div>
     </div>
 
+
     <hr class="separator">
 
-    <h4 class="text-center">Domicilio</h4>
+    <h4 class="subtitulo">Domicilio</h4>
     <div class="row">
         <div class="col-md-6">
             <p><strong>País:</strong> @Model.pais.nombre</p>
@@ -106,6 +136,8 @@
             <p><strong>Localidad:</strong> @Model.localidad.nombre</p>
             <p><strong>Calle:</strong> @Model.calle.nombre</p>
             <p><strong>Numeración:</strong> @Model.numeracion_calle</p>
+        </div>
+        <div class="col-md-6">
             <p><strong>Piso:</strong> @Model.piso</p>
             <p><strong>Departamento:</strong> @Model.departamento</p>
             <p><strong>Código Postal:</strong> @Model.codigo_postal</p>
@@ -116,7 +148,7 @@
     <hr class="separator">
 
     <div class="text-center">
-        @Html.ActionLink("Editar Perfil", "Perfil", "Cliente", null, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Editar Perfil", "Perfil", "Cliente", null, new { @class = "btn-register" })
     </div>
 </div>
 

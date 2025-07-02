@@ -27,29 +27,6 @@
         font-size: 1.5rem;
     }
 
-    /*  .factura-detalle-container {
-        background-color: #fff;
-        border: 1px solid var(--rosa-medio);
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-        .factura-detalle-container h2,
-        .factura-detalle-container h3 {
-            color: var(--rosa-profundo);
-        }
-
-    .factura-total {
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 1.25rem;
-        color: var(--rosa-profundo);
-        text-align: right;
-    }*/ 
-
     .detalle-perfume-card {
         background-color: #fff;
         border: 1.5px solid var(--rosa-claro);
@@ -123,15 +100,15 @@
             background-color: var(--rosa-profundo);
         }
 
-    .text-right2 {
+    .text-right {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Empuja el botón al fondo */
+        justify-content: flex-end; 
         height: 100%;
     }
 
-    .text-right {
-        text-align: right;
+    .text-center {
+        text-align: center;
         margin-bottom: 20px;
         margin-top: 20px;
     }
@@ -190,7 +167,7 @@
                             </div>
                                 <div class="col-md-2">
                                     <input type="hidden" name="id" value="@perfume.Id" />
-                                    <div class="text-right2">
+                                    <div class="text-right">
                                         <button type="submit" class="btn btn-primary mt-2">Volver a comprar</button>
                                     </div>
                                 </div>
@@ -208,7 +185,7 @@
         }
     </div>
 </div>
-<div class="text-right">
+<div class="text-center">
     <a href="@Url.Action("Index", "Historial")" class="btn-secondary">Volver al historial</a>
 </div>
 
