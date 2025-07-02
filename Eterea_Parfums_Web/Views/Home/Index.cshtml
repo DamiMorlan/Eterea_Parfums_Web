@@ -8,7 +8,7 @@
     <link href="~/Content/StyleHome.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="container">
+<div class="container-fluid p-0">
 
     <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -24,7 +24,7 @@
             }
         </div>
 
-        <div class="carousel-inner rounded-4 overflow-hidden shadow">
+        <div class="carousel-inner  overflow-hidden shadow">
             @for (int i = 0; i < Model.Promociones.Count; i++)
             {
                 var promo = Model.Promociones[i];
@@ -34,49 +34,57 @@
             }
         </div>
 
+        <!-- FLECHA IZQUIERDA -->
         <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="fa-solid fa-chevron-left flecha-carousel"></span>
         </button>
+
+        <!-- FLECHA DERECHA -->
         <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+            <span class="fa-solid fa-chevron-right flecha-carousel"></span>
         </button>
     </div>
 
     <h2 class="text-center mb-4 mt-5">Nuestras Marcas</h2>
 
-    <div id="carouselMarcas" class="carousel slide" data-bs-ride="false">
-        <div class="carousel-inner">
-            @{
-                var itemsPorSlide = 3;
-                int totalItems = Model.Marcas.Count;
-                int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
-                for (int i = 0; i < totalSlides; i++)
-                {
-                    <div class="carousel-item @(i == 0 ? "active" : "")">
-                        <div class="row justify-content-center">
-                            @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
-                            {
-                                var marca = Model.Marcas[i * itemsPorSlide + j];
-                                <div class="col-6 col-md-3">
-                                    <div class="card text-center mb-3 border-0 shadow-sm rounded">
-                                        <div class="card-body">
-                                            <h5 class="card-title" style="font-family: 'Georgia', serif;">@marca.Nombre</h5>
+    <div class="bg-marcas py-4">
+        <div id="carouselMarcas" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner">
+                @{
+                    var itemsPorSlide = 3;
+                    int totalItems = Model.Marcas.Count;
+                    int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
+                    for (int i = 0; i < totalSlides; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row justify-content-center">
+                                @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
+                                {
+                                    var marca = Model.Marcas[i * itemsPorSlide + j];
+                                    <div class="col-6 col-md-3">
+                                        <div class="card text-center mb-3 border-0 shadow-sm rounded">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="font-family: 'Georgia', serif;">@marca.Nombre</h5>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
-        </div>
+            </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselMarcas" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselMarcas" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+            <!-- FLECHA IZQUIERDA -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMarcas" data-bs-slide="prev">
+                <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+            </button>
+
+            <!-- FLECHA DERECHA -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselMarcas" data-bs-slide="next">
+                <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+            </button>
+        </div>
     </div>
 
     <h2 class="text-center mb-4 mt-5">Perfumes en Promoción</h2>
@@ -132,11 +140,14 @@
             }
         </div>
 
+        <!-- FLECHA IZQUIERDA -->
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="fa-solid fa-chevron-left flecha-carousel"></span>
         </button>
+
+        <!-- FLECHA DERECHA -->
         <button class="carousel-control-next" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+            <span class="fa-solid fa-chevron-right flecha-carousel"></span>
         </button>
     </div>
 
@@ -195,12 +206,16 @@
         }
     </div>
 
+    <!-- FLECHA IZQUIERDA -->
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
+        <span class="fa-solid fa-chevron-left flecha-carousel"></span>
     </button>
+
+    <!-- FLECHA DERECHA -->
     <button class="carousel-control-next" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
+        <span class="fa-solid fa-chevron-right flecha-carousel"></span>
     </button>
+
 </div>
 
 
