@@ -1,5 +1,13 @@
 ﻿@model List<Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel>
 
+
+@if (TempData["ErrorPago"] != null)
+{
+    <div class="alert alert-danger text-center mt-3">
+        @TempData["ErrorPago"]
+    </div>
+}
+
 @{
     ViewBag.Title = "Carrito";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -57,7 +65,7 @@
                             <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
                         }
 
-                       
+
                         else
                         {
                             <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
@@ -97,15 +105,15 @@
 
             <div class="fila-resumen">
                 <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor">$@subtotal.ToString("N0")</span>
+                <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
             </div>
             <div class="fila-resumen">
                 <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento">-$@descuento.ToString("N0")</span>
+                <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
             </div>
             <div class="fila-resumen total">
                 <span class="etiqueta">Total a pagar:</span>
-                <span class="valor">$@total.ToString("N0")</span>
+                <span class="valor" id="total">$@total.ToString("N0")</span>
             </div>
 
             @if (total >= 50000)
@@ -119,9 +127,23 @@
                 </p>
             }
 
-            <div class="contenedor-boton-finalizar">
-                <button class="btn-finalizar">Finalizar pedido</button>
-            </div>
+            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Post))
+            {
+                foreach (var item in Model)
+                {
+                    <input type="hidden" name="PerfumeIds" value="@item.PerfumeId" />
+                    <input type="hidden" name="Cantidades" value="@item.Cantidad" />
+                    <input type="hidden" name="Subtotal" value="@subtotal" />
+                    <input type="hidden" name="Descuento" value="@descuento" />
+                    <input type="hidden" name="Total" value="@total" />
+
+                }
+
+                <div class="contenedor-boton-finalizar text-center mt-3">
+                    <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
+                </div>
+            }
+
         </div>
 
     }
@@ -172,18 +194,11 @@
                 return;
             }
 
-            // ✅ Actualizar resumen general
-            resumen.innerHTML = `
-                <div>Subtotal (sin descuento): $${data.subtotal}</div>
-                <div>Descuentos aplicados: -$${data.descuento}</div>
-                <div class="total-final">Total a pagar: $${data.total}</div>
-                ${data.envioGratis
-                    ? `<div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>`
-                    : `<p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
-                        Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                    </p>`}
-                <button class="btn-finalizar">Finalizar pedido</button>
-            `;
+            // ✅ Actualizar texto totales
+
+            document.getElementById("subtotal").textContent = `$${data.subtotal}`;
+            document.getElementById("descuento").textContent = `-$${data.descuento}`;
+            document.getElementById("total").textContent = `$${data.total}`;
 
             // ✅ Actualizar total del perfume individual
             const totalElemento = document.getElementById(`total-perfume-${data.perfumeId}`);

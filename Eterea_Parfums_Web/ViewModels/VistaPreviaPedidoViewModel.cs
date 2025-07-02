@@ -1,0 +1,22 @@
+﻿using Eterea_Parfums_Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Eterea_Parfums_Web.ViewModels
+{
+    public class VistaPreviaPedidoViewModel
+    {
+        public cliente Cliente { get; set; }
+        public calle Calle { get; set; }
+        public localidad Localidad { get; set; }
+        public provincia Provincia { get; set; }
+        public List<ItemResumenPedidoViewModel> ItemsCarrito { get; set; }
+        public double Subtotal { get; set; }
+        public double Descuento { get; set; }
+        public double Total { get; set; }
+
+    }
+
+}
