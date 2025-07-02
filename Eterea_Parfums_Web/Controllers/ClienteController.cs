@@ -4,6 +4,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Eterea_Parfums_Desktop;
 using Eterea_Parfums_Web.Models;
 
 namespace Eterea_Parfums_Web.Controllers
@@ -22,9 +23,9 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
-            var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario && c.clave == clave);
+            var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario);
 
-            if (cliente != null)
+            if (cliente != null && PasswordHelper.VerificarPassword(clave, cliente.clave))
             {
                 Session["clienteId"] = cliente.id;               // 👈 ID
                 Session["usuarioLogueado"] = cliente.usuario;    // 👈 o guardar cliente directamente si lo usás más
@@ -153,6 +154,7 @@ namespace Eterea_Parfums_Web.Controllers
                 }
 
                 // Si todo está bien, lo guardás en la base:
+                nuevoCliente.clave = PasswordHelper.CrearHash(nuevoCliente.clave);
                 nuevoCliente.activo = true;
                 nuevoCliente.rol = "cliente";
                 nuevoCliente.id = ObtenerProximoIdDelCliente();
@@ -267,7 +269,6 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-
                 var clienteExistente = db.cliente.Find(usuarioLogueado.id);
                 if (clienteExistente == null)
                 {
@@ -276,7 +277,6 @@ namespace Eterea_Parfums_Web.Controllers
                 clienteExistente.nombre = clienteEditado.nombre;
                 clienteExistente.apellido = clienteEditado.apellido;
                 clienteExistente.usuario = clienteEditado.usuario;
-                clienteExistente.clave = clienteEditado.clave;
                 clienteExistente.e_mail = clienteEditado.e_mail;
                 clienteExistente.dni = clienteEditado.dni;
                 clienteExistente.fecha_nacimiento = clienteEditado.fecha_nacimiento;
@@ -295,9 +295,14 @@ namespace Eterea_Parfums_Web.Controllers
                 clienteExistente.rol = usuarioLogueado.rol;
                 clienteExistente.id = usuarioLogueado.id;
                 clienteExistente.condicion_frente_al_iva = usuarioLogueado.condicion_frente_al_iva;
+                if (!string.IsNullOrWhiteSpace(clienteEditado.clave))
+                {
+                    clienteExistente.clave = PasswordHelper.CrearHash(clienteEditado.clave);
+                }
                 try
                 {
                     Session["usuarioLogueado"] = clienteExistente;
+
                     db.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
