@@ -10,6 +10,7 @@
 
 <div class="container-fluid p-0">
 
+    <!-- Carousel Imagenes Promociones -->
     <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             @for (int i = 0; i < Model.Promociones.Count; i++)
@@ -46,6 +47,7 @@
     </div>
 
 
+    <!-- Carousel Marcas Perfumes -->
     <div class="bg-marcas py-4 mt-5">
 
         <h2 class="text-center mb-4 mt-1">Nuestras Marcas</h2>
@@ -90,6 +92,7 @@
     </div>
 
 
+    <!-- Carousel Perfumes con Promociones -->
     <div class="bg-marcas py-4 mt-5">
 
         <h2 class="text-center mb-4 mt-1">Perfumes en Promoción</h2>
@@ -109,14 +112,31 @@
                                 @for (int j = 0; j < itemsPorSlidePromo && (i * itemsPorSlidePromo + j) < totalItemsPromo; j++)
                                 {
                                     var perfume = Model.Perfumes[i * itemsPorSlidePromo + j];
+                                    
                                     <div class="col-md-3 col-6 mb-4 d-flex">
                                         <div class="card w-100" data-id="@perfume.Id">
                                             <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
                                                 <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
-                                                <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
-                                                <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
+
+                                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+
+                                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                                    @foreach (var p in perfume.Presentaciones)
+                                                    {
+                                                        <button type="button"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                data-perfumeid="@p.Id"
+                                                                data-precio="@p.Precio"
+                                                                data-ml="@p.Ml">
+                                                            @p.Ml ml
+                                                        </button>
+                                                    }
+                                                </div>
+
+                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+                                                
 
                                                 <div class="espacio-stock">
                                                     @if (perfume.StockDisponibleParaWeb == 1)
@@ -132,7 +152,7 @@
                                                         <p class="text-success fw-bold">✔️ Stock disponible</p>
                                                     }
                                                 </div>
-                                               
+
 
                                                 <div class="mt-auto d-flex flex-column">
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
@@ -166,6 +186,7 @@
     </div>
 
 
+    <!-- Carousel Perfumes Mas vendidos -->
     <div class="bg-marcas py-4 mb-4 mt-5">
 
         <h2 class="text-center mb-4 mt-1">Más Vendidos</h2>
@@ -185,14 +206,29 @@
                                 {
                                     var index = i * itemsPorSlideVendidos + j;
                                     var perfume = Model.MasVendidos[index];
+                                   
                                     <div class="col-md-3 col-6 mb-4 d-flex">
                                         <div class="card w-100" data-id="@perfume.Id">
                                             <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
                                                 <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
-                                                <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
-                                                <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
+                                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+
+                                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                                    @foreach (var p in perfume.Presentaciones)
+                                                    {
+                                                        <button type="button"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                data-perfumeid="@p.Id"
+                                                                data-precio="@p.Precio"
+                                                                data-ml="@p.Ml">
+                                                            @p.Ml ml
+                                                        </button>
+                                                    }
+                                                </div>
+
+                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
 
                                                 <div class="espacio-stock">
                                                     @if (perfume.StockDisponibleParaWeb == 1)
@@ -208,7 +244,7 @@
                                                         <p class="text-success fw-bold">✔️ Stock disponible</p>
                                                     }
                                                 </div>
-                                              
+
 
 
                                                 <div class="mt-auto d-flex flex-column">
@@ -242,6 +278,8 @@
         </div>
     </div>
 
+
+    <!-- Carrito -->
     <div id="carrito-offcanvas" class="offcanvas-carrito">
         <div class="offcanvas-contenido">
             <h4>🛒 Se agregó a tu carrito</h4>
@@ -250,11 +288,37 @@
         </div>
     </div>
 
+
+    <!-- Java Script -->
     @section Scripts {
         <script>
-            document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
-                btn.parentElement.addEventListener('click', function () {
-                    const card = btn.closest('.card');
+           // Función para manejar el cambio de tamaño y actualización en cada card
+            document.querySelectorAll('.selector-tamanios').forEach(container => {
+                container.addEventListener('click', function (e) {
+                    const btn = e.target.closest('.btn-tamanio');
+                    if (!btn) return;
+
+                    // Remover clase 'active' de los hermanos y activar el botón clickeado
+                    container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Obtener la card padre y actualizar datos visibles
+                    const card = container.closest('.card');
+                    const nuevoPrecio = btn.getAttribute('data-precio');
+                    const nuevoMl = btn.getAttribute('data-ml');
+                    const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
+
+                    // Actualizar el texto y el data-id de la card (para agregar al carrito)
+                    card.querySelector('.precio-texto').innerText = `${nuevoPrecio}`;
+                    card.querySelector('.ml-texto').innerText = `${nuevoMl} `;
+                    card.setAttribute('data-id', nuevoPerfumeId);
+                });
+            });
+
+            // Función para manejar el click en "Agregar al carrito"
+            document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(icon => {
+                icon.parentElement.addEventListener('click', function () {
+                    const card = icon.closest('.card');
                     const perfumeId = card.getAttribute('data-id');
 
                     fetch('@Url.Action("Agregar", "Carrito")', {
@@ -266,29 +330,25 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        // ✅ Redirigir al login si el backend lo indica
                         if (data.redirect) {
                             window.location.href = data.redirect;
                             return;
                         }
 
+                        const contenedor = document.getElementById("info-perfume-agregado");
+
                         if (data.error) {
-                            const contenedor = document.getElementById("info-perfume-agregado");
                             contenedor.innerHTML = `
-                            <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
-                            <p>${data.error}</p>
-                        `;
-
+                                <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                                <p>${data.error}</p>
+                            `;
                             document.getElementById("carrito-offcanvas").classList.add("show");
-
                             setTimeout(() => {
                                 document.getElementById("carrito-offcanvas").classList.remove("show");
                             }, 5000);
                             return;
                         }
 
-
-                        const contenedor = document.getElementById("info-perfume-agregado");
                         contenedor.innerHTML = `
                             <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
                             <p><strong>${data.nombre}</strong></p>
@@ -296,17 +356,16 @@
                             <p>Género: ${data.genero}</p>
                             <p>Precio: ${
                                 data.precioDescuento
-                                     ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                                     : `<strong>$${data.precioOriginal}</strong>`
+                                    ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                    : `<strong>$${data.precioOriginal}</strong>`
                             }</p>
                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                         `;
 
                         document.getElementById("carrito-offcanvas").classList.add("show");
-
                         setTimeout(() => {
                             document.getElementById("carrito-offcanvas").classList.remove("show");
-                        }, 6000); // cerrar después de 6 seg
+                        }, 6000);
                     })
                     .catch(err => {
                         console.error('Error en la solicitud:', err);
@@ -317,4 +376,4 @@
         </script>
     </div>
     }
-    
+

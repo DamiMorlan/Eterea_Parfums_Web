@@ -228,6 +228,7 @@
     <Compile Include="ViewModels\PerfumeConStockViewModel.cs" />
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
     <Compile Include="ViewModels\PromocionesViewModel.cs" />
+    <Compile Include="ViewModels\TamanoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

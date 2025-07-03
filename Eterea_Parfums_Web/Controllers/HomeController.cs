@@ -46,9 +46,20 @@ namespace Eterea_Parfums_Web.Controllers
                     Marca = p.marca.nombre,
                     Precio = p.precio_en_pesos,
                     Presentacion = p.presentacion_ml,
-                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id]
-                })
-                .ToList();
+                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id],
+
+                    Presentaciones = db.perfume
+                    .Where(x => x.nombre == p.nombre && x.activo)
+                    .Select(x => new PresentacionViewModel
+                    {
+                        Id = x.id,
+                        Ml = x.presentacion_ml,
+                        Precio = x.precio_en_pesos
+                    })
+                    .OrderBy(x => x.Ml)
+                    .ToList()
+                    })
+                    .ToList();
 
             // 6. Obtener promociones activas con banner
             var promociones = db.promocion
@@ -97,7 +108,18 @@ namespace Eterea_Parfums_Web.Controllers
                     Marca = p.Perfume.marca.nombre,
                     Precio = p.Perfume.precio_en_pesos,
                     Presentacion = p.Perfume.presentacion_ml,
-                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.Perfume.id]
+                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.Perfume.id],
+
+                    Presentaciones = db.perfume
+                        .Where(x => x.nombre == p.Perfume.nombre && x.activo)
+                        .Select(x => new PresentacionViewModel
+                        {
+                            Id = x.id,
+                            Ml = x.presentacion_ml,
+                            Precio = x.precio_en_pesos
+                        })
+                        .OrderBy(x => x.Ml)
+                        .ToList()
                 })
                 .ToList();
 

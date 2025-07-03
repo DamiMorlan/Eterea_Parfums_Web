@@ -370,3 +370,45 @@ h2 {
     padding: 0;
 }
 
+
+
+
+
+.btn-tamanio {
+    background-color: var(--rosa-suave2);
+    border: 1px solid var(--rosa-medio);
+    border-radius: 20px;
+    margin: 2px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-tamanio:hover {
+        background-color: var(--rosa-medio);
+        color: white;
+    }
+
+    .btn-tamanio.active {
+        background-color: var(--rosa-profundo);
+        color: white;
+        font-weight: bold;
+    }
+
+.selector-tamanios .btn-tamanio {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    min-width: 55px;
+    text-align: center;
+}
+
+    .selector-tamanios .btn-tamanio.active,
+    .selector-tamanios .btn-tamanio:hover {
+        background-color: var(--rosa-profundo);
+        color: white;
+        border-color: var(--rosa-profundo);
+    }

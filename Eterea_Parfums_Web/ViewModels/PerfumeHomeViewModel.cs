@@ -14,6 +14,14 @@ namespace Eterea_Parfums_Web.ViewModels
         public double Precio { get; set; }
         public int Presentacion { get; set; }
         public int StockDisponibleParaWeb { get; set; }
-    }
 
+        // NUEVA PROPIEDAD
+        public List<PresentacionViewModel> Presentaciones { get; set; }
+    }
+    public class PresentacionViewModel
+    {
+        public int Id { get; set; }
+        public int Ml { get; set; }
+        public double Precio { get; set; }
+    }
 }
