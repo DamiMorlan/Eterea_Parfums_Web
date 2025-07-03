@@ -78,12 +78,12 @@
             </div>
 
             <!-- FLECHA IZQUIERDA -->
-            <button class="carousel-control-prev" type="button" data-bs-target="carouselMarcas" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMarcas" data-bs-slide="prev">
                 <span class="fa-solid fa-chevron-left flecha-carousel"></span>
             </button>
 
             <!-- FLECHA DERECHA -->
-            <button class="carousel-control-next" type="button" data-bs-target="carouselMarcas" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselMarcas" data-bs-slide="next">
                 <span class="fa-solid fa-chevron-right flecha-carousel"></span>
             </button>
         </div>
@@ -118,14 +118,21 @@
                                                 <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
                                                 <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
 
-                                                @if (perfume.StockDisponibleParaWeb == 1)
-                                                {
-                                                    <p class="text-danger fw-bold">¡Último disponible!</p>
-                                                }
-                                                else if (perfume.StockDisponibleParaWeb <= 5 && perfume.StockDisponibleParaWeb > 1)
-                                                {
-                                                    <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                                }
+                                                <div class="espacio-stock">
+                                                    @if (perfume.StockDisponibleParaWeb == 1)
+                                                    {
+                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                                    {
+                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                    }
+                                                </div>
+                                               
 
                                                 <div class="mt-auto d-flex flex-column">
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
@@ -146,12 +153,12 @@
             </div>
 
             <!-- FLECHA IZQUIERDA -->
-            <button class="carousel-control-prev" type="button" data-bs-target="carouselPerfumesEnPromo" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="prev">
                 <span class="fa-solid fa-chevron-left flecha-carousel"></span>
             </button>
 
             <!-- FLECHA DERECHA -->
-            <button class="carousel-control-next" type="button" data-bs-target="carouselPerfumesEnPromo" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="next">
                 <span class="fa-solid fa-chevron-right flecha-carousel"></span>
             </button>
         </div>
@@ -187,14 +194,22 @@
                                                 <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
                                                 <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
 
-                                                @if (perfume.StockDisponibleParaWeb == 1)
-                                                {
-                                                    <p class="text-danger fw-bold">¡Último disponible!</p>
-                                                }
-                                                else if (perfume.StockDisponibleParaWeb <= 5)
-                                                {
-                                                    <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                                }
+                                                <div class="espacio-stock">
+                                                    @if (perfume.StockDisponibleParaWeb == 1)
+                                                    {
+                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                                    {
+                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                    }
+                                                </div>
+                                              
+
 
                                                 <div class="mt-auto d-flex flex-column">
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
@@ -215,12 +230,12 @@
             </div>
 
             <!-- FLECHA IZQUIERDA -->
-            <button class="carousel-control-prev" type="button" data-bs-target="carouselMasVendidos" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="prev">
                 <span class="fa-solid fa-chevron-left flecha-carousel"></span>
             </button>
 
             <!-- FLECHA DERECHA -->
-            <button class="carousel-control-next" type="button" data-bs-target="carouselMasVendidos" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="next">
                 <span class="fa-solid fa-chevron-right flecha-carousel"></span>
             </button>
 
