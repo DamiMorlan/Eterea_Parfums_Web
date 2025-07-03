@@ -133,3 +133,10 @@
         </div>
     </div>
 </div>
+
+@if (TempData["ErrorLogin"] != null)
+{
+    <div class="alert alert-warning text-center mt-3">
+        @TempData["ErrorLogin"]
+    </div>
+}

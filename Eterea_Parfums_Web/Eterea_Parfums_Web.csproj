@@ -132,6 +132,7 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\PerfumeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -226,9 +227,12 @@
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\PerfumeDetailsViewModel.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
+    <Compile Include="ViewModels\ItemResumenPedidoViewModel.cs" />
     <Compile Include="ViewModels\PerfumeHomeViewModel.cs" />
     <Compile Include="ViewModels\PerfumeConStockViewModel.cs" />
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
+    <Compile Include="ViewModels\ProductoPagoViewModel.cs" />
+    <Compile Include="ViewModels\VistaPreviaPedidoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -537,6 +541,8 @@
     <Content Include="Views\Cliente\Perfil.cshtml" />
     <Content Include="Views\Perfume\Index.cshtml" />
     <Content Include="Views\Perfume\Details.cshtml" />
+    <Content Include="Views\Pedido\VistaPrevia.cshtml" />
+    <Content Include="Views\Pedido\PagoFallido.cshtml" />
     <Content Include="Views\Cliente\VerPerfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
