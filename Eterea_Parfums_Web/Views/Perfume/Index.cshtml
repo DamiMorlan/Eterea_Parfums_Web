@@ -1,4 +1,4 @@
-﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeConStockViewModel>
+﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeHomeViewModel>
 
 
 @{
@@ -79,32 +79,56 @@
         <!-- Productos -->
         <section class="col-md-9">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                @foreach (var item in Model)
+                @foreach (var perfume in Model)
                 {
-
-                    var perfume = item.Perfume;
-                    var stock = item.StockDisponibleParaWeb;
-
                     <div class="col-md-3 mb-4 d-flex">
-                       <div id="perfume-@perfume.id" class="card w-100" data-id="@perfume.id">
-                            <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">@perfume.nombre</h5>
-                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.marca.nombre</p>
-                                <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.precio_en_pesos</p>
-                                <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.presentacion_ml ml</p>
+                        <div class="card w-100" data-id="@perfume.Id">
+                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
+                            <div class="card-body d-flex flex-column text-center">
+                                <h5 class="card-title">@perfume.Nombre</h5>
+                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
 
-                                @if (stock == 1)
-                                {
-                                    <p class="text-danger fw-bold">¡Último disponible!</p>
-                                }
+                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                    @foreach (var p in perfume.Presentaciones)
+                                    {
+                                        <button type="button"
+                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                data-perfumeid="@p.Id"
+                                                data-precio="@p.Precio"
+                                                data-ml="@p.Ml">
+                                            @p.Ml ml
+                                        </button>
+                                    }
+                                </div>
+
+                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+
+                                <div class="espacio-stock">
+                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                    {
+                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                    }
+                                    else if (perfume.StockDisponibleParaWeb == 1)
+                                    {
+                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                    }
+                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                    {
+                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                    }
+                                </div>
 
                                 <div class="mt-auto d-flex flex-column">
-                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.id })'" class="btn-eterea mb-2">
+                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
                                         <i class="fas fa-eye"></i> Ver
                                     </button>
 
-                                    <button class="btn-eterea">
+                                    <button class="btn-eterea" @(perfume.StockDisponibleParaWeb == 0 ? "disabled" : "")>
                                         <i class="fas fa-cart-plus"></i> Agregar al carrito
                                     </button>
                                 </div>
@@ -149,6 +173,29 @@
 
 @section Scripts {
     <script>
+        // Función para manejar el cambio de tamaño y actualización en cada card
+        document.querySelectorAll('.selector-tamanios').forEach(container => {
+            container.addEventListener('click', function (e) {
+                const btn = e.target.closest('.btn-tamanio');
+                if (!btn) return;
+
+                // Remover clase 'active' de los hermanos y activar el botón clickeado
+                container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Obtener la card padre y actualizar datos visibles
+                const card = container.closest('.card');
+                const nuevoPrecio = btn.getAttribute('data-precio');
+                const nuevoMl = btn.getAttribute('data-ml');
+                const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
+
+                // Actualizar el texto y el data-id de la card (para agregar al carrito)
+                card.querySelector('.precio-texto').innerText = `${nuevoPrecio}`;
+                card.querySelector('.ml-texto').innerText = `${nuevoMl} `;
+                card.setAttribute('data-id', nuevoPerfumeId);
+            });
+        });
+
     document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
         btn.parentElement.addEventListener('click', function () {
             const card = btn.closest('.card');

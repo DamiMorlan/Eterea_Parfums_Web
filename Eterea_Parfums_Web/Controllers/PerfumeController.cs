@@ -15,15 +15,12 @@ namespace Eterea_Parfums_Web.Controllers
         // GET: Perfume
         public ActionResult Index()
         {
-            // Traer todos los perfumes activos
             var perfumes = db.perfume
-                .Where(p => p.activo) // 👈 solo perfumes activos
-                .ToList();
+       .Where(p => p.activo)
+       .ToList();
 
-            // Traer el stock completo en memoria
             var stock = db.stock.ToList();
 
-            // Calcular stock disponible para venta web por perfume
             var stockDisponiblePorPerfume = stock
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
@@ -31,13 +28,27 @@ namespace Eterea_Parfums_Web.Controllers
                     g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
                 );
 
-            // Generar el ViewModel con perfumes activos que tienen stock > 0
             var viewModel = perfumes
-                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
-                .Select(p => new PerfumeConStockViewModel
+                .Select(p => new PerfumeHomeViewModel
                 {
-                    Perfume = p,
-                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id]
+                    Id = p.id,
+                    Nombre = p.nombre,
+                    Imagen = p.imagen1,
+                    Marca = p.marca.nombre,
+                    Precio = p.precio_en_pesos,
+                    Presentacion = p.presentacion_ml,
+                    StockDisponibleParaWeb = stockDisponiblePorPerfume.ContainsKey(p.id) ? stockDisponiblePorPerfume[p.id] : 0,
+
+                    Presentaciones = db.perfume
+                        .Where(x => x.nombre == p.nombre && x.activo)
+                        .Select(x => new PresentacionViewModel
+                        {
+                            Id = x.id,
+                            Ml = x.presentacion_ml,
+                            Precio = x.precio_en_pesos
+                        })
+                        .OrderBy(x => x.Ml)
+                        .ToList()
                 })
                 .ToList();
 
