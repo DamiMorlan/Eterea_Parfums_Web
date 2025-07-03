@@ -4,6 +4,8 @@
     --rosa-fondo: rgb(249, 230, 225);
     --rosa-profundo: rgb(209, 167, 180);
     --rosa-suave: rgb(250, 236, 239);
+    --rosa-suave2: rgb(239, 228, 225);
+    --moka: #b89b82;
     --beige: #f5f5dc;
     --moka: #b89b82;
 }
@@ -171,7 +173,7 @@ h2 {
 
 /* ----- Carrusel y cards de Marcas ----- */
 .bg-marcas {
-    background-color: var(--rosa-fondo);
+    background-color: var(--rosa-suave2);
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 3.5rem; /* más espacio para flechas */
@@ -230,8 +232,15 @@ h2 {
         text-align: center;
     }
 
+    #carouselMarcas .card img.custom-img {
+        height: 140px;
+        object-fit: cover;
+        margin-top: 20px;
+    }
+
 
 /* ----- Carrusel y cards de perfumes en promoción ----- */
+
 #carouselPerfumesEnPromo .card {
     border: none;
     border-radius: 20px;
