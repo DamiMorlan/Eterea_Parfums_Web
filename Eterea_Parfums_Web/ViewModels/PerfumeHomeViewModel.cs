@@ -15,7 +15,7 @@ namespace Eterea_Parfums_Web.ViewModels
         public int Presentacion { get; set; }
         public int StockDisponibleParaWeb { get; set; }
 
-        // NUEVA PROPIEDAD
+        // Tamaño de los perfumes
         public List<PresentacionViewModel> Presentaciones { get; set; }
     }
     public class PresentacionViewModel
