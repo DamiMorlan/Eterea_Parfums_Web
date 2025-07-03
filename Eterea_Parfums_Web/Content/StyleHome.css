@@ -240,6 +240,36 @@ h2 {
 
 
 /* ----- Carrusel y cards de perfumes en promoción ----- */
+#carouselPerfumesEnPromo {
+    position: relative;
+}
+
+#carouselPerfumesEnPromo .carousel-control-prev,
+#carouselPerfumesEnPromo .carousel-control-next {
+    width: 3rem;
+    height: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+#carouselPerfumesEnPromo .carousel-control-prev {
+    left: -3rem; /* mueve hacia afuera */
+}
+
+#carouselPerfumesEnPromo .carousel-control-next {
+    right: -3rem; /* mueve hacia afuera */
+}
+
+#carouselPerfumesEnPromo .carousel-inner .row {
+    margin-left: 0;
+    margin-right: 0;
+    /* margen interno para que no pegue con las flechas */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    z-index: 20; /* cards arriba de flechas */
+}
+
 
 #carouselPerfumesEnPromo .card {
     border: none;
@@ -265,6 +295,37 @@ h2 {
     }
 
 /* ----- Carrusel y cards de perfumes más vendidos ----- */
+#carouselMasVendidos {
+    position: relative;
+}
+
+#carouselMasVendidos .carousel-control-prev,
+#carouselMasVendidos .carousel-control-next {
+    width: 3rem;
+    height: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+#carouselMasVendidos .carousel-control-prev {
+    left: -3rem; /* mueve hacia afuera */
+}
+
+#carouselMasVendidos .carousel-control-next {
+    right: -3rem; /* mueve hacia afuera */
+}
+
+#carouselMasVendidos .carousel-inner .row {
+    margin-left: 0;
+    margin-right: 0;
+    /* margen interno para que no pegue con las flechas */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    z-index: 20; /* cards arriba de flechas */
+}
+
+
 #carouselMasVendidos .card {
     border: none;
     border-radius: 20px;
