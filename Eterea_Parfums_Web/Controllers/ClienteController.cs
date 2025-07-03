@@ -4,6 +4,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Eterea_Parfums_Desktop;
 using Eterea_Parfums_Web.Models;
 
 namespace Eterea_Parfums_Web.Controllers
@@ -22,9 +23,9 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
-            var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario && c.clave == clave);
+            var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario);
 
-            if (cliente != null)
+            if (cliente != null && PasswordHelper.VerificarPassword(clave, cliente.clave))
             {
                 Session["clienteId"] = cliente.id;               // 👈 ID
                 Session["usuarioLogueado"] = cliente.usuario;    // 👈 o guardar cliente directamente si lo usás más
@@ -153,6 +154,7 @@ namespace Eterea_Parfums_Web.Controllers
                 }
 
                 // Si todo está bien, lo guardás en la base:
+                nuevoCliente.clave = PasswordHelper.CrearHash(nuevoCliente.clave);
                 nuevoCliente.activo = true;
                 nuevoCliente.rol = "cliente";
                 nuevoCliente.id = ObtenerProximoIdDelCliente();
@@ -194,34 +196,35 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
        public ActionResult Perfil()
-{
-    if (Session["clienteId"] == null)
-    {
-        return RedirectToAction("Login", "Cliente");
-    }
-
-    int clienteId = (int)Session["clienteId"];
-
-    using (var db = new etereaEntities1())
-    {
-        var cliente = db.cliente.Find(clienteId);
-
-        if (cliente == null)
         {
-            return RedirectToAction("Login", "Cliente");
-        }
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
 
-        CargarPaises();
-        return View(cliente);
-    }
-}
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities1())
+            {
+                var cliente = db.cliente.Find(clienteId);
+
+                if (cliente == null)
+                {
+                    return RedirectToAction("Login", "Cliente");
+                }
+
+                CargarPaises();
+                return View(cliente);
+            }
+        }
 
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)
         {
-            if (clienteEditado.dni.ToString().Length != 8)
+            string dniStr = clienteEditado.dni.ToString();
+            if (dniStr.Length != 8 && dniStr.Length != 11)
             {
-                ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
+                ModelState.AddModelError("dni", "El DNI/CUIT debe tener 8 o 11 digitos.");
                 CargarPaises();
                 return View(clienteEditado);
             }
@@ -240,7 +243,8 @@ namespace Eterea_Parfums_Web.Controllers
 
             using (var db = new etereaEntities1())
             {
-                var usuarioLogueado = Session["usuarioLogueado"] as cliente;
+                int clienteId = (int)Session["clienteId"];
+                var usuarioLogueado = db.cliente.Find(clienteId);
                 bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.id != usuarioLogueado.id);
                 if (usuarioExiste)
                 {
@@ -249,7 +253,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni == usuarioLogueado.dni);
+                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni != usuarioLogueado.dni);
                 if (dniExiste)
                 {
                     ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
@@ -257,14 +261,13 @@ namespace Eterea_Parfums_Web.Controllers
                     return View(clienteEditado);
                 }
 
-                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail == usuarioLogueado.e_mail);
+                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail != usuarioLogueado.e_mail);
                 if (emailExiste)
                 {
                     ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
                     CargarPaises();
                     return View(clienteEditado);
                 }
-
 
                 var clienteExistente = db.cliente.Find(usuarioLogueado.id);
                 if (clienteExistente == null)
@@ -274,7 +277,6 @@ namespace Eterea_Parfums_Web.Controllers
                 clienteExistente.nombre = clienteEditado.nombre;
                 clienteExistente.apellido = clienteEditado.apellido;
                 clienteExistente.usuario = clienteEditado.usuario;
-                clienteExistente.clave = clienteEditado.clave;
                 clienteExistente.e_mail = clienteEditado.e_mail;
                 clienteExistente.dni = clienteEditado.dni;
                 clienteExistente.fecha_nacimiento = clienteEditado.fecha_nacimiento;
@@ -293,9 +295,14 @@ namespace Eterea_Parfums_Web.Controllers
                 clienteExistente.rol = usuarioLogueado.rol;
                 clienteExistente.id = usuarioLogueado.id;
                 clienteExistente.condicion_frente_al_iva = usuarioLogueado.condicion_frente_al_iva;
+                if (!string.IsNullOrWhiteSpace(clienteEditado.clave))
+                {
+                    clienteExistente.clave = PasswordHelper.CrearHash(clienteEditado.clave);
+                }
                 try
                 {
                     Session["usuarioLogueado"] = clienteExistente;
+
                     db.SaveChanges();
                 }
                 catch (DbEntityValidationException ex)
@@ -313,6 +320,34 @@ namespace Eterea_Parfums_Web.Controllers
 
                 // Redireccionar a otra vista
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        public ActionResult VerPerfil()
+        {
+            if (Session["clienteId"] == null)
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
+
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities1())
+            {
+                var cliente = db.cliente.Find(clienteId);
+                ViewBag.NombrePais = db.pais.Find(cliente.pais_id)?.nombre ?? "";
+                ViewBag.NombreProvincia = db.provincia.Find(cliente.provincia_id)?.nombre ?? "";
+                ViewBag.NombreLocalidad = db.localidad.Find(cliente.localidad_id)?.nombre ?? "";
+                ViewBag.NombreCalle = db.calle.Find(cliente.calle_id)?.nombre ?? "";
+
+
+                if (cliente == null)
+                {
+                    return RedirectToAction("Login", "Cliente");
+                }
+
+                CargarPaises();
+                return View(cliente);
             }
         }
         public ActionResult Logout()

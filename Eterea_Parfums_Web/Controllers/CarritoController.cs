@@ -305,8 +305,11 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         [HttpPost]
-        public JsonResult Agregar(int perfumeId)
+        public JsonResult Agregar(int perfumeId, int? cantidad=0)
         {
+            //int clienteId = 2; // simulado
+            
+
             if (Session["clienteId"] == null)
             {
                 return Json(new { redirect = Url.Action("Login", "Cliente") });
@@ -314,49 +317,46 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
-            // Obtener perfume
-            var perfume = db.perfume.Find(perfumeId);
-            if (perfume == null || !perfume.activo)
+            int cantidadFinal = 1;
+            var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+            if (item != null)
             {
-                return Json(new { error = "El perfume no existe o está inactivo." });
-            }
-
-            // Obtener stock total disponible para la venta web
-            var stockDisponible = db.stock
-                .Where(s => s.perfume_id == perfumeId)
-                .ToList()
-                .Select(s => Math.Max(0, s.cantidad - 5))
-                .Sum();
-
-            // Ver cuántas unidades de este perfume ya tiene el cliente en su carrito
-            var itemEnCarrito = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
-            int cantidadEnCarrito = itemEnCarrito?.cantidad ?? 0;
-
-            if (cantidadEnCarrito >= stockDisponible)
-            {
-                return Json(new { error = "Ya agregaste todas las unidades disponibles de este perfume." });
-            }
-
-            // Agregar o incrementar
-            if (itemEnCarrito != null)
-            {
-                itemEnCarrito.cantidad++;
+                if(cantidad != 0)
+                {
+                    item.cantidad += (int)cantidad;
+                }
+                else
+                {
+                    item.cantidad++;
+                }
+                cantidadFinal = item.cantidad;
             }
             else
             {
-                int nuevoId = db.carrito.Any() ? db.carrito.Max(c => c.id) + 1 : 1;
+                int nuevoId = 1;
+                if (db.carrito.Any())
+                {
+                    nuevoId = db.carrito.Max(c => c.id) + 1;
+                }
+
+                cantidadFinal = (int)(cantidad != 0 ? cantidad : 1);
+
                 db.carrito.Add(new carrito
                 {
                     id = nuevoId,
                     cliente_id = clienteId,
                     perfume_id = perfumeId,
-                    cantidad = 1
+                    cantidad = cantidadFinal
                 });
+
+
             }
 
             db.SaveChanges();
 
-            // Promo
+            var perfume = db.perfume.Find(perfumeId);
+            cantidad = item != null ? item.cantidad : 1;
+
             var promo = perfume.promocion.FirstOrDefault(pr =>
                 pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now);
 
