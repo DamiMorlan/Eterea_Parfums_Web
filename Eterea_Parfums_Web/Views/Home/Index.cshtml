@@ -139,7 +139,11 @@
                                                 
 
                                                 <div class="espacio-stock">
-                                                    @if (perfume.StockDisponibleParaWeb == 1)
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb == 1)
                                                     {
                                                         <p class="text-danger fw-bold">¡Último disponible!</p>
                                                     }
@@ -158,9 +162,19 @@
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
                                                         <i class="fas fa-eye"></i> Ver
                                                     </button>
-                                                    <button class="btn-eterea">
-                                                        <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                                    </button>
+
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <button class="btn-eterea" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                                            <i class="fas fa-cart-plus"></i> Agotado
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn-eterea">
+                                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                                        </button>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -231,7 +245,11 @@
                                                 <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
 
                                                 <div class="espacio-stock">
-                                                    @if (perfume.StockDisponibleParaWeb == 1)
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb == 1)
                                                     {
                                                         <p class="text-danger fw-bold">¡Último disponible!</p>
                                                     }
@@ -246,14 +264,23 @@
                                                 </div>
 
 
-
                                                 <div class="mt-auto d-flex flex-column">
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
                                                         <i class="fas fa-eye"></i> Ver
                                                     </button>
-                                                    <button class="btn-eterea">
-                                                        <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                                    </button>
+
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <button class="btn-eterea" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                                            <i class="fas fa-cart-plus"></i> Agotado
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn-eterea">
+                                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                                        </button>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>

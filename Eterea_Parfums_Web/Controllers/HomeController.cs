@@ -37,7 +37,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 5. Filtrar perfumes que tengan stock disponible
             var perfumesConStock = perfumes
-                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
+                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id))
                 .Select(p => new PerfumeHomeViewModel
                 {
                     Id = p.id,
@@ -99,7 +99,7 @@ namespace Eterea_Parfums_Web.Controllers
                       top => top.PerfumeId,
                       p => p.id,
                       (top, p) => new { Perfume = p, top.TotalVendido })
-                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.Perfume.id) && stockDisponiblePorPerfume[p.Perfume.id] > 0)
+                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.Perfume.id))
                 .Select(p => new PerfumeHomeViewModel
                 {
                     Id = p.Perfume.id,
