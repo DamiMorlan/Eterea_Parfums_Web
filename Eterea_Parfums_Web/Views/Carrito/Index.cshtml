@@ -175,7 +175,7 @@
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            if (cantidad === "0") {
+            if (data.eliminado === true || cantidad === "0") {
                 const fila = document.getElementById(`perfume-${perfumeId}`);
                 if (fila) {
                     fila.classList.add("fade-out");

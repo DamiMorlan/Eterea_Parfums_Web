@@ -196,7 +196,6 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
-            //int clienteId = 2; // Simulado
             if (Session["clienteId"] == null)
             {
                 return Json(new { redirect = Url.Action("Login", "Cliente") });
@@ -204,24 +203,34 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
+            var item = db.carrito
+                .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)
+                .FirstOrDefault(c => c.perfume_id == perfumeId && c.cliente_id == clienteId);
 
-            var item = db.carrito.FirstOrDefault(c => c.perfume_id == perfumeId && c.cliente_id == clienteId);
-            if (item != null)
+            if (item == null)
             {
-                if (cantidad == 0)
-                {
-                    db.carrito.Remove(item);
-                }
-                else
-                {
-                    item.cantidad = cantidad;
-                }
+                return Json(new { success = false, error = "Item no encontrado" });
+            }
+
+            bool seElimino = false;
+
+            if (cantidad == 0)
+            {
+                db.carrito.Remove(item);
+                db.SaveChanges();
+                seElimino = true;
+            }
+            else
+            {
+                item.cantidad = cantidad;
                 db.SaveChanges();
             }
 
             // Recalcular totales
             var perfumesEnCarrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
+                .Include(c => c.perfume)
                 .ToList();
 
             double subtotal = perfumesEnCarrito.Sum(p => p.perfume.precio_en_pesos * p.cantidad);
@@ -234,7 +243,7 @@ namespace Eterea_Parfums_Web.Controllers
                 var promo = perfume.promocion.FirstOrDefault(pr =>
                     pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now);
 
-                double precioAplicado = 0;
+                double precioAplicado;
 
                 if (promo != null)
                 {
@@ -261,6 +270,21 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
+            // Si se eliminó el ítem, devolvemos info parcial sin usar item.perfume
+            if (seElimino)
+            {
+                return Json(new
+                {
+                    success = true,
+                    eliminado = true,
+                    subtotal = subtotal.ToString("N0"),
+                    total = total.ToString("N0"),
+                    descuento = (subtotal - total).ToString("N0"),
+                    envioGratis = total >= 50000,
+                    perfumeId = perfumeId
+                });
+            }
+
             // Variables auxiliares
             double precioOriginal = item.perfume.precio_en_pesos;
             double precioUnitarioConDescuento = totalPerfume / item.cantidad;
@@ -276,20 +300,17 @@ namespace Eterea_Parfums_Web.Controllers
 
             if (promo10 != null && promoCantidad == null && item.cantidad == 1)
             {
-                // Solo 10% aplica
                 mostrarPrecioTachado = true;
             }
             else if (promo10 != null && promoCantidad != null && item.cantidad == 1)
             {
-                mostrarPrecioTachado = true; // Solo 10% aplica porque no alcanza para promo por cantidad
+                mostrarPrecioTachado = true;
             }
-
-            // Si hay más de 1 unidad, NUNCA se tacha
-            // => mostrarPrecioTachado = false;
 
             return Json(new
             {
                 success = true,
+                eliminado = false,
                 subtotal = subtotal.ToString("N0"),
                 total = total.ToString("N0"),
                 descuento = (subtotal - total).ToString("N0"),
@@ -302,6 +323,7 @@ namespace Eterea_Parfums_Web.Controllers
                 leyendaPromo = ObtenerLeyendaPromoSegunCantidad(item, perfumeId)
             });
         }
+
 
 
         [HttpPost]
