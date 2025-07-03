@@ -1,0 +1,352 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fef6f8;
+    color: #5a2a39;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--rosa-profundo);
+}
+
+h2 {
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+}
+
+h3 {
+    font-family: 'Arial Black', sans-serif;
+    color:rgba(0, 0, 0, 0.77);
+}
+
+label {
+    color: var(--rosa-profundo);
+}
+
+
+hr {
+    border-top: 3px solid #e0bfc7;
+}
+
+.detalle .envio i, .detalle .envio span {
+    color: #0fb017;
+    font-size: 1rem;
+}
+
+.detalle .border-dashed {
+    border-style: dashed !important;
+    border-color: var(--rosa-claro) !important;
+    background: var(--rosa-suave);
+}
+
+.detalle-container {
+    background-color: #fff;
+    border: 1px solid #e0bfc7;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #a0435c !important;
+}
+
+.swiper-slide {
+    cursor: pointer;
+}
+
+    .swiper-slide img {
+        padding-top: 1rem;
+        object-fit: contain;
+        max-height: 100%;
+    }
+
+.gallery-thumbs-vertical {
+    height: 300px;
+}
+
+.gallery-thumbs-horizontal {
+    padding: 5px 0;
+}
+
+    .gallery-thumbs-horizontal .swiper-slide {
+        width: auto !important;
+        height: 150px;
+        margin-bottom: 3rem;
+    }
+
+.swiper-zoom-container img {
+    transition: transform 0.3s ease;
+    cursor: zoom-in;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #a0435c;
+}
+
+.carousel-inner img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+    .card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        transform: translateY(-6px);
+    }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.custom-img {
+    height: 140px; /* Imagen más chica */
+    width: auto; /* Mantiene proporción */
+    display: block;
+    margin: 0 auto; /* Centra horizontalmente */
+    border-radius: 12px;
+}
+
+.card-body {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center; /* <-- Esto centra el contenido de texto */
+}
+
+.btn-eterea {
+    background-color: #d1a7b4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-eterea:hover {
+        background-color: #a0435c;
+    }
+
+.promo-item i{
+    color: #e44d5e;
+    font-size: 1.2rem;
+}
+
+.promo-title {
+    text-transform: uppercase;
+}
+
+
+
+.btn-dark.btn-sm {
+    background-color: #a0435c;
+    border: none;
+}
+
+    .btn-dark.btn-sm:hover {
+        background-color: #5a2a39;
+    }
+
+.tablink {
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
+}
+
+.w3-border-pale-amber {
+    border-color: #a0435c !important;
+}
+
+.w3-bottombar {
+    border-bottom: 3px solid #a0435c !important;
+}
+
+.box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e0bfc7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.fs-6 {
+    font-weight: bold;
+    color: #5a2a39;
+}
+
+.swiper-slide {
+    width: 250px;
+}
+
+
+
+.box-perfume-volumen a {
+    text-decoration: none;
+    color: #a0435c;
+    font-weight: bold;
+    padding: .5rem;
+    margin-right: 10px;
+    border-radius: 10px;
+    border: 2px solid #a0435c;
+}
+
+.box-perfume-volumen p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #7a4b53;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+.box-perfume-volumen .select {
+    background-color: #a0435c;
+    color: aliceblue;
+}
+
+
+button {
+    background-color: #d1a7b4;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin: 0 5px;
+}
+
+    button:hover {
+        background-color: #a0435c;
+    }
+
+.badge.bg-dark {
+    background-color: #a0435c !important;
+}
+
+#carrito-offcanvas {
+    position: fixed;
+    top: 20px;
+    right: -350px;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    padding: 20px;
+    z-index: 2000;
+    transition: right 0.5s ease-in-out;
+}
+
+    #carrito-offcanvas.show {
+        right: 20px;
+    }
+
+.offcanvas-contenido img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.offcanvas-contenido p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.cantidad-control {
+    margin-bottom: 20px;
+}
+
+select {
+    margin-top: 8px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.breadcrumb-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+    .breadcrumb-nav li {
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+    }
+
+    .breadcrumb-nav a {
+        text-decoration: none;
+        color: #aaa;
+    }
+
+        .breadcrumb-nav a:hover {
+            text-decoration: underline;
+            color: #000;
+        }
+
+    .breadcrumb-nav span {
+        margin: 0 0.25rem;
+        color: #000;
+    }
+
+.box-tarjeta{
+    width: 70%;
+}
+
+
+.box-tarjeta p{
+    font-size: 13px;
+}
+
+.tarjeta {
+    background-color: #fef6f8;
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075);
+}
+
+    .tarjeta-item{
+        width: 100px
+    }
+
+.img-mercadolibre {
+    width:512px;
+    
+}
+
+@media (max-width: 768px) {
+    .detalle .btn-eterea {
+        width: 100%;
+    }
+    .box-tarjeta{
+        width: 100%;
+    }
+}

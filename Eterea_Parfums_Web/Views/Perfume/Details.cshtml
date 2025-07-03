@@ -1,236 +1,64 @@
 ﻿
-@model Eterea_Parfums_Web.Models.perfume
+@model Eterea_Parfums_Web.ViewModels.PerfumeDetailsViewModel
+
 
 @{
     ViewBag.Title = "Details";
 }
 
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #fef6f8;
-        color: #5a2a39;
-    }
-
-    h1, h2, h6 {
-        color: #a0435c;
-    }
-
-    .detalle-container {
-        background-color: #fff;
-        border: 1px solid #e0bfc7;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #a0435c !important;
-    }
-
-    .swiper-slide img {
-        object-fit: contain;
-        max-height: 100%;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-    }
-
-    .gallery-thumbs-vertical {
-        height: 300px;
-    }
-
-    .gallery-thumbs-horizontal {
-        padding: 5px 0;
-    }
-
-        .gallery-thumbs-horizontal .swiper-slide {
-            width: auto !important;
-        }
-
-    .swiper-zoom-container img {
-        transition: transform 0.3s ease;
-        cursor: zoom-in;
-    }
-
-    .swiper-pagination-bullet-active {
-        background-color: #a0435c;
-    }
-
-    .card {
-        border: none;
-        border-radius: 15px;
-        background-color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-    }
-
-        .card h6 {
-            color: #a0435c;
-        }
-
-        .card p {
-            margin: 5px 0;
-        }
-
-    .btn-eterea {
-        background-color: #d1a7b4;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
-
-        .btn-eterea:hover {
-            background-color: #a0435c;
-        }
-
-    .btn-dark.btn-sm {
-        background-color: #a0435c;
-        border: none;
-    }
-
-        .btn-dark.btn-sm:hover {
-            background-color: #5a2a39;
-        }
-
-    .tablink {
-        border-bottom: 3px solid transparent;
-        transition: 0.3s;
-    }
-
-    .w3-border-pale-amber {
-        border-color: #a0435c !important;
-    }
-
-    .w3-bottombar {
-        border-bottom: 3px solid #a0435c !important;
-    }
-
-    .box {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        border: 1px solid #e0bfc7;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .fs-6 {
-        font-weight: bold;
-        color: #5a2a39;
-    }
-
-    .swiper-slide {
-        width: 250px;
-    }
-
-    a {
-        text-decoration: none;
-        color: #a0435c;
-        font-weight: bold;
-        margin-right: 10px;
-    }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-    button {
-        background-color: #d1a7b4;
-        border: none;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        margin: 0 5px;
-    }
-
-        button:hover {
-            background-color: #a0435c;
-        }
-
-    .badge.bg-dark {
-        background-color: #a0435c !important;
-    }
-
-    #carrito-offcanvas {
-        position: fixed;
-        top: 20px;
-        right: -350px;
-        width: 300px;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        padding: 20px;
-        z-index: 2000;
-        transition: right 0.5s ease-in-out;
-    }
-
-        #carrito-offcanvas.show {
-            right: 20px;
-        }
-
-    .offcanvas-contenido img {
-        width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-bottom: 10px;
-    }
-
-    .offcanvas-contenido p {
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .cantidad-control {
-        margin-bottom: 20px;
-    }
-
-
-</style>
 
 
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+    <link href="~/Content/StylePerfumeDetails.css" rel="stylesheet" type="text/css" />
 }
 
 
 
 <div class="container my-5">
-    <div class="row gap-4">
-        <div class="col-sm-12 col-md-6 row">
+    <nav aria-label="breadcrumb">
+        <div class="breadcrumb-custom">
+            <ul class="breadcrumb-nav">
+                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a></li>
+                <li><span>&gt;</span> <a href="@Url.Action("Index", "Perfume")">Perfumes</a></li>
+                <li><span>&gt;</span> <a href="#">@Model.Perfume.genero.genero1</a></li>
+                <li><span>&gt;</span> <span>@Model.Perfume.nombre</span></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row gap-0">
+        <div class="col-sm-12 col-md-7 row">
             <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
-            <div class="col-md-2 d-none d-md-block">
+            <div class="col-md-4 col-lg-3 col-xl-3 d-none d-md-block">
                 <div class="swiper gallery-thumbs-vertical">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- IMAGEN PRINCIPAL -->
-            <div class="col-md-10 col-12">
+            <div class="col-md-8 col-lg-9 col-xl-9 col-12">
                 <div class="swiper gallery-top">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide text-center">
                             <div class="swiper-zoom-container">
-                                <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                             </div>
                         </div>
                         <div class="swiper-slide text-center">
                             <div class="swiper-zoom-container">
-                                <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                             </div>
                         </div>
                     </div>
@@ -242,77 +70,180 @@
                 <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                     </div>
                 </div>
             </div>
+
+            @{
+                var promosActivas = Model.Perfume.promocion?
+                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                    .ToList();
+            }
+
+            @if (promosActivas != null && promosActivas.Any())
+            {
+                <div class="promo-box mt-4 p-3 rounded shadow-sm text-center text-md-start">
+                    <ul class="list-unstyled ms-4">
+                        @foreach (var promo in promosActivas)
+                        {
+                            <li class="promo-item">
+                            
+                               <p class="mt-2">
+                                   <i class="fas fa-tags me-2"></i>
+                                   <span class="promo-title">¡@promo.nombre!</span>
+                               </p>
+                              
+                                @promo.descripcion
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <!-- Separador personalizado -->
+                <hr class="d-md-none mt-4"/>
+            }
+
         </div>
 
         <!-- Detalles del perfume -->
-        <section class="col-sm-12 col-md-6 px-3">
-            <h1 class="fs-2 mb-1">@Model.marca.nombre</h1>
-            <h2 class="fs-3 mb-1">@Model.nombre</h2>
-            <p class="card-text fw-bold mt-auto">$@Model.precio_en_pesos</p>
-    
-            @if (ViewBag.StockDisponibleParaWeb != null && ViewBag.StockDisponibleParaWeb == 1)
+        <section class="detalle mb-md-5 col-sm-12 col-md-5 ps-3 px-3 text-center text-md-start">
+            <!-- Encabezados de perfume -->
+            <h1 class="fs-5 text-uppercase text-muted mb-1">@Model.Perfume.marca.nombre</h1>
+
+            <h2 class="fs-2 mb-1 fw-semibold">
+                @Model.Perfume.nombre
+            </h2>
+
+            <h3 class="fs-3 fw-bold texte-grey mt-2">
+                $@Model.Perfume.precio_en_pesos
+            </h3>
+
+            <div class="box-tarjeta mt-4 px-2 py-3 rounded border border-2 border-dashed text-center text-md-start">
+                <p class="mb-0">OPCIONES DE PAGO</p>
+
+                <div class="mt-3 tarjeta">
+                    <div class="d-flex">
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/visa.png")" class="img-fluid" alt="visa debito" />
+                        </div>
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/mastercard.png")" class="img-fluid" alt="visa credito" />
+                        </div>
+                        <div class="tarjeta-item">
+                            <img src="@Url.Content("~/Imagenes/amex.png")" class="img-fluid" alt="amex" />
+                        </div>
+                        <div class="tarjeta-item d-flex flex-column justify-content-center">
+                            <div class="box-img-mercadolibre">
+                                <img src="@Url.Content("~/Imagenes/mp.png")" class="img-mercadolibre img-fluid" alt="Mercado pago" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="envio mt-4">
+                <i class="fa fa-truck me-2"></i>
+                <span class="">Llega GRATIS en hasta 1 día hábil</span>
+            </p>
+
+            <!-- Separador personalizado -->
+            <hr />
+
+            <div class="box-perfume-volumen">
+                <!-- Título de la sección de tamaños -->
+                <p class="mt-2">
+                    Tamaño
+                </p>
+                @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
+                {
+                    foreach (var p in Model.perfumesIgualesEnPresentacioMl)
+                    {
+                        if (p.presentacion_ml != Model.Perfume.presentacion_ml)
+                        {
+                            <a href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                        }
+                        else
+                        {
+                            <a class="select" href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                        }
+                    }
+                }
+            </div>
+
+
+
+            @if (@Model.StockDisponibleParaWeb == 1)
             {
-                <p class="text-danger fw-bold">¡Último disponible!</p>
+                <p class="mt-4 text-danger fw-bold">¡Último disponible!</p>
             }
-        
-            <p class="card-text mb-1">Tamaño: @Model.presentacion_ml ml</p>
-           
-            <div class="">
-                <a href="">50ML</a>
-                <a href="">200ML</a>
-                <a href="">250ML</a>
-            </div>
-            <div>
-                <p>Promos</p>
-            </div>
-            <p>Cantidad</p>
-            <div class="d-flex cantidad-control gap-2">
-                <button>-</button>
-                <button>1</button>
-                <button>+</button>
-            </div>
-            <button class="btn-eterea agregar-al-carrito" data-id="@Model.id">
-                <i class="fas fa-cart-plus"></i> Agregar al carrito
-            </button>
+
+            @if (@Model.StockDisponibleParaWeb != 0)
+            {
+                <div class="my-3">
+                    <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
+                    <select id="cantidad-@Model.Perfume.id">
+                        @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
+                        {
+                            <option value="@i">@i</option>
+
+                        }
+                    </select>
+                </div>
+
+            }
+            else
+            {
+                <p class="mt-4 text-danger fw-bold">Sin stock</p>
+            }
+
+            @if (@Model.StockDisponibleParaWeb == 0)
+            {
+                <button class="btn-eterea agregar-al-carrito" disabled data-id="@Model.Perfume.id">
+                    <i class="fas fa-cart-plus"></i> Agregar al carrito
+                </button>
+            }
+            else
+            {
+                <button class="mt-2 btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
+                    <i class="fas fa-cart-plus"></i> Agregar al carrito
+                </button>
+            }
+
+
+            <!-- Separador personalizado -->
+            <hr class="d-md-none mt-4" />
 
         </section>
     </div>
     <!--  -->
-    <div class="mt-5">
+    <div class="mt-md-5">
 
-        <div class="w3-row w3-margin-top">
-            <a href="javascript:void(0)" onclick="openCity(this, 'detalle');">
+        <div class="w3-row">
+            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
                 <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
             </a>
-            <a href="javascript:void(0)" onclick="openCity(this, 'especificaciones');">
+            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
                 <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
-            </a>
-            <a href="javascript:void(0)" onclick="openCity(this, 'opiniones');">
-                <div class="w3-quarter w3-center tablink w3-padding">OPINIONES</div>
             </a>
         </div>
 
         <div id="detalle" class="w3-container box mt-5" style="display:block">
-            <p>@Model.descripcion</p>
+            <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
         </div>
 
         <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
             <div class="d-flex w-50">
                 <p class="fs-6">Familia Olfativa:</p>
-                @if (Model.tipo_de_aroma != null && Model.tipo_de_aroma.Any())
+                @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
                 {
-                    <ul class="fs-6 ms-5">
-                        @foreach (var aroma in Model.tipo_de_aroma)
+                    <ul class="fs-6 ms-1 list-unstyled d-flex">
+                        @foreach (var aroma in Model.Perfume.tipo_de_aroma)
                         {
-                            <li class="">@aroma.nombre</li>
+                            <li class="ms-1">@aroma.nombre</li>
                         }
                     </ul>
                 }
@@ -323,119 +254,64 @@
             </div>
             <div class="d-flex">
                 <p class="fs-6">Tipo:</p>
-                <p class="fs-6 ms-5">@Model.tipo_de_perfume.tipo_de_perfume1</p>
+                <p class="fs-6 ms-1">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
             </div>
-        </div>
-
-        <div id="opiniones" class="w3-container box" style="display:none">
-            <h2>Opiniones</h2>
         </div>
     </div>
+    @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
+    {
+        <div class="my-5">
+            <h5 class="h3 mb-4 text-center text-md-start">Perfumes relacionados</h5>
 
-    <div class="container my-5">
-        <div class="swiper my-product-slider">
-            <div class="swiper-wrapper">
+            <div class="swiper my-product-slider">
+                <div class="swiper-wrapper">
 
-                <!-- Ejemplo de tarjeta -->
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
+                    @foreach (var p in Model.PerfumesRelacionados)
+                    {
+                        <div class="swiper-slide">
+                            <div id="perfume-@p.id" class="card w-100 d-flex flex-column">
+                                <img src="@Url.Content("~/Imagenes/" + p.imagen1 + ".jpg")"
+                                     class="card-img-top custom-img" alt="@p.nombre" />
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">@p.nombre</h5>
+                                    <p class="card-text mb-1"><strong>Marca:</strong> @p.marca</p>
+                                    <p class="card-text mb-1"><strong>Precio:</strong> $@String.Format("{0:N0}", p.precio_en_pesos)</p>
+                                    <p class="card-text mb-3"><strong>Contenido:</strong> @p.presentacion_ml ml</p>
+
+                                    @if (p.TotalStock == 1)
+                                    {
+                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                    }
+
+                                    <div class="mt-auto d-flex flex-column">
+                                        <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = p.id })'" class="btn-eterea mb-2">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+
+                                        <button class="btn-eterea agregar-al-carrito" data-id="@p.id">
+                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen2 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card h-100 text-center p-3">
-                        <span class="badge bg-dark">LANZAMIENTO</span>
-                        <img src="@Url.Content("~/Imagenes/" + Model.imagen1 + ".jpg")" class="card-img-top mx-auto" style="width: 100px;" />
-                        <div class="card-body">
-                            <h6 class="text-uppercase">BANDERAS</h6>
-                            <p class="small">The Icon Supreme EDP</p>
-                            <p class="fw-bold">$31.200</p>
-                            <p class="text-success small">Llega en 1 día hábil</p>
-                            <button class="btn btn-dark btn-sm">AÑADIR AL CARRITO</button>
-                        </div>
-                    </div>
+                    }
                 </div>
 
-                <!-- Copiá más tarjetas aquí o con  -->
+                <!-- Flechas y paginación -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
             </div>
+        </div>
+    }
 
-            <!-- Flechas y paginación -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-pagination"></div>
+    <div id="carrito-offcanvas" class="offcanvas-carrito">
+        <div class="offcanvas-contenido">
+            <h4>🛒 Se agregó a tu carrito</h4>
+            <div id="info-perfume-agregado"></div>
+            <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
         </div>
     </div>
 
@@ -445,110 +321,23 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-
+    <script src="~/Scripts/custom/Perfume.details.js"></script>
     <script>
-        let thumbsSwiper;
-        let mainGallery;
+        document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
+    btn.addEventListener('click', function () {
 
-        function initSwipers() {
-            if (thumbsSwiper) thumbsSwiper.destroy(true, true);
-            if (mainGallery) mainGallery.destroy(true, true);
+        const perfumeId = btn.getAttribute('data-id');
+        const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
+        const cantidad = selectCantidad ? selectCantidad.value : '1';
 
-            const isDesktop = window.innerWidth >= 768;
+        fetch('@Url.Action("Agregar", "Carrito")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `perfumeId=${encodeURIComponent(perfumeId)}&cantidad=${encodeURIComponent(cantidad)}`
 
-            if (isDesktop) {
-                thumbsSwiper = new Swiper('.gallery-thumbs-vertical', {
-                    direction: 'vertical',
-                    spaceBetween: 10,
-                    slidesPerView: 2,
-                    watchSlidesProgress: true,
-                });
-            } else {
-                thumbsSwiper = new Swiper('.gallery-thumbs-horizontal', {
-                    direction: 'horizontal',
-                    spaceBetween: 10,
-                    slidesPerView: 'auto',
-                    watchSlidesProgress: true,
-                    freeMode: true
-                });
-            }
-
-            mainGallery = new Swiper('.gallery-top', {
-                spaceBetween: 10,
-                zoom: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                thumbs: {
-                    swiper: thumbsSwiper
-                }
-            });
-        }
-
-        $(window).on('load', function () {
-            initSwipers();
-        });
-
-        // Opcional: reinicializar si redimensionás la ventana
-        let resizeTimer;
-        $(window).on('resize', function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
-                initSwipers();
-            }, 300);
-        });
-    </script>
-    <script>
-        function openCity(element, cityName, event) {
-            var i, x, tablinks;
-            x = document.getElementsByClassName("box");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" w3-border-pale-amber", "").replace(" w3-bottombar", "");
-            }
-            document.getElementById(cityName).style.display = "block";
-            element.firstElementChild.className += " w3-border-pale-amber w3-bottombar";
-        }
-
-    </script>
-    <script>
-        $(document).ready(function () {
-            new Swiper('.my-product-slider', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev'
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                breakpoints: {
-                    576: { slidesPerView: 2 },
-                    768: { slidesPerView: 3 },
-                    992: { slidesPerView: 4 },
-                    1200: { slidesPerView: 5 }
-                }
-            });
-        });
-
-         document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const perfumeId = btn.getAttribute('data-id');
-
-            fetch('@Url.Action("Agregar", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${perfumeId}`
-            })
+        })
             .then(res => res.json())
             .then(data => {
                 if (data.redirect) {
@@ -577,10 +366,9 @@
                     <p><strong>${data.nombre}</strong></p>
                     <p>${data.tipo} - ${data.presentacion} ml</p>
                     <p>Género: ${data.genero}</p>
-                    <p>Precio: ${
-                        data.precioDescuento
-                            ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                            : `<strong>$${data.precioOriginal}</strong>`
+                    <p>Precio: ${data.precioDescuento
+                        ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                        : `<strong>$${data.precioOriginal}</strong>`
                     }</p>
                     ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                 `;
@@ -596,15 +384,9 @@
                 console.error('Error en la solicitud:', err);
                 alert("Hubo un error al intentar agregar el perfume al carrito.");
             });
-        });
     });
+});
     </script>
 }
 
-<div id="carrito-offcanvas" class="offcanvas-carrito">
-    <div class="offcanvas-contenido">
-        <h4>🛒 Se agregó a tu carrito</h4>
-        <div id="info-perfume-agregado"></div>
-        <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
-    </div>
-</div>
+

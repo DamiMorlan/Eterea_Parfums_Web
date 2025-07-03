@@ -221,6 +221,7 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\PerfumeDetailsViewModel.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
     <Compile Include="ViewModels\PerfumeHomeViewModel.cs" />
     <Compile Include="ViewModels\PerfumeConStockViewModel.cs" />
@@ -248,6 +249,7 @@
     <Content Include="Content\StyleContacto.css" />
     <Content Include="Content\StyleHome.css" />
     <Content Include="Content\StylePerfume.css" />
+    <Content Include="Content\StylePerfumeDetails.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -284,6 +286,7 @@
     <Content Include="Imagenes\212 Vip Men - 5386 - envase.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\amex.png" />
     <Content Include="Imagenes\banner CK verano.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -449,6 +452,8 @@
     <Content Include="Imagenes\LogoEtereaFactura.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\mastercard.png" />
+    <Content Include="Imagenes\mp.png" />
     <Content Include="Imagenes\PlantillaFactura.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -467,6 +472,7 @@
     <Content Include="Imagenes\sinImagen.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\visa.png" />
     <Content Include="Imagenes\warning-sign1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -495,6 +501,7 @@
     </Content>
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\custom\Dropdown.js" />
+    <Content Include="Scripts\custom\Perfume.details.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
