@@ -376,7 +376,7 @@ h2 {
 
 .btn-tamanio {
     background-color: var(--rosa-suave2);
-    border: 1px solid var(--rosa-medio);
+    border: 1px solid;
     border-radius: 20px;
     margin: 2px;
     padding: 4px 12px;
@@ -410,5 +410,5 @@ h2 {
     .selector-tamanios .btn-tamanio:hover {
         background-color: var(--rosa-profundo);
         color: white;
-        border-color: var(--rosa-profundo);
+        
     }
