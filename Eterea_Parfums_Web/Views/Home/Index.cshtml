@@ -1,4 +1,4 @@
-﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeHomeViewModel>
+﻿@model Eterea_Parfums_Web.ViewModels.HomeViewModel
 
 @{
     ViewBag.Title = "Home Page";
@@ -8,157 +8,399 @@
     <link href="~/Content/StyleHome.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="container">
+<div class="container-fluid p-0">
 
-    <!-- Carousel -->
+    <!-- Carousel Imagenes Promociones -->
     <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            @for (int i = 0; i < Model.Promociones.Count; i++)
+            {
+                <button type="button"
+                        data-bs-target="#myCarousel"
+                        data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")"
+                        aria-current="@(i == 0 ? "true" : "false")"
+                        aria-label="Slide @(i + 1)">
+                </button>
+            }
         </div>
 
-        <div class="carousel-inner rounded-4 overflow-hidden shadow">
-            <div class="carousel-item active">
-                <img src="~/Content/Images/descarga2.png" class="d-block w-100" alt="Imagen 1">
-            </div>
-            <div class="carousel-item">
-                <img src="~/Content/Images/descarga1.png" class="d-block w-100" alt="Imagen 2">
-            </div>
-            <div class="carousel-item">
-                <img src="~/Content/Images/descarga3.png" class="d-block w-100" alt="Imagen 3">
-            </div>
+        <div class="carousel-inner  overflow-hidden shadow">
+            @for (int i = 0; i < Model.Promociones.Count; i++)
+            {
+                var promo = Model.Promociones[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@Url.Content("~/Imagenes/" + promo.banner + ".jpg" )" class="d-block w-100" alt="@promo.nombre" />
+                </div>
+            }
         </div>
 
+        <!-- FLECHA IZQUIERDA -->
         <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="fa-solid fa-chevron-left flecha-carousel"></span>
         </button>
+
+        <!-- FLECHA DERECHA -->
         <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+            <span class="fa-solid fa-chevron-right flecha-carousel"></span>
         </button>
     </div>
 
-    <!-- Perfumes -->
-    <div class="row">
-        @foreach (var perfume in Model)
-        {
-            <div class="col-md-3 mb-4 d-flex">
-                <div class="card w-100" data-id="@perfume.Id">
-                    <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@perfume.Nombre</h5>
-                        <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
-                        <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.Precio</p>
-                       
-                       
-                        <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.Presentacion ml</p>
 
-                        @if (perfume.StockDisponibleParaWeb == 1)
-                        {
-                            <p class="text-danger fw-bold">¡Último disponible!</p>
+    <!-- Carousel Marcas Perfumes -->
+    <div class="bg-marcas py-4 mt-5">
+
+        <h2 class="text-center mb-4 mt-1">Nuestras Marcas</h2>
+
+        <div id="carouselMarcas" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner">
+                @{
+                    var itemsPorSlide = 4;
+                    int totalItems = Model.Marcas.Count;
+                    int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
+                    for (int i = 0; i < totalSlides; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row justify-content-center">
+                                @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
+                                {
+                                    var marca = Model.Marcas[i * itemsPorSlide + j];
+                                    <div class="col-3 col-md-3">
+                                        <div class="card text-center mb-3 border-0 shadow-sm rounded">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="font-family: 'Georgia', serif;">@marca.Nombre</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- FLECHA IZQUIERDA -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMarcas" data-bs-slide="prev">
+                <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+            </button>
+
+            <!-- FLECHA DERECHA -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselMarcas" data-bs-slide="next">
+                <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Carousel Perfumes con Promociones -->
+    <div class="bg-marcas py-4 mt-5">
+
+        <h2 class="text-center mb-4 mt-1">Perfumes en Promoción</h2>
+
+        <!-- Perfumes -->
+        <div id="carouselPerfumesEnPromo" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner">
+                @{
+                    var itemsPorSlidePromo = 4;
+                    var totalItemsPromo = Model.Perfumes.Count;
+                    var totalSlidesPromo = (int)Math.Ceiling((double)totalItemsPromo / itemsPorSlidePromo);
+
+                    for (int i = 0; i < totalSlidesPromo; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row justify-content-center">
+                                @for (int j = 0; j < itemsPorSlidePromo && (i * itemsPorSlidePromo + j) < totalItemsPromo; j++)
+                                {
+                                    var perfume = Model.Perfumes[i * itemsPorSlidePromo + j];
+
+                                    <div class="col-md-3 col-6 mb-4 d-flex">
+                                        <div class="card w-100" data-id="@perfume.Id">
+                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
+                                            <div class="card-body d-flex flex-column text-center">
+                                                <h5 class="card-title">@perfume.Nombre</h5>
+                                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+
+                                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+
+                                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                                    @foreach (var p in perfume.Presentaciones)
+                                                    {
+                                                        <button type="button"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                data-perfumeid="@p.Id"
+                                                                data-precio="@p.Precio"
+                                                                data-ml="@p.Ml">
+                                                            @p.Ml ml
+                                                        </button>
+                                                    }
+                                                </div>
+
+                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+
+
+                                                <div class="espacio-stock">
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb == 1)
+                                                    {
+                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                                    {
+                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                    }
+                                                </div>
+
+
+                                                <div class="mt-auto d-flex flex-column">
+                                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
+                                                        <i class="fas fa-eye"></i> Ver
+                                                    </button>
+
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <button class="btn-eterea" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                                            <i class="fas fa-cart-plus"></i> Agotado
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn-eterea">
+                                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- FLECHA IZQUIERDA -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="prev">
+                <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+            </button>
+
+            <!-- FLECHA DERECHA -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="next">
+                <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- Carousel Perfumes Mas vendidos -->
+    <div class="bg-marcas py-4 mb-4 mt-5">
+
+        <h2 class="text-center mb-4 mt-1">Más Vendidos</h2>
+
+        <div id="carouselMasVendidos" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner">
+                @{
+                    var itemsPorSlideVendidos = 4; // Cantidad de perfumes por slide
+                    var totalItemsVendidos = Model.MasVendidos.Count;
+                    var totalSlidesVendidos = (int)Math.Ceiling((double)totalItemsVendidos / itemsPorSlideVendidos);
+
+                    for (int i = 0; i < totalSlidesVendidos; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row justify-content-center">
+                                @for (int j = 0; j < itemsPorSlideVendidos && (i * itemsPorSlideVendidos + j) < totalItemsVendidos; j++)
+                                {
+                                    var index = i * itemsPorSlideVendidos + j;
+                                    var perfume = Model.MasVendidos[index];
+
+                                    <div class="col-md-3 col-6 mb-4 d-flex">
+                                        <div class="card w-100" data-id="@perfume.Id">
+                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
+                                            <div class="card-body d-flex flex-column text-center">
+                                                <h5 class="card-title">@perfume.Nombre</h5>
+                                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+                                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+
+                                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                                    @foreach (var p in perfume.Presentaciones)
+                                                    {
+                                                        <button type="button"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                data-perfumeid="@p.Id"
+                                                                data-precio="@p.Precio"
+                                                                data-ml="@p.Ml">
+                                                            @p.Ml ml
+                                                        </button>
+                                                    }
+                                                </div>
+
+                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+
+                                                <div class="espacio-stock">
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb == 1)
+                                                    {
+                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                                    }
+                                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                                    {
+                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                    }
+                                                </div>
+
+
+                                                <div class="mt-auto d-flex flex-column">
+                                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
+                                                        <i class="fas fa-eye"></i> Ver
+                                                    </button>
+
+                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    {
+                                                        <button class="btn-eterea" disabled style="opacity: 0.6; cursor: not-allowed;">
+                                                            <i class="fas fa-cart-plus"></i> Agotado
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn-eterea">
+                                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- FLECHA IZQUIERDA -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="prev">
+                <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+            </button>
+
+            <!-- FLECHA DERECHA -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="next">
+                <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- Carrito -->
+    <div id="carrito-offcanvas" class="offcanvas-carrito">
+        <div class="offcanvas-contenido">
+            <h4>🛒 Se agregó a tu carrito</h4>
+            <div id="info-perfume-agregado"></div>
+            <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
+        </div>
+    </div>
+
+
+    <!-- Java Script -->
+    @section Scripts {
+        <script>
+           // Función para manejar el cambio de tamaño y actualización en cada card
+            document.querySelectorAll('.selector-tamanios').forEach(container => {
+                container.addEventListener('click', function (e) {
+                    const btn = e.target.closest('.btn-tamanio');
+                    if (!btn) return;
+
+                    // Remover clase 'active' de los hermanos y activar el botón clickeado
+                    container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Obtener la card padre y actualizar datos visibles
+                    const card = container.closest('.card');
+                    const nuevoPrecio = btn.getAttribute('data-precio');
+                    const nuevoMl = btn.getAttribute('data-ml');
+                    const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
+
+                    // Actualizar el texto y el data-id de la card (para agregar al carrito)
+                    card.querySelector('.precio-texto').innerText = `${nuevoPrecio}`;
+                    card.querySelector('.ml-texto').innerText = `${nuevoMl} `;
+                    card.setAttribute('data-id', nuevoPerfumeId);
+                });
+            });
+
+            // Función para manejar el click en "Agregar al carrito"
+            document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(icon => {
+                icon.parentElement.addEventListener('click', function () {
+                    const card = icon.closest('.card');
+                    const perfumeId = card.getAttribute('data-id');
+
+                    fetch('@Url.Action("Agregar", "Carrito")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `perfumeId=${perfumeId}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                            return;
                         }
 
-                        <div class="mt-auto d-flex flex-column">
-                            <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
-                                <i class="fas fa-eye"></i> Ver
-                            </button>
+                        const contenedor = document.getElementById("info-perfume-agregado");
 
-                            <button class="btn-eterea">
-                                <i class="fas fa-cart-plus"></i> Agregar al carrito
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+                        if (data.error) {
+                            contenedor.innerHTML = `
+                                <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                                <p>${data.error}</p>
+                            `;
+                            document.getElementById("carrito-offcanvas").classList.add("show");
+                            setTimeout(() => {
+                                document.getElementById("carrito-offcanvas").classList.remove("show");
+                            }, 5000);
+                            return;
+                        }
 
-    <!-- Paginación simple -->
-    <nav class="mt-5">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-                <a class="page-link" href="#">Anterior</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
-        </ul>
-    </nav>
+                        contenedor.innerHTML = `
+                            <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                            <p><strong>${data.nombre}</strong></p>
+                            <p>${data.tipo} - ${data.presentacion} ml</p>
+                            <p>Género: ${data.genero}</p>
+                            <p>Precio: ${
+                                data.precioDescuento
+                                    ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                    : `<strong>$${data.precioOriginal}</strong>`
+                            }</p>
+                            ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                        `;
 
-</div>
-
-<div id="carrito-offcanvas" class="offcanvas-carrito">
-    <div class="offcanvas-contenido">
-        <h4>🛒 Se agregó a tu carrito</h4>
-        <div id="info-perfume-agregado"></div>
-        <button onclick="window.location.href='@Url.Action("Index", "Carrito")'" class="btn-eterea mt-3">Ir a mi carrito</button>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-    document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
-        btn.parentElement.addEventListener('click', function () {
-            const card = btn.closest('.card');
-            const perfumeId = card.getAttribute('data-id');
-
-            fetch('@Url.Action("Agregar", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${perfumeId}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                // ✅ Redirigir al login si el backend lo indica
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                    return;
-                }
-
-                if (data.error) {
-                    const contenedor = document.getElementById("info-perfume-agregado");
-                    contenedor.innerHTML = `
-                    <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
-                    <p>${data.error}</p>
-                `;
-
-                    document.getElementById("carrito-offcanvas").classList.add("show");
-
-                    setTimeout(() => {
-                        document.getElementById("carrito-offcanvas").classList.remove("show");
-                    }, 5000);
-                    return;
-                }
-
-
-                const contenedor = document.getElementById("info-perfume-agregado");
-                contenedor.innerHTML = `
-                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
-                    <p><strong>${data.nombre}</strong></p>
-                    <p>${data.tipo} - ${data.presentacion} ml</p>
-                    <p>Género: ${data.genero}</p>
-                    <p>Precio: ${
-                        data.precioDescuento
-                             ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                             : `<strong>$${data.precioOriginal}</strong>`
-                    }</p>
-                    ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
-                `;
-
-                document.getElementById("carrito-offcanvas").classList.add("show");
-
-                setTimeout(() => {
-                    document.getElementById("carrito-offcanvas").classList.remove("show");
-                }, 6000); // cerrar después de 6 seg
-            })
-            .catch(err => {
-                console.error('Error en la solicitud:', err);
-                alert("Hubo un error al intentar agregar el perfume al carrito.");
+                        document.getElementById("carrito-offcanvas").classList.add("show");
+                        setTimeout(() => {
+                            document.getElementById("carrito-offcanvas").classList.remove("show");
+                        }, 6000);
+                    })
+                    .catch(err => {
+                        console.error('Error en la solicitud:', err);
+                        alert("Hubo un error al intentar agregar el perfume al carrito.");
+                    });
+                });
             });
-        });
-    });
-    </script>
-}
+        </script>
+    </div>
+    }
+
