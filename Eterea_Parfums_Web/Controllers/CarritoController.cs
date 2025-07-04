@@ -105,30 +105,46 @@ namespace Eterea_Parfums_Web.Controllers
 
                     int cantidadConDescuento = (cantidad / 2) * 2;
                     int cantidadSinDescuento = cantidad % 2;
-                    double porcentajePorCantidad = (100 - promoPorCantidad.descuento) / 100.0;
+                    double porcentajeDescuento = promoPorCantidad.descuento / 100.0;
                     double porcentaje10 = 0.9;
 
-                    total = (cantidadConDescuento * precioOriginal * porcentajePorCantidad) +
+                    total = (cantidadConDescuento * precioOriginal * porcentajeDescuento) +
                             (cantidadSinDescuento * precioOriginal * (promo10 != null ? porcentaje10 : 1.0));
 
-                    if (cantidadSinDescuento == 1 && promo10 != null)
+                    if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
                     {
                         precioConDescuento = precioOriginal * porcentaje10;
+                        // Solo hay una unidad → invitar a llevar otra
+                        leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {porcentajeDescuento}% de descuento</strong>";
+                    }
+                    else if (cantidad % 2 == 1 && stockDisponible > cantidad)
+                    {
+                        // Cantidad impar > 1 y hay stock → sugerir agregar uno más
+                        leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {porcentajeDescuento}% de descuento!</strong>";
                     }
                     else
                     {
-                        precioConDescuento = precioOriginal * porcentajePorCantidad;
+                        precioConDescuento = precioOriginal * porcentajeDescuento;
                     }
 
                     int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
 
+                    // Mensaje principal con cantidad con descuento
                     leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
                                    $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
 
+                    // Agregá mensaje para la unidad restante con promo 10%
                     if (cantidadSinDescuento == 1 && promo10 != null)
                     {
                         leyendaPromo += $"<br /><span style='color: black;'>1 unidad:</span> Promoción 10% OFF";
                     }
+
+                    // Agregá mensaje de "Si agregás uno más..." solo si no hay promo10
+                    if (cantidadSinDescuento == 1 && promo10 == null && stockDisponible > cantidad)
+                    {
+                        leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
+                    }
+
                 }
                 else if (promo10 != null)
                 {
@@ -143,24 +159,41 @@ namespace Eterea_Parfums_Web.Controllers
                         leyendaPromo += $"<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
                     }
                 }
-                else if (promoPorCantidad != null && cantidad == 1)
+                else if (promoPorCantidad != null)
                 {
-                    tienePromo = false;
-                    precioConDescuento = precioOriginal;
-                    total = precioOriginal;
-
                     int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                    leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                }
-                else if (promoPorCantidad != null && cantidad > 1 && cantidad % 2 == 1 && stockDisponible > cantidad)
-                {
-                    tienePromo = false;
-                    precioConDescuento = precioOriginal;
-                    total = precioOriginal * cantidad;
+                    double porcentajePorCantidad = (100 - promoPorCantidad.descuento) / 100.0;
 
-                    int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                    leyendaPromo = $"<strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
+                    if (cantidad == 1)
+                    {
+                        tienePromo = false;
+                        precioConDescuento = precioOriginal;
+                        total = precioOriginal;
+
+                        leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
+                    }
+                    else
+                    {
+                        tienePromo = true;
+
+                        int cantidadConDescuento = (cantidad / 2) * 2;
+                        int cantidadSinDescuento = cantidad % 2;
+
+                        total = (cantidadConDescuento * precioOriginal * porcentajePorCantidad) +
+                                (cantidadSinDescuento * precioOriginal);
+
+                        precioConDescuento = (cantidadSinDescuento > 0) ? precioOriginal : precioOriginal * porcentajePorCantidad;
+
+                        leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
+                                       $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
+
+                        if (cantidadSinDescuento == 1 && stockDisponible > cantidad)
+                        {
+                            leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
+                        }
+                    }
                 }
+
                 else
                 {
                     total = precioOriginal * cantidad;
@@ -213,6 +246,8 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 return Json(new { success = false, error = "Item no encontrado" });
             }
+
+
 
             bool seElimino = false;
 
@@ -625,7 +660,7 @@ namespace Eterea_Parfums_Web.Controllers
                 total = (cantidadConDescuento * precioOriginal * porcentajePorCantidad) +
                         (cantidadSinDescuento * precioOriginal * (promo10 != null ? porcentaje10 : 1.0));
 
-                if (cantidadSinDescuento == 1 && promo10 != null)
+                if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
                     precioConDescuento = precioOriginal * porcentaje10;
                 else
                     precioConDescuento = precioOriginal * porcentajePorCantidad;
@@ -635,7 +670,7 @@ namespace Eterea_Parfums_Web.Controllers
                 leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
                                $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
 
-                if (cantidadSinDescuento == 1 && promo10 != null)
+                if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
                     leyendaPromo += $"<br /><span style='color: black;'>1 unidad:</span> Promoción 10% OFF";
             }
             else if (promo10 != null)
