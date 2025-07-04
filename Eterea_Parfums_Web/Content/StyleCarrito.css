@@ -60,10 +60,12 @@ body {
 }
 
 .precio-original {
-    font-size: 0.8rem;
-    text-decoration: line-through;
+    font-size: 1rem;
     color: gray;
+    text-decoration: line-through;
+    margin-bottom: 5px;
 }
+
 
 .precio-descuento {
     font-size: 1.2rem;

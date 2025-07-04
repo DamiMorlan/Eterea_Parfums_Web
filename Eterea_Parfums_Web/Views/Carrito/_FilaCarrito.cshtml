@@ -1,0 +1,67 @@
+﻿@model Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel
+
+<div class="fila-producto" id="perfume-@Model.PerfumeId">
+    <div class="contenedor-producto">
+        <a href="@Url.Action("Details", "Perfume", new { id = Model.PerfumeId })">
+            <img src="@Url.Content("~/Imagenes/" + Model.Imagen + ".jpg")" alt="@Model.Nombre" />
+        </a>
+
+        <div class="producto-detalles">
+            <h3>@Model.Nombre</h3>
+            <p>Tipo: @Model.TipoDePerfume</p>
+            <p>Presentación: @Model.Presentacion ml</p>
+            <p>Género: @Model.Genero</p>
+
+            @if (Model.StockDisponibleParaVentaWeb == 1)
+            {
+                <p style="color: red; font-weight: bold;">¡Último disponible!</p>
+            }
+
+            @if (Model.MostrarPrecioTachado && Model.PrecioConDescuento.HasValue)
+            {
+                <p class="precio-original" style="text-decoration: line-through; color: gray;">
+                    $@Model.PrecioOriginal.ToString("N0")
+                </p>
+                <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
+                    $@Model.PrecioConDescuento.Value.ToString("N0")
+                </p>
+            }
+            else
+            {
+                <p class="precio-descuento" style="color: black;">
+                    $@Model.PrecioOriginal.ToString("N0")
+                </p>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.LeyendaPromo))
+            {
+                <div class="leyenda-promo" style="margin-top: 5px;">
+                    @Html.Raw(Model.LeyendaPromo)
+                </div>
+            }
+
+            <label for="cantidad-@Model.PerfumeId" style="margin-top: 10px;">Cantidad:</label>
+           
+            <select id="cantidad-@Model.PerfumeId" data-id="@Model.PerfumeId" onchange="actualizarCantidad(this)" style="max-width: 80px;">
+                @for (int i = 0; i <= Model.StockDisponibleParaVentaWeb; i++)
+                {
+                    <option value="@i" @(Model.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                }
+            </select>
+
+
+            <p id="total-perfume-@Model.PerfumeId" style="margin-top: 10px;">
+                Total: $@Model.Total.ToString("N0")
+            </p>
+        </div>
+    </div>
+
+    <div class="contenedor-eliminar">
+        <form action="@Url.Action("Eliminar", "Carrito")" method="post" style="display:inline;">
+            <input type="hidden" name="perfumeId" value="@Model.PerfumeId" />
+            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                🗑️
+            </button>
+        </form>
+    </div>
+</div>

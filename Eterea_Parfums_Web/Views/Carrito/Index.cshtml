@@ -30,6 +30,7 @@
 
     @if (Model != null && Model.Any())
     {
+
         foreach (var item in Model)
         {
             <div class="fila-producto" id="perfume-@item.PerfumeId">
@@ -47,18 +48,26 @@
                         {
                             <p style="color: red; font-weight: bold;">¡Último disponible!</p>
                         }
-
-                        @if (item.TienePromo && item.PrecioOriginal != item.PrecioConDescuento)
+                        @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
                         {
                             <p class="precio-original" style="text-decoration: line-through; color: gray;">
                                 $@item.PrecioOriginal.ToString("N0")
                             </p>
-                            <p class="precio-descuento">$@item.PrecioConDescuento.ToString("N0")</p>
+                            <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
+                                $@item.PrecioConDescuento.Value.ToString("N0")
+                            </p>
                         }
                         else
                         {
-                            <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
+                            <p class="precio-descuento" style="color: black;">
+                                $@item.PrecioOriginal.ToString("N0")
+                            </p>
                         }
+
+
+
+
+
 
                         @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
                         {
@@ -159,101 +168,87 @@
 @section Scripts {
     <script>
         function actualizarCantidad(select) {
-    const perfumeId = select.dataset.id;
-    const cantidad = select.value;
+            const perfumeId = select.dataset.id;
+            const cantidad = select.value;
 
-    const resumen = document.querySelector('.resumen-carrito');
-    resumen.style.opacity = "0.5";
+            console.log("Cambiando cantidad:", perfumeId, cantidad); // DEBUG
 
-    fetch('@Url.Action("ActualizarCantidad", "Carrito")', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `perfumeId=${perfumeId}&cantidad=${cantidad}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (data.eliminado === true || cantidad === "0") {
-                const fila = document.getElementById(`perfume-${perfumeId}`);
-                if (fila) {
-                    fila.classList.add("fade-out");
-                    setTimeout(() => {
-                        fila.remove();
+            const resumen = document.querySelector('.resumen-carrito');
+            resumen.style.opacity = "0.5";
 
-                        if (document.querySelectorAll('.fila-producto').length === 0) {
-                            document.querySelector('.carrito-container').innerHTML = `
-                                <div style="text-align: center; padding: 50px;">
-                                    <div style="font-size: 100px;">🛒</div>
-                                    <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                                </div>`;
+            const urlActualizar = '@Url.Action("ActualizarCantidad", "Carrito")';
+
+            fetch(urlActualizar, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `perfumeId=${perfumeId}&cantidad=${cantidad}`
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Error de red");
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+
+                    // ✅ Si se eliminó el ítem (cantidad = 0)
+                    if (data.eliminado === true || cantidad === "0") {
+                        const fila = document.getElementById(`perfume-${perfumeId}`);
+                        if (fila) {
+                            fila.classList.add("fade-out");
+                            setTimeout(() => {
+                                fila.remove();
+
+                                // ✅ Restaurar opacidad
+                                resumen.style.opacity = "1";
+
+                                // Si ya no hay perfumes, mostrar mensaje de carrito vacío
+                                if (document.querySelectorAll('.fila-producto').length === 0) {
+                                    document.querySelector('.carrito-container').innerHTML = `
+                                        <div style="text-align: center; padding: 50px;">
+                                            <div style="font-size: 100px;">🛒</div>
+                                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                                        </div>`;
+                                }
+                            }, 500);
                         }
-                    }, 500);
-                }
-                return;
-            }
-
-            // ✅ Actualizar texto totales
-
-            document.getElementById("subtotal").textContent = `$${data.subtotal}`;
-            document.getElementById("descuento").textContent = `-$${data.descuento}`;
-            document.getElementById("total").textContent = `$${data.total}`;
-
-            // ✅ Actualizar total del perfume individual
-            const totalElemento = document.getElementById(`total-perfume-${data.perfumeId}`);
-            if (totalElemento) {
-                totalElemento.innerText = `Total: $${data.perfumeTotal}`;
-                totalElemento.style.transition = "background-color 0.3s";
-                totalElemento.style.backgroundColor = "#ffffcc";
-                setTimeout(() => {
-                    totalElemento.style.backgroundColor = "transparent";
-                }, 500);
-            }
-
-            // ✅ Actualizar leyenda y precios
-            const productoDiv = document.getElementById(`perfume-${data.perfumeId}`);
-            if (productoDiv) {
-                const precioOriginalEl = productoDiv.querySelector(".precio-original");
-                const precioDescuentoEl = productoDiv.querySelector(".precio-descuento");
-                const leyendaEl = productoDiv.querySelector(".leyenda-promo");
-
-                if (data.mostrarPrecioTachado === true) {
-                    // Mostrar precio original tachado y precio con descuento
-                    if (precioOriginalEl) {
-                        precioOriginalEl.textContent = `$${data.precioOriginal}`;
-                        precioOriginalEl.style.display = "block";
+                        return;
                     }
-                    if (precioDescuentoEl) {
-                        precioDescuentoEl.textContent = `$${data.precioConDescuento}`;
+
+                    // ✅ Actualizar totales del resumen
+                    document.getElementById("subtotal").textContent = `$${data.subtotal}`;
+                    document.getElementById("descuento").textContent = `-$${data.descuento}`;
+                    document.getElementById("total").textContent = `$${data.total}`;
+
+                    // ✅ Reemplazar la fila del perfume con el nuevo HTML
+                    const fila = document.getElementById(`perfume-${data.perfumeId}`);
+                    if (fila && data.filaHtml) {
+                        const nuevoDiv = document.createElement("div");
+                        nuevoDiv.innerHTML = data.filaHtml;
+                        const nuevaFila = nuevoDiv.firstElementChild;
+                        fila.replaceWith(nuevaFila);
                     }
+
                 } else {
-                    // Ocultar precio tachado, mostrar solo el precio original
-                    if (precioOriginalEl) {
-                        precioOriginalEl.style.display = "none";
-                    }
-                    if (precioDescuentoEl) {
-                        precioDescuentoEl.textContent = `$${data.precioOriginal}`;
-                    }
+                    console.warn("Respuesta sin éxito:", data);
+                    alert("No se pudo actualizar el carrito.");
                 }
 
-
-                if (leyendaEl) {
-                    leyendaEl.innerHTML = data.leyendaPromo || "";
-                }
-            }
+                resumen.style.opacity = "1";
+            })
+            .catch((err) => {
+                resumen.style.opacity = "1";
+                console.error("Error al actualizar el carrito:", err);
+                alert("Ocurrió un error al actualizar el carrito.");
+            });
         }
-
-        resumen.style.opacity = "1";
-    })
-    .catch(() => {
-        resumen.style.opacity = "1";
-        alert("Error al actualizar el carrito");
-    });
-}
-
     </script>
 }
+
+
+
+
 
 
 

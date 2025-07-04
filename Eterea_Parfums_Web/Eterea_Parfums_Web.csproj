@@ -547,6 +547,7 @@
     <Content Include="Views\Pedido\VistaPrevia.cshtml" />
     <Content Include="Views\Pedido\PagoFallido.cshtml" />
     <Content Include="Views\Cliente\VerPerfil.cshtml" />
+    <Content Include="Views\Carrito\_FilaCarrito.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
