@@ -121,7 +121,6 @@
                                                 <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
 
                                                 <p class="card-text mb-1"><strong>Tamaño:</strong></p>
-
                                                 <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
                                                     @foreach (var p in perfume.Presentaciones)
                                                     {
@@ -135,8 +134,23 @@
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+                                                <p class="card-text mt-3 mb-1">
+                                                    <strong>Precio:</strong>
+                                                    @if (perfume.PrecioConDescuento.HasValue)
+                                                    {
+                                                        <span class="precio-original">$@perfume.Precio</span>
+                                                        <span class="precio-descuento">$@perfume.PrecioConDescuento.Value.ToString("0.00")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="precio-descuento">$@perfume.Precio</span>
+                                                    }
+                                                </p>
 
+                                                @if (!string.IsNullOrEmpty(perfume.LeyendaPromocion))
+                                                {
+                                                    <p class="leyenda-promocion">@Html.Raw(perfume.LeyendaPromocion)</p>
+                                                }
 
                                                 <div class="espacio-stock">
                                                     @if (perfume.StockDisponibleParaWeb == 0)
@@ -156,7 +170,6 @@
                                                         <p class="text-success fw-bold">✔️ Stock disponible</p>
                                                     }
                                                 </div>
-
 
                                                 <div class="mt-auto d-flex flex-column">
                                                     <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'" class="btn-eterea mb-2">
@@ -186,19 +199,15 @@
                 }
             </div>
 
-            <!-- FLECHA IZQUIERDA -->
+            <!-- FLECHAS -->
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="prev">
                 <span class="fa-solid fa-chevron-left flecha-carousel"></span>
             </button>
-
-            <!-- FLECHA DERECHA -->
             <button class="carousel-control-next" type="button" data-bs-target="#carouselPerfumesEnPromo" data-bs-slide="next">
                 <span class="fa-solid fa-chevron-right flecha-carousel"></span>
             </button>
         </div>
-
     </div>
-
 
     <!-- Carousel Perfumes Mas vendidos -->
     <div class="bg-marcas py-4 mb-4 mt-5">
@@ -242,7 +251,28 @@
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1"><strong>Precio:</strong> $<span class="precio-texto">@perfume.Precio</span></p>
+                                                <p class="card-text mt-3 mb-1">
+                                                    <strong>Precio:</strong>
+                                                    @if (perfume.PrecioConDescuento.HasValue)
+                                                    {
+                                                        <span class="precio-original">$@perfume.Precio</span>
+                                                        <span class="precio-descuento">$@perfume.PrecioConDescuento.Value.ToString("0.00")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="precio-descuento">$@perfume.Precio</span>
+                                                    }
+                                                </p>
+
+                                                @if (!string.IsNullOrEmpty(perfume.LeyendaPromocion))
+                                                {
+                                                    <p class="leyenda-promocion">@Html.Raw(perfume.LeyendaPromocion)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="promo-placeholder">&nbsp;</p> <!-- Para mantener el espacio -->
+                                                }
+
 
                                                 <div class="espacio-stock">
                                                     @if (perfume.StockDisponibleParaWeb == 0)

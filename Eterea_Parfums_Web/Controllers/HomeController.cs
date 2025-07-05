@@ -35,31 +35,78 @@ namespace Eterea_Parfums_Web.Controllers
                 .Where(p => p.activo && perfumesEnPromocionIds.Contains(p.id))
                 .ToList();
 
+           
             // 5. Filtrar perfumes que tengan stock disponible
             var perfumesConStock = perfumes
                 .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id))
-                .Select(p => new PerfumeHomeViewModel
+                .Select(p =>
                 {
-                    Id = p.id,
-                    Nombre = p.nombre,
-                    Imagen = p.imagen1,
-                    Marca = p.marca.nombre,
-                    Precio = p.precio_en_pesos,
-                    Presentacion = p.presentacion_ml,
-                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id],
+                    var promocionesActivas = p.promocion
+                        .Where(pr => pr.activo && pr.id != 1 &&
+                                     pr.fecha_inicio <= DateTime.Now &&
+                                     pr.fecha_fin >= DateTime.Now)
+                        .ToList();
 
-                    Presentaciones = db.perfume
-                    .Where(x => x.nombre == p.nombre && x.activo)
-                    .Select(x => new PresentacionViewModel
+                    var promo10 = promocionesActivas.FirstOrDefault(pr => pr.descuento == 10);
+                    var promoPorCantidad = promocionesActivas.FirstOrDefault(pr => pr.descuento > 10);
+
+                    string leyendaPromo = null;
+                    double? precioDescuento = null;
+                    bool tienePromo = false;
+
+                    if (promoPorCantidad != null)
                     {
-                        Id = x.id,
-                        Ml = x.presentacion_ml,
-                        Precio = x.precio_en_pesos
-                    })
-                    .OrderBy(x => x.Ml)
-                    .ToList()
+                        tienePromo = true;
+
+                        if (promoPorCantidad.descuento * 2 == 100)
+                        {
+                            leyendaPromo = "Promoción 2x1";
+                            precioDescuento = Math.Round(p.precio_en_pesos * 0.5, 2); // Mitad de precio como estimación
+                        }
+                        else
+                        {
+                            var descuento = promoPorCantidad.descuento; // ejemplo: 80
+                            var precioConDescuentoEn2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
+                            var precioPromedio = (p.precio_en_pesos + precioConDescuentoEn2daUnidad) / 2;
+
+                            leyendaPromo = $"Promoción {descuento * 2}% en la segunda unidad";
+                            precioDescuento = Math.Round(precioPromedio, 2); // Promedio por unidad
+                        }
+                    }
+                    else if (promo10 != null)
+                    {
+                        tienePromo = true;
+                        leyendaPromo = "Promoción 10% OFF";
+                        precioDescuento = Math.Round(p.precio_en_pesos * 0.9, 2);
+                    }
+
+                    return new PerfumeHomeViewModel
+                    {
+                        Id = p.id,
+                        Nombre = p.nombre,
+                        Imagen = p.imagen1,
+                        Marca = p.marca.nombre,
+                        Precio = p.precio_en_pesos,
+                        Presentacion = p.presentacion_ml,
+                        StockDisponibleParaWeb = stockDisponiblePorPerfume[p.id],
+
+                        Presentaciones = db.perfume
+                            .Where(x => x.nombre == p.nombre && x.activo)
+                            .Select(x => new PresentacionViewModel
+                            {
+                                Id = x.id,
+                                Ml = x.presentacion_ml,
+                                Precio = x.precio_en_pesos
+                            })
+                            .OrderBy(x => x.Ml)
+                            .ToList(),
+
+                        TienePromocion = tienePromo,
+                        LeyendaPromocion = leyendaPromo,
+                        PrecioConDescuento = precioDescuento
+                    };
                 })
-                    .ToList();
+                .ToList();
 
             // 6. Obtener promociones activas con banner
             var promociones = db.promocion
@@ -100,26 +147,69 @@ namespace Eterea_Parfums_Web.Controllers
                       p => p.id,
                       (top, p) => new { Perfume = p, top.TotalVendido })
                 .Where(p => stockDisponiblePorPerfume.ContainsKey(p.Perfume.id))
-                .Select(p => new PerfumeHomeViewModel
+                .Select(p =>
                 {
-                    Id = p.Perfume.id,
-                    Nombre = p.Perfume.nombre,
-                    Imagen = p.Perfume.imagen1,
-                    Marca = p.Perfume.marca.nombre,
-                    Precio = p.Perfume.precio_en_pesos,
-                    Presentacion = p.Perfume.presentacion_ml,
-                    StockDisponibleParaWeb = stockDisponiblePorPerfume[p.Perfume.id],
+                    var promocionesActivas = p.Perfume.promocion
+                        .Where(pr => pr.activo && pr.id != 1 &&
+                                     pr.fecha_inicio <= DateTime.Now &&
+                                     pr.fecha_fin >= DateTime.Now)
+                        .ToList();
 
-                    Presentaciones = db.perfume
-                        .Where(x => x.nombre == p.Perfume.nombre && x.activo)
-                        .Select(x => new PresentacionViewModel
+                    var promo10 = promocionesActivas.FirstOrDefault(pr => pr.descuento == 10);
+                    var promoPorCantidad = promocionesActivas.FirstOrDefault(pr => pr.descuento > 10);
+
+                    string leyendaPromo = null;
+                    double? precioDescuento = null;
+                    bool tienePromo = false;
+
+                    if (promoPorCantidad != null)
+                    {
+                        tienePromo = true;
+
+                        if (promoPorCantidad.descuento * 2 == 100)
                         {
-                            Id = x.id,
-                            Ml = x.presentacion_ml,
-                            Precio = x.precio_en_pesos
-                        })
-                        .OrderBy(x => x.Ml)
-                        .ToList()
+                            leyendaPromo = "Promoción 2x1";
+                            precioDescuento = Math.Round(p.Perfume.precio_en_pesos * 0.5, 2);
+                        }
+                        else
+                        {
+                            var descuento = promoPorCantidad.descuento;
+                            var precio2daUnidad = p.Perfume.precio_en_pesos * (1 - (descuento / 100.0));
+                            precioDescuento = Math.Round((p.Perfume.precio_en_pesos + precio2daUnidad) / 2, 2);
+                            leyendaPromo = $"Promoción {descuento}% en la segunda unidad";
+                        }
+                    }
+                    else if (promo10 != null)
+                    {
+                        tienePromo = true;
+                        leyendaPromo = "Promoción 10% OFF";
+                        precioDescuento = Math.Round(p.Perfume.precio_en_pesos * 0.9, 2);
+                    }
+
+                    return new PerfumeHomeViewModel
+                    {
+                        Id = p.Perfume.id,
+                        Nombre = p.Perfume.nombre,
+                        Imagen = p.Perfume.imagen1,
+                        Marca = p.Perfume.marca.nombre,
+                        Precio = p.Perfume.precio_en_pesos,
+                        PrecioConDescuento = precioDescuento,
+                        TienePromocion = tienePromo,
+                        LeyendaPromocion = leyendaPromo,
+                        Presentacion = p.Perfume.presentacion_ml,
+                        StockDisponibleParaWeb = stockDisponiblePorPerfume[p.Perfume.id],
+
+                        Presentaciones = db.perfume
+                            .Where(x => x.nombre == p.Perfume.nombre && x.activo)
+                            .Select(x => new PresentacionViewModel
+                            {
+                                Id = x.id,
+                                Ml = x.presentacion_ml,
+                                Precio = x.precio_en_pesos
+                            })
+                            .OrderBy(x => x.Ml)
+                            .ToList()
+                    };
                 })
                 .ToList();
 

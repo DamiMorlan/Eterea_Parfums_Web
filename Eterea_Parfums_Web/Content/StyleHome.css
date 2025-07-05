@@ -410,3 +410,36 @@ h2 {
         background-color: var(--rosa-profundo);
         color: white;
     }
+
+/* ----- Precio con promoción ----- */
+.precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.precio-descuento {
+    color: var(--rosa-profundo);
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* ----- Leyenda de promoción ----- */
+.leyenda-promocion {
+    background-color: var(--rosa-medio);
+    color: white;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.promo-placeholder {
+    min-height: 1.2rem; /* ajusta este valor según el alto que necesites */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
+}
