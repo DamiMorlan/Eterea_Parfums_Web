@@ -60,16 +60,23 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
+            double subtotal = items.Sum(i => i.Precio * i.Cantidad);
+            double total = subtotal;                 // sin promos en este modelo
+            double descuento = subtotal - total;         // 0 si no aplicás descuento
+            bool envioGratis = total >= 50_000;        // regla de negocio
+
+
             var model = new VistaPreviaPedidoViewModel
             {
                 Cliente = cliente,
                 Calle = calle,
                 Localidad = localidad,
                 Provincia = provincia,
-                ItemsCarrito = items,
-                Subtotal = Subtotal,
-                Descuento = Descuento,
-                Total = Total
+                Items = items,           // <- ya compila, tipado correcto
+                Subtotal = subtotal,
+                Descuento = descuento,
+                Total = total,
+                EnvioGratis = envioGratis     // <- variable definida arriba
             };
 
             return View(model);
