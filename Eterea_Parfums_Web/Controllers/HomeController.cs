@@ -176,7 +176,7 @@ namespace Eterea_Parfums_Web.Controllers
                             var descuento = promoPorCantidad.descuento;
                             var precio2daUnidad = p.Perfume.precio_en_pesos * (1 - (descuento / 100.0));
                             precioDescuento = Math.Round((p.Perfume.precio_en_pesos + precio2daUnidad) / 2, 2);
-                            leyendaPromo = $"Promoción {descuento}% en la segunda unidad";
+                            leyendaPromo = $"Promoción {descuento * 2}% en la segunda unidad";
                         }
                     }
                     else if (promo10 != null)

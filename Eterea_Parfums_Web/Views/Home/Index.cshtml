@@ -118,7 +118,7 @@
                                             <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
-                                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+                                                <p class="card-text mb-3">@perfume.Marca</p>
 
                                                 <p class="card-text mb-1"><strong>Tamaño:</strong></p>
                                                 <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
@@ -134,16 +134,15 @@
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1">
-                                                    <strong>Precio:</strong>
+                                                <p class="card-text mt-3 mb-1">                
                                                     @if (perfume.PrecioConDescuento.HasValue)
                                                     {
-                                                        <span class="precio-original">$@perfume.Precio</span>
-                                                        <span class="precio-descuento">$@perfume.PrecioConDescuento.Value.ToString("0.00")</span>
+                                                        <span class="precio-original">$ @perfume.Precio.ToString("N0")</span>
+                                                        <span class="precio-descuento">$ @perfume.PrecioConDescuento.Value.ToString("N0")</span>
                                                     }
                                                     else
                                                     {
-                                                        <span class="precio-descuento">$@perfume.Precio</span>
+                                                        <span class="precio-descuento">$ @perfume.Precio.ToString("N0")</span>
                                                     }
                                                 </p>
 
@@ -152,7 +151,7 @@
                                                     <p class="leyenda-promocion">@Html.Raw(perfume.LeyendaPromocion)</p>
                                                 }
 
-                                                <div class="espacio-stock">
+                                                <div class="espacio-stock mt-1">
                                                     @if (perfume.StockDisponibleParaWeb == 0)
                                                     {
                                                         <p class="text-danger fw-bold">❌ Stock agotado</p>
@@ -235,7 +234,7 @@
                                             <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" class="card-img-top custom-img" alt="@perfume.Nombre" />
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
-                                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.Marca</p>
+                                                <p class="card-text mb-3">@perfume.Marca</p>
                                                 <p class="card-text mb-1"><strong>Tamaño:</strong></p>
 
                                                 <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
@@ -251,16 +250,15 @@
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1">
-                                                    <strong>Precio:</strong>
+                                                <p class="card-text mt-3 mb-1">                                                    
                                                     @if (perfume.PrecioConDescuento.HasValue)
                                                     {
-                                                        <span class="precio-original">$@perfume.Precio</span>
-                                                        <span class="precio-descuento">$@perfume.PrecioConDescuento.Value.ToString("0.00")</span>
+                                                        <span class="precio-original">$ @perfume.Precio.ToString("N0")</span>
+                                                        <span class="precio-descuento">$ @perfume.PrecioConDescuento.Value.ToString("N0")</span>
                                                     }
                                                     else
                                                     {
-                                                        <span class="precio-descuento">$@perfume.Precio</span>
+                                                        <span class="precio-descuento">$ @perfume.Precio.ToString("N0")</span>
                                                     }
                                                 </p>
 
@@ -274,7 +272,7 @@
                                                 }
 
 
-                                                <div class="espacio-stock">
+                                                <div class="espacio-stock mt-1">
                                                     @if (perfume.StockDisponibleParaWeb == 0)
                                                     {
                                                         <p class="text-danger fw-bold">❌ Stock agotado</p>
