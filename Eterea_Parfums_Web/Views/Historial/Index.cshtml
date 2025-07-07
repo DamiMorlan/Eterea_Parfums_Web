@@ -174,18 +174,18 @@ h2{
                  <ul class="pagination justify-content-center">
 
                      <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
-                         <a class="page-link" href="@Url.Action("Historial", new { page = Model.PaginaActual - 1 })">Anterior</a>
+                         <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual - 1 })">Anterior</a>
                      </li>
 
                      @for (int i = 1; i <= Model.TotalPaginas; i++)
                      {
                          <li class="page-item @(Model.PaginaActual == i ? "active" : "")">
-                             <a class="page-link" href="@Url.Action("Historial", new { page = i })">@i</a>
+                             <a class="page-link" href="@Url.Action("Index", "Historial", new { page = i })">@i</a>
                          </li>
                      }
 
                      <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
-                         <a class="page-link" href="@Url.Action("Historial", new { page = Model.PaginaActual + 1 })">Siguiente</a>
+                         <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual + 1 })">Siguiente</a>
                      </li>
                  </ul>
              </nav>
