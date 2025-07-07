@@ -399,6 +399,7 @@
                     const tienePromo = btn.getAttribute('data-tiene-promo') === 'True';
                     const leyenda = btn.getAttribute('data-leyenda');
                     const imagen = btn.getAttribute('data-imagen');
+                    const stock = parseInt(btn.getAttribute('data-stock') || "0");
 
                     // Actualizar imagen
                     const imagenElem = card.querySelector('img.custom-img');
@@ -426,11 +427,37 @@
                         leyendaElem.textContent = tienePromo ? leyenda : '';
                     }
 
-                    // Actualizar atributo data-id en botones Agregar al carrito y Ver detalles
+                    // Actualizar mensaje de stock
+                    const stockElem = card.querySelector('.espacio-stock');
+                    if (stockElem) {
+                        if (stock === 0) {
+                            stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
+                        } else if (stock === 1) {
+                            stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
+                        } else if (stock <= 10) {
+                            stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
+                        } else {
+                            stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
+                        }
+                    }
+
+                    // Actualizar botones Ver y Agregar al carrito
                     const btnAgregar = card.querySelector('.btn-agregar-carrito');
                     if (btnAgregar) {
                         btnAgregar.setAttribute('data-id', nuevoPerfumeId);
+                        if (stock === 0) {
+                            btnAgregar.setAttribute('disabled', 'disabled');
+                            btnAgregar.style.opacity = '0.6';
+                            btnAgregar.style.cursor = 'not-allowed';
+                            btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
+                        } else {
+                            btnAgregar.removeAttribute('disabled');
+                            btnAgregar.style.opacity = '';
+                            btnAgregar.style.cursor = '';
+                            btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
+                        }
                     }
+
                     const btnDetalle = card.querySelector('.btn-ver-detalle');
                     if (btnDetalle) {
                         btnDetalle.setAttribute('data-id', nuevoPerfumeId);
@@ -438,11 +465,61 @@
                 });
             });
 
-            // Listener para botón Agregar al carrito
+            // Función para manejar el click en "Agregar al carrito"
             document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
-                    window.location.href = `/Carrito/Agregar/${perfumeId}`;
+
+                    fetch('@Url.Action("Agregar", "Carrito")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `perfumeId=${perfumeId}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                            return;
+                        }
+
+                        const contenedor = document.getElementById("info-perfume-agregado");
+
+                        if (data.error) {
+                            contenedor.innerHTML = `
+                                <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                                <p>${data.error}</p>
+                            `;
+                            document.getElementById("carrito-offcanvas").classList.add("show");
+                            setTimeout(() => {
+                                document.getElementById("carrito-offcanvas").classList.remove("show");
+                            }, 5000);
+                            return;
+                        }
+
+                        contenedor.innerHTML = `
+                            <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                            <p><strong>${data.nombre}</strong></p>
+                            <p>${data.tipo} - ${data.presentacion} ml</p>
+                            <p>Género: ${data.genero}</p>
+                            <p>Precio: ${
+                                data.precioDescuento
+                                    ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                    : `<strong>$${data.precioOriginal}</strong>`
+                            }</p>
+                            ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                        `;
+
+                        document.getElementById("carrito-offcanvas").classList.add("show");
+                        setTimeout(() => {
+                            document.getElementById("carrito-offcanvas").classList.remove("show");
+                        }, 6000);
+                    })
+                    .catch(err => {
+                        console.error('Error en la solicitud:', err);
+                        alert("Hubo un error al intentar agregar el perfume al carrito.");
+                    });
                 });
             });
 
