@@ -31,5 +31,11 @@ namespace Eterea_Parfums_Web.ViewModels
         public int Id { get; set; }
         public int Ml { get; set; }
         public double Precio { get; set; }
+        public string Imagen { get; set; }
+        public string Marca { get; set; }
+        public bool TienePromocion { get; set; }
+        public string LeyendaPromocion { get; set; }
+        public double? PrecioConDescuento { get; set; }
+        public int StockDisponible { get; set; }
     }
 }
