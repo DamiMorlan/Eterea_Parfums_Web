@@ -13,6 +13,7 @@ namespace Eterea_Parfums_Web.ViewModels
         public int Presentacion { get; set; }
         public int Cantidad { get; set; }
         public double Precio { get; set; }
+        public double Total => Precio * Cantidad;
     }
 
 }

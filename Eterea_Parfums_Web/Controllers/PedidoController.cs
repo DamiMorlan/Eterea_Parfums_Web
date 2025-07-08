@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -60,11 +61,12 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
-            double subtotal = items.Sum(i => i.Precio * i.Cantidad);
-            double total = subtotal;                 // sin promos en este modelo
-            double descuento = subtotal - total;         // 0 si no aplicás descuento
+            double subtotal = Subtotal;
+            double descuento = Descuento;
+            double total = Total;
             bool envioGratis = total >= 50_000;        // regla de negocio
 
+        
 
             var model = new VistaPreviaPedidoViewModel
             {
