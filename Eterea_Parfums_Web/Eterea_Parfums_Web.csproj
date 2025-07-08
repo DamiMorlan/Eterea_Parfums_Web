@@ -227,6 +227,7 @@
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MarcaViewModel.cs" />
+    <Compile Include="ViewModels\PedidoItemVM.cs" />
     <Compile Include="ViewModels\PerfumeDetailsViewModel.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
     <Compile Include="ViewModels\ItemResumenPedidoViewModel.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
     <Compile Include="ViewModels\ProductoPagoViewModel.cs" />
     <Compile Include="ViewModels\PromocionViewModel.cs" />
+    <Compile Include="ViewModels\SimularPagoViewModel.cs" />
     <Compile Include="ViewModels\VistaPreviaPedidoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +262,8 @@
     <Content Include="Content\StyleHome.css" />
     <Content Include="Content\StylePerfume.css" />
     <Content Include="Content\StylePerfumeDetails.css" />
+    <Content Include="Content\StyleSimularPago.css" />
+    <Content Include="Content\StyleVistaPrevia.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -548,6 +552,8 @@
     <Content Include="Views\Pedido\PagoFallido.cshtml" />
     <Content Include="Views\Cliente\VerPerfil.cshtml" />
     <Content Include="Views\Carrito\_FilaCarrito.cshtml" />
+    <Content Include="Views\Pedido\RealizarPago.cshtml" />
+    <Content Include="Views\Pedido\PagoExitoso.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

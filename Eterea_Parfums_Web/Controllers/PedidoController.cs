@@ -263,5 +263,86 @@ namespace Eterea_Parfums_Web.Controllers
                 return View();
             }
         }
+
+        // GET: Pedido/SimularPago
+        public ActionResult SimularPago(double monto)
+        {
+            var model = new SimularPagoViewModel
+            {
+                Monto = monto,
+                Usuario = "AdriCamp"   // o leés el nombre de la sesión
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmarPago()
+        {
+            var items = Session["PedidoItems"] as List<PedidoItemVM>;
+            if (items == null || !items.Any())
+            {
+                TempData["ErrorPago"] = "No se encontró el pedido en sesión.";
+                return RedirectToAction("Index", "Carrito");
+            }
+
+            int clienteId = (int)Session["clienteId"];   // ← id del cliente logueado
+
+            using (var tx = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // ---------- 1. Descontar stock -----------------------------
+                    foreach (var it in items)
+                    {
+                        int restante = it.Cantidad;
+                        while (restante > 0)
+                        {
+                            var st1 = db.stock.FirstOrDefault(s => s.perfume_id == it.PerfumeId &&
+                                                                   s.sucursal_id == 1);
+                            if (st1 != null && st1.cantidad > 5)
+                            {
+                                st1.cantidad--;
+                                restante--;
+                                continue;
+                            }
+
+                            var st2 = db.stock.FirstOrDefault(s => s.perfume_id == it.PerfumeId &&
+                                                                   s.sucursal_id == 2);
+                            if (st2 != null && st2.cantidad > 5)
+                            {
+                                st2.cantidad--;
+                                restante--;
+                                continue;
+                            }
+
+                            throw new InvalidOperationException(
+                                $"No hay stock disponible para el perfume {it.PerfumeId}.");
+                        }
+                    }
+
+                    // ---------- 2. Vaciar el carrito en la BD ------------------
+                    var lineasCarrito = db.carrito.Where(c => c.cliente_id == clienteId).ToList();
+                    db.carrito.RemoveRange(lineasCarrito);
+
+                    // ---------- 3. Guardar y confirmar -------------------------
+                    db.SaveChanges();
+                    tx.Commit();
+
+                    Session.Remove("PedidoItems");
+                    TempData["PagoOK"] = "¡Pago aprobado, stock actualizado y carrito vaciado!";
+                    return RedirectToAction("PagoExitoso");
+                }
+                catch (Exception ex)
+                {
+                    tx.Rollback();
+                    TempData["ErrorPago"] = $"Error al procesar el pago: {ex.Message}";
+                    return RedirectToAction("Index", "Carrito");
+                }
+            }
+        }
+
+
+
     }
 }

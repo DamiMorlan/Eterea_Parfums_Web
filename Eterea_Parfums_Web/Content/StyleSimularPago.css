@@ -1,0 +1,32 @@
+﻿.simulador-mp {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+}
+
+.mp-item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .9rem 1rem;
+    border: 1px solid #ececec;
+    border-radius: .5rem;
+    margin-bottom: .75rem;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+    .mp-item:hover {
+        background: #f8f9fa;
+    }
+
+.mp-logo {
+    font-size: 1.4rem;
+}
+
+.mp-card {
+    width: 32px;
+}
+
+.bi-chevron-right {
+    color: #adb5bd;
+    margin-left: auto;
+}

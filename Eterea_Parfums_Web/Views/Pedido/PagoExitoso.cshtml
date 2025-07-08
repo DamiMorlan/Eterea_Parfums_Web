@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Pago exitoso";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head {   <!-- si tu _Layout.cshtml define un section Head -->
+    <meta http-equiv="refresh"
+          content="5;url=@Url.Action("Index","Home")" />
+}
+
+<div class="container text-center my-5">
+    <h2 class="text-success">¡Pago aprobado!</h2>
+    <p>@TempData["PagoOK"]</p>
+    <p class="text-muted">Serás redirigido en 5 segundos…</p>
+    <a href="@Url.Action("Index","Home")" class="btn btn-primary mt-3">
+        Ir ahora
+    </a>
+</div>
