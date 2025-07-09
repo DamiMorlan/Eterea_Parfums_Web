@@ -84,12 +84,10 @@
                     </div>
                 </div>
                 <div class="contenedor-eliminar">
-                    <form action="@Url.Action("Eliminar", "Carrito")" method="post" style="display:inline;">
-                        <input type="hidden" name="perfumeId" value="@item.PerfumeId" />
-                        <button type="submit" style="background:none; border:none; cursor:pointer;" title="Eliminar">
-                            🗑️
-                        </button>
-                    </form>
+                    <button onclick="eliminarPerfume(@item.PerfumeId)" style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                        🗑️
+                    </button>
+
                 </div>
             </div>
         }
@@ -232,6 +230,55 @@
                 alert("Ocurrió un error al actualizar el carrito.");
             });
         }
+
+        function eliminarPerfume(perfumeId) {
+            const resumen = document.querySelector('.resumen-carrito');
+            resumen.style.opacity = "0.5";
+
+            fetch('@Url.Action("EliminarPerfume", "Carrito")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `perfumeId=${perfumeId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const fila = document.getElementById(`perfume-${perfumeId}`);
+                    if (fila) {
+                        fila.classList.add("fade-out");
+                        setTimeout(() => {
+                            fila.remove();
+
+                            resumen.style.opacity = "1";
+
+                            // Si no hay más productos, mostrar mensaje de carrito vacío
+                            if (document.querySelectorAll('.fila-producto').length === 0) {
+                                document.querySelector('.carrito-container').innerHTML = `
+                                    <div style="text-align: center; padding: 50px;">
+                                        <div style="font-size: 100px;">🛒</div>
+                                        <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                                    </div>`;
+                            }
+                        }, 500);
+                    }
+
+                    document.getElementById("subtotal").textContent = `$${data.subtotal}`;
+                    document.getElementById("descuento").textContent = `-$${data.descuento}`;
+                    document.getElementById("total").textContent = `$${data.total}`;
+                } else {
+                    alert("No se pudo eliminar el producto.");
+                    resumen.style.opacity = "1";
+                }
+            })
+            .catch(err => {
+                console.error("Error al eliminar:", err);
+                resumen.style.opacity = "1";
+                alert("Ocurrió un error al eliminar el perfume.");
+            });
+        }
+
     </script>
 }
 

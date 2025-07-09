@@ -662,6 +662,68 @@ namespace Eterea_Parfums_Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult EliminarPerfume(int perfumeId)
+        {
+            if (Session["clienteId"] == null)
+                return Json(new { success = false });
+
+            int clienteId = (int)Session["clienteId"];
+
+            var item = db.carrito.FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+            if (item != null)
+            {
+                db.carrito.Remove(item);
+                db.SaveChanges();
+            }
+
+            // Calcular totales actualizados
+            var carrito = db.carrito
+                .Where(c => c.cliente_id == clienteId)
+                .Include(c => c.perfume)
+                .ToList();
+
+            double subtotal = carrito.Sum(c => c.perfume.precio_en_pesos * c.cantidad);
+            double total = 0;
+
+            foreach (var c in carrito)
+            {
+                var promos = c.perfume.promocion
+                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                    .ToList();
+
+                var promo10 = promos.FirstOrDefault(p => p.descuento == 10);
+                var promoCantidad = promos.FirstOrDefault(p => p.descuento > 10);
+
+                if (promoCantidad != null && c.cantidad >= 2)
+                {
+                    int pares = (c.cantidad / 2) * 2;
+                    int impares = c.cantidad % 2;
+                    double pct = (100 - promoCantidad.descuento) / 100.0;
+                    total += (pares * c.perfume.precio_en_pesos * pct) + (impares * c.perfume.precio_en_pesos);
+                }
+                else if (promo10 != null)
+                {
+                    total += c.perfume.precio_en_pesos * c.cantidad * 0.9;
+                }
+                else
+                {
+                    total += c.perfume.precio_en_pesos * c.cantidad;
+                }
+            }
+
+            return Json(new
+            {
+                success = true,
+                perfumeId,
+                subtotal = subtotal.ToString("N0"),
+                total = total.ToString("N0"),
+                descuento = (subtotal - total).ToString("N0"),
+                envioGratis = total >= 50000
+            });
+        }
+
+
         // POST: Carrito/Delete/5
         [HttpPost]
         public ActionResult Eliminar(int perfumeId)
