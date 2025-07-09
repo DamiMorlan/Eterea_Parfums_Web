@@ -13,7 +13,7 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class CarritoController : Controller
     {
-        private etereaEntities1 db = new etereaEntities1();
+        private etereaEntities7 db = new etereaEntities7();
         // GET: Carrito
         public ActionResult Index()
         {

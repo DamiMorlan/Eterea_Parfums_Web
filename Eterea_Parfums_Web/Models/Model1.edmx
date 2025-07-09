@@ -1,0 +1,2303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="etereaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="aroma_del_perfume">
+          <Key>
+            <PropertyRef Name="perfume_id" />
+            <PropertyRef Name="tipo_de_aroma_id" />
+          </Key>
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="tipo_de_aroma_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="caja">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="numCaja" Type="int" Nullable="false" />
+          <Property Name="disponible" Type="bit" Nullable="false" />
+          <Property Name="sucursal_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="calle">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="localidad_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="carrito">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="cliente_id" Type="int" Nullable="false" />
+          <Property Name="cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="cliente">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="usuario" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="clave" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="apellido" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="dni" Type="bigint" Nullable="false" />
+          <Property Name="condicion_frente_al_iva" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="fecha_nacimiento" Type="datetime" Nullable="false" />
+          <Property Name="celular" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="e_mail" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="pais_id" Type="int" Nullable="false" />
+          <Property Name="provincia_id" Type="int" Nullable="false" />
+          <Property Name="localidad_id" Type="int" Nullable="false" />
+          <Property Name="codigo_postal" Type="int" />
+          <Property Name="calle_id" Type="int" Nullable="false" />
+          <Property Name="numeracion_calle" Type="int" Nullable="false" />
+          <Property Name="piso" Type="varchar" MaxLength="3" />
+          <Property Name="departamento" Type="varchar" MaxLength="3" />
+          <Property Name="comentarios_domicilio" Type="varchar" MaxLength="60" />
+          <Property Name="activo" Type="bit" Nullable="false" />
+          <Property Name="rol" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="detalle_factura">
+          <Key>
+            <PropertyRef Name="factura_id" />
+            <PropertyRef Name="perfume_id" />
+          </Key>
+          <Property Name="factura_id" Type="int" Nullable="false" />
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="cantidad" Type="int" Nullable="false" />
+          <Property Name="precio_unitario" Type="float" Nullable="false" />
+          <Property Name="promocion_id" Type="int" Nullable="false" />
+          <Property Name="promocion2_id" Type="int" />
+        </EntityType>
+        <EntityType Name="empleado">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="usuario" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="clave" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="apellido" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="dni" Type="int" Nullable="false" />
+          <Property Name="fecha_nacimiento" Type="datetime" Nullable="false" />
+          <Property Name="celular" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="e_mail" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="pais_id" Type="int" Nullable="false" />
+          <Property Name="provincia_id" Type="int" Nullable="false" />
+          <Property Name="localidad_id" Type="int" Nullable="false" />
+          <Property Name="codigo_postal" Type="int" />
+          <Property Name="calle_id" Type="int" Nullable="false" />
+          <Property Name="numeracion_calle" Type="int" Nullable="false" />
+          <Property Name="piso" Type="varchar" MaxLength="3" />
+          <Property Name="departamento" Type="varchar" MaxLength="3" />
+          <Property Name="comentarios_domicilio" Type="varchar" MaxLength="60" />
+          <Property Name="sucursal_id" Type="int" Nullable="false" />
+          <Property Name="fecha_ingreso" Type="datetime" Nullable="false" />
+          <Property Name="sueldo" Type="float" Nullable="false" />
+          <Property Name="activo" Type="bit" Nullable="false" />
+          <Property Name="rol" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <EntityType Name="factura">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="fecha" Type="datetime" Nullable="false" />
+          <Property Name="sucursal_id" Type="int" Nullable="false" />
+          <Property Name="empleado_id" Type="int" Nullable="false" />
+          <Property Name="cliente_id" Type="int" Nullable="false" />
+          <Property Name="forma_de_pago" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="precio_total" Type="float" Nullable="false" />
+          <Property Name="recargo_tarjeta" Type="float" Nullable="false" />
+          <Property Name="descuento" Type="float" Nullable="false" />
+          <Property Name="numero_de_caja" Type="int" Nullable="false" />
+          <Property Name="tipo_de_consumidor" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="origen" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="factura_pdf" Type="varchar" MaxLength="100" />
+          <Property Name="num_factura" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="tipo_de_factura" Type="nvarchar" MaxLength="1" Nullable="false" />
+        </EntityType>
+        <EntityType Name="genero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="genero" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="historialCaja">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="numCaja" Type="int" Nullable="false" />
+          <Property Name="sucursal_id" Type="int" Nullable="false" />
+          <Property Name="usuario" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="fecha_apertura" Type="datetime" Nullable="false" />
+          <Property Name="fecha_cierre" Type="datetime" />
+        </EntityType>
+        <EntityType Name="localidad">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="provincia_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="marca">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="nota_con_tipo_de_nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nota_id" Type="int" Nullable="false" />
+          <Property Name="tipo_de_nota_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="notas_del_perfume">
+          <Key>
+            <PropertyRef Name="perfume_id" />
+            <PropertyRef Name="nota_con_tipo_de_nota_id" />
+          </Key>
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="nota_con_tipo_de_nota_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="orden">
+          <Key>
+            <PropertyRef Name="numero_de_orden" />
+          </Key>
+          <Property Name="numero_de_orden" Type="int" Nullable="false" />
+          <Property Name="factura_id" Type="int" Nullable="false" />
+          <Property Name="nombre_cliente" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="apellido_cliente" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="dni" Type="bigint" Nullable="false" />
+          <Property Name="e_mail_cliente" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="domicilio_de_envio" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="estado" Type="bit" Nullable="false" />
+          <Property Name="codigo_despacho" Type="bigint" />
+          <Property Name="fecha_creacion" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="pais">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="perfume">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="codigo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="marca_id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="tipo_de_perfume_id" Type="int" Nullable="false" />
+          <Property Name="genero_id" Type="int" Nullable="false" />
+          <Property Name="presentacion_ml" Type="int" Nullable="false" />
+          <Property Name="pais_id" Type="int" Nullable="false" />
+          <Property Name="spray" Type="bit" Nullable="false" />
+          <Property Name="recargable" Type="bit" Nullable="false" />
+          <Property Name="descripcion" Type="varchar" MaxLength="1100" Nullable="false" />
+          <Property Name="anio_de_lanzamiento" Type="int" Nullable="false" />
+          <Property Name="precio_en_pesos" Type="float" Nullable="false" />
+          <Property Name="activo" Type="bit" Nullable="false" />
+          <Property Name="imagen1" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="imagen2" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="fecha_baja" Type="datetime" />
+        </EntityType>
+        <EntityType Name="perfumes_en_promo">
+          <Key>
+            <PropertyRef Name="perfume_id" />
+            <PropertyRef Name="promocion_id" />
+          </Key>
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="promocion_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="promocion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="fecha_inicio" Type="date" Nullable="false" />
+          <Property Name="fecha_fin" Type="date" Nullable="false" />
+          <Property Name="descuento" Type="int" Nullable="false" />
+          <Property Name="activo" Type="bit" Nullable="false" />
+          <Property Name="descripcion" Type="varchar" MaxLength="180" Nullable="false" />
+          <Property Name="banner" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="provincia">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="pais_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="stock">
+          <Key>
+            <PropertyRef Name="perfume_id" />
+            <PropertyRef Name="sucursal_id" />
+          </Key>
+          <Property Name="perfume_id" Type="int" Nullable="false" />
+          <Property Name="sucursal_id" Type="int" Nullable="false" />
+          <Property Name="cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sucursal">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="pais_id" Type="int" Nullable="false" />
+          <Property Name="provincia_id" Type="int" Nullable="false" />
+          <Property Name="localidad_id" Type="int" Nullable="false" />
+          <Property Name="codigo_postal" Type="int" Nullable="false" />
+          <Property Name="calle_id" Type="int" Nullable="false" />
+          <Property Name="numeracion_calle" Type="int" Nullable="false" />
+          <Property Name="activo" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tipo_de_aroma">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tipo_de_nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tipo_de_perfume">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="tipo_de_perfume" Type="varchar" MaxLength="15" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__aroma_del__tipo___29221CFB">
+          <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="1" />
+          <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_aroma">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="aroma_del_perfume">
+              <PropertyRef Name="tipo_de_aroma_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__caja__sucursal_i__4F47C5E3">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="caja" Type="Self.caja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="caja">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__carrito__cliente__5812160E">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="carrito">
+              <PropertyRef Name="cliente_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__carrito__perfume__59063A47">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1" />
+          <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="carrito">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__calle_i__59FA5E80">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__localid__5AEE82B9">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__pais_id__5BE2A6F2">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__provinc__5CD6CB2B">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__detalle_f__promo__5FB337D6">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__calle___60A75C0F">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__locali__619B8048">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__pais_i__628FA481">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__provin__6383C8BA">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__sucurs__6477ECF3">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__cliente__656C112C">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="cliente_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__emplead__66603565">
+          <End Role="empleado" Type="Self.empleado" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="empleado">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="empleado_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__sucursa__6754599E">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__genero___6D0D32F4">
+          <End Role="genero" Type="Self.genero" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="genero">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="genero_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__marca">
+          <End Role="marca" Type="Self.marca" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="marca">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="marca_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__pais_id__6EF57B66">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__tipo_de__6FE99F9F">
+          <End Role="tipo_de_perfume" Type="Self.tipo_de_perfume" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="tipo_de_perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__calle___74AE54BC">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__locali__75A278F5">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__pais_i__76969D2E">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__provin__778AC167">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_calle_localidad">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="calle" Type="Self.calle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="calle">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_detalle_factura_perfume">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_detalle_factura_promocion2_id">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="0..1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion2_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetalleFactura_Factura">
+          <End Role="factura" Type="Self.factura" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="factura">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="factura_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_localidad_provincia">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="localidad" Type="Self.localidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="localidad">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_nota_id">
+          <End Role="nota" Type="Self.nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+          <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_notas_del_perfume_nota_con_tipo_de_nota_id">
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="1" />
+          <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="notas_del_perfume">
+              <PropertyRef Name="nota_con_tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_orden_factura">
+          <End Role="factura" Type="Self.factura" Multiplicity="1" />
+          <End Role="orden" Type="Self.orden" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="factura">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orden">
+              <PropertyRef Name="factura_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_aroma">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="aroma_del_perfume">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_has_promocion_promo1">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="perfumes_en_promo" Type="Self.perfumes_en_promo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfumes_en_promo">
+              <PropertyRef Name="promocion_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_has_sucursal_perfume1">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="stock" Type="Self.stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_notas">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="notas_del_perfume">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_promo">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="perfumes_en_promo" Type="Self.perfumes_en_promo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfumes_en_promo">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_provincia_pais">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="provincia" Type="Self.provincia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="provincia">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_sucursal">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="stock" Type="Self.stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="etereaModelStoreContainer">
+          <EntitySet Name="aroma_del_perfume" EntityType="Self.aroma_del_perfume" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="caja" EntityType="Self.caja" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="calle" EntityType="Self.calle" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="carrito" EntityType="Self.carrito" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cliente" EntityType="Self.cliente" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="detalle_factura" EntityType="Self.detalle_factura" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="empleado" EntityType="Self.empleado" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="factura" EntityType="Self.factura" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="genero" EntityType="Self.genero" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="historialCaja" EntityType="Self.historialCaja" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="localidad" EntityType="Self.localidad" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="marca" EntityType="Self.marca" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="nota" EntityType="Self.nota" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="nota_con_tipo_de_nota" EntityType="Self.nota_con_tipo_de_nota" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="notas_del_perfume" EntityType="Self.notas_del_perfume" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="orden" EntityType="Self.orden" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="pais" EntityType="Self.pais" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="perfume" EntityType="Self.perfume" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="perfumes_en_promo" EntityType="Self.perfumes_en_promo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="promocion" EntityType="Self.promocion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="provincia" EntityType="Self.provincia" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="stock" EntityType="Self.stock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sucursal" EntityType="Self.sucursal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tipo_de_aroma" EntityType="Self.tipo_de_aroma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tipo_de_nota" EntityType="Self.tipo_de_nota" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tipo_de_perfume" EntityType="Self.tipo_de_perfume" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__aroma_del__tipo___29221CFB" Association="Self.FK__aroma_del__tipo___29221CFB">
+            <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
+            <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__caja__sucursal_i__4F47C5E3" Association="Self.FK__caja__sucursal_i__4F47C5E3">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="caja" EntitySet="caja" />
+          </AssociationSet>
+          <AssociationSet Name="FK__carrito__cliente__5812160E" Association="Self.FK__carrito__cliente__5812160E">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="carrito" EntitySet="carrito" />
+          </AssociationSet>
+          <AssociationSet Name="FK__carrito__perfume__59063A47" Association="Self.FK__carrito__perfume__59063A47">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="carrito" EntitySet="carrito" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__calle_i__59FA5E80" Association="Self.FK__cliente__calle_i__59FA5E80">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__localid__5AEE82B9" Association="Self.FK__cliente__localid__5AEE82B9">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__pais_id__5BE2A6F2" Association="Self.FK__cliente__pais_id__5BE2A6F2">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__provinc__5CD6CB2B" Association="Self.FK__cliente__provinc__5CD6CB2B">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__detalle_f__promo__5FB337D6" Association="Self.FK__detalle_f__promo__5FB337D6">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__calle___60A75C0F" Association="Self.FK__empleado__calle___60A75C0F">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__locali__619B8048" Association="Self.FK__empleado__locali__619B8048">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__pais_i__628FA481" Association="Self.FK__empleado__pais_i__628FA481">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__provin__6383C8BA" Association="Self.FK__empleado__provin__6383C8BA">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__sucurs__6477ECF3" Association="Self.FK__empleado__sucurs__6477ECF3">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__cliente__656C112C" Association="Self.FK__factura__cliente__656C112C">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__emplead__66603565" Association="Self.FK__factura__emplead__66603565">
+            <End Role="empleado" EntitySet="empleado" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__sucursa__6754599E" Association="Self.FK__factura__sucursa__6754599E">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__genero___6D0D32F4" Association="Self.FK__perfume__genero___6D0D32F4">
+            <End Role="genero" EntitySet="genero" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__marca" Association="Self.FK__perfume__marca">
+            <End Role="marca" EntitySet="marca" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__pais_id__6EF57B66" Association="Self.FK__perfume__pais_id__6EF57B66">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__tipo_de__6FE99F9F" Association="Self.FK__perfume__tipo_de__6FE99F9F">
+            <End Role="tipo_de_perfume" EntitySet="tipo_de_perfume" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__calle___74AE54BC" Association="Self.FK__sucursal__calle___74AE54BC">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__locali__75A278F5" Association="Self.FK__sucursal__locali__75A278F5">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__pais_i__76969D2E" Association="Self.FK__sucursal__pais_i__76969D2E">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__provin__778AC167" Association="Self.FK__sucursal__provin__778AC167">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="fk_calle_localidad" Association="Self.fk_calle_localidad">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="calle" EntitySet="calle" />
+          </AssociationSet>
+          <AssociationSet Name="fk_detalle_factura_perfume" Association="Self.fk_detalle_factura_perfume">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_detalle_factura_promocion2_id" Association="Self.FK_detalle_factura_promocion2_id">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetalleFactura_Factura" Association="Self.FK_DetalleFactura_Factura">
+            <End Role="factura" EntitySet="factura" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="fk_localidad_provincia" Association="Self.fk_localidad_provincia">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="localidad" EntitySet="localidad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_nota_id" Association="Self.FK_nota_con_tipo_de_nota_nota_id">
+            <End Role="nota" EntitySet="nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id" Association="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+            <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK_notas_del_perfume_nota_con_tipo_de_nota_id" Association="Self.FK_notas_del_perfume_nota_con_tipo_de_nota_id">
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+            <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK_orden_factura" Association="Self.FK_orden_factura">
+            <End Role="factura" EntitySet="factura" />
+            <End Role="orden" EntitySet="orden" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_aroma" Association="Self.fk_perfume_aroma">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_has_promocion_promo1" Association="Self.fk_perfume_has_promocion_promo1">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="perfumes_en_promo" EntitySet="perfumes_en_promo" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_has_sucursal_perfume1" Association="Self.fk_perfume_has_sucursal_perfume1">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="stock" EntitySet="stock" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_notas" Association="Self.fk_perfume_notas">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_promo" Association="Self.fk_perfume_promo">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="perfumes_en_promo" EntitySet="perfumes_en_promo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_provincia_pais" Association="Self.FK_provincia_pais">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="provincia" EntitySet="provincia" />
+          </AssociationSet>
+          <AssociationSet Name="fk_sucursal" Association="Self.fk_sucursal">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="stock" EntitySet="stock" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="etereaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="caja">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="numCaja" Type="Int32" Nullable="false" />
+          <Property Name="disponible" Type="Boolean" Nullable="false" />
+          <Property Name="sucursal_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__caja__sucursal_i__4F47C5E3" FromRole="caja" ToRole="sucursal" />
+        </EntityType>
+        <EntityType Name="calle">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="localidad_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__cliente__calle_i__59FA5E80" FromRole="calle" ToRole="cliente" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__empleado__calle___60A75C0F" FromRole="calle" ToRole="empleado" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__sucursal__calle___74AE54BC" FromRole="calle" ToRole="sucursal" />
+          <NavigationProperty Name="localidad" Relationship="Self.fk_calle_localidad" FromRole="calle" ToRole="localidad" />
+        </EntityType>
+        <EntityType Name="carrito">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="perfume_id" Type="Int32" Nullable="false" />
+          <Property Name="cliente_id" Type="Int32" Nullable="false" />
+          <Property Name="cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__carrito__cliente__5812160E" FromRole="carrito" ToRole="cliente" />
+          <NavigationProperty Name="perfume" Relationship="Self.FK__carrito__perfume__59063A47" FromRole="carrito" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="cliente">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="usuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="clave" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="apellido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dni" Type="Int64" Nullable="false" />
+          <Property Name="condicion_frente_al_iva" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="celular" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="e_mail" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pais_id" Type="Int32" Nullable="false" />
+          <Property Name="provincia_id" Type="Int32" Nullable="false" />
+          <Property Name="localidad_id" Type="Int32" Nullable="false" />
+          <Property Name="codigo_postal" Type="Int32" />
+          <Property Name="calle_id" Type="Int32" Nullable="false" />
+          <Property Name="numeracion_calle" Type="Int32" Nullable="false" />
+          <Property Name="piso" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="departamento" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="comentarios_domicilio" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <Property Name="rol" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="calle" Relationship="Self.FK__cliente__calle_i__59FA5E80" FromRole="cliente" ToRole="calle" />
+          <NavigationProperty Name="carrito" Relationship="Self.FK__carrito__cliente__5812160E" FromRole="cliente" ToRole="carrito" />
+          <NavigationProperty Name="localidad" Relationship="Self.FK__cliente__localid__5AEE82B9" FromRole="cliente" ToRole="localidad" />
+          <NavigationProperty Name="pais" Relationship="Self.FK__cliente__pais_id__5BE2A6F2" FromRole="cliente" ToRole="pais" />
+          <NavigationProperty Name="provincia" Relationship="Self.FK__cliente__provinc__5CD6CB2B" FromRole="cliente" ToRole="provincia" />
+          <NavigationProperty Name="factura" Relationship="Self.FK__factura__cliente__656C112C" FromRole="cliente" ToRole="factura" />
+        </EntityType>
+        <EntityType Name="detalle_factura">
+          <Key>
+            <PropertyRef Name="factura_id" />
+            <PropertyRef Name="perfume_id" />
+          </Key>
+          <Property Name="factura_id" Type="Int32" Nullable="false" />
+          <Property Name="perfume_id" Type="Int32" Nullable="false" />
+          <Property Name="cantidad" Type="Int32" Nullable="false" />
+          <Property Name="precio_unitario" Type="Double" Nullable="false" />
+          <Property Name="promocion_id" Type="Int32" Nullable="false" />
+          <Property Name="promocion2_id" Type="Int32" />
+          <NavigationProperty Name="promocion" Relationship="Self.FK__detalle_f__promo__5FB337D6" FromRole="detalle_factura" ToRole="promocion" />
+          <NavigationProperty Name="perfume" Relationship="Self.fk_detalle_factura_perfume" FromRole="detalle_factura" ToRole="perfume" />
+          <NavigationProperty Name="promocion1" Relationship="Self.FK_detalle_factura_promocion2_id" FromRole="detalle_factura" ToRole="promocion" />
+          <NavigationProperty Name="factura" Relationship="Self.FK_DetalleFactura_Factura" FromRole="detalle_factura" ToRole="factura" />
+        </EntityType>
+        <EntityType Name="empleado">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="usuario" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="clave" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="apellido" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dni" Type="Int32" Nullable="false" />
+          <Property Name="fecha_nacimiento" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="celular" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="e_mail" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pais_id" Type="Int32" Nullable="false" />
+          <Property Name="provincia_id" Type="Int32" Nullable="false" />
+          <Property Name="localidad_id" Type="Int32" Nullable="false" />
+          <Property Name="codigo_postal" Type="Int32" />
+          <Property Name="calle_id" Type="Int32" Nullable="false" />
+          <Property Name="numeracion_calle" Type="Int32" Nullable="false" />
+          <Property Name="piso" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="departamento" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="comentarios_domicilio" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="sucursal_id" Type="Int32" Nullable="false" />
+          <Property Name="fecha_ingreso" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="sueldo" Type="Double" Nullable="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <Property Name="rol" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="calle" Relationship="Self.FK__empleado__calle___60A75C0F" FromRole="empleado" ToRole="calle" />
+          <NavigationProperty Name="localidad" Relationship="Self.FK__empleado__locali__619B8048" FromRole="empleado" ToRole="localidad" />
+          <NavigationProperty Name="pais" Relationship="Self.FK__empleado__pais_i__628FA481" FromRole="empleado" ToRole="pais" />
+          <NavigationProperty Name="provincia" Relationship="Self.FK__empleado__provin__6383C8BA" FromRole="empleado" ToRole="provincia" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__empleado__sucurs__6477ECF3" FromRole="empleado" ToRole="sucursal" />
+          <NavigationProperty Name="factura" Relationship="Self.FK__factura__emplead__66603565" FromRole="empleado" ToRole="factura" />
+        </EntityType>
+        <EntityType Name="factura">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="sucursal_id" Type="Int32" Nullable="false" />
+          <Property Name="empleado_id" Type="Int32" Nullable="false" />
+          <Property Name="cliente_id" Type="Int32" Nullable="false" />
+          <Property Name="forma_de_pago" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="precio_total" Type="Double" Nullable="false" />
+          <Property Name="recargo_tarjeta" Type="Double" Nullable="false" />
+          <Property Name="descuento" Type="Double" Nullable="false" />
+          <Property Name="numero_de_caja" Type="Int32" Nullable="false" />
+          <Property Name="tipo_de_consumidor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="origen" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="factura_pdf" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="num_factura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="tipo_de_factura" Type="String" MaxLength="1" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__factura__cliente__656C112C" FromRole="factura" ToRole="cliente" />
+          <NavigationProperty Name="detalle_factura" Relationship="Self.FK_DetalleFactura_Factura" FromRole="factura" ToRole="detalle_factura" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__factura__emplead__66603565" FromRole="factura" ToRole="empleado" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__factura__sucursa__6754599E" FromRole="factura" ToRole="sucursal" />
+          <NavigationProperty Name="orden" Relationship="Self.FK_orden_factura" FromRole="factura" ToRole="orden" />
+        </EntityType>
+        <EntityType Name="genero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="genero1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="perfume" Relationship="Self.FK__perfume__genero___6D0D32F4" FromRole="genero" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="historialCaja">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="numCaja" Type="Int32" Nullable="false" />
+          <Property Name="sucursal_id" Type="Int32" Nullable="false" />
+          <Property Name="usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="fecha_apertura" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="fecha_cierre" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="localidad">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="provincia_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="calle" Relationship="Self.fk_calle_localidad" FromRole="localidad" ToRole="calle" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__cliente__localid__5AEE82B9" FromRole="localidad" ToRole="cliente" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__empleado__locali__619B8048" FromRole="localidad" ToRole="empleado" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__sucursal__locali__75A278F5" FromRole="localidad" ToRole="sucursal" />
+          <NavigationProperty Name="provincia" Relationship="Self.fk_localidad_provincia" FromRole="localidad" ToRole="provincia" />
+        </EntityType>
+        <EntityType Name="marca">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="perfume" Relationship="Self.FK__perfume__marca" FromRole="marca" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_nota_id" FromRole="nota" ToRole="nota_con_tipo_de_nota" />
+        </EntityType>
+        <EntityType Name="nota_con_tipo_de_nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nota_id" Type="Int32" Nullable="false" />
+          <Property Name="tipo_de_nota_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="nota" Relationship="Self.FK_nota_con_tipo_de_nota_nota_id" FromRole="nota_con_tipo_de_nota" ToRole="nota" />
+          <NavigationProperty Name="tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id" FromRole="nota_con_tipo_de_nota" ToRole="tipo_de_nota" />
+          <NavigationProperty Name="perfume" Relationship="Self.notas_del_perfume" FromRole="nota_con_tipo_de_nota" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="orden">
+          <Key>
+            <PropertyRef Name="numero_de_orden" />
+          </Key>
+          <Property Name="numero_de_orden" Type="Int32" Nullable="false" />
+          <Property Name="factura_id" Type="Int32" Nullable="false" />
+          <Property Name="nombre_cliente" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="apellido_cliente" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dni" Type="Int64" Nullable="false" />
+          <Property Name="e_mail_cliente" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="domicilio_de_envio" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="estado" Type="Boolean" Nullable="false" />
+          <Property Name="codigo_despacho" Type="Int64" />
+          <Property Name="fecha_creacion" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="factura" Relationship="Self.FK_orden_factura" FromRole="orden" ToRole="factura" />
+        </EntityType>
+        <EntityType Name="pais">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__cliente__pais_id__5BE2A6F2" FromRole="pais" ToRole="cliente" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__empleado__pais_i__628FA481" FromRole="pais" ToRole="empleado" />
+          <NavigationProperty Name="perfume" Relationship="Self.FK__perfume__pais_id__6EF57B66" FromRole="pais" ToRole="perfume" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__sucursal__pais_i__76969D2E" FromRole="pais" ToRole="sucursal" />
+          <NavigationProperty Name="provincia" Relationship="Self.FK_provincia_pais" FromRole="pais" ToRole="provincia" />
+        </EntityType>
+        <EntityType Name="perfume">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="codigo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="marca_id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="tipo_de_perfume_id" Type="Int32" Nullable="false" />
+          <Property Name="genero_id" Type="Int32" Nullable="false" />
+          <Property Name="presentacion_ml" Type="Int32" Nullable="false" />
+          <Property Name="pais_id" Type="Int32" Nullable="false" />
+          <Property Name="spray" Type="Boolean" Nullable="false" />
+          <Property Name="recargable" Type="Boolean" Nullable="false" />
+          <Property Name="descripcion" Type="String" MaxLength="1100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="anio_de_lanzamiento" Type="Int32" Nullable="false" />
+          <Property Name="precio_en_pesos" Type="Double" Nullable="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <Property Name="imagen1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="imagen2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fecha_baja" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="carrito" Relationship="Self.FK__carrito__perfume__59063A47" FromRole="perfume" ToRole="carrito" />
+          <NavigationProperty Name="detalle_factura" Relationship="Self.fk_detalle_factura_perfume" FromRole="perfume" ToRole="detalle_factura" />
+          <NavigationProperty Name="genero" Relationship="Self.FK__perfume__genero___6D0D32F4" FromRole="perfume" ToRole="genero" />
+          <NavigationProperty Name="marca" Relationship="Self.FK__perfume__marca" FromRole="perfume" ToRole="marca" />
+          <NavigationProperty Name="pais" Relationship="Self.FK__perfume__pais_id__6EF57B66" FromRole="perfume" ToRole="pais" />
+          <NavigationProperty Name="tipo_de_perfume" Relationship="Self.FK__perfume__tipo_de__6FE99F9F" FromRole="perfume" ToRole="tipo_de_perfume" />
+          <NavigationProperty Name="stock" Relationship="Self.fk_perfume_has_sucursal_perfume1" FromRole="perfume" ToRole="stock" />
+          <NavigationProperty Name="tipo_de_aroma" Relationship="Self.aroma_del_perfume" FromRole="perfume" ToRole="tipo_de_aroma" />
+          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.notas_del_perfume" FromRole="perfume" ToRole="nota_con_tipo_de_nota" />
+          <NavigationProperty Name="promocion" Relationship="Self.perfumes_en_promo" FromRole="perfume" ToRole="promocion" />
+        </EntityType>
+        <EntityType Name="promocion">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fecha_inicio" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="fecha_fin" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="descuento" Type="Int32" Nullable="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <Property Name="descripcion" Type="String" MaxLength="180" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="banner" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="detalle_factura" Relationship="Self.FK__detalle_f__promo__5FB337D6" FromRole="promocion" ToRole="detalle_factura" />
+          <NavigationProperty Name="detalle_factura1" Relationship="Self.FK_detalle_factura_promocion2_id" FromRole="promocion" ToRole="detalle_factura" />
+          <NavigationProperty Name="perfume" Relationship="Self.perfumes_en_promo" FromRole="promocion" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="provincia">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pais_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="cliente" Relationship="Self.FK__cliente__provinc__5CD6CB2B" FromRole="provincia" ToRole="cliente" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__empleado__provin__6383C8BA" FromRole="provincia" ToRole="empleado" />
+          <NavigationProperty Name="localidad" Relationship="Self.fk_localidad_provincia" FromRole="provincia" ToRole="localidad" />
+          <NavigationProperty Name="pais" Relationship="Self.FK_provincia_pais" FromRole="provincia" ToRole="pais" />
+          <NavigationProperty Name="sucursal" Relationship="Self.FK__sucursal__provin__778AC167" FromRole="provincia" ToRole="sucursal" />
+        </EntityType>
+        <EntityType Name="stock">
+          <Key>
+            <PropertyRef Name="perfume_id" />
+            <PropertyRef Name="sucursal_id" />
+          </Key>
+          <Property Name="perfume_id" Type="Int32" Nullable="false" />
+          <Property Name="sucursal_id" Type="Int32" Nullable="false" />
+          <Property Name="cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="perfume" Relationship="Self.fk_perfume_has_sucursal_perfume1" FromRole="stock" ToRole="perfume" />
+          <NavigationProperty Name="sucursal" Relationship="Self.fk_sucursal" FromRole="stock" ToRole="sucursal" />
+        </EntityType>
+        <EntityType Name="sucursal">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pais_id" Type="Int32" Nullable="false" />
+          <Property Name="provincia_id" Type="Int32" Nullable="false" />
+          <Property Name="localidad_id" Type="Int32" Nullable="false" />
+          <Property Name="codigo_postal" Type="Int32" Nullable="false" />
+          <Property Name="calle_id" Type="Int32" Nullable="false" />
+          <Property Name="numeracion_calle" Type="Int32" Nullable="false" />
+          <Property Name="activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="caja" Relationship="Self.FK__caja__sucursal_i__4F47C5E3" FromRole="sucursal" ToRole="caja" />
+          <NavigationProperty Name="calle" Relationship="Self.FK__sucursal__calle___74AE54BC" FromRole="sucursal" ToRole="calle" />
+          <NavigationProperty Name="empleado" Relationship="Self.FK__empleado__sucurs__6477ECF3" FromRole="sucursal" ToRole="empleado" />
+          <NavigationProperty Name="factura" Relationship="Self.FK__factura__sucursa__6754599E" FromRole="sucursal" ToRole="factura" />
+          <NavigationProperty Name="localidad" Relationship="Self.FK__sucursal__locali__75A278F5" FromRole="sucursal" ToRole="localidad" />
+          <NavigationProperty Name="pais" Relationship="Self.FK__sucursal__pais_i__76969D2E" FromRole="sucursal" ToRole="pais" />
+          <NavigationProperty Name="provincia" Relationship="Self.FK__sucursal__provin__778AC167" FromRole="sucursal" ToRole="provincia" />
+          <NavigationProperty Name="stock" Relationship="Self.fk_sucursal" FromRole="sucursal" ToRole="stock" />
+        </EntityType>
+        <EntityType Name="tipo_de_aroma">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="perfume" Relationship="Self.aroma_del_perfume" FromRole="tipo_de_aroma" ToRole="perfume" />
+        </EntityType>
+        <EntityType Name="tipo_de_nota">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id" FromRole="tipo_de_nota" ToRole="nota_con_tipo_de_nota" />
+        </EntityType>
+        <EntityType Name="tipo_de_perfume">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="tipo_de_perfume1" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="perfume" Relationship="Self.FK__perfume__tipo_de__6FE99F9F" FromRole="tipo_de_perfume" ToRole="perfume" />
+        </EntityType>
+        <Association Name="FK__caja__sucursal_i__4F47C5E3">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="caja" Type="Self.caja" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="caja">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__calle_i__59FA5E80">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__calle___60A75C0F">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__calle___74AE54BC">
+          <End Role="calle" Type="Self.calle" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="calle">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="calle_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_calle_localidad">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="calle" Type="Self.calle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="calle">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__carrito__cliente__5812160E">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="carrito">
+              <PropertyRef Name="cliente_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__carrito__perfume__59063A47">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1" />
+          <End Role="carrito" Type="Self.carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="carrito">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__localid__5AEE82B9">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__pais_id__5BE2A6F2">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cliente__provinc__5CD6CB2B">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="cliente" Type="Self.cliente" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="cliente">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__cliente__656C112C">
+          <End Role="cliente" Type="Self.cliente" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cliente">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="cliente_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__detalle_f__promo__5FB337D6">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_detalle_factura_perfume">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_detalle_factura_promocion2_id">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="0..1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion2_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetalleFactura_Factura">
+          <End Role="factura" Type="Self.factura" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="factura">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="factura_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__locali__619B8048">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__pais_i__628FA481">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__provin__6383C8BA">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__empleado__sucurs__6477ECF3">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="empleado" Type="Self.empleado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="empleado">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__emplead__66603565">
+          <End Role="empleado" Type="Self.empleado" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="empleado">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="empleado_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__factura__sucursa__6754599E">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="factura" Type="Self.factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="factura">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_orden_factura">
+          <End Role="factura" Type="Self.factura" Multiplicity="1" />
+          <End Role="orden" Type="Self.orden" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="factura">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="orden">
+              <PropertyRef Name="factura_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__genero___6D0D32F4">
+          <End Role="genero" Type="Self.genero" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="genero">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="genero_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__locali__75A278F5">
+          <End Role="localidad" Type="Self.localidad" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="localidad">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="localidad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_localidad_provincia">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="localidad" Type="Self.localidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="localidad">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__marca">
+          <End Role="marca" Type="Self.marca" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="marca">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="marca_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_nota_id">
+          <End Role="nota" Type="Self.nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+          <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__pais_id__6EF57B66">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__pais_i__76969D2E">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_provincia_pais">
+          <End Role="pais" Type="Self.pais" Multiplicity="1" />
+          <End Role="provincia" Type="Self.provincia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pais">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="provincia">
+              <PropertyRef Name="pais_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__perfume__tipo_de__6FE99F9F">
+          <End Role="tipo_de_perfume" Type="Self.tipo_de_perfume" Multiplicity="1" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="perfume">
+              <PropertyRef Name="tipo_de_perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_perfume_has_sucursal_perfume1">
+          <End Role="perfume" Type="Self.perfume" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="stock" Type="Self.stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="perfume">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="perfume_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__sucursal__provin__778AC167">
+          <End Role="provincia" Type="Self.provincia" Multiplicity="1" />
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincia">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sucursal">
+              <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_sucursal">
+          <End Role="sucursal" Type="Self.sucursal" Multiplicity="1" />
+          <End Role="stock" Type="Self.stock" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sucursal">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="stock">
+              <PropertyRef Name="sucursal_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="aroma_del_perfume">
+          <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="*" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+        </Association>
+        <Association Name="notas_del_perfume">
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+        </Association>
+        <Association Name="perfumes_en_promo">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="*" />
+          <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="etereaEntities7" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="caja" EntityType="Self.caja" />
+          <EntitySet Name="calle" EntityType="Self.calle" />
+          <EntitySet Name="carrito" EntityType="Self.carrito" />
+          <EntitySet Name="cliente" EntityType="Self.cliente" />
+          <EntitySet Name="detalle_factura" EntityType="Self.detalle_factura" />
+          <EntitySet Name="empleado" EntityType="Self.empleado" />
+          <EntitySet Name="factura" EntityType="Self.factura" />
+          <EntitySet Name="genero" EntityType="Self.genero" />
+          <EntitySet Name="historialCaja" EntityType="Self.historialCaja" />
+          <EntitySet Name="localidad" EntityType="Self.localidad" />
+          <EntitySet Name="marca" EntityType="Self.marca" />
+          <EntitySet Name="nota" EntityType="Self.nota" />
+          <EntitySet Name="nota_con_tipo_de_nota" EntityType="Self.nota_con_tipo_de_nota" />
+          <EntitySet Name="orden" EntityType="Self.orden" />
+          <EntitySet Name="pais" EntityType="Self.pais" />
+          <EntitySet Name="perfume" EntityType="Self.perfume" />
+          <EntitySet Name="promocion" EntityType="Self.promocion" />
+          <EntitySet Name="provincia" EntityType="Self.provincia" />
+          <EntitySet Name="stock" EntityType="Self.stock" />
+          <EntitySet Name="sucursal" EntityType="Self.sucursal" />
+          <EntitySet Name="tipo_de_aroma" EntityType="Self.tipo_de_aroma" />
+          <EntitySet Name="tipo_de_nota" EntityType="Self.tipo_de_nota" />
+          <EntitySet Name="tipo_de_perfume" EntityType="Self.tipo_de_perfume" />
+          <AssociationSet Name="FK__caja__sucursal_i__4F47C5E3" Association="Self.FK__caja__sucursal_i__4F47C5E3">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="caja" EntitySet="caja" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__calle_i__59FA5E80" Association="Self.FK__cliente__calle_i__59FA5E80">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__calle___60A75C0F" Association="Self.FK__empleado__calle___60A75C0F">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__calle___74AE54BC" Association="Self.FK__sucursal__calle___74AE54BC">
+            <End Role="calle" EntitySet="calle" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="fk_calle_localidad" Association="Self.fk_calle_localidad">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="calle" EntitySet="calle" />
+          </AssociationSet>
+          <AssociationSet Name="FK__carrito__cliente__5812160E" Association="Self.FK__carrito__cliente__5812160E">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="carrito" EntitySet="carrito" />
+          </AssociationSet>
+          <AssociationSet Name="FK__carrito__perfume__59063A47" Association="Self.FK__carrito__perfume__59063A47">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="carrito" EntitySet="carrito" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__localid__5AEE82B9" Association="Self.FK__cliente__localid__5AEE82B9">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__pais_id__5BE2A6F2" Association="Self.FK__cliente__pais_id__5BE2A6F2">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cliente__provinc__5CD6CB2B" Association="Self.FK__cliente__provinc__5CD6CB2B">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="cliente" EntitySet="cliente" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__cliente__656C112C" Association="Self.FK__factura__cliente__656C112C">
+            <End Role="cliente" EntitySet="cliente" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__detalle_f__promo__5FB337D6" Association="Self.FK__detalle_f__promo__5FB337D6">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="fk_detalle_factura_perfume" Association="Self.fk_detalle_factura_perfume">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_detalle_factura_promocion2_id" Association="Self.FK_detalle_factura_promocion2_id">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetalleFactura_Factura" Association="Self.FK_DetalleFactura_Factura">
+            <End Role="factura" EntitySet="factura" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__locali__619B8048" Association="Self.FK__empleado__locali__619B8048">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__pais_i__628FA481" Association="Self.FK__empleado__pais_i__628FA481">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__provin__6383C8BA" Association="Self.FK__empleado__provin__6383C8BA">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__empleado__sucurs__6477ECF3" Association="Self.FK__empleado__sucurs__6477ECF3">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="empleado" EntitySet="empleado" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__emplead__66603565" Association="Self.FK__factura__emplead__66603565">
+            <End Role="empleado" EntitySet="empleado" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__factura__sucursa__6754599E" Association="Self.FK__factura__sucursa__6754599E">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="factura" EntitySet="factura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_orden_factura" Association="Self.FK_orden_factura">
+            <End Role="factura" EntitySet="factura" />
+            <End Role="orden" EntitySet="orden" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__genero___6D0D32F4" Association="Self.FK__perfume__genero___6D0D32F4">
+            <End Role="genero" EntitySet="genero" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__locali__75A278F5" Association="Self.FK__sucursal__locali__75A278F5">
+            <End Role="localidad" EntitySet="localidad" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="fk_localidad_provincia" Association="Self.fk_localidad_provincia">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="localidad" EntitySet="localidad" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__marca" Association="Self.FK__perfume__marca">
+            <End Role="marca" EntitySet="marca" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_nota_id" Association="Self.FK_nota_con_tipo_de_nota_nota_id">
+            <End Role="nota" EntitySet="nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id" Association="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+            <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__pais_id__6EF57B66" Association="Self.FK__perfume__pais_id__6EF57B66">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__pais_i__76969D2E" Association="Self.FK__sucursal__pais_i__76969D2E">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_provincia_pais" Association="Self.FK_provincia_pais">
+            <End Role="pais" EntitySet="pais" />
+            <End Role="provincia" EntitySet="provincia" />
+          </AssociationSet>
+          <AssociationSet Name="FK__perfume__tipo_de__6FE99F9F" Association="Self.FK__perfume__tipo_de__6FE99F9F">
+            <End Role="tipo_de_perfume" EntitySet="tipo_de_perfume" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="fk_perfume_has_sucursal_perfume1" Association="Self.fk_perfume_has_sucursal_perfume1">
+            <End Role="perfume" EntitySet="perfume" />
+            <End Role="stock" EntitySet="stock" />
+          </AssociationSet>
+          <AssociationSet Name="FK__sucursal__provin__778AC167" Association="Self.FK__sucursal__provin__778AC167">
+            <End Role="provincia" EntitySet="provincia" />
+            <End Role="sucursal" EntitySet="sucursal" />
+          </AssociationSet>
+          <AssociationSet Name="fk_sucursal" Association="Self.fk_sucursal">
+            <End Role="sucursal" EntitySet="sucursal" />
+            <End Role="stock" EntitySet="stock" />
+          </AssociationSet>
+          <AssociationSet Name="aroma_del_perfume" Association="Self.aroma_del_perfume">
+            <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="notas_del_perfume" Association="Self.notas_del_perfume">
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+          <AssociationSet Name="perfumes_en_promo" Association="Self.perfumes_en_promo">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="perfume" EntitySet="perfume" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="etereaModelStoreContainer" CdmEntityContainer="etereaEntities7">
+          <EntitySetMapping Name="caja">
+            <EntityTypeMapping TypeName="etereaModel.caja">
+              <MappingFragment StoreEntitySet="caja">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="numCaja" ColumnName="numCaja" />
+                <ScalarProperty Name="disponible" ColumnName="disponible" />
+                <ScalarProperty Name="sucursal_id" ColumnName="sucursal_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="calle">
+            <EntityTypeMapping TypeName="etereaModel.calle">
+              <MappingFragment StoreEntitySet="calle">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="localidad_id" ColumnName="localidad_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="carrito">
+            <EntityTypeMapping TypeName="etereaModel.carrito">
+              <MappingFragment StoreEntitySet="carrito">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="perfume_id" ColumnName="perfume_id" />
+                <ScalarProperty Name="cliente_id" ColumnName="cliente_id" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cliente">
+            <EntityTypeMapping TypeName="etereaModel.cliente">
+              <MappingFragment StoreEntitySet="cliente">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="usuario" ColumnName="usuario" />
+                <ScalarProperty Name="clave" ColumnName="clave" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="apellido" ColumnName="apellido" />
+                <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="condicion_frente_al_iva" ColumnName="condicion_frente_al_iva" />
+                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
+                <ScalarProperty Name="celular" ColumnName="celular" />
+                <ScalarProperty Name="e_mail" ColumnName="e_mail" />
+                <ScalarProperty Name="pais_id" ColumnName="pais_id" />
+                <ScalarProperty Name="provincia_id" ColumnName="provincia_id" />
+                <ScalarProperty Name="localidad_id" ColumnName="localidad_id" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="calle_id" ColumnName="calle_id" />
+                <ScalarProperty Name="numeracion_calle" ColumnName="numeracion_calle" />
+                <ScalarProperty Name="piso" ColumnName="piso" />
+                <ScalarProperty Name="departamento" ColumnName="departamento" />
+                <ScalarProperty Name="comentarios_domicilio" ColumnName="comentarios_domicilio" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+                <ScalarProperty Name="rol" ColumnName="rol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="detalle_factura">
+            <EntityTypeMapping TypeName="etereaModel.detalle_factura">
+              <MappingFragment StoreEntitySet="detalle_factura">
+                <ScalarProperty Name="factura_id" ColumnName="factura_id" />
+                <ScalarProperty Name="perfume_id" ColumnName="perfume_id" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+                <ScalarProperty Name="precio_unitario" ColumnName="precio_unitario" />
+                <ScalarProperty Name="promocion_id" ColumnName="promocion_id" />
+                <ScalarProperty Name="promocion2_id" ColumnName="promocion2_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="empleado">
+            <EntityTypeMapping TypeName="etereaModel.empleado">
+              <MappingFragment StoreEntitySet="empleado">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="usuario" ColumnName="usuario" />
+                <ScalarProperty Name="clave" ColumnName="clave" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="apellido" ColumnName="apellido" />
+                <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="fecha_nacimiento" ColumnName="fecha_nacimiento" />
+                <ScalarProperty Name="celular" ColumnName="celular" />
+                <ScalarProperty Name="e_mail" ColumnName="e_mail" />
+                <ScalarProperty Name="pais_id" ColumnName="pais_id" />
+                <ScalarProperty Name="provincia_id" ColumnName="provincia_id" />
+                <ScalarProperty Name="localidad_id" ColumnName="localidad_id" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="calle_id" ColumnName="calle_id" />
+                <ScalarProperty Name="numeracion_calle" ColumnName="numeracion_calle" />
+                <ScalarProperty Name="piso" ColumnName="piso" />
+                <ScalarProperty Name="departamento" ColumnName="departamento" />
+                <ScalarProperty Name="comentarios_domicilio" ColumnName="comentarios_domicilio" />
+                <ScalarProperty Name="sucursal_id" ColumnName="sucursal_id" />
+                <ScalarProperty Name="fecha_ingreso" ColumnName="fecha_ingreso" />
+                <ScalarProperty Name="sueldo" ColumnName="sueldo" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+                <ScalarProperty Name="rol" ColumnName="rol" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="factura">
+            <EntityTypeMapping TypeName="etereaModel.factura">
+              <MappingFragment StoreEntitySet="factura">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
+                <ScalarProperty Name="sucursal_id" ColumnName="sucursal_id" />
+                <ScalarProperty Name="empleado_id" ColumnName="empleado_id" />
+                <ScalarProperty Name="cliente_id" ColumnName="cliente_id" />
+                <ScalarProperty Name="forma_de_pago" ColumnName="forma_de_pago" />
+                <ScalarProperty Name="precio_total" ColumnName="precio_total" />
+                <ScalarProperty Name="recargo_tarjeta" ColumnName="recargo_tarjeta" />
+                <ScalarProperty Name="descuento" ColumnName="descuento" />
+                <ScalarProperty Name="numero_de_caja" ColumnName="numero_de_caja" />
+                <ScalarProperty Name="tipo_de_consumidor" ColumnName="tipo_de_consumidor" />
+                <ScalarProperty Name="origen" ColumnName="origen" />
+                <ScalarProperty Name="factura_pdf" ColumnName="factura_pdf" />
+                <ScalarProperty Name="num_factura" ColumnName="num_factura" />
+                <ScalarProperty Name="tipo_de_factura" ColumnName="tipo_de_factura" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="genero">
+            <EntityTypeMapping TypeName="etereaModel.genero">
+              <MappingFragment StoreEntitySet="genero">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="genero1" ColumnName="genero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="historialCaja">
+            <EntityTypeMapping TypeName="etereaModel.historialCaja">
+              <MappingFragment StoreEntitySet="historialCaja">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="numCaja" ColumnName="numCaja" />
+                <ScalarProperty Name="sucursal_id" ColumnName="sucursal_id" />
+                <ScalarProperty Name="usuario" ColumnName="usuario" />
+                <ScalarProperty Name="fecha_apertura" ColumnName="fecha_apertura" />
+                <ScalarProperty Name="fecha_cierre" ColumnName="fecha_cierre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="localidad">
+            <EntityTypeMapping TypeName="etereaModel.localidad">
+              <MappingFragment StoreEntitySet="localidad">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="provincia_id" ColumnName="provincia_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="marca">
+            <EntityTypeMapping TypeName="etereaModel.marca">
+              <MappingFragment StoreEntitySet="marca">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="nota">
+            <EntityTypeMapping TypeName="etereaModel.nota">
+              <MappingFragment StoreEntitySet="nota">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="nota_con_tipo_de_nota">
+            <EntityTypeMapping TypeName="etereaModel.nota_con_tipo_de_nota">
+              <MappingFragment StoreEntitySet="nota_con_tipo_de_nota">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nota_id" ColumnName="nota_id" />
+                <ScalarProperty Name="tipo_de_nota_id" ColumnName="tipo_de_nota_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orden">
+            <EntityTypeMapping TypeName="etereaModel.orden">
+              <MappingFragment StoreEntitySet="orden">
+                <ScalarProperty Name="numero_de_orden" ColumnName="numero_de_orden" />
+                <ScalarProperty Name="factura_id" ColumnName="factura_id" />
+                <ScalarProperty Name="nombre_cliente" ColumnName="nombre_cliente" />
+                <ScalarProperty Name="apellido_cliente" ColumnName="apellido_cliente" />
+                <ScalarProperty Name="dni" ColumnName="dni" />
+                <ScalarProperty Name="e_mail_cliente" ColumnName="e_mail_cliente" />
+                <ScalarProperty Name="domicilio_de_envio" ColumnName="domicilio_de_envio" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="codigo_despacho" ColumnName="codigo_despacho" />
+                <ScalarProperty Name="fecha_creacion" ColumnName="fecha_creacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pais">
+            <EntityTypeMapping TypeName="etereaModel.pais">
+              <MappingFragment StoreEntitySet="pais">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="perfume">
+            <EntityTypeMapping TypeName="etereaModel.perfume">
+              <MappingFragment StoreEntitySet="perfume">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="codigo" ColumnName="codigo" />
+                <ScalarProperty Name="marca_id" ColumnName="marca_id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="tipo_de_perfume_id" ColumnName="tipo_de_perfume_id" />
+                <ScalarProperty Name="genero_id" ColumnName="genero_id" />
+                <ScalarProperty Name="presentacion_ml" ColumnName="presentacion_ml" />
+                <ScalarProperty Name="pais_id" ColumnName="pais_id" />
+                <ScalarProperty Name="spray" ColumnName="spray" />
+                <ScalarProperty Name="recargable" ColumnName="recargable" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="anio_de_lanzamiento" ColumnName="anio_de_lanzamiento" />
+                <ScalarProperty Name="precio_en_pesos" ColumnName="precio_en_pesos" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+                <ScalarProperty Name="imagen1" ColumnName="imagen1" />
+                <ScalarProperty Name="imagen2" ColumnName="imagen2" />
+                <ScalarProperty Name="fecha_baja" ColumnName="fecha_baja" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="promocion">
+            <EntityTypeMapping TypeName="etereaModel.promocion">
+              <MappingFragment StoreEntitySet="promocion">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="fecha_inicio" ColumnName="fecha_inicio" />
+                <ScalarProperty Name="fecha_fin" ColumnName="fecha_fin" />
+                <ScalarProperty Name="descuento" ColumnName="descuento" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="banner" ColumnName="banner" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="provincia">
+            <EntityTypeMapping TypeName="etereaModel.provincia">
+              <MappingFragment StoreEntitySet="provincia">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="pais_id" ColumnName="pais_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stock">
+            <EntityTypeMapping TypeName="etereaModel.stock">
+              <MappingFragment StoreEntitySet="stock">
+                <ScalarProperty Name="perfume_id" ColumnName="perfume_id" />
+                <ScalarProperty Name="sucursal_id" ColumnName="sucursal_id" />
+                <ScalarProperty Name="cantidad" ColumnName="cantidad" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sucursal">
+            <EntityTypeMapping TypeName="etereaModel.sucursal">
+              <MappingFragment StoreEntitySet="sucursal">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="pais_id" ColumnName="pais_id" />
+                <ScalarProperty Name="provincia_id" ColumnName="provincia_id" />
+                <ScalarProperty Name="localidad_id" ColumnName="localidad_id" />
+                <ScalarProperty Name="codigo_postal" ColumnName="codigo_postal" />
+                <ScalarProperty Name="calle_id" ColumnName="calle_id" />
+                <ScalarProperty Name="numeracion_calle" ColumnName="numeracion_calle" />
+                <ScalarProperty Name="activo" ColumnName="activo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tipo_de_aroma">
+            <EntityTypeMapping TypeName="etereaModel.tipo_de_aroma">
+              <MappingFragment StoreEntitySet="tipo_de_aroma">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tipo_de_nota">
+            <EntityTypeMapping TypeName="etereaModel.tipo_de_nota">
+              <MappingFragment StoreEntitySet="tipo_de_nota">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tipo_de_perfume">
+            <EntityTypeMapping TypeName="etereaModel.tipo_de_perfume">
+              <MappingFragment StoreEntitySet="tipo_de_perfume">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="tipo_de_perfume1" ColumnName="tipo_de_perfume" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="aroma_del_perfume" TypeName="etereaModel.aroma_del_perfume" StoreEntitySet="aroma_del_perfume">
+            <EndProperty Name="tipo_de_aroma">
+              <ScalarProperty Name="id" ColumnName="tipo_de_aroma_id" />
+            </EndProperty>
+            <EndProperty Name="perfume">
+              <ScalarProperty Name="id" ColumnName="perfume_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="notas_del_perfume" TypeName="etereaModel.notas_del_perfume" StoreEntitySet="notas_del_perfume">
+            <EndProperty Name="nota_con_tipo_de_nota">
+              <ScalarProperty Name="id" ColumnName="nota_con_tipo_de_nota_id" />
+            </EndProperty>
+            <EndProperty Name="perfume">
+              <ScalarProperty Name="id" ColumnName="perfume_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="perfumes_en_promo" TypeName="etereaModel.perfumes_en_promo" StoreEntitySet="perfumes_en_promo">
+            <EndProperty Name="promocion">
+              <ScalarProperty Name="id" ColumnName="promocion_id" />
+            </EndProperty>
+            <EndProperty Name="perfume">
+              <ScalarProperty Name="id" ColumnName="perfume_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

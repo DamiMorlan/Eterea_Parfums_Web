@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ff9316d55192425890afff81a81dcaff" Name="Diagram1">
+        <EntityTypeShape EntityType="etereaModel.caja" Width="1.5" PointX="15" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.calle" Width="1.5" PointX="7.5" PointY="38.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.carrito" Width="1.5" PointX="12" PointY="19.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.cliente" Width="1.5" PointX="9.75" PointY="26.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.detalle_factura" Width="1.5" PointX="17.25" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.empleado" Width="1.5" PointX="12.75" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.factura" Width="1.5" PointX="15" PointY="28" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.genero" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.historialCaja" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.localidad" Width="1.5" PointX="5.25" PointY="38.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.marca" Width="1.5" PointX="0.75" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.nota" Width="1.5" PointX="1.5" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.nota_con_tipo_de_nota" Width="1.5" PointX="0.75" PointY="21.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.orden" Width="1.5" PointX="17.25" PointY="32.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.pais" Width="1.5" PointX="0.75" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.perfume" Width="1.5" PointX="3" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.promocion" Width="1.5" PointX="0.75" PointY="29.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.provincia" Width="1.5" PointX="3" PointY="38.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.stock" Width="1.5" PointX="15" PointY="20.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.sucursal" Width="1.5" PointX="12.75" PointY="23.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.tipo_de_aroma" Width="1.5" PointX="0.75" PointY="33.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.tipo_de_nota" Width="1.5" PointX="1.5" PointY="27.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="etereaModel.tipo_de_perfume" Width="1.5" PointX="0.75" PointY="35.625" IsExpanded="true" />
+        <AssociationConnector Association="etereaModel.FK__caja__sucursal_i__4F47C5E3" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__cliente__calle_i__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__empleado__calle___60A75C0F" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__sucursal__calle___74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.fk_calle_localidad" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__carrito__cliente__5812160E" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__carrito__perfume__59063A47" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__cliente__localid__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__cliente__pais_id__5BE2A6F2" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__cliente__provinc__5CD6CB2B" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__factura__cliente__656C112C" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__detalle_f__promo__5FB337D6" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.fk_detalle_factura_perfume" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_detalle_factura_promocion2_id" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_DetalleFactura_Factura" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__empleado__locali__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__empleado__pais_i__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__empleado__provin__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__empleado__sucurs__6477ECF3" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__factura__emplead__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__factura__sucursa__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_orden_factura" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__perfume__genero___6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__sucursal__locali__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.fk_localidad_provincia" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__perfume__marca" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_nota_con_tipo_de_nota_nota_id" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_nota_con_tipo_de_nota_tipo_de_nota_id" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__perfume__pais_id__6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__sucursal__pais_i__76969D2E" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK_provincia_pais" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__perfume__tipo_de__6FE99F9F" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.fk_perfume_has_sucursal_perfume1" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.FK__sucursal__provin__778AC167" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.fk_sucursal" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.aroma_del_perfume" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.notas_del_perfume" ManuallyRouted="false" />
+        <AssociationConnector Association="etereaModel.perfumes_en_promo" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

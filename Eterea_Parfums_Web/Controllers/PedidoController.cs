@@ -17,7 +17,7 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class PedidoController : Controller
     {
-        private etereaEntities4 db = new etereaEntities4();
+        private etereaEntities7 db = new etereaEntities7();
 
         [HttpPost]
         public ActionResult VistaPrevia(List<int> PerfumeIds, List<int> Cantidades, double Subtotal, double Descuento, double Total)
