@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Globalization;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -265,7 +266,7 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // GET: Pedido/SimularPago
-        public ActionResult RealizarPago(double monto)
+        /*public ActionResult RealizarPago(double monto)
         {
             var model = new SimularPagoViewModel
             {
@@ -273,7 +274,24 @@ namespace Eterea_Parfums_Web.Controllers
                 Usuario = "AdriCamp"   // o leés el nombre de la sesión
             };
             return View(model);
+        }*/
+
+        public ActionResult SimularPago(string monto)
+        {
+            double total = double.Parse(monto, CultureInfo.InvariantCulture);
+
+            var rand = new Random();
+            double saldo = rand.Next(50_000, 300_001);
+
+            var model = new SimularPagoViewModel
+            {
+                Monto = total,
+                SaldoCuenta = saldo,
+                Usuario = Session["nombreUsuario"]?.ToString() ?? "Invitado"
+            };
+            return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

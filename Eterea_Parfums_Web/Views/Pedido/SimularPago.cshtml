@@ -1,0 +1,368 @@
+﻿@model Eterea_Parfums_Web.ViewModels.SimularPagoViewModel
+@using System.Globalization
+
+@{
+    ViewBag.Title = "Simulación de Pago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/Content/StyleSimularPago.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+}
+
+<div class="container my-5 simulador-mp">
+    <div class="row">
+
+        <!-- MEDIOS DE PAGO ------------------------------------------------>
+        <div class="col-lg-7 col-md-8 bg-white p-4 shadow-sm rounded-3">
+            <h4 class="mb-4 fw-bold">¿Cómo querés pagar?</h4>
+
+            <!-- Combinar switch -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="fw-semibold">Combinar 2 medios de pago</span>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" id="chkCombinar" />
+                </div>
+            </div>
+
+            <!-- Opciones -->
+            <h6 id="tituloMedio1" class="fw-bold mt-3" style="display:none;">
+                Primer medio de pago
+            </h6>
+
+            <div id="listaMedios">
+
+                <!-- Dinero en cuenta -->
+                <label class="mp-item">
+                    <input type="radio" name="medio1" value="DIN" class="form-check-input me-2 medio1" />
+                    <i class="bi bi-wallet2 mp-logo text-warning"></i>
+                    <div class="flex-grow-1">
+                        <div>Dinero disponible</div>
+                        <small class="text-muted">$ @Model.SaldoCuenta.ToString("N0")</small>
+                    </div>
+                </label>
+
+                <!-- Mastercard crédito -->
+                <label class="mp-item">
+                    <input type="radio" name="medio1" value="MC" class="form-check-input me-2 medio1" />
+                    <img src="https://static.mercadopago.com/public/checkout-assets/img/brands/master.svg" class="mp-card" />
+                    <div class="flex-grow-1">
+                        <div>Mastercard **** 0604</div>
+                        <small class="text-muted">Crédito</small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                </label>
+
+                <!-- Visa débito -->
+                <label class="mp-item">
+                    <input type="radio" name="medio1" value="VSD" class="form-check-input me-2 medio1" />
+                    <img src="https://static.mercadopago.com/public/checkout-assets/img/brands/visa.svg" class="mp-card" />
+                    <div class="flex-grow-1">
+                        <div>Visa Débito **** 4321</div>
+                        <small class="text-muted">Débito</small>
+                    </div>
+                </label>
+
+                <!-- Nueva tarjeta -->
+                <div class="mp-item cursor-pointer" data-bs-toggle="modal" data-bs-target="#modalNueva">
+                    <i class="bi bi-credit-card mp-logo"></i>
+                    <div class="flex-grow-1">Nueva tarjeta</div>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+
+                <!-- ‼️ NUEVO: lista segundo medio -->
+                <div id="boxMedio2" style="display:none;">
+                    <h6 class="fw-bold mt-3">Segundo medio de pago</h6>
+                    <div id="listaMedios2"></div>
+                </div>
+
+            </div>
+
+            <a href="@Url.Action("VistaPrevia","Pedido")" class="d-block mt-4 text-decoration-none">
+                &lt; Volver al sitio
+            </a>
+        </div>
+
+        <!-- RESUMEN ------------------------------------------------------->
+        <div class="col-lg-4 offset-lg-1 col-md-4 mt-4 mt-md-0">
+            <div class="bg-white p-4 shadow-sm rounded-3">
+                <h6 class="fw-bold mb-3">Detalles del pago</h6>
+
+                <div class="d-flex justify-content-between">
+                    <span>Productos</span>
+                    <span id="txtSubtotal">$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <div class="d-flex justify-content-between" id="filaInteres" style="display:none;">
+                    <span>Recargo por cuotas</span>
+                    <span id="txtInteres">$0</span>
+                </div>
+
+                <hr />
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Pagás</span>
+                    <span id="txtTotal">$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <!-- COMBINAR: importe medio 1-->
+                <!-- IMPORTE 1 -->
+                <div class="mb-3" id="boxImporte1" style="display:none;">
+                    <label id="lblImp1" class="form-label"></label>
+                    <input type="number" min="1" class="form-control" id="importe1" />
+                </div>
+
+                <!-- IMPORTE 2 (sólo visible si se necesita) -->
+                <div class="mb-3" id="boxImporte2" style="display:none;">
+                    <label id="lblImp2" class="form-label"></label>
+                    <input type="number" class="form-control" id="importe2" readonly />
+                </div>
+
+
+                <!-- BOTÓN -->
+                @using (Html.BeginForm("ConfirmarPago", "Pedido", FormMethod.Post, new { @class = "mt-3" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hdMedio1" name="medio1" />
+                    <input type="hidden" id="hdMedio2" name="medio2" />
+                    <input type="hidden" id="hdCuotas" name="cuotas" />
+                    <input type="hidden" id="hdTotal" name="totalFinal" />
+
+                    <button type="submit" id="btnPagar" class="btn btn-primary w-100" disabled>
+                        Pagar
+                    </button>
+                }
+
+                <p class="text-center text-muted mt-2 mb-0" style="font-size:.8rem;">
+                    <i class="bi bi-lock-fill"></i> Pago seguro
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NUEVA TARJETA ---------------------------------------------->
+<div class="modal fade" id="modalNueva" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Nueva tarjeta</h5></div>
+            <div class="modal-body">
+                <div class="mb-2"><input class="form-control" placeholder="Número de tarjeta" /></div>
+                <div class="row g-2 mb-2">
+                    <div class="col"><input class="form-control" placeholder="MM/AA" /></div>
+                    <div class="col"><input class="form-control" placeholder="CVV" /></div>
+                </div>
+                <div class="mb-2"><input class="form-control" placeholder="Nombre titular" /></div>
+                <div class="mb-2"><input class="form-control" placeholder="DNI" /></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnAddCard" class="btn btn-success">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function(){
+
+  /* === CONSTANTES Y ESTADO ================================= */
+  const totalBase = +("@Model.Monto".replace(',','.'));
+  const saldo     = +("@Model.SaldoCuenta".replace(',','.'));
+  const cuotasMC  = {1:0, 3:0.10, 6:0.15, 9:0.18, 12:0.20};
+
+  let medio1="", medio2="", cuotas=1, recargo=0;
+
+  /* === SELECTORES ========================================== */
+  const $chkComb = $('#chkCombinar');
+  const $medios1 = $('input.medio1');
+  const $boxImp1 = $('#boxImporte1');
+  const $boxImp2 = $('#boxImporte2');
+  const $boxMed2 = $('#boxMedio2');
+  const $lista2  = $('#listaMedios2');
+  const $imp1 = $('#importe1'), $imp2 = $('#importe2');
+  const $lbl1 = $('#lblImp1'),  $lbl2 = $('#lblImp2');
+  const $filaInter = $('#filaInteres'), $txtInter = $('#txtInteres');
+  const $txtTotal  = $('#txtTotal'),    $btnPay   = $('#btnPagar');
+  const $hdM1=$('#hdMedio1'), $hdM2=$('#hdMedio2'),
+        $hdC=$('#hdCuotas'),  $hdT=$('#hdTotal');
+
+  /* === UTILIDAD ============================================ */
+  const fmt=n=>Number(n).toLocaleString('es-AR');
+
+  const actualizarTotales = _=>{
+      const total = totalBase + recargo;
+      $txtTotal.text(`$ ${fmt(total)}`);
+      $txtInter.text(`$ ${fmt(recargo)}`);
+      $filaInter.toggle(recargo>0);
+      $hdT.val(total);
+  };
+
+    function aplicarCuotas(importeCuotado) {
+        recargo = (cuotasMC[cuotas] || 0) * importeCuotado;
+        actualizarTotales();
+    }
+
+  /* === MEDIO 1 ============================================= */
+    $medios1.on('change', function () {
+
+        medio1 = this.value; $hdM1.val(medio1);
+
+        /* si Combinar está OFF, oculta cuadro importe y usa total completo */
+        if (!$chkComb.is(':checked')) {
+            $boxImp1.hide();
+            $imp1.val(totalBase);          // valor de referencia si es MC
+        }
+
+        /* Dinero disponible */
+        if (medio1 === 'DIN') {
+            if (!$chkComb.is(':checked') && saldo < totalBase) {
+                alert('El saldo no alcanza; active “Combinar 2 medios”.');
+                this.checked = false;
+                medio1 = ""; validar(); return;
+            }
+            if ($chkComb.is(':checked')) {
+                // saldo parcial sólo cuando se combinan medios
+                $imp1.prop('readonly', true).val(saldo);
+            }
+            ocultarSelectorCuotas();
+            aplicarCuotas(0);
+        }
+        /* Mastercard crédito */
+        else if (medio1 === 'MC') {
+            if ($chkComb.is(':checked')) {
+                $imp1.prop('readonly', false).val('');
+                mostrarSelectorCuotas($boxImp1);
+                aplicarCuotas(0);          // se recalculará al elegir cuotas / importe
+            } else {
+                mostrarSelectorCuotas($boxImp1);
+                aplicarCuotas(totalBase);  // interés sobre TODO el total
+            }
+        }
+        /* Visa débito u otra */
+        else {
+            ocultarSelectorCuotas();
+            aplicarCuotas(0);
+        }
+
+        validar();
+    });
+
+  /* === SWITCH COMBINAR ===================================== */
+    $chkComb.on('change', function () {
+
+        if (this.checked) {
+            $('#tituloMedio1').show();     // opcional, tu encabezado
+            $boxImp1.show();              // ← ahora SÓLO se muestra aquí
+            prepararMedios2();
+        } else {
+            $('#tituloMedio1').hide();
+            $boxImp1.hide();              // ← lo ocultamos
+            $boxMed2.hide(); $boxImp2.hide();
+            $('input[name="medio2"]').prop('checked', false);
+            medio2 = ""; $hdM2.val('');
+            ocultarSelectorCuotas();
+            // como no hay cuotas en medio2, recálculo va sobre medio1
+            aplicarCuotas(medio1 === 'MC' ? totalBase : 0);
+        }
+
+        validar();
+    });
+
+  /* === PREPARAR MEDIO 2 ==================================== */
+  function prepararMedios2(){
+      if($lista2.children().length) return $boxMed2.show();
+      $('.mp-item').each(function(){
+          const val=$(this).find('input.medio1').val();
+          const $clone=$(this).clone(); $clone.find('input.medio1').remove();
+          $clone.prepend(`<input type="radio" name="medio2" value="${val}" class="form-check-input me-2 medio2">`);
+          $lista2.append($clone);
+      });
+      $boxMed2.show();
+      $(document).on('change','input[name="medio2"]', function(){
+          medio2=this.value; $hdM2.val(medio2);
+          const nombre=$(this).parent().find('div:first').text().trim();
+          $lbl2.text(`Importe a pagar con ${nombre}`);
+          $boxImp2.show();
+
+          const resto= totalBase- (+$imp1.val()||0);
+          $imp2.val(resto);
+
+          ocultarSelectorCuotas();
+          if(medio2==='MC') mostrarSelectorCuotas($boxImp2);
+
+          aplicarCuotas(medio2==='MC'?resto:(medio1==='MC'?+$imp1.val():0));
+          validar();
+      });
+  }
+
+  /* === IMPORTE 1 CAMBIA ==================================== */
+  $imp1.on('input', function(){
+      if($chkComb.is(':checked')){
+          const resto= totalBase-(+$imp1.val()||0);
+          $imp2.val(resto);
+          aplicarCuotas(medio2==='MC'?resto:(medio1==='MC'?+$imp1.val():0));
+      }
+      validar();
+  });
+
+  /* === CUOTAS SELECTOR ===================================== */
+    function mostrarSelectorCuotas($where) {
+
+        if ($where.find('.selCuotas').length) return;   // ya existe
+
+        const html = `<select class="form-select selCuotas mt-2">
+        ${Object.entries(cuotasMC)
+                .map(([k, v]) => `<option value="${k}">
+                    ${k} pago${k > 1 ? 's' : ''}
+                    ${k == 1 ? ' sin interés' : ' (' + (v * 100) + '% interés)'}
+                </option>`).join('')}
+    </select>`;
+
+        $where.append(html);
+
+        /* ⬇️  AQUÍ va el bloque que preguntas  ⬇️ */
+        $where.find('.selCuotas')
+            .on('change', function () {
+
+                cuotas = +this.value;           // número de cuotas
+                $hdC.val(cuotas);               // lo mandamos al form
+
+                // ¿sobre qué importe aplicar el recargo?
+                const importeCuotado = $chkComb.is(':checked')
+                    ? (medio1 === 'MC' ? +$imp1.val() : +$imp2.val())
+                    : totalBase;             // cuando NO se combina: todo el total
+
+                aplicarCuotas(importeCuotado);
+            })
+            .trigger('change');                 // ← calcula al mostrarlo
+    }
+
+  function ocultarSelectorCuotas(){ $('.selCuotas').remove(); $hdC.val(1); recargo=0; }
+
+  /* === RECALCULA RESTO CUANDO SE ACTIVA COMBINAR =========== */
+  function recalcularSegundoMedio(){
+      if($chkComb.is(':checked') && medio1){
+          const resto= totalBase-( +$imp1.val()||0 );
+          $imp2.val(resto);
+      } else { $imp2.val(''); }
+      aplicarCuotas(medio1==='MC'?+$imp1.val():(medio2==='MC'?+$imp2.val():0));
+  }
+
+  /* === VALIDACIÓN FINAL ==================================== */
+  function validar(){
+      let ok= !!medio1;
+      if($chkComb.is(':checked')){
+          ok = ok && medio2 && medio2!==medio1 && (+$imp1.val()>0) && (+$imp1.val()<totalBase);
+      }
+      $btnPay.prop('disabled',!ok);
+  }
+
+  /* === INIT ================================================= */
+  $txtTotal.text(`$ ${fmt(totalBase)}`);
+  $hdC.val(1); $hdTot.val(totalBase);
+});
+</script>
+
+

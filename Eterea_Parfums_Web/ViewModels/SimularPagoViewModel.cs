@@ -7,7 +7,9 @@ namespace Eterea_Parfums_Web.ViewModels
 {
     public class SimularPagoViewModel
     {
-        public double Monto { get; set; }
+        public double Monto { get; set; }   // total sin recargo
+        public double SaldoCuenta { get; set; }   // random
         public string Usuario { get; set; }
     }
+
 }
