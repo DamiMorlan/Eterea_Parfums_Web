@@ -64,20 +64,9 @@
                             </p>
                         }
 
-
-
-
-
-
                         @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
                         {
                             <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
-                        }
-
-
-                        else
-                        {
-                            <p class="precio-descuento">$@item.PrecioOriginal.ToString("N0")</p>
                         }
 
                         <label for="cantidad-@item.PerfumeId">Cantidad: </label>

@@ -215,7 +215,9 @@ namespace Eterea_Parfums_Web.Controllers
                     TienePromo = tienePromo,
                     LeyendaPromo = leyendaPromo,
                     StockDisponibleParaVentaWeb = stockDisponible,
-                    MostrarPrecioTachado = promo10 != null && (promoPorCantidad == null || cantidad < 2)
+                    MostrarPrecioTachado = promo10 != null
+                    && (promoPorCantidad == null || cantidad < 2)
+                    && precioConDescuento < precioOriginal
 
                 };
             }).ToList();
@@ -904,7 +906,7 @@ namespace Eterea_Parfums_Web.Controllers
                 tienePromo = true;
                 precioConDescuento = precioOriginal * 0.9;
                 total = precioConDescuento * cantidad;
-                mostrarPrecioTachado = true;
+                mostrarPrecioTachado = promo10 != null && (promoCantidad == null || cantidad < 2);
                 leyendaPromo = "Promoción 10% OFF";
 
                 if (promoCantidad != null && cantidad < 2 && stockDisponible > cantidad)

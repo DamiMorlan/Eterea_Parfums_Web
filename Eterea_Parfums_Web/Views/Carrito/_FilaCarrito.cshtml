@@ -17,7 +17,7 @@
                 <p style="color: red; font-weight: bold;">¡Último disponible!</p>
             }
 
-            @if (Model.MostrarPrecioTachado && Model.PrecioConDescuento.HasValue)
+            @if (Model.MostrarPrecioTachado && Model.PrecioConDescuento.HasValue && Model.PrecioConDescuento.Value < Model.PrecioOriginal)
             {
                 <p class="precio-original" style="text-decoration: line-through; color: gray;">
                     $@Model.PrecioOriginal.ToString("N0")
@@ -33,6 +33,7 @@
                 </p>
             }
 
+
             @if (!string.IsNullOrWhiteSpace(Model.LeyendaPromo))
             {
                 <div class="leyenda-promo" style="margin-top: 5px;">
@@ -41,7 +42,7 @@
             }
 
             <label for="cantidad-@Model.PerfumeId" style="margin-top: 10px;">Cantidad:</label>
-           
+
             <select id="cantidad-@Model.PerfumeId" data-id="@Model.PerfumeId" onchange="actualizarCantidad(this)" style="max-width: 80px;">
                 @for (int i = 0; i <= Model.StockDisponibleParaVentaWeb; i++)
                 {
