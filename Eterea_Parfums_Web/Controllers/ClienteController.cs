@@ -12,7 +12,7 @@ namespace Eterea_Parfums_Web.Controllers
     public class ClienteController : Controller
     {
 
-        private etereaEntities1 db = new etereaEntities1();
+        private etereaEntities4 db = new etereaEntities4();
         // GET: Cliente/Login
         public ActionResult Login()
         {
@@ -51,7 +51,7 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpGet]
         public JsonResult ObtenerProvincias(int paisId)
         {
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var provincias = db.provincia
                     .Where(p => p.pais_id == paisId)
@@ -67,7 +67,7 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpGet]
         public JsonResult ObtenerLocalidades(int provinciaId)
         {
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var localidades = db.localidad
                     .Where(l => l.provincia_id == provinciaId)
@@ -83,7 +83,7 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpGet]
         public JsonResult ObtenerCalles(int localidadId)
         {
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var calles = db.calle
                     .Where(c => c.localidad_id == localidadId)
@@ -98,7 +98,7 @@ namespace Eterea_Parfums_Web.Controllers
 
         private void CargarPaises()
         {
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 ViewBag.Paises = db.pais
                     .Select(p => new SelectListItem
@@ -127,7 +127,7 @@ namespace Eterea_Parfums_Web.Controllers
                 return View(nuevoCliente);
             }
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
                 if (usuarioExiste)
@@ -184,7 +184,7 @@ namespace Eterea_Parfums_Web.Controllers
 
         public int ObtenerProximoIdDelCliente()
         {
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
                 if (db.cliente.Any())
                 {
                     return db.cliente.Max(i => i.id) + 1;
@@ -204,7 +204,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = (int)Session["clienteId"];
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var cliente = db.cliente.Find(clienteId);
 
@@ -241,7 +241,7 @@ namespace Eterea_Parfums_Web.Controllers
                 return View(clienteEditado);
             }
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 int clienteId = (int)Session["clienteId"];
                 var usuarioLogueado = db.cliente.Find(clienteId);
@@ -332,7 +332,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = (int)Session["clienteId"];
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var cliente = db.cliente.Find(clienteId);
                 ViewBag.NombrePais = db.pais.Find(cliente.pais_id)?.nombre ?? "";

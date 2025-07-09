@@ -11,10 +11,39 @@
     <a href="@Url.Action("Index","Carrito")" class="volver-carrito" title="Volver al carrito">←</a>
 
     <div class="row mt-3">
-        <!-- Dirección --------------------------------------------------- -->
-        <div class="col-md-4" style="border-right:2px solid #ddd;">
+        <!-- Dirección -->
+        <div class="col-md-4" style="border-right: 2px solid #ddd;">
             <h4>Dirección de envío</h4>
-            @* ... (sin cambios) *@
+            @if (Model != null)
+            {
+                <p>
+                    @if (Model.Calle != null)
+                    {
+                        <text>@Model.Calle.nombre, </text>
+                    }
+                    @Model.Cliente.numeracion_calle
+
+                    @if (!string.IsNullOrEmpty(Model.Cliente.piso))
+                    {
+                        <text>Piso @Model.Cliente.piso</text>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Cliente.departamento))
+                    {
+                        <text> Dpto. @Model.Cliente.departamento</text>
+                    }
+                    <br />
+                    @if (Model.Localidad != null && Model.Provincia != null)
+                    {
+                        <text>
+                            @Model.Cliente.codigo_postal, @Model.Localidad.nombre, @Model.Provincia.nombre
+                        </text>
+                    }
+                </p>
+            }
+            else
+            {
+                <div class="alert alert-warning">No se pudieron cargar los datos del pedido.</div>
+            }
             <a href="@Url.Action("SeleccionarDireccion","Cliente")"
                class="btn btn-outline-secondary">Cambiar dirección de envío</a>
         </div>
@@ -40,60 +69,60 @@
             }
 
             <!-- RESUMEN + BOTÓN ---------------------------------------- -->
-        <div class="resumen-carrito mt-4 mb-5">
+            <div class="resumen-carrito mt-4 mb-5">
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor">$@Model.Subtotal.ToString("N0")</span>
-            </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Subtotal (sin descuento):</span>
+                    <span class="valor">$@Model.Subtotal.ToString("N0")</span>
+                </div>
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento">-$@Model.Descuento.ToString("N0")</span>
-            </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Descuentos aplicados:</span>
+                    <span class="valor descuento">-$@Model.Descuento.ToString("N0")</span>
+                </div>
 
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor">$@Model.Total.ToString("N0")</span>
-            </div>
+                <div class="fila-resumen total">
+                    <span class="etiqueta">Total a pagar:</span>
+                    <span class="valor">$@Model.Total.ToString("N0")</span>
+                </div>
 
-            @if (Model.EnvioGratis)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
-            else
-            {
-                <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
-                    Los gastos de envío se calculan al finalizar la compra.<br />
-                    Envío gratis en compras mayores a $50.000.
-                </p>
-            }
+                @if (Model.EnvioGratis)
+                {
+                    <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+                }
+                else
+                {
+                    <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
+                        Los gastos de envío se calculan al finalizar la compra.<br />
+                        Envío gratis en compras mayores a $50.000.
+                    </p>
+                }
 
-            @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
-            @{
-                Session["PedidoItems"] = Model.ItemsCarrito
-                    .Select(x => new PedidoItemVM   
-                    {
-                        PerfumeId = x.PerfumeId,
-                        Cantidad = x.Cantidad
-                    })
-                    .ToList();
-            }
+                @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
+                @{
+                    Session["PedidoItems"] = Model.ItemsCarrito
+                        .Select(x => new PedidoItemVM
+                        {
+                            PerfumeId = x.PerfumeId,
+                            Cantidad = x.Cantidad
+                        })
+                        .ToList();
+                }
 
-            <!-- Botón “Ir a Pagar” -->
-            <div class="text-center">
-                <a href="@Url.Action("SimularPago",
+                <!-- Botón “Ir a Pagar” -->
+                <div class="text-center">
+                    <a href="@Url.Action("SimularPago",
                                          "Pedido",
                                          new { monto = Model.Total.ToString(System.Globalization.CultureInfo.InvariantCulture) })"
-                   class="btn btn-success btn-lg d-block mx-auto mt-3">
-                    Ir a Pagar
-                </a>
-            </div>
+                       class="btn btn-success btn-lg d-block mx-auto mt-3">
+                        Ir a Pagar
+                    </a>
+                </div>
 
-            <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
-                Será redireccionado a Mercado&nbsp;Pago
-            </p>
-        </div>
+                <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
+                    Será redireccionado a Mercado&nbsp;Pago
+                </p>
+            </div>
         </div>
     </div>
 </div>

@@ -22,7 +22,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
             int clienteId = (int)Session["clienteId"];
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var usuario = db.cliente.Find(clienteId);
 
@@ -72,7 +72,7 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Login", "Cliente");
             }
 
-            using (var db = new etereaEntities1())
+            using (var db = new etereaEntities4())
             {
                 var factura = db.factura.FirstOrDefault(f => f.id == factura_id);
                 if (factura == null)

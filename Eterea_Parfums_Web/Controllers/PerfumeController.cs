@@ -11,7 +11,7 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class PerfumeController : Controller
     {
-        private etereaEntities1 db = new etereaEntities1();
+        private etereaEntities4 db = new etereaEntities4();
 
         // GET: Perfume
         public ActionResult Index()
