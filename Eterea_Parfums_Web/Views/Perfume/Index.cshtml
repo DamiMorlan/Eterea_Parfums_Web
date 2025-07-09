@@ -1,5 +1,4 @@
-﻿@model List<Eterea_Parfums_Web.ViewModels.PerfumeConStockViewModel>
-
+﻿@model Eterea_Parfums_Web.ViewModels.PerfumeViewModel
 
 @{
     ViewBag.Title = "Perfumes";
@@ -9,10 +8,10 @@
     <link href="~/Content/StylePerfume.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="container mt-4">
+<div class="mt-4 px-3 px-md-3">
     <div class="row">
         <!-- Filtros -->
-        <aside class="col-md-3 mb-4">
+        <aside class="col-md-2 mb-4">
             <h5 class="mb-3">Filtros</h5>
 
             <div class="mb-3">
@@ -76,65 +75,138 @@
             </div>
         </aside>
 
-        <!-- Productos -->
-        <section class="col-md-9">
+        <section class="col-md-10">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                @foreach (var item in Model)
+                @{
+                    var perfumesAgrupados = Model.Perfumes
+                        .GroupBy(p => p.Nombre)
+                        .Select(g => g.First())
+                        .ToList();
+                }
+
+                @foreach (var perfume in perfumesAgrupados)
                 {
+                    <div class="col-md-3 col-6 mb-4 d-flex">
+                        <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
+                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                 class="card-img-top custom-img"
+                                 alt="@perfume.Nombre"
+                                 id="imagen-@perfume.Id" />
 
-                    var perfume = item.Perfume;
-                    var stock = item.StockDisponibleParaWeb;
+                            <div class="card-body d-flex flex-column text-center">
+                                <h5 class="card-title">@perfume.Nombre</h5>
+                                <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
 
-                    <div class="col-md-3 mb-4 d-flex">
-                       <div id="perfume-@perfume.id" class="card w-100" data-id="@perfume.id">
-                            <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">@perfume.nombre</h5>
-                                <p class="card-text mb-1"><strong>Marca:</strong> @perfume.marca.nombre</p>
-                                <p class="card-text mb-1"><strong>Precio:</strong> $@perfume.precio_en_pesos</p>
-                                <p class="card-text mb-3"><strong>Contenido:</strong> @perfume.presentacion_ml ml</p>
+                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                    @foreach (var p in perfume.Presentaciones)
+                                    {
+                                        <button type="button"
+                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                data-id="@perfume.Id"
+                                                data-perfumeid="@p.Id"
+                                                data-precio="@p.Precio"
+                                                data-descuento="@p.PrecioConDescuento"
+                                                data-tiene-promo="@p.TienePromocion"
+                                                data-leyenda="@p.LeyendaPromocion"
+                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
+                                                data-marca="@p.Marca"
+                                                data-stock="@p.StockDisponible"
+                                                onclick="cambiarPresentacion(this, @perfume.Id)">
+                                            @p.Ml ml
+                                        </button>
+                                    }
+                                </div>
 
-                                @if (stock == 1)
-                                {
-                                    <p class="text-danger fw-bold">¡Último disponible!</p>
-                                }
+                                <p class="card-text mt-3 mb-1">
+                                    <span class="precio-original" id="precio-original-@perfume.Id">
+                                        @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
+                                    </span>
+                                    <span class="precio-descuento" id="precio-descuento-@perfume.Id">
+                                        $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
+                                    </span>
+                                </p>
+
+                                <div class="promo-placeholder">
+                                    <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
+                                        @perfume.LeyendaPromocion
+                                    </span>
+                                </div>
+
+                                <div class="espacio-stock mt-1" id="stock-@perfume.Id">
+                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                    {
+                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                    }
+                                    else if (perfume.StockDisponibleParaWeb == 1)
+                                    {
+                                        <p class="text-danger fw-bold">¡Último disponible!</p>
+                                    }
+                                    else if (perfume.StockDisponibleParaWeb <= 10)
+                                    {
+                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                    }
+                                </div>
 
                                 <div class="mt-auto d-flex flex-column">
-                                    <button onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.id })'" class="btn-eterea mb-2">
+                                    <!-- Botón Ver detalle -->
+                                    <button class="btn-eterea mb-2 btn-ver-detalle"
+                                            data-baseid="@perfume.Id"
+                                            data-id="@perfume.Presentaciones.First().Id"
+                                            onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
                                         <i class="fas fa-eye"></i> Ver
                                     </button>
 
-                                    <button class="btn-eterea">
-                                        <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                    </button>
+                                    <!-- Botón Agregar al carrito (con control de stock) -->
+                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                    {
+                                        <button class="btn-eterea btn-agregar-carrito"
+                                                disabled
+                                                style="opacity: 0.6; cursor: not-allowed;">
+                                            <i class="fas fa-cart-plus"></i> Agotado
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn-eterea btn-agregar-carrito"
+                                                data-baseid="@perfume.Id"
+                                                data-id="@perfume.Presentaciones.First().Id">
+                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
                     </div>
                 }
             </div>
-
-            <!-- Paginación -->
-            <nav class="mt-5">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link">Anterior</a>
-                    </li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
         </section>
+
+        <!-- Paginación -->
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link">Anterior</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+        
     </div>
 </div>
 
@@ -146,96 +218,158 @@
     </div>
 </div>
 
+    <!-- Java Script -->
+    @section Scripts {
+        <script>
+         // Manejo del cambio de tamaño y actualización en cada card
+         document.querySelectorAll('.selector-tamanios').forEach(container => {
+             container.addEventListener('click', function (e) {
+                 const btn = e.target.closest('.btn-tamanio');
+                 if (!btn) return;
 
-@section Scripts {
-    <script>
-    document.querySelectorAll('.btn-eterea i.fa-cart-plus').forEach(btn => {
-        btn.parentElement.addEventListener('click', function () {
-            const card = btn.closest('.card');
-            const perfumeId = card.getAttribute('data-id');
+                 // Remover clase 'active' de los hermanos y activar el botón clickeado
+                 container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                 btn.classList.add('active');
 
-            fetch('@Url.Action("Agregar", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${perfumeId}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                    return;
-                }
+                 // Obtener la card padre y actualizar datos visibles
+                 const card = container.closest('.card');
+                 const nuevoPrecio = btn.getAttribute('data-precio');
+                 const nuevoDescuento = btn.getAttribute('data-descuento');
+                 const nuevoMl = btn.getAttribute('data-ml');
+                 const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
+                 const tienePromo = btn.getAttribute('data-tiene-promo') === 'True';
+                 const leyenda = btn.getAttribute('data-leyenda');
+                 const imagen = btn.getAttribute('data-imagen');
+                 const stock = parseInt(btn.getAttribute('data-stock') || "0");
 
-                if (data.error) {
-                    const contenedor = document.getElementById("info-perfume-agregado");
-                    contenedor.innerHTML = `
-                    <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
-                    <p>${data.error}</p>
-                `;
+                 // Actualizar imagen
+                 const imagenElem = card.querySelector('img.custom-img');
+                 if (imagenElem) {
+                     imagenElem.src = imagen;
+                 }
 
-                    document.getElementById("carrito-offcanvas").classList.add("show");
+                 // Actualizar precios
+                 const precioOriginalElem = card.querySelector('.precio-original');
+                 const precioDescuentoElem = card.querySelector('.precio-descuento');
+                 if (precioOriginalElem && precioDescuentoElem) {
+                     if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
+                         precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                         precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                         precioOriginalElem.style.display = '';
+                     } else {
+                         precioOriginalElem.style.display = 'none';
+                         precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                     }
+                 }
 
-                    setTimeout(() => {
-                        document.getElementById("carrito-offcanvas").classList.remove("show");
-                    }, 5000);
-                    return;
-                }
+                 // Actualizar leyenda promoción
+                 const leyendaElem = card.querySelector('.leyenda-promocion');
+                 if (leyendaElem) {
+                     leyendaElem.textContent = tienePromo ? leyenda : '';
+                 }
 
+                 // Actualizar mensaje de stock
+                 const stockElem = card.querySelector('.espacio-stock');
+                 if (stockElem) {
+                     if (stock === 0) {
+                         stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
+                     } else if (stock === 1) {
+                         stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
+                     } else if (stock <= 10) {
+                         stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
+                     } else {
+                         stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
+                     }
+                 }
 
-                const contenedor = document.getElementById("info-perfume-agregado");
-                contenedor.innerHTML = `
-                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
-                    <p><strong>${data.nombre}</strong></p>
-                    <p>${data.tipo} - ${data.presentacion} ml</p>
-                    <p>Género: ${data.genero}</p>
-                    <p>Precio: ${
-                        data.precioDescuento
-                            ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                            : `<strong>$${data.precioOriginal}</strong>`
-                    }</p>
-                    ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
-                `;
+                 // Actualizar botones Ver y Agregar al carrito
+                 const btnAgregar = card.querySelector('.btn-agregar-carrito');
+                 if (btnAgregar) {
+                     btnAgregar.setAttribute('data-id', nuevoPerfumeId);
+                     if (stock === 0) {
+                         btnAgregar.setAttribute('disabled', 'disabled');
+                         btnAgregar.style.opacity = '0.6';
+                         btnAgregar.style.cursor = 'not-allowed';
+                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
+                     } else {
+                         btnAgregar.removeAttribute('disabled');
+                         btnAgregar.style.opacity = '';
+                         btnAgregar.style.cursor = '';
+                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
+                     }
+                 }
 
-                document.getElementById("carrito-offcanvas").classList.add("show");
+                 const btnDetalle = card.querySelector('.btn-ver-detalle');
+                 if (btnDetalle) {
+                     btnDetalle.setAttribute('data-id', nuevoPerfumeId);
+                 }
+             });
+         });
 
-                setTimeout(() => {
-                    document.getElementById("carrito-offcanvas").classList.remove("show");
-                }, 6000);
-            })
-            .catch(err => {
-                console.error('Error en la solicitud:', err);
-                alert("Hubo un error al intentar agregar el perfume al carrito.");
-            });
-        });
-    });
+         // Función para manejar el click en "Agregar al carrito"
+         document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+             btn.addEventListener('click', function () {
+                 const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
 
-       window.addEventListener('load', () => {
-        const hash = window.location.hash;
+                 fetch('@Url.Action("Agregar", "Carrito")', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/x-www-form-urlencoded'
+                     },
+                     body: `perfumeId=${perfumeId}`
+                 })
+                 .then(res => res.json())
+                 .then(data => {
+                     if (data.redirect) {
+                         window.location.href = data.redirect;
+                         return;
+                     }
 
-        if (hash) {
-            const target = document.querySelector(hash);
-            if (target) {
-                // Usamos getBoundingClientRect para ubicar el elemento
-                const headerOffset = 100; // altura aproximada de un navbar si tenés
-                const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - headerOffset;
+                     const contenedor = document.getElementById("info-perfume-agregado");
 
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
-                });
+                     if (data.error) {
+                         contenedor.innerHTML = `
+                             <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                             <p>${data.error}</p>
+                         `;
+                         document.getElementById("carrito-offcanvas").classList.add("show");
+                         setTimeout(() => {
+                             document.getElementById("carrito-offcanvas").classList.remove("show");
+                         }, 5000);
+                         return;
+                     }
 
-                // Animación para que se note el foco visual
-                target.style.transition = "box-shadow 0.6s ease";
-                target.style.boxShadow = "0 0 0 4px rgba(255, 99, 132, 0.4)";
+                     contenedor.innerHTML = `
+                         <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                         <p><strong>${data.nombre}</strong></p>
+                         <p>${data.tipo} - ${data.presentacion} ml</p>
+                         <p>Género: ${data.genero}</p>
+                         <p>Precio: ${
+                             data.precioDescuento
+                                 ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                 : `<strong>$${data.precioOriginal}</strong>`
+                         }</p>
+                         ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                     `;
 
-                setTimeout(() => {
-                    target.style.boxShadow = "none";
-                }, 2000);
-            }
-        }
-    });
-    </script>
-}
+                     document.getElementById("carrito-offcanvas").classList.add("show");
+                     setTimeout(() => {
+                         document.getElementById("carrito-offcanvas").classList.remove("show");
+                     }, 6000);
+                 })
+                 .catch(err => {
+                     console.error('Error en la solicitud:', err);
+                     alert("Hubo un error al intentar agregar el perfume al carrito.");
+                 });
+             });
+         });
+
+         // Listener para botón Ver detalle
+         document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+             btn.addEventListener('click', function () {
+                 const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+                 window.location.href = `/Perfume/Details/${perfumeId}`;
+             });
+         });
+        </script>
+    }
