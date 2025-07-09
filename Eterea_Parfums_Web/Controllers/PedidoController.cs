@@ -13,6 +13,8 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Globalization;
+using System.Data.Entity;
+
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -360,6 +362,196 @@ namespace Eterea_Parfums_Web.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ConfirmarPago(string medio, int cuotas, double totalFinal)
+        {
+            if (Session["clienteId"] == null)
+                return RedirectToAction("Login", "Cliente");
+
+            int clienteId = (int)Session["clienteId"];
+
+            using (var db = new etereaEntities7())
+            using (var tx = db.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+
+            {
+                try
+                {
+                    /* 1) Cliente y carrito */
+                    var cliente = db.cliente.Find(clienteId);
+
+                    var carrito = db.carrito
+                                    .Include(c => c.perfume)
+                                    .Include(c => c.perfume.promocion)
+                                    .Where(c => c.cliente_id == clienteId)
+                                    .ToList();
+
+                    if (!carrito.Any())
+                        throw new InvalidOperationException("El carrito está vacío");
+
+                    /* 2) Para cada ítem calculo promos y descuento */
+                    var detallesTmp = new List<DetalleTmp>();   // buffer local
+                    double descuentoTotal = 0;
+
+                    foreach (var item in carrito)
+                    {
+                        // Promos vigentes
+                        var promosVigentes = item.perfume.promocion
+                                                       .Where(p => p.activo
+                                                                 && p.fecha_inicio <= DateTime.Today
+                                                                 && p.fecha_fin >= DateTime.Today)
+                                                       .OrderByDescending(p => p.descuento)  // prioridad mayor % primero
+                                                       .Take(2)                              // máx 2
+                                                       .ToList();
+
+                        int? p1 = promosVigentes.ElementAtOrDefault(0)?.id;
+                        int? p2 = promosVigentes.ElementAtOrDefault(1)?.id;
+
+                        // Descuento aplicado a este ítem
+                        double descItem = 0;
+                        foreach (var prm in promosVigentes)
+                        {
+                            // Ejemplo: descuento % sobre cada unidad
+                            descItem += prm.descuento / 100.0 * item.perfume.precio_en_pesos * item.cantidad;
+                        }
+                        descuentoTotal += descItem;
+
+                        // Guardo info temporal para la inserción posterior
+                        detallesTmp.Add(new DetalleTmp
+                        {
+                            CarritoItem = item,
+                            Promo1Id = p1,
+                            Promo2Id = p2
+                        });
+                    }
+
+                    /* 3) Cálculos finales */
+                    double subtotalOriginal = carrito.Sum(i => i.perfume.precio_en_pesos * i.cantidad);
+                    double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
+                    double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+
+                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))
+                        throw new InvalidOperationException("Los totales no coinciden");
+
+                    /* 4) Tipo y numeración de factura */
+                    string tipoFactura = cliente.condicion_frente_al_iva == "Responsable Inscripto" ? "A" : "B";
+                    string numFactura = GenerarNumeroFactura(db, tipoFactura);
+
+                    /* 5) FACTURA */
+                    var fac = new factura
+                    {
+                        fecha = DateTime.Now,
+                        sucursal_id = 0,
+                        empleado_id = 0,
+                        cliente_id = clienteId,
+                        forma_de_pago = medio,
+                        precio_total = totalCalculado,
+                        descuento = descuentoTotal,
+                        numero_de_caja = 10,
+                        tipo_de_consumidor = cliente.condicion_frente_al_iva,
+                        origen = "web",
+                        factura_pdf = null,
+                        num_factura = numFactura,
+                        tipo_de_factura = tipoFactura
+                    };
+                    db.factura.Add(fac);
+                    db.SaveChanges();   // fac.id listo
+
+                    /* 6) DETALLE_FACTURA */
+                    foreach (var d in detallesTmp)
+                    {
+                        // Si promocion_id NO es nullable en BD, reemplazá null con 0 o un valor dummy
+                        db.detalle_factura.Add(new detalle_factura
+                        {
+                            factura_id = fac.id,
+                            perfume_id = d.CarritoItem.perfume_id,
+                            cantidad = d.CarritoItem.cantidad,
+                            precio_unitario = d.CarritoItem.perfume.precio_en_pesos,
+                            promocion_id = d.Promo1Id ?? 0,      // ← 0 si no hay promo1
+                            promocion2_id = d.Promo2Id            // nullable
+                        });
+                    }
+                    db.SaveChanges();
+
+                    /* 7) ORDEN */
+                    db.orden.Add(new orden
+                    {
+                        factura_id = fac.id,
+                        nombre_cliente = $"{cliente.nombre} {cliente.apellido}",
+                        dni = cliente.dni,
+                        e_mail_cliente = cliente.e_mail,
+                        domicilio_de_envio = ConstruirDireccionEnvio(db, cliente),
+                        estado = true,
+                        codigo_despacho = null,
+                        fecha_creacion = DateTime.Now
+                    });
+                    db.SaveChanges();
+
+                    /* 8) Limpiar carrito y commit */
+                    db.carrito.RemoveRange(carrito);
+                    db.SaveChanges();
+
+                    tx.Commit();
+                    return RedirectToAction("Exito", new { id = fac.id });
+                }
+                catch (Exception ex)
+                {
+                    tx.Rollback();
+                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
+                    return RedirectToAction("Carrito");
+                }
+            }
+        }
+
+        /* ---- helper temporal interno ----------------------------------- */
+        private sealed class DetalleTmp
+        {
+            public carrito CarritoItem { get; set; }
+            public int? Promo1Id { get; set; }
+            public int? Promo2Id { get; set; }
+        }
+
+        /* === helpers ======================================================= */
+
+        private double GetRecargo(string medio, int cuotas, double baseTotal)
+        {
+            if (medio != "MC" || cuotas == 1) return 0;
+
+            var tabla = new Dictionary<int, double> { { 3, 0.10 }, { 6, 0.15 }, { 9, 0.18 }, { 12, 0.20 } };
+            return baseTotal * (tabla.ContainsKey(cuotas) ? tabla[cuotas] : 0);
+        }
+
+        private string GenerarNumeroFactura(etereaEntities7 db, string tipo)
+        {
+            // Traemos el último num_factura del mismo tipo (‘A’ o ‘B’)
+            string ultimo = db.factura
+                              .Where(f => f.tipo_de_factura == tipo)
+                              .OrderByDescending(f => f.id)          // o por fecha
+                              .Select(f => f.num_factura)
+                              .FirstOrDefault();
+
+            int correlativo = 0;
+
+            if (!string.IsNullOrEmpty(ultimo) && ultimo.Length > 1)
+            {
+                // Ej.: “A00000123”  →  “00000123”
+                int.TryParse(ultimo.Substring(1), out correlativo);
+            }
+
+            correlativo += 1;
+
+            // Devuelve “A00000124” ó “B00000001”
+            return $"{tipo}{correlativo:D8}";
+        }
+
+        private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
+        {
+            var calle = db.calle.Find(cli.calle_id)?.nombre;
+            var loc = db.localidad.Find(cli.localidad_id)?.nombre;
+            var prov = db.provincia.Find(cli.provincia_id)?.nombre;
+
+            return $"{calle} {cli.piso ?? ""} {cli.departamento ?? ""}, CP {cli.codigo_postal}, {loc}, {prov}";
+        }
 
 
     }
