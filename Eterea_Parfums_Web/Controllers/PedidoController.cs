@@ -265,7 +265,7 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // GET: Pedido/SimularPago
-        public ActionResult SimularPago(double monto)
+        public ActionResult RealizarPago(double monto)
         {
             var model = new SimularPagoViewModel
             {
