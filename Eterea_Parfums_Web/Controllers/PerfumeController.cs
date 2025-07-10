@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Web.ViewModels;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -14,17 +13,48 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities1 db = new etereaEntities1();
 
         // GET: Perfume
-        public ActionResult Index()
+        public ActionResult Index(string marcaSeleccionada, string generoSeleccionado, string tamañoSeleccionado, string tipoDeAromaSeleccionado, string aromaSeleccionado, string precio)
         {
-            // Traer todos los perfumes activos
-            var perfumes = db.perfume
-                .Where(p => p.activo) // 👈 solo perfumes activos
-                .ToList();
+            // Obtengo perfumes activos (IQueryable para poder agregar filtros dinámicos)
+            var perfumesQuery = db.perfume.Where(p => p.activo);
 
-            // Traer el stock completo en memoria
+            if (!string.IsNullOrEmpty(marcaSeleccionada))
+                perfumesQuery = perfumesQuery.Where(p => p.marca.nombre == marcaSeleccionada);
+
+            if (!string.IsNullOrEmpty(generoSeleccionado))
+                perfumesQuery = perfumesQuery.Where(p => p.genero.genero1 == generoSeleccionado);
+
+            if (!string.IsNullOrEmpty(tamañoSeleccionado) && int.TryParse(tamañoSeleccionado.Replace(" ml", ""), out int tam))
+                perfumesQuery = perfumesQuery.Where(p => p.presentacion_ml == tam);
+
+            if (!string.IsNullOrEmpty(tipoDeAromaSeleccionado))
+                perfumesQuery = perfumesQuery.Where(p => p.tipo_de_aroma.Any(a => a.nombre == tipoDeAromaSeleccionado));
+
+            if (!string.IsNullOrEmpty(aromaSeleccionado))
+                perfumesQuery = perfumesQuery.Where(p => p.tipo_de_aroma.Any(a => a.nombre == aromaSeleccionado));
+
+
+            // Filtro por precio
+            if (!string.IsNullOrEmpty(precio))
+            {
+                switch (precio)
+                {
+                    case "Hasta $100.000":
+                        perfumesQuery = perfumesQuery.Where(p => p.precio_en_pesos <= 100000);
+                        break;
+                    case "$100.000 - $300.000":
+                        perfumesQuery = perfumesQuery.Where(p => p.precio_en_pesos > 100000 && p.precio_en_pesos <= 300000);
+                        break;
+                    case "Más de $300.000":
+                        perfumesQuery = perfumesQuery.Where(p => p.precio_en_pesos > 300000);
+                        break;
+                }
+            }
+
+            var perfumes = perfumesQuery.ToList();
+
             var stock = db.stock.ToList();
 
-            // Calcular stock disponible para venta web por perfume
             var stockDisponiblePorPerfume = stock
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
@@ -32,8 +62,7 @@ namespace Eterea_Parfums_Web.Controllers
                     g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
                 );
 
-            // Generar el ViewModel con perfumes activos que tienen stock > 0
-            var viewModel = perfumes
+            var PerfumeConStockViewModel = perfumes
                 .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
                 .Select(p => new PerfumeConStockViewModel
                 {
@@ -42,7 +71,14 @@ namespace Eterea_Parfums_Web.Controllers
                 })
                 .ToList();
 
-            return View(viewModel);
+            // Cargar opciones únicas para los filtros (usado en el ViewBag)
+            ViewBag.Marcas = db.perfume.Select(p => p.marca.nombre).Distinct().OrderBy(m => m).ToList();
+            ViewBag.Generos = db.perfume.Select(p => p.genero.genero1).Distinct().OrderBy(g => g).ToList();
+            ViewBag.Tamaños = db.perfume.Select(p => p.presentacion_ml).Distinct().OrderBy(t => t).ToList();
+            ViewBag.TiposDeAroma = db.perfume.Where(p => p.activo) .SelectMany(p => p.tipo_de_aroma) .Select(a => a.nombre).Distinct().ToList();
+
+
+            return View(PerfumeConStockViewModel);
         }
 
 

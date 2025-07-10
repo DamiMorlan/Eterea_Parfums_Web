@@ -3,6 +3,18 @@
 
 @{
     ViewBag.Title = "Perfumes";
+    var marcas = ViewBag.Marcas as List<string> ?? new List<string>();
+    var generos = ViewBag.Generos as List<string> ?? new List<string>();
+    var tamaños = ViewBag.Tamaños as List<string> ?? new List<string>();
+    var tiposDeAroma = ViewBag.TiposDeAroma as List<string> ?? new List<string>();
+
+
+    // Para mantener los valores seleccionados
+    string marcaSeleccionada = Request.QueryString["marcaSeleccionada"] ?? "";
+    string generoSeleccionado = Request.QueryString["generoSeleccionado"] ?? "";
+    string tamañoSeleccionado = Request.QueryString["tamañoSeleccionado"] ?? "";
+    string tipoDeAromaSeleccionado = Request.QueryString["tipoDeAromaSeleccionado"] ?? "";
+
 }
 
 @section Styles {
@@ -15,65 +27,74 @@
         <aside class="col-md-3 mb-4">
             <h5 class="mb-3">Filtros</h5>
 
-            <div class="mb-3">
-                <label class="form-label">Marca</label>
-                <select class="form-select">
-                    <option>Todas</option>
-                    <option>Chanel</option>
-                    <option>Dior</option>
-                    <option>Givenchy</option>
-                </select>
-            </div>
+            <form method="get" action="@Url.Action("Index", "Perfume")">
 
-            <div class="mb-3">
-                <label class="form-label">Género</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Femenino</option>
-                    <option>Masculino</option>
-                    <option>Unisex</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label" for="marcaSeleccionada">Marca</label>
+                    <select id="marcaSeleccionada" name="marcaSeleccionada" class="form-select">
+                        <option value="">Todas</option>
+                        @foreach (var marca in marcas)
+                        {
+                            <option value="@marca" @(marca == marcaSeleccionada ? "selected" : "")>@marca</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Tamaño</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>30 ml</option>
-                    <option>50 ml</option>
-                    <option>100 ml</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label" for="generoSeleccionado">Género</label>
+                    <select id="generoSeleccionado" name="generoSeleccionado" class="form-select">
+                        <option value="">Todos</option>
+                        @foreach (var genero in generos)
+                        {
+                            <option value="@genero" @(genero == generoSeleccionado ? "selected" : "")>@genero</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Aroma</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Floral</option>
-                    <option>Frutal</option>
-                    <option>Amaderado</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label" for="tamañoSeleccionado">Tamaño</label>
+                    <select id="tamañoSeleccionado" name="tamañoSeleccionado" class="form-select">
+                        <option value="">Todos</option>
+                        @foreach (var tam in tamaños)
+                        {
+                            <option value="@tam" @(tam == tamañoSeleccionado ? "selected" : "")>@tam</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Tipo de aroma</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Dulce</option>
-                    <option>Fresco</option>
-                    <option>Intenso</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label" for="tipoDeAromaSeleccionado">Tipo de Aroma</label>
+                    <select id="tipoDeAromaSeleccionado" name="tipoDeAromaSeleccionado" class="form-select">
+                        <option value="">Todos</option>
+                        @foreach (var tipo in tiposDeAroma)
+                        {
+                            <option value="@tipo" @(tipo == tipoDeAromaSeleccionado ? "selected" : "")>@tipo</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Precio</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Hasta $10.000</option>
-                    <option>$10.000 - $30.000</option>
-                    <option>Más de $30.000</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Aroma</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Dulce</option>
+                        <option>Fresco</option>
+                        <option>Intenso</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <select name="precio" class="form-select">
+                        <option>Todos</option>
+                        <option>Hasta $100.000</option>
+                        <option>$100.000 - $300.000</option>
+                        <option>Más de $300.000</option>
+                    </select>
+                </div>
+
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
         </aside>
 
         <!-- Productos -->
@@ -86,7 +107,7 @@
                     var stock = item.StockDisponibleParaWeb;
 
                     <div class="col-md-3 mb-4 d-flex">
-                       <div id="perfume-@perfume.id" class="card w-100" data-id="@perfume.id">
+                        <div id="perfume-@perfume.id" class="card w-100" data-id="@perfume.id">
                             <img src="@Url.Content("~/Imagenes/" + perfume.imagen1 + ".jpg")" class="card-img-top custom-img" alt="@perfume.nombre" />
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">@perfume.nombre</h5>
