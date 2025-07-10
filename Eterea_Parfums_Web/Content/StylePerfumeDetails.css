@@ -194,16 +194,23 @@ hr {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+
+.card-box-info {
+    border: 2px solid var(--rosa-claro);
+    background-color: var(--rosa-claro);
+}
+.box-info{
+    border-left-color: var(--rosa-medio) !important;
+}
+.box-info p {
+    font-size: 11px;
+    font-weight: bold;
+}
+
 .fs-6 {
     font-weight: bold;
     color: #5a2a39;
 }
-
-.swiper-slide {
-    width: 250px;
-}
-
-
 
 .box-perfume-volumen a {
     text-decoration: none;

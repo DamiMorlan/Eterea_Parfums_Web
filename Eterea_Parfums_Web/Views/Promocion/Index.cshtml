@@ -1,0 +1,63 @@
+﻿
+@model List<Eterea_Parfums_Web.ViewModels.PromocionViewModel>
+
+@{
+    ViewBag.Title = "Promociones";
+}
+
+
+@section Styles {
+    <link href="~/Content/StylePromocion.css" rel="stylesheet" type="text/css" />
+}
+
+<div class="container">
+    <h2 class="text-center my-4 mt-1">Nuestras Promociones</h2>
+    <div class="">
+        <div class="d-flex flex-column align-content-center box-promo">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var p in Model)
+                {
+                    if (p.id % 2 == 0 && p.id != 1)
+                    {
+                        <div class="box-promo d-flex justify-content-center">
+                            <div class="promo-item d-flex justify-content-end">
+                                <img src="@Url.Content("~/Imagenes/Banner "+p.nombre+".jpg")" alt="Promo" class="promo-bg-img" />
+                                <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->
+                                <div class="item-body">
+                                    <h5 class="item-title">@p.nombre</h5>
+                                    <p class="fw-semibold my-2">
+                                        @p.descripcion
+                                    </p>
+                                    <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="box-promo d-flex justify-content-center">
+                            <div class="promo-item d-flex">
+                                <img src="@Url.Content("~/Imagenes/Banner "+p.nombre+".jpg")" alt="Promo" class="promo-bg-img" />
+                                <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->
+                                <div class="item-body">
+                                    <h5 class="item-title">@p.nombre</h5>
+                                    <p class="fw-semibold my-2">
+                                        @p.descripcion
+                                    </p>
+                                    <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+
+
+
+        </div>
+    </div>
+</div>
+

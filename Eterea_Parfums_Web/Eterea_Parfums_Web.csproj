@@ -134,6 +134,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\PerfumeController.cs" />
+    <Compile Include="Controllers\PromocionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -260,6 +261,7 @@
     <Content Include="Content\StyleHome.css" />
     <Content Include="Content\StylePerfume.css" />
     <Content Include="Content\StylePerfumeDetails.css" />
+    <Content Include="Content\StylePromocion.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -306,9 +308,11 @@
     <Content Include="Imagenes\Banner promo CH.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Banner Promo Dia de la madre con Carolina Herrera.jpg" />
     <Content Include="Imagenes\Banner promo Hugo.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Banner Promo navidad Hugo.jpg" />
     <Content Include="Imagenes\BannerPromoFlash.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -479,6 +483,7 @@
     <Content Include="Imagenes\promo_no_acumulable_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Sin-título-1.jpg" />
     <Content Include="Imagenes\sinImagen.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -547,6 +552,7 @@
     <Content Include="Views\Pedido\VistaPrevia.cshtml" />
     <Content Include="Views\Pedido\PagoFallido.cshtml" />
     <Content Include="Views\Cliente\VerPerfil.cshtml" />
+    <Content Include="Views\Promocion\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,6 +9,12 @@ namespace Eterea_Parfums_Web.ViewModels
     {
         public int id { get; set; }
         public string nombre { get; set; }
+
+        public string descripcion { get; set; }
+
+        public DateTime FechaInicio { get; set; }
+
+        public DateTime FechaFin { get; set; }
         public string banner { get; set; } // opcional
     }
 }
