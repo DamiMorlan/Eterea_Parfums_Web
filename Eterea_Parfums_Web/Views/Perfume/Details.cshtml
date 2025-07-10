@@ -28,17 +28,14 @@
         </div>
     </nav>
 
-    <div class="row gap-0">
-        <div class="col-sm-12 col-md-7 row">
+    <div class="row gap-0 mt-4">
+        <div class="col-sm-12 col-md-7 row text-center">
             <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
             <div class="col-md-4 col-lg-3 col-xl-3 d-none d-md-block">
                 <div class="swiper gallery-thumbs-vertical">
-                    <div class="swiper-wrapper">
+                    <div class="swiper-wrapper bg-white mx-2">
                         <div class="swiper-slide">
                             <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
                             <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
@@ -49,14 +46,14 @@
 
             <!-- IMAGEN PRINCIPAL -->
             <div class="col-md-8 col-lg-9 col-xl-9 col-12">
-                <div class="swiper gallery-top">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide text-center">
-                            <div class="swiper-zoom-container">
+                <div class="swiper gallery-top bg-white rounded shadow-sm">
+                    <div class="swiper-wrapper me-0">
+                        <div class="swiper-slide text-center me-0">
+                            <div class="swiper-zoom-container me-0">
                                 <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
                             </div>
                         </div>
-                        <div class="swiper-slide text-center">
+                        <div class="swiper-slide text-center me-0">
                             <div class="swiper-zoom-container">
                                 <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
                             </div>
@@ -79,33 +76,37 @@
                 </div>
             </div>
 
-            @{
-                var promosActivas = Model.Perfume.promocion?
-                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
-                    .ToList();
-            }
 
-            @if (promosActivas != null && promosActivas.Any())
-            {
-                <div class="promo-box mt-4 p-3 rounded shadow-sm text-center text-md-start">
-                    <ul class="list-unstyled ms-4">
-                        @foreach (var promo in promosActivas)
-                        {
-                            <li class="promo-item">
-                            
-                               <p class="mt-2">
-                                   <i class="fas fa-tags me-2"></i>
-                                   <span class="promo-title">¡@promo.nombre!</span>
-                               </p>
-                              
-                                @promo.descripcion
-                            </li>
-                        }
-                    </ul>
+            <div class="">
+                <div class="row text-center px-2 py-3 card-box-info">
+                    <!-- Item 1 -->
+                    <div class="col-md-4 border-end box-info">
+                        <div>
+                            <i class="fas fa-credit-card fa-2x mb-2"></i>
+                            <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
+                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalPago">Ver más ></a>
+                        </div>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="col-md-4 border-end box-info">
+                        <div>
+                            <i class="fas fa-truck fa-2x mb-2"></i>
+                            <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
+                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalEnvio">Ver más ></a>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="col-md-4 box-info">
+                        <div>
+                            <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                            <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
+                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCambios">Ver más ></a>
+                        </div>
+                    </div>
                 </div>
-                <!-- Separador personalizado -->
-                <hr class="d-md-none mt-4"/>
-            }
+            </div>
+
 
         </div>
 
@@ -117,41 +118,15 @@
             <h2 class="fs-2 mb-1 fw-semibold">
                 @Model.Perfume.nombre
             </h2>
-
+            @{
+                var precio = Model.Perfume.precio_en_pesos;
+                var parteEntera = Math.Truncate(precio);
+                var precioFormateado = parteEntera.ToString("#,##0");
+            }
             <h3 class="fs-3 fw-bold texte-grey mt-2">
-                $@Model.Perfume.precio_en_pesos
+                $@precioFormateado
             </h3>
 
-            <div class="box-tarjeta mt-4 px-2 py-3 rounded border border-2 border-dashed text-center text-md-start">
-                <p class="mb-0">OPCIONES DE PAGO</p>
-
-                <div class="mt-3 tarjeta">
-                    <div class="d-flex">
-                        <div class="tarjeta-item">
-                            <img src="@Url.Content("~/Imagenes/visa.png")" class="img-fluid" alt="visa debito" />
-                        </div>
-                        <div class="tarjeta-item">
-                            <img src="@Url.Content("~/Imagenes/mastercard.png")" class="img-fluid" alt="visa credito" />
-                        </div>
-                        <div class="tarjeta-item">
-                            <img src="@Url.Content("~/Imagenes/amex.png")" class="img-fluid" alt="amex" />
-                        </div>
-                        <div class="tarjeta-item d-flex flex-column justify-content-center">
-                            <div class="box-img-mercadolibre">
-                                <img src="@Url.Content("~/Imagenes/mp.png")" class="img-mercadolibre img-fluid" alt="Mercado pago" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <p class="envio mt-4">
-                <i class="fa fa-truck me-2"></i>
-                <span class="">Llega GRATIS en hasta 1 día hábil</span>
-            </p>
-
-            <!-- Separador personalizado -->
-            <hr />
 
             <div class="box-perfume-volumen">
                 <!-- Título de la sección de tamaños -->
@@ -174,7 +149,7 @@
                 }
             </div>
 
-
+            <hr />
 
             @if (@Model.StockDisponibleParaWeb == 1)
             {
@@ -200,6 +175,8 @@
                 <p class="mt-4 text-danger fw-bold">Sin stock</p>
             }
 
+            <hr />
+
             @if (@Model.StockDisponibleParaWeb == 0)
             {
                 <button class="btn-eterea agregar-al-carrito" disabled data-id="@Model.Perfume.id">
@@ -213,13 +190,47 @@
                 </button>
             }
 
-
+            <p class="envio mt-4">
+                <i class="fa fa-truck me-2"></i>
+                <span class="">Llega GRATIS en hasta 1 día hábil</span>
+            </p>
             <!-- Separador personalizado -->
             <hr class="d-md-none mt-4" />
 
+
+            @{
+                var promosActivas = Model.Perfume.promocion?
+                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                    .ToList();
+            }
+
+            @if (promosActivas != null && promosActivas.Any())
+            {
+                <div class="promo-box mt-2 py-3 rounded shadow-sm text-center text-md-start">
+                    <ul class="list-unstyled ms-4">
+                        @foreach (var promo in promosActivas)
+                        {
+                            <li class="promo-item">
+
+                                <p class="mt-2">
+                                    <i class="fas fa-tags me-2"></i>
+                                    <span class="promo-title">¡@promo.nombre!</span>
+                                </p>
+
+                                @promo.descripcion
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+                <!-- Separador personalizado -->
+                <hr class="d-md-none mt-4" />
+            }
+
+
         </section>
     </div>
-    <!--  -->
+    <!--ESPECIFICACIONES  -->
     <div class="mt-md-5">
 
         <div class="w3-row">
@@ -237,27 +248,199 @@
 
         <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
             <div class="d-flex w-50">
-                <p class="fs-6">Familia Olfativa:</p>
+                <p class="fw-bold mb-0">Familia Olfativa:&nbsp;</p>
                 @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
                 {
-                    <ul class="fs-6 ms-1 list-unstyled d-flex">
-                        @foreach (var aroma in Model.Perfume.tipo_de_aroma)
-                        {
-                            <li class="ms-1">@aroma.nombre</li>
-                        }
-                    </ul>
+                    <p class="mb-0">
+                        @string.Join(", ", Model.Perfume.tipo_de_aroma.Select(a => a.nombre))
+                    </p>
                 }
                 else
                 {
-                    <p>No hay tipos de aroma asociados.</p>
+                    <p class="mb-0">No hay tipos de aroma asociados.</p>
+                }
+            </div>
+
+            <div class="d-flex">
+                @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
+                {
+                    <div>
+                        @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
+                            .GroupBy(n => n.tipo_de_nota.nombre))
+                        {
+                            <p class="mb-0">
+                                <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
+                            </p>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
                 }
             </div>
             <div class="d-flex">
-                <p class="fs-6">Tipo:</p>
-                <p class="fs-6 ms-1">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
+                <p class="fw-bold mb-0">Tipo:</p>
+                <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
+            </div>
+            <div class="d-flex">
+                <p class="fw-bold mb-0">Genero:</p>
+                <p class="ms-1 mb-0">@Model.Perfume.genero.genero1</p>
+            </div>
+            <div class="d-flex">
+                <p class="fw-bold mb-0">Año de lanzamiento:</p>
+                <p class="ms-1 mb-0">@Model.Perfume.anio_de_lanzamiento</p>
             </div>
         </div>
     </div>
+
+
+    <!-- Modales -->
+    <!-- Modal 1 -->
+    <div class="modal fade" id="modalPago" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Formas de Pago</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <h6 class="mb-2">💳 Medios de pago disponibles</h6>
+                    <p>
+                        <strong>¿Cómo puedo pagar mi compra?</strong><br />
+                        Todas las compras online se abonan de forma segura a través de <strong>Mercado Pago</strong>, utilizando tarjetas de crédito y débito emitidas en Argentina.
+                    </p>
+
+                    <h6 class="mt-3 mb-2">✅ Tarjetas aceptadas</h6>
+                    <p>
+                        <strong>¿Qué tarjetas puedo usar?</strong><br />
+                        Aceptamos <strong>Visa</strong>, <strong>Mastercard</strong> y <strong>American Express</strong>, tanto de crédito como de débito.
+                    </p>
+
+                    <h6 class="mt-3 mb-2">📆 Cuotas y promociones</h6>
+                    <p>
+                        <strong>¿Puedo pagar en cuotas?</strong><br />
+                        Sí, con tarjetas de crédito habilitadas podés abonar en cuotas. Las cuotas sin interés están sujetas a las promociones vigentes de tu banco o tarjeta.
+                    </p>
+
+                    <h6 class="mt-3 mb-2">💰 Otras opciones</h6>
+                    <p>
+                        <strong>¿Puedo usar el saldo de Mercado Pago?</strong><br />
+                        Sí, también podés abonar con el dinero disponible en tu cuenta de Mercado Pago.
+                    </p>
+
+                    <h6 class="mt-3 mb-2">🧾 Facturación</h6>
+                    <p>
+                        <strong>¿Qué tipo de factura se emite?</strong><br />
+                        Las compras realizadas online reciben una <strong>factura tipo B</strong> (a consumidor final). Si necesitás una factura tipo A, deberás realizar tu compra en uno de nuestros locales físicos.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2 -->
+    <div class="modal fade" id="modalEnvio" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📦 Información sobre envíos</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="fw-bold mb-2">¿Cuáles son los costos de envío?</h6>
+                    <ul>
+                        <li><strong>Retiro en sucursal de Eterea Parfums:</strong> Sin costo.</li>
+                        <li>
+                            <strong>Retiro en sucursal/punto OCA:</strong> $3000<br>
+                            <small>Entrega en 2 a 7 días hábiles. Dispones de 5 días para retirarlo una vez notificado.</small>
+                        </li>
+                        <li>
+                            <strong>Envío a domicilio estándar por OCA:</strong><br>
+                            <ul>
+                                <li>Compras mayores a $70.000: <span class="text-success">¡Gratis!</span></li>
+                                <li>Compras menores a $70.000: $4000</li>
+                            </ul>
+                            <small>Entrega estimada entre 2 a 7 días hábiles.</small>
+                        </li>
+                    </ul>
+
+                    <h6 class="fw-bold mt-4 mb-2">¿Cuál es el tiempo de entrega estimado?</h6>
+                    <ul>
+                        <li><strong>Retiro en sucursal de Eterea Parfums:</strong> Se informará al momento de seleccionar esta opción. Esperá el mail de confirmación antes de retirar.</li>
+                        <li><strong>Retiro en sucursal o punto OCA:</strong> Hasta 8 días hábiles desde la confirmación del pedido.</li>
+                        <li><strong>Envío a domicilio:</strong> Se notificará por correo electrónico cuando sea despachado.</li>
+                    </ul>
+
+                    <h6 class="fw-bold mt-4 mb-2 text-danger">¡Importante!</h6>
+                    <p class="mb-0">Durante fechas especiales como el Día del Padre, Día de la Madre o Navidad, los tiempos de entrega pueden extenderse. ¡Hacé tu pedido con anticipación!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal 3 -->
+    <div class="modal fade" id="modalCambios" tabindex="-1" aria-labelledby="modalCambiosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCambiosLabel">Cambios & Devoluciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <h6><strong>¿Cómo es el proceso si mi pedido no fue despachado?</strong></h6>
+                    <p>
+                        Ante un cambio en tu pedido y/o devolución de producto, encontraremos diferentes alternativas.
+                        Tené en cuenta que la mercadería será chequeada antes de ser despachada.
+                        Además, la empresa de logística maximizará sus embalajes para que llegue en perfecto estado a destino.
+                        Si tu pedido aún no fue despachado y querés hacer un cambio (de domicilio, de producto, etc),
+                        se cancelará el pedido para que puedas realizarlo nuevamente con las modificaciones deseadas.
+                    </p>
+
+                    <h6><strong>¿Cómo es el proceso si mi pedido ya fue despachado?</strong></h6>
+                    <ul>
+                        <li>Reemplazo del producto en día y horario a coordinar.</li>
+                        <li>Devolución del importe mediante anulación o reintegro, según el caso.</li>
+                    </ul>
+
+                    <h6><strong>¿Dónde solicitar el cambio o devolución?</strong></h6>
+                    <p>
+                        Ingresá en <a href="@Url.Action("Contact", "Home")" target="_blank">Eterea Parfums</a>
+                        y completá el formulario. Nuestro equipo de atención al cliente te contactará con los pasos a seguir.
+                    </p>
+
+                    <h6><strong>¿Cuál es el plazo para solicitarlo?</strong></h6>
+                    <p>Podés solicitar un cambio o devolución dentro de los <strong>15 días</strong> de haber recibido tu pedido.</p>
+
+                    <h6><strong>¿En qué casos puedo solicitar un cambio?</strong></h6>
+                    <ul>
+                        <li><strong>Caso 1:</strong> Recibiste un producto diferente al que compraste, sin uso ni anomalías.</li>
+                        <li><strong>Caso 2:</strong> El producto no fue de tu agrado. Debe estar cerrado, sin uso y en perfectas condiciones.</li>
+                        <li><strong>Caso 3:</strong> Producto dañado. Deberás hacer el reclamo inmediato desde el formulario web.</li>
+                    </ul>
+
+                    <p class="text-danger fw-semibold">
+                        ¡Importante! El producto debe conservar su envase, celofán protector, etiquetas originales y ticket de compra/regalo.
+                    </p>
+
+                    <p>
+                        Los productos en promoción solo pueden cambiarse por el mismo valor de compra.
+                    </p>
+
+                    <h6><strong>¿Se puede cambiar una fragancia abierta?</strong></h6>
+                    <p>
+                        No. Solo si presenta fallas. La duración o experiencia subjetiva no se considera motivo de cambio.
+                    </p>
+
+                    <p class="text-muted">
+                        Todo se encuentra respaldado por la <strong>Ley de Defensa del Consumidor N° 24.240</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
     {
         <div class="my-5">
@@ -388,5 +571,3 @@
 });
     </script>
 }
-
-
