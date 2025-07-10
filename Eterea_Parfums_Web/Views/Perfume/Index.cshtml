@@ -12,70 +12,78 @@
     <div class="row">
         <!-- Filtros -->
         <aside class="col-md-2 mb-4">
-            <h5 class="mb-3">Filtros</h5>
+            <form method="get" id="form-filtros">
+                <h5 class="mb-3">Filtros</h5>
 
-            <div class="mb-3">
-                <label class="form-label d-block">Marca</label>
-                <div class="filtro-checkbox-list" id="filtro-marca">
-                    @foreach (var marca in Model.MarcasDisponibles)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input filtro-marca-checkbox" type="checkbox" value="@marca" id="marca-@marca">
-                            <label class="form-check-label" for="marca-@marca">@marca</label>
-                        </div>
-                    }
+                <div class="mb-3">
+                    <label class="form-label d-block">Marca</label>
+                    <div class="filtro-checkbox-list" id="filtro-marca">
+                        @foreach (var marca in Model.Marcas)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="marcasSeleccionadas"
+                                       value="@marca.Nombre"
+                                       id="marca-@marca.Nombre"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("marcasSeleccionadas")?.Contains(marca.Nombre) == true ? "checked" : "") />
+                                <label class="form-check-label" for="marca-@marca.Nombre">@marca.Nombre</label>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Género</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Femenino</option>
-                    <option>Masculino</option>
-                    <option>Unisex</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Género</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Femenino</option>
+                        <option>Masculino</option>
+                        <option>Unisex</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Tamaño</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>30 ml</option>
-                    <option>50 ml</option>
-                    <option>100 ml</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Tamaño</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>30 ml</option>
+                        <option>50 ml</option>
+                        <option>100 ml</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Aroma</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Floral</option>
-                    <option>Frutal</option>
-                    <option>Amaderado</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Aroma</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Floral</option>
+                        <option>Frutal</option>
+                        <option>Amaderado</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Tipo de aroma</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Dulce</option>
-                    <option>Fresco</option>
-                    <option>Intenso</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Tipo de aroma</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Dulce</option>
+                        <option>Fresco</option>
+                        <option>Intenso</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Precio</label>
-                <select class="form-select">
-                    <option>Todos</option>
-                    <option>Hasta $10.000</option>
-                    <option>$10.000 - $30.000</option>
-                    <option>Más de $30.000</option>
-                </select>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <select class="form-select">
+                        <option>Todos</option>
+                        <option>Hasta $10.000</option>
+                        <option>$10.000 - $30.000</option>
+                        <option>Más de $30.000</option>
+                    </select>
+                </div>
+            </form>
         </aside>
 
         <section class="col-md-10">
