@@ -181,26 +181,44 @@
 
                     // ✅ Si se eliminó el ítem (cantidad = 0)
                     if (data.eliminado === true || cantidad === "0") {
+
+                        /* ---------- ACTUALIZAR RESUMEN VISUAL ---------- */
+                        document.getElementById("subtotal").textContent = `$${data.subtotal}`;
+                        document.getElementById("descuento").textContent = `-$${data.descuento}`;
+                        document.getElementById("total").textContent = `$${data.total}`;
+
+                        /* ---------- ACTUALIZAR HIDDEN TOTALS ---------- */
+                        document.getElementById("hSubtotal").value = data.subtotalSinFormato;   // ★
+                        document.getElementById("hDescuento").value = data.descuentoSinFormato;  // ★
+                        document.getElementById("hTotal").value = data.totalSinFormato;      // ★
+
+                        /* ---------- QUITAR HIDDEN DE CANTIDAD ---------- */
+                        const hiddenQty = document.querySelector(
+                            `input[name="Cantidades"][data-id="${data.perfumeId}"]`);
+                        if (hiddenQty) hiddenQty.remove();                                        // ★
+
+                        /* ---------- ANIMACIÓN Y BORRADO DE FILA -------- */
                         const fila = document.getElementById(`perfume-${perfumeId}`);
                         if (fila) {
                             fila.classList.add("fade-out");
                             setTimeout(() => {
                                 fila.remove();
 
-                                // ✅ Restaurar opacidad
                                 resumen.style.opacity = "1";
 
-                                // Si ya no hay perfumes, mostrar mensaje de carrito vacío
                                 if (document.querySelectorAll('.fila-producto').length === 0) {
                                     document.querySelector('.carrito-container').innerHTML = `
-                                        <div style="text-align: center; padding: 50px;">
-                                            <div style="font-size: 100px;">🛒</div>
-                                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                                        </div>`;
+                    <div style="text-align:center;padding:50px;">
+                        <div style="font-size:100px;">🛒</div>
+                        <h2 style="margin-top:20px;color:#555;">
+                            ¡Tu carrito está vacío!
+                        </h2>
+                    </div>`;
                                 }
                             }, 500);
                         }
-                        return;
+
+                        return;  
                     }
 
                     // ✅ Actualizar totales del resumen

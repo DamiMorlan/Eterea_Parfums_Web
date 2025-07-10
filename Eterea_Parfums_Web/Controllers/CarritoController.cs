@@ -96,34 +96,35 @@ namespace Eterea_Parfums_Web.Controllers
             return View(viewModel);
         }
 
-            [HttpPost]
+        [HttpPost]
         public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
+            /* ── 0) Seguridad ─────────────────────────────────────────────── */
             if (Session["clienteId"] == null)
                 return Json(new { redirect = Url.Action("Login", "Cliente") });
 
             int clienteId = (int)Session["clienteId"];
 
-            /* ---- 1. Traigo el item y su perfume ---- */
+            /* ── 1) Item actual ───────────────────────────────────────────── */
             var item = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)
                 .Include(c => c.perfume.stock)
-                .FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+                .FirstOrDefault(c => c.cliente_id == clienteId &&
+                                     c.perfume_id == perfumeId);
 
             if (item == null)
                 return Json(new { success = false, error = "Item no encontrado" });
 
-            /* ---- 2. Stock neto disponible de ese perfume ---- */
+            /* ── 2) Stock neto (–5 por sucursal) ──────────────────────────── */
             int stockDisponible = db.stock
                 .Where(s => s.perfume_id == perfumeId)
                 .ToList()
                 .Select(s => Math.Max(0, s.cantidad - 5))
                 .Sum();
 
-            /* ---- 3. Eliminar o ajustar cantidad ---- */
-            bool eliminado = false;
-
+            /* ── 3) Eliminar o ajustar cantidad ───────────────────────────── */
+            bool eliminado;
             if (cantidad == 0)
             {
                 db.carrito.Remove(item);
@@ -132,11 +133,12 @@ namespace Eterea_Parfums_Web.Controllers
             else
             {
                 item.cantidad = Math.Min(cantidad, stockDisponible);
+                eliminado = false;
             }
 
             db.SaveChanges();
 
-            /* ---- 4. Recalculo TODO el carrito reutilizando el helper ---- */
+            /* ── 4) Recalcular todo el carrito con el helper ──────────────── */
             var carrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
                 .Include(c => c.perfume)
@@ -144,17 +146,11 @@ namespace Eterea_Parfums_Web.Controllers
                 .Include(c => c.perfume.stock)
                 .ToList();
 
-            /* 1) IDs de perfumes presentes en el carrito (en memoria, tipo List<int>) */
-            var perfumeIds = carrito
-                .Select(c => c.perfume_id)
-                .Distinct()
-                .ToList();
+            var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
 
-            /* 2) Traigo stock solo para esos perfumes y, ya en memoria,
-                  aplico la regla “restar 5 y nunca negativo” */
             var stockDict = db.stock
-                .Where(s => perfumeIds.Contains(s.perfume_id))   // ← ahora SÍ es traducible
-                .ToList()                                        // ← a partir de aquí LINQ-to-Objects
+                .Where(s => perfumeIds.Contains(s.perfume_id))
+                .ToList()
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
                     g => g.Key,
@@ -162,35 +158,48 @@ namespace Eterea_Parfums_Web.Controllers
                 );
 
             var vms = carrito.Select(c =>
-                BuildItemViewModel(c,
-                    stockDict.ContainsKey(c.perfume_id) ? stockDict[c.perfume_id] : 0)
-            ).ToList();
+                    BuildItemViewModel(
+                        c,
+                        stockDict.ContainsKey(c.perfume_id)
+                            ? stockDict[c.perfume_id]
+                            : 0))
+                .ToList();
 
             double subtotal = vms.Sum(vm => vm.PrecioOriginal * vm.Cantidad);
             double total = vms.Sum(vm => vm.Total);
+            double descuento = subtotal - total;
 
-            double totalPerfume = 0;      // valor de salida
-            string filaHtml = "";     // HTML de la fila (solo si no se eliminó)
+            /* ── 5) HTML de la fila (si sigue existiendo) ─────────────────── */
+            double totalPerfume = 0;
+            string filaHtml = "";
 
             if (!eliminado)
             {
-                var vmFila = vms.First(vm => vm.PerfumeId == perfumeId);   // ahora sí existe
+                var vmFila = vms.First(vm => vm.PerfumeId == perfumeId);
                 totalPerfume = vmFila.Total;
                 filaHtml = RenderPartialViewToString("_FilaCarrito", vmFila);
             }
 
-            /* ---- 6. Respuesta JSON ---- */
+            /* ── 6) Respuesta JSON ────────────────────────────────────────── */
             return Json(new
             {
                 success = true,
                 eliminado,
                 perfumeId,
-                filaHtml,                                // string vacío si fue eliminado
+                filaHtml,                           // "" si fue eliminado
+
+                /* importes puros para <input hidden> */
+                subtotalSinFormato = subtotal,
+                totalSinFormato = total,
+                descuentoSinFormato = descuento,
+
+                /* importes formateados para los <span> */
                 subtotal = subtotal.ToString("N0"),
                 total = total.ToString("N0"),
-                descuento = (subtotal - total).ToString("N0"),
+                descuento = descuento.ToString("N0"),
+
                 envioGratis = total >= 50_000,
-                perfumeTotal = totalPerfume.ToString("N0") // «0» si se eliminó
+                perfumeTotal = totalPerfume.ToString("N0")
             });
         }
 
