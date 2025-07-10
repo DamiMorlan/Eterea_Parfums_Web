@@ -14,6 +14,8 @@ public class DetallePerfumeViewModel
     public decimal PrecioUnitario { get; set; }
     public int Cantidad { get; set; }
     public string Promocion { get; set; }
+
+    public decimal PrecioTotal => Cantidad * PrecioUnitario;
 }
 
 public class DetalleFacturaViewModel
