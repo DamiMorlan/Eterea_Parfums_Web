@@ -374,7 +374,7 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-        [HttpPost]
+      /*  [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ConfirmarPago()
         {
@@ -439,7 +439,7 @@ namespace Eterea_Parfums_Web.Controllers
                     return RedirectToAction("Index", "Carrito");
                 }
             }
-        }
+        }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -577,7 +577,7 @@ namespace Eterea_Parfums_Web.Controllers
                 {
                     tx.Rollback();
                     TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
-                    return RedirectToAction("Carrito");
+                    return RedirectToAction("Index","Carrito");
                 }
             }
         }
