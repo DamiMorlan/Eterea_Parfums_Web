@@ -15,13 +15,16 @@
             <h5 class="mb-3">Filtros</h5>
 
             <div class="mb-3">
-                <label class="form-label">Marca</label>
-                <select class="form-select">
-                    <option>Todas</option>
-                    <option>Chanel</option>
-                    <option>Dior</option>
-                    <option>Givenchy</option>
-                </select>
+                <label class="form-label d-block">Marca</label>
+                <div class="filtro-checkbox-list" id="filtro-marca">
+                    @foreach (var marca in Model.MarcasDisponibles)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input filtro-marca-checkbox" type="checkbox" value="@marca" id="marca-@marca">
+                            <label class="form-check-label" for="marca-@marca">@marca</label>
+                        </div>
+                    }
+                </div>
             </div>
 
             <div class="mb-3">
@@ -86,7 +89,7 @@
 
                 @foreach (var perfume in perfumesAgrupados)
                 {
-                    <div class="col-md-3 col-6 mb-4 d-flex">
+                    <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
                         <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
                             <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
                                  class="card-img-top custom-img"
@@ -371,5 +374,28 @@
                  window.location.href = `/Perfume/Details/${perfumeId}`;
              });
          });
+
+
+            // Evento de filtrado por marca
+            document.querySelectorAll('.filtro-marca-checkbox').forEach(cb => {
+                cb.addEventListener('change', aplicarFiltros);
+            });
+
+            function aplicarFiltros() {
+                // Obtener todas las marcas seleccionadas
+                const marcasSeleccionadas = Array.from(document.querySelectorAll('.filtro-marca-checkbox:checked'))
+                    .map(cb => cb.value.toLowerCase().trim());
+
+                // Para cada tarjeta de perfume
+                document.querySelectorAll('.perfume-card').forEach(card => {
+                    const marca = card.getAttribute('data-marca');
+
+                    // Si no hay filtros activos, mostrar todas
+                    const mostrar = marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(marca);
+
+                    // Mostrar u ocultar según el filtro
+                    card.closest('.perfume-card-container').style.display = mostrar ? 'flex' : 'none';
+                });
+            }
         </script>
     }

@@ -204,3 +204,18 @@ body {
     box-shadow: 0 0 12px #d1a7b4;
     transition: all 0.5s ease;
 }
+
+
+
+
+
+/* Nuevo Filtrod*/
+
+.filtro-checkbox-list {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #fff;
+}
