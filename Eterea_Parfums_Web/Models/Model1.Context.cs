@@ -13,10 +13,10 @@ namespace Eterea_Parfums_Web.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class etereaEntities1 : DbContext
+    public partial class etereaEntities7 : DbContext
     {
-        public etereaEntities1()
-            : base("name=etereaEntities1")
+        public etereaEntities7()
+            : base("name=etereaEntities7")
         {
         }
     

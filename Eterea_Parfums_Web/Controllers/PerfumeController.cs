@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Web.ViewModels;
+
 
 namespace Eterea_Parfums_Web.Controllers
 {
     public class PerfumeController : Controller
     {
-        private etereaEntities1 db = new etereaEntities1();
+        private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
         public ActionResult Index()

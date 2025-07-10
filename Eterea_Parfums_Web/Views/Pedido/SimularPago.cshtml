@@ -1,0 +1,226 @@
+﻿@model Eterea_Parfums_Web.ViewModels.SimularPagoViewModel
+@using System.Globalization
+
+@{
+    ViewBag.Title = "Simulación de Pago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/Content/StyleSimularPago.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+}
+
+<div class="container my-5 simulador-mp">
+    <div class="row">
+        <!-- MEDIOS --------------------------------------------------------->
+        <div class="col-lg-7 col-md-8 bg-white p-4 shadow-sm rounded-3">
+            <h4 class="mb-4 fw-bold">¿Cómo querés pagar?</h4>
+
+            <div id="listaMedios">
+                <!-- Dinero en cuenta -->
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="DIN" class="form-check-input me-2 medio" />
+                    <i class="bi bi-wallet2 mp-logo text-warning"></i>
+                    <div class="flex-grow-1">
+                        <div>Dinero disponible</div>
+                        <small class="text-muted">$ @Model.SaldoCuenta.ToString("N0")</small>
+                    </div>
+                </label>
+
+                <!-- Mastercard crédito -->
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
+                    <img src="https://static.mercadopago.com/public/checkout-assets/img/brands/master.svg" class="mp-card" />
+                    <div class="flex-grow-1">
+                        <div>Mastercard **** 0604</div>
+                        <small class="text-muted">Crédito</small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                </label>
+
+                <!-- Visa débito -->
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
+                    <img src="https://static.mercadopago.com/public/checkout-assets/img/brands/visa.svg" class="mp-card" />
+                    <div class="flex-grow-1">
+                        <div>Visa Débito **** 4321</div>
+                        <small class="text-muted">Débito</small>
+                    </div>
+                </label>
+
+                <!-- Nueva tarjeta (modal) -->
+                <div class="mp-item cursor-pointer" data-bs-toggle="modal" data-bs-target="#modalNueva">
+                    <i class="bi bi-credit-card mp-logo"></i>
+                    <div class="flex-grow-1">Nueva tarjeta</div>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+
+            <a href="@Url.Action("VistaPrevia","Pedido")" class="d-block mt-4 text-decoration-none">
+                &lt; Volver al sitio
+            </a>
+        </div>
+
+        <!-- RESUMEN -------------------------------------------------------->
+        <div class="col-lg-4 offset-lg-1 col-md-4 mt-4 mt-md-0">
+            <div class="bg-white p-4 shadow-sm rounded-3">
+                <h6 class="fw-bold mb-3">Detalles del pago</h6>
+
+                <div class="d-flex justify-content-between">
+                    <span>Productos</span>
+                    <span>$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <div class="d-flex justify-content-between" id="filaInteres" style="display:none;">
+                    <span>Recargo por cuotas</span>
+                    <span id="txtInteres">$0</span>
+                </div>
+
+                <hr />
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Pagás</span>
+                    <span id="txtTotal">$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <!-- BOTÓN -->
+                @using (Html.BeginForm("ConfirmarPago", "Pedido", FormMethod.Post, new { @class = "mt-3" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hdMedio" name="medio" />
+                    <input type="hidden" id="hdCuotas" name="cuotas" />
+                    <input type="hidden" id="hdTotal" name="totalFinal" />
+
+                    <button type="submit" id="btnPagar" class="btn btn-primary w-100" disabled>
+                        Pagar
+                    </button>
+                }
+
+                <p class="text-center text-muted mt-2 mb-0" style="font-size:.8rem;">
+                    <i class="bi bi-lock-fill"></i> Pago seguro
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NUEVA TARJETA (simulado) ----------------------------------->
+<div class="modal fade" id="modalNueva" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Nueva tarjeta</h5></div>
+            <div class="modal-body">
+                <input class="form-control mb-2" placeholder="Número de tarjeta" />
+                <div class="row g-2 mb-2">
+                    <div class="col"><input class="form-control" placeholder="MM/AA" /></div>
+                    <div class="col"><input class="form-control" placeholder="CVV" /></div>
+                </div>
+                <input class="form-control mb-2" placeholder="Nombre titular" />
+                <input class="form-control" placeholder="DNI" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnAddCard" class="btn btn-success">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(function(){
+
+  /* ======== constantes ======== */
+  const totalBase = +("@Model.Monto".replace(',','.'));
+  const saldo     = +("@Model.SaldoCuenta".replace(',','.'));
+  const cuotasMC  = {1:0, 3:0.10, 6:0.15, 9:0.18, 12:0.20};
+
+  /* ======== estado / refs ====== */
+  let medio="", cuotas=1, recargo=0;
+
+  const $txtTotal = $('#txtTotal'),
+        $txtInter = $('#txtInteres'),
+        $filaInt  = $('#filaInteres'),
+        $btnPay   = $('#btnPagar'),
+        $hdMedio  = $('#hdMedio'),
+        $hdCuotas = $('#hdCuotas'),
+        $hdTotal  = $('#hdTotal');
+
+  /* ======== helpers ============ */
+  const fmt = n=>Number(n).toLocaleString('es-AR');
+  const actResumen = _=>{
+      const total = totalBase + recargo;
+      $txtTotal.text(`$ ${fmt(total)}`);
+      $txtInter.text(`$ ${fmt(recargo)}`);
+      $filaInt.toggle(recargo>0);
+      $hdTotal.val(total);
+  };
+  const calcRecargo = _=>{
+      recargo = cuotasMC[cuotas]*totalBase;
+      actResumen();
+  };
+
+  /* ======== selección medio ===== */
+  $(document).on('change','input[name="medio"]',function(){
+      medio=this.value;  $hdMedio.val(medio);
+      ocultarCuotas(); recargo=0;
+
+      if(medio==='DIN'){
+          if(saldo< totalBase){
+              alert('El saldo disponible no alcanza para pagar la compra.');
+              this.checked=false; medio=""; validar(); return;
+          }
+          actResumen();          // sin recargo
+      }
+      else if(medio==='MC'){     // crédito
+          mostrarCuotas($(this).parent());
+      }
+      else {                     // débito u otra
+          actResumen();
+      }
+      validar();
+  });
+
+  /* ======== cuotas ============== */
+  function mostrarCuotas($where){
+      if($where.find('.selCuotas').length) return;
+      const html = `<select class="form-select selCuotas mt-2">
+        ${Object.entries(cuotasMC).map(([c,p])=>`
+          <option value="${c}">${c} pago${c>1?'s':''}
+            ${c==1?' sin interés':' ('+(p*100)+'% interés)'}
+          </option>`).join('')}
+      </select>`;
+      $where.append(html);
+      $where.find('.selCuotas')
+            .on('change',function(){
+                cuotas=+this.value; $hdCuotas.val(cuotas);
+                calcRecargo();
+            })
+            .trigger('change');   // aplica 1 pago (0 % interés) inicial
+  }
+  function ocultarCuotas(){ $('.selCuotas').remove(); cuotas=1; $hdCuotas.val(1); }
+
+  /* ======== botón pagar ========= */
+  function validar(){
+      const ok = !!medio;
+      $btnPay.prop('disabled',!ok);
+  }
+
+  /* ======== nueva tarjeta ======= */
+  $('#btnAddCard').on('click',function(){
+      const idx=Date.now();
+      $('#listaMedios').append(`
+        <label class="mp-item">
+          <input type="radio" name="medio" value="NEW${idx}"
+                 class="form-check-input me-2 medio"/>
+          <i class="bi bi-credit-card-2-front mp-logo"></i>
+          <div class="flex-grow-1">Tarjeta nueva ****1234</div>
+        </label>`);
+      $('#modalNueva').modal('hide');
+  });
+
+  /* ======== init ================ */
+  actResumen(); validar();
+});
+    </script>
+}

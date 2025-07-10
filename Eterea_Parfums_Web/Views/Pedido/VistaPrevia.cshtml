@@ -1,74 +1,14 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.VistaPreviaPedidoViewModel
+@using Eterea_Parfums_Web.ViewModels   <!-- ← nueva línea -->
 
-
-<style>
-    .volver-carrito {
-        font-size: 1.5rem;
-        text-decoration: none;
-        margin-bottom: 15px;
-        display: inline-block;
-    }
-
-        .volver-carrito:hover {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-    .resumen-producto {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-    }
-
-        .resumen-producto img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-
-    .volver-carrito {
-        display: inline-block;
-        background-color: #ffe6f0; /* rosado claro */
-        color: rgb(209, 167, 180); /* rosado oscuro */
-        font-size: 1.5rem;
-        padding: 6px 12px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: background-color 0.3s;
-    }
-
-        .volver-carrito:hover {
-            background-color: #f8bbd0; /* más oscuro al pasar */
-            color: #880e4f;
-            text-decoration: none;
-        }
-
-    .resumen-producto {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-    }
-
-        .resumen-producto img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-</style>
+@section Styles {
+    <link href="~/Content/StyleCarrito.css" rel="stylesheet" />
+    <link href="~/Content/StyleVistaPrevia.css" rel="stylesheet" />
+}
 
 <div class="container mt-4">
     <!-- Flecha volver -->
-    <a href="@Url.Action("Index", "Carrito")" class="volver-carrito" title="Volver al carrito">
-        ←
-    </a>
-
+    <a href="@Url.Action("Index","Carrito")" class="volver-carrito" title="Volver al carrito">←</a>
 
     <div class="row mt-3">
         <!-- Dirección -->
@@ -104,63 +44,91 @@
             {
                 <div class="alert alert-warning">No se pudieron cargar los datos del pedido.</div>
             }
-
-
-            <a href="@Url.Action("SeleccionarDireccion", "Cliente")" class="btn btn-outline-secondary">
-                Cambiar dirección de envío
-            </a>
+            <a href="@Url.Action("SeleccionarDireccion","Cliente")"
+               class="btn btn-outline-secondary">Cambiar dirección de envío</a>
         </div>
 
-        <!-- Productos y resumen -->
+        <!-- Productos + resumen ----------------------------------------- -->
         <div class="col-md-8">
             <h4>Resumen de compra</h4>
 
             @foreach (var item in Model.ItemsCarrito)
             {
-                var totalPorItem = item.Precio * item.Cantidad;
                 <div class="resumen-producto">
                     <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
                     <div class="ms-2 w-100">
                         <div><strong>@item.Nombre</strong></div>
                         <div>@item.Presentacion ml</div>
                     </div>
-                    <div class="text-center w-25">@item.Cantidad x</div>
-                    <div class="text-end w-25">$@totalPorItem.ToString("N0")</div>
+                    <div class="text-center w-25">
+                        @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
+                    </div>
+                    <!-- usa el Total que ya viene calculado -->
+                    <div class="text-end w-25">$@item.Total.ToString("N0")</div>
                 </div>
             }
 
-            <div class="mt-4">
-                <p>Subtotal (sin descuento): $@Model.Subtotal.ToString("N0")</p>
-                <p style="color: #c0392b; font-weight: bold;">
-                    Descuentos aplicados: -$@Model.Descuento.ToString("N0")
-                </p>
-                <h5>Total a pagar: $@Model.Total.ToString("N0")</h5>
-            </div>
+            <!-- RESUMEN + BOTÓN ---------------------------------------- -->
+            <div class="resumen-carrito mt-4 mb-5">
 
+                <div class="fila-resumen">
+                    <span class="etiqueta">Subtotal (sin descuento):</span>
+                    <span class="valor">
+                        $@($"{Model.Subtotal:N0}")
+                    </span>
+                </div>
 
-            @using (Html.BeginForm("IrAPagar", "Pedido", FormMethod.Post))
-            {
-                for (int i = 0; i < Model.ItemsCarrito.Count; i++)
+                <div class="fila-resumen">
+                    <span class="etiqueta">Descuentos aplicados:</span>
+                    <span class="valor descuento">
+                        -$@($"{Model.Descuento:N0}")
+                    </span>
+                </div>
+
+                <div class="fila-resumen total">
+                    <span class="etiqueta">Total a pagar:</span>
+                    <span class="valor">$@($"{Model.Total:N0}")</span>
+                </div>
+
+                @if (Model.EnvioGratis)
                 {
-                    <input type="hidden" name="productos[@i].PerfumeId" value="@Model.ItemsCarrito[i].PerfumeId" />
-                    <input type="hidden" name="productos[@i].Nombre" value="@Model.ItemsCarrito[i].Nombre" />
-                    <input type="hidden" name="productos[@i].Cantidad" value="@Model.ItemsCarrito[i].Cantidad" />
-                    <input type="hidden" name="productos[@i].Precio" value="@Model.ItemsCarrito[i].Precio" />
+                    <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+                }
+                else
+                {
+                    <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
+                        Los gastos de envío se calculan al finalizar la compra.<br />
+                        Envío gratis en compras mayores a $50.000.
+                    </p>
                 }
 
-                // Total final calculado con promociones
+                @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
+                @{
+                    Session["PedidoItems"] = Model.ItemsCarrito
+                        .Select(x => new PedidoItemVM
+                        {
+                            PerfumeId = x.PerfumeId,
+                            Cantidad = x.Cantidad
+                        })
+                        .ToList();
+                }
 
+                <!-- Botón “Ir a Pagar” -->
+                <div class="text-center">
+                    <a href="@Url.Action("SimularPago",
+                             "Pedido",
+                             new { monto = Model.Total.ToString(
+                                       System.Globalization.CultureInfo.InvariantCulture) })"
+                       class="btn btn-success btn-lg mx-auto mt-3 w-auto">
+                        <!-- sin d-block -->
+                        Ir a Pagar
+                    </a>
+                </div>
 
-                @* Total final calculado con promociones *@
-                <input type="hidden" name="montoFinal" value="@Model.Total.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
-
-
-                <button type="submit" class="btn btn-success mt-3">Ir a Pagar</button>
-            }
-
-
-
-            <p class="text-muted mt-2" style="font-size: 0.9rem;">Será redireccionado a Mercado Pago</p>
+                <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
+                    Será redireccionado a Mercado&nbsp;Pago
+                </p>
+            </div>
         </div>
     </div>
 </div>

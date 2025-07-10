@@ -18,7 +18,7 @@ namespace Eterea_Parfums_Web.Models
         public int factura_id { get; set; }
         public string nombre_cliente { get; set; }
         public string apellido_cliente { get; set; }
-        public int dni { get; set; }
+        public long dni { get; set; }
         public string e_mail_cliente { get; set; }
         public string domicilio_de_envio { get; set; }
         public bool estado { get; set; }

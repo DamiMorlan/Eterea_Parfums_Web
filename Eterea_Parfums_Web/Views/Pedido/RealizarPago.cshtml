@@ -1,0 +1,96 @@
+﻿@model Eterea_Parfums_Web.ViewModels.SimularPagoViewModel
+@{
+    ViewBag.Title = "Simulación de Pago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/Content/StyleSimularPago.css" rel="stylesheet" />
+}
+
+<div class="container my-5 simulador-mp">
+
+    <div class="row">
+        <!-- Panel de medios de pago -->
+        <div class="col-lg-7 col-md-8 bg-white p-4 shadow-sm rounded-3">
+
+            <h4 class="mb-4 fw-bold">¿Cómo querés pagar?</h4>
+
+            <!-- Switch combinar -->
+            <div class="mp-item d-flex justify-content-between align-items-center mb-3">
+                <span>Combinar 2 medios de pago</span>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" disabled>
+                </div>
+            </div>
+
+            <!-- Dinero en cuenta -->
+            <div class="mp-item">
+                <i class="bi bi-wallet2 mp-logo text-warning"></i>
+                <div class="flex-grow-1">
+                    <div>Dinero disponible</div>
+                    <small class="text-muted">$ 50.000</small>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </div>
+
+            <!-- Tarjeta guardada -->
+            <div class="mp-item">
+                <img src="https://static.mercadopago.com/public/checkout-assets/img/brands/master.svg"
+                     class="mp-card" alt="MC" />
+                <div class="flex-grow-1">
+                    <div>Mastercard **** 0604</div>
+                    <small class="text-muted">Mastercard Crédito</small>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </div>
+
+            <!-- Nueva tarjeta -->
+            <div class="mp-item">
+                <i class="bi bi-credit-card mp-logo"></i>
+                <div class="flex-grow-1">
+                    <div>Nueva tarjeta</div>
+                    <small class="text-muted">Crédito, débito o prepaga</small>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </div>
+
+            <!-- … agrega más items si querés … -->
+
+            <a href="@Url.Action("VistaPrevia","Pedido")" class="text-decoration-none d-block mt-4">
+                &lt; Volver al sitio
+            </a>
+        </div>
+
+        <!-- Panel de resumen -->
+        <div class="col-lg-4 offset-lg-1 col-md-4 mt-4 mt-md-0">
+
+            <div class="bg-white p-4 shadow-sm rounded-3">
+                <h6 class="fw-bold mb-3">Detalles del pago</h6>
+
+                <div class="d-flex justify-content-between">
+                    <span>Productos</span>
+                    <span>$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Pagás</span>
+                    <span>$ @Model.Monto.ToString("N0")</span>
+                </div>
+
+                <form action="@Url.Action("ConfirmarPago","Pedido")" method="post" class="mt-4">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary w-100">Pagar</button>
+                </form>
+
+
+                <p class="text-center text-muted mt-2 mb-0" style="font-size:.8rem;">
+                    <i class="bi bi-lock-fill"></i> Pago seguro
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

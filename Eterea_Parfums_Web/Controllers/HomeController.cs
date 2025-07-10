@@ -10,7 +10,7 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class HomeController : Controller
     {
-        private etereaEntities1 db = new etereaEntities1();
+        private etereaEntities7 db = new etereaEntities7();
 
         public ActionResult Index()
         {

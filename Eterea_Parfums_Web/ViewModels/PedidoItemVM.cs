@@ -5,10 +5,9 @@ using System.Web;
 
 namespace Eterea_Parfums_Web.ViewModels
 {
-    public class MarcaViewModel
+    public class PedidoItemVM
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-
+        public int PerfumeId { get; set; }
+        public int Cantidad { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace Eterea_Parfums_Web.Models
         public promocion()
         {
             this.detalle_factura = new HashSet<detalle_factura>();
+            this.detalle_factura1 = new HashSet<detalle_factura>();
             this.perfume = new HashSet<perfume>();
         }
     
@@ -32,6 +33,8 @@ namespace Eterea_Parfums_Web.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<detalle_factura> detalle_factura { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<detalle_factura> detalle_factura1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<perfume> perfume { get; set; }
     }

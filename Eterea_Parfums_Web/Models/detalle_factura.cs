@@ -19,9 +19,11 @@ namespace Eterea_Parfums_Web.Models
         public int cantidad { get; set; }
         public double precio_unitario { get; set; }
         public int promocion_id { get; set; }
+        public Nullable<int> promocion2_id { get; set; }
     
         public virtual promocion promocion { get; set; }
         public virtual perfume perfume { get; set; }
+        public virtual promocion promocion1 { get; set; }
         public virtual factura factura { get; set; }
     }
 }

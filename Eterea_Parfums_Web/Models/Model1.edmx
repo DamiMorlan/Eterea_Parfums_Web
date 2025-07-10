@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="etereaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="etereaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="aroma_del_perfume">
           <Key>
             <PropertyRef Name="perfume_id" />
@@ -75,6 +75,7 @@
           <Property Name="cantidad" Type="int" Nullable="false" />
           <Property Name="precio_unitario" Type="float" Nullable="false" />
           <Property Name="promocion_id" Type="int" Nullable="false" />
+          <Property Name="promocion2_id" Type="int" />
         </EntityType>
         <EntityType Name="empleado">
           <Key>
@@ -188,7 +189,7 @@
           <Property Name="factura_id" Type="int" Nullable="false" />
           <Property Name="nombre_cliente" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="apellido_cliente" Type="varchar" MaxLength="45" Nullable="false" />
-          <Property Name="dni" Type="int" Nullable="false" />
+          <Property Name="dni" Type="bigint" Nullable="false" />
           <Property Name="e_mail_cliente" Type="varchar" MaxLength="80" Nullable="false" />
           <Property Name="domicilio_de_envio" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="estado" Type="bit" Nullable="false" />
@@ -297,7 +298,7 @@
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="tipo_de_perfume" Type="varchar" MaxLength="15" Nullable="false" />
         </EntityType>
-        <Association Name="FK__aroma_del__tipo___5CD6CB2B">
+        <Association Name="FK__aroma_del__tipo___29221CFB">
           <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="1" />
           <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
           <ReferentialConstraint>
@@ -501,42 +502,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__nota_con___nota___72C60C4A">
-          <End Role="nota" Type="Self.nota" Multiplicity="1" />
-          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="nota">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="nota_con_tipo_de_nota">
-              <PropertyRef Name="nota_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__nota_con___tipo___73BA3083">
-          <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
-          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tipo_de_nota">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="nota_con_tipo_de_nota">
-              <PropertyRef Name="tipo_de_nota_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__notas_del__nota___74AE54BC">
-          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="1" />
-          <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="nota_con_tipo_de_nota">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="notas_del_perfume">
-              <PropertyRef Name="nota_con_tipo_de_nota_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__perfume__genero___6D0D32F4">
           <End Role="genero" Type="Self.genero" Multiplicity="1" />
           <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
@@ -657,6 +622,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_detalle_factura_promocion2_id">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="0..1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion2_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DetalleFactura_Factura">
           <End Role="factura" Type="Self.factura" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -680,6 +657,42 @@
             </Principal>
             <Dependent Role="localidad">
               <PropertyRef Name="provincia_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_nota_id">
+          <End Role="nota" Type="Self.nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+          <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="tipo_de_nota_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_notas_del_perfume_nota_con_tipo_de_nota_id">
+          <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="1" />
+          <End Role="notas_del_perfume" Type="Self.notas_del_perfume" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nota_con_tipo_de_nota">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="notas_del_perfume">
+              <PropertyRef Name="nota_con_tipo_de_nota_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -816,7 +829,7 @@
           <EntitySet Name="tipo_de_aroma" EntityType="Self.tipo_de_aroma" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_nota" EntityType="Self.tipo_de_nota" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_perfume" EntityType="Self.tipo_de_perfume" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__aroma_del__tipo___5CD6CB2B" Association="Self.FK__aroma_del__tipo___5CD6CB2B">
+          <AssociationSet Name="FK__aroma_del__tipo___29221CFB" Association="Self.FK__aroma_del__tipo___29221CFB">
             <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
             <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
           </AssociationSet>
@@ -884,18 +897,6 @@
             <End Role="sucursal" EntitySet="sucursal" />
             <End Role="factura" EntitySet="factura" />
           </AssociationSet>
-          <AssociationSet Name="FK__nota_con___nota___72C60C4A" Association="Self.FK__nota_con___nota___72C60C4A">
-            <End Role="nota" EntitySet="nota" />
-            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
-          </AssociationSet>
-          <AssociationSet Name="FK__nota_con___tipo___73BA3083" Association="Self.FK__nota_con___tipo___73BA3083">
-            <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
-            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
-          </AssociationSet>
-          <AssociationSet Name="FK__notas_del__nota___74AE54BC" Association="Self.FK__notas_del__nota___74AE54BC">
-            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
-            <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
-          </AssociationSet>
           <AssociationSet Name="FK__perfume__genero___6D0D32F4" Association="Self.FK__perfume__genero___6D0D32F4">
             <End Role="genero" EntitySet="genero" />
             <End Role="perfume" EntitySet="perfume" />
@@ -936,6 +937,10 @@
             <End Role="perfume" EntitySet="perfume" />
             <End Role="detalle_factura" EntitySet="detalle_factura" />
           </AssociationSet>
+          <AssociationSet Name="FK_detalle_factura_promocion2_id" Association="Self.FK_detalle_factura_promocion2_id">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
           <AssociationSet Name="FK_DetalleFactura_Factura" Association="Self.FK_DetalleFactura_Factura">
             <End Role="factura" EntitySet="factura" />
             <End Role="detalle_factura" EntitySet="detalle_factura" />
@@ -943,6 +948,18 @@
           <AssociationSet Name="fk_localidad_provincia" Association="Self.fk_localidad_provincia">
             <End Role="provincia" EntitySet="provincia" />
             <End Role="localidad" EntitySet="localidad" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_nota_id" Association="Self.FK_nota_con_tipo_de_nota_nota_id">
+            <End Role="nota" EntitySet="nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id" Association="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id">
+            <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+          </AssociationSet>
+          <AssociationSet Name="FK_notas_del_perfume_nota_con_tipo_de_nota_id" Association="Self.FK_notas_del_perfume_nota_con_tipo_de_nota_id">
+            <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
+            <End Role="notas_del_perfume" EntitySet="notas_del_perfume" />
           </AssociationSet>
           <AssociationSet Name="FK_orden_factura" Association="Self.FK_orden_factura">
             <End Role="factura" EntitySet="factura" />
@@ -977,7 +994,8 @@
             <End Role="stock" EntitySet="stock" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="etereaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1056,8 +1074,10 @@
           <Property Name="cantidad" Type="Int32" Nullable="false" />
           <Property Name="precio_unitario" Type="Double" Nullable="false" />
           <Property Name="promocion_id" Type="Int32" Nullable="false" />
+          <Property Name="promocion2_id" Type="Int32" />
           <NavigationProperty Name="promocion" Relationship="Self.FK__detalle_f__promo__5FB337D6" FromRole="detalle_factura" ToRole="promocion" />
           <NavigationProperty Name="perfume" Relationship="Self.fk_detalle_factura_perfume" FromRole="detalle_factura" ToRole="perfume" />
+          <NavigationProperty Name="promocion1" Relationship="Self.FK_detalle_factura_promocion2_id" FromRole="detalle_factura" ToRole="promocion" />
           <NavigationProperty Name="factura" Relationship="Self.FK_DetalleFactura_Factura" FromRole="detalle_factura" ToRole="factura" />
         </EntityType>
         <EntityType Name="empleado">
@@ -1165,7 +1185,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK__nota_con___nota___72C60C4A" FromRole="nota" ToRole="nota_con_tipo_de_nota" />
+          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_nota_id" FromRole="nota" ToRole="nota_con_tipo_de_nota" />
         </EntityType>
         <EntityType Name="nota_con_tipo_de_nota">
           <Key>
@@ -1174,8 +1194,8 @@
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="nota_id" Type="Int32" Nullable="false" />
           <Property Name="tipo_de_nota_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="nota" Relationship="Self.FK__nota_con___nota___72C60C4A" FromRole="nota_con_tipo_de_nota" ToRole="nota" />
-          <NavigationProperty Name="tipo_de_nota" Relationship="Self.FK__nota_con___tipo___73BA3083" FromRole="nota_con_tipo_de_nota" ToRole="tipo_de_nota" />
+          <NavigationProperty Name="nota" Relationship="Self.FK_nota_con_tipo_de_nota_nota_id" FromRole="nota_con_tipo_de_nota" ToRole="nota" />
+          <NavigationProperty Name="tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id" FromRole="nota_con_tipo_de_nota" ToRole="tipo_de_nota" />
           <NavigationProperty Name="perfume" Relationship="Self.notas_del_perfume" FromRole="nota_con_tipo_de_nota" ToRole="perfume" />
         </EntityType>
         <EntityType Name="orden">
@@ -1186,7 +1206,7 @@
           <Property Name="factura_id" Type="Int32" Nullable="false" />
           <Property Name="nombre_cliente" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="apellido_cliente" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="dni" Type="Int32" Nullable="false" />
+          <Property Name="dni" Type="Int64" Nullable="false" />
           <Property Name="e_mail_cliente" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="domicilio_de_envio" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="estado" Type="Boolean" Nullable="false" />
@@ -1251,6 +1271,7 @@
           <Property Name="descripcion" Type="String" MaxLength="180" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="banner" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="detalle_factura" Relationship="Self.FK__detalle_f__promo__5FB337D6" FromRole="promocion" ToRole="detalle_factura" />
+          <NavigationProperty Name="detalle_factura1" Relationship="Self.FK_detalle_factura_promocion2_id" FromRole="promocion" ToRole="detalle_factura" />
           <NavigationProperty Name="perfume" Relationship="Self.perfumes_en_promo" FromRole="promocion" ToRole="perfume" />
         </EntityType>
         <EntityType Name="provincia">
@@ -1313,7 +1334,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="nombre" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK__nota_con___tipo___73BA3083" FromRole="tipo_de_nota" ToRole="nota_con_tipo_de_nota" />
+          <NavigationProperty Name="nota_con_tipo_de_nota" Relationship="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id" FromRole="tipo_de_nota" ToRole="nota_con_tipo_de_nota" />
         </EntityType>
         <EntityType Name="tipo_de_perfume">
           <Key>
@@ -1479,6 +1500,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_detalle_factura_promocion2_id">
+          <End Role="promocion" Type="Self.promocion" Multiplicity="0..1" />
+          <End Role="detalle_factura" Type="Self.detalle_factura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="promocion">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="detalle_factura">
+              <PropertyRef Name="promocion2_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DetalleFactura_Factura">
           <End Role="factura" Type="Self.factura" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1625,7 +1658,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__nota_con___nota___72C60C4A">
+        <Association Name="FK_nota_con_tipo_de_nota_nota_id">
           <End Role="nota" Type="Self.nota" Multiplicity="1" />
           <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1637,7 +1670,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__nota_con___tipo___73BA3083">
+        <Association Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id">
           <End Role="tipo_de_nota" Type="Self.tipo_de_nota" Multiplicity="1" />
           <End Role="nota_con_tipo_de_nota" Type="Self.nota_con_tipo_de_nota" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1747,7 +1780,7 @@
           <End Role="promocion" Type="Self.promocion" Multiplicity="*" />
           <End Role="perfume" Type="Self.perfume" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="etereaEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="etereaEntities7" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="caja" EntityType="Self.caja" />
           <EntitySet Name="calle" EntityType="Self.calle" />
           <EntitySet Name="carrito" EntityType="Self.carrito" />
@@ -1823,6 +1856,10 @@
             <End Role="perfume" EntitySet="perfume" />
             <End Role="detalle_factura" EntitySet="detalle_factura" />
           </AssociationSet>
+          <AssociationSet Name="FK_detalle_factura_promocion2_id" Association="Self.FK_detalle_factura_promocion2_id">
+            <End Role="promocion" EntitySet="promocion" />
+            <End Role="detalle_factura" EntitySet="detalle_factura" />
+          </AssociationSet>
           <AssociationSet Name="FK_DetalleFactura_Factura" Association="Self.FK_DetalleFactura_Factura">
             <End Role="factura" EntitySet="factura" />
             <End Role="detalle_factura" EntitySet="detalle_factura" />
@@ -1871,11 +1908,11 @@
             <End Role="marca" EntitySet="marca" />
             <End Role="perfume" EntitySet="perfume" />
           </AssociationSet>
-          <AssociationSet Name="FK__nota_con___nota___72C60C4A" Association="Self.FK__nota_con___nota___72C60C4A">
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_nota_id" Association="Self.FK_nota_con_tipo_de_nota_nota_id">
             <End Role="nota" EntitySet="nota" />
             <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
           </AssociationSet>
-          <AssociationSet Name="FK__nota_con___tipo___73BA3083" Association="Self.FK__nota_con___tipo___73BA3083">
+          <AssociationSet Name="FK_nota_con_tipo_de_nota_tipo_de_nota_id" Association="Self.FK_nota_con_tipo_de_nota_tipo_de_nota_id">
             <End Role="tipo_de_nota" EntitySet="tipo_de_nota" />
             <End Role="nota_con_tipo_de_nota" EntitySet="nota_con_tipo_de_nota" />
           </AssociationSet>
@@ -1925,7 +1962,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="etereaModelStoreContainer" CdmEntityContainer="etereaEntities1">
+        <EntityContainerMapping StorageEntityContainer="etereaModelStoreContainer" CdmEntityContainer="etereaEntities7">
           <EntitySetMapping Name="caja">
             <EntityTypeMapping TypeName="etereaModel.caja">
               <MappingFragment StoreEntitySet="caja">
@@ -1990,6 +2027,7 @@
                 <ScalarProperty Name="cantidad" ColumnName="cantidad" />
                 <ScalarProperty Name="precio_unitario" ColumnName="precio_unitario" />
                 <ScalarProperty Name="promocion_id" ColumnName="promocion_id" />
+                <ScalarProperty Name="promocion2_id" ColumnName="promocion2_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
