@@ -19,7 +19,7 @@
 
 <div class="carrito-container">
 
-    <h1 class="titulo-carrito">Mi carrito</h1>
+    <h1 class="titulo-carrito">Tu carrito</h1>
 
     @if (ViewBag.MensajeStockActualizado != null)
     {
@@ -92,55 +92,55 @@
             </div>
         }
 
-<div class="resumen-carrito">
-    @{
-        var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
-        var total = Model.Sum(m => m.Total);
-        var descuento = subtotal - total;
-    }
+        <div class="resumen-carrito">
+            @{
+                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
+                var total = Model.Sum(m => m.Total);
+                var descuento = subtotal - total;
+            }
 
-    <div class="fila-resumen">
-        <span class="etiqueta">Subtotal (sin descuento):</span>
-        <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
-    </div>
-    <div class="fila-resumen">
-        <span class="etiqueta">Descuentos aplicados:</span>
-        <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
-    </div>
-    <div class="fila-resumen total">
-        <span class="etiqueta">Total a pagar:</span>
-        <span class="valor" id="total">$@total.ToString("N0")</span>
-    </div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Subtotal (sin descuento):</span>
+                <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
+            </div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Descuentos aplicados:</span>
+                <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
+            </div>
+            <div class="fila-resumen total">
+                <span class="etiqueta">Total a pagar:</span>
+                <span class="valor" id="total">$@total.ToString("N0")</span>
+            </div>
 
-    @if (total >= 50000)
-    {
-        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-    }
-    else
-    {
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-        </p>
-    }
+            @if (total >= 50000)
+            {
+                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+            }
+            else
+            {
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+                </p>
+            }
 
-    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Post))
-    {
-        foreach (var item in Model)
-        {
-            <input type="hidden" name="PerfumeIds" value="@item.PerfumeId" />
-            <input type="hidden" name="Cantidades" value="@item.Cantidad" />
-        }
+            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Post))
+            {
+                foreach (var item in Model)
+                {
+                    <input type="hidden" name="PerfumeIds" value="@item.PerfumeId" />
+                    <input type="hidden" name="Cantidades" value="@item.Cantidad" />
+                }
 
-        <input type="hidden" name="Subtotal" value="@subtotal" />
-        <input type="hidden" name="Descuento" value="@descuento" />
-        <input type="hidden" name="Total" value="@total" />
+                <input type="hidden" name="Subtotal" value="@subtotal" />
+                <input type="hidden" name="Descuento" value="@descuento" />
+                <input type="hidden" name="Total" value="@total" />
 
-        <div class="contenedor-boton-finalizar text-center mt-3">
-            <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
+                <div class="contenedor-boton-finalizar text-center mt-3">
+                    <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
+                </div>
+            }
+
         </div>
-    }
-
-</div>
 
     }
     else
@@ -181,44 +181,26 @@
 
                     // ✅ Si se eliminó el ítem (cantidad = 0)
                     if (data.eliminado === true || cantidad === "0") {
-
-                        /* ---------- ACTUALIZAR RESUMEN VISUAL ---------- */
-                        document.getElementById("subtotal").textContent = `$${data.subtotal}`;
-                        document.getElementById("descuento").textContent = `-$${data.descuento}`;
-                        document.getElementById("total").textContent = `$${data.total}`;
-
-                        /* ---------- ACTUALIZAR HIDDEN TOTALS ---------- */
-                        document.getElementById("hSubtotal").value = data.subtotalSinFormato;   // ★
-                        document.getElementById("hDescuento").value = data.descuentoSinFormato;  // ★
-                        document.getElementById("hTotal").value = data.totalSinFormato;      // ★
-
-                        /* ---------- QUITAR HIDDEN DE CANTIDAD ---------- */
-                        const hiddenQty = document.querySelector(
-                            `input[name="Cantidades"][data-id="${data.perfumeId}"]`);
-                        if (hiddenQty) hiddenQty.remove();                                        // ★
-
-                        /* ---------- ANIMACIÓN Y BORRADO DE FILA -------- */
                         const fila = document.getElementById(`perfume-${perfumeId}`);
                         if (fila) {
                             fila.classList.add("fade-out");
                             setTimeout(() => {
                                 fila.remove();
 
+                                // ✅ Restaurar opacidad
                                 resumen.style.opacity = "1";
 
+                                // Si ya no hay perfumes, mostrar mensaje de carrito vacío
                                 if (document.querySelectorAll('.fila-producto').length === 0) {
                                     document.querySelector('.carrito-container').innerHTML = `
-                    <div style="text-align:center;padding:50px;">
-                        <div style="font-size:100px;">🛒</div>
-                        <h2 style="margin-top:20px;color:#555;">
-                            ¡Tu carrito está vacío!
-                        </h2>
-                    </div>`;
+                                        <div style="text-align: center; padding: 50px;">
+                                            <div style="font-size: 100px;">🛒</div>
+                                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                                        </div>`;
                                 }
                             }, 500);
                         }
-
-                        return;  
+                        return;
                     }
 
                     // ✅ Actualizar totales del resumen
@@ -299,7 +281,6 @@
 
     </script>
 }
-
 
 
 
