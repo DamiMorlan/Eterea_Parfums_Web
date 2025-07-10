@@ -97,7 +97,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = (int)Session["clienteId"];
 
-            /* ─────────── 1) Carrito con todas las relaciones necesarias ───────── */
+            /* ─────────── 1) Carrito con relaciones necesarias ──────────── */
             var carrito = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)
@@ -105,9 +105,14 @@ namespace Eterea_Parfums_Web.Controllers
                 .Where(c => c.cliente_id == clienteId)
                 .ToList();
 
-            /* ─────────── 2) Stock neto por perfume (regla “-5”) ──────────────── */
+            /* ─────────── 2) Stock neto por perfume (regla “–5”) ─────────── */
+            var perfumeIds = carrito
+                .Select(c => c.perfume_id)
+                .Distinct()
+                .ToList();                   // materializamos como List<int>
+
             var stockDict = db.stock
-                .Where(s => carrito.Select(c => c.perfume_id).Contains(s.perfume_id))
+                .Where(s => perfumeIds.Contains(s.perfume_id))
                 .ToList()
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
@@ -115,49 +120,49 @@ namespace Eterea_Parfums_Web.Controllers
                     g => g.Sum(s => Math.Max(0, s.cantidad - 5))
                 );
 
-            /* ─────────── 3) Ítems del carrito usando el helper común ─────────── */
+            /* ─────────── 3) Ítems del carrito usando el helper ──────────── */
             var items = carrito
                 .Select(c => CarritoHelper.BuildItemViewModel(
                     c,
-                    stockDict.ContainsKey(c.perfume_id) ? stockDict[c.perfume_id] : 0))
+                    stockDict.ContainsKey(c.perfume_id)
+                        ? stockDict[c.perfume_id]
+                        : 0))
                 .ToList();
 
-            /* ─────────── 4) Totales globales ─────────────────────────────────── */
-            double subtotal = items.Sum(i => i.PrecioOriginal * i.Cantidad);
-            double total = items.Sum(i => i.Total);
+            /* ─────────── 4) Mapear a ViewModel para la vista ───────────── */
+            var itemsVm = items.Select(i => new ItemResumenPedidoViewModel
+            {
+                PerfumeId = i.PerfumeId,
+                Nombre = i.Nombre,
+                Imagen = i.Imagen,
+                Presentacion = i.Presentacion,
+                Cantidad = i.Cantidad,
+
+                Precio = i.PrecioConDescuento ?? i.PrecioOriginal,
+                           
+            }).ToList();
+
+            /* ─────────── 5) Totales globales ───────────────────────────── */
+
+            double subtotal = items.Sum(x => x.PrecioOriginal * x.Cantidad);
+            double total = itemsVm.Sum(x => x.Total);   // 👈 usa el correcto
             double descuento = subtotal - total;
 
-            /* ─────────── 5) Datos de dirección del cliente ───────────────────── */
+            /* ─────────── 6) Datos de dirección del cliente ─────────────── */
             var cliente = db.cliente
-                .Include(cl => cl.calle)       // ajusta según tus navegaciones
+                .Include(cl => cl.calle)
                 .Include(cl => cl.localidad)
                 .Include(cl => cl.localidad.provincia)
                 .First(cl => cl.id == clienteId);
 
-            // Si tu modelo no usa navegaciones, obtén los objetos a mano
-            var calle = cliente.calle;
-            var localidad = cliente.localidad;
-            var provincia = cliente.localidad?.provincia;
-
-            /* ─────────── 6) Armar el ViewModel para la vista ─────────────────── */
             var vm = new VistaPreviaPedidoViewModel
             {
                 Cliente = cliente,
-                Calle = calle,
-                Localidad = localidad,
-                Provincia = provincia,
+                Calle = cliente.calle,
+                Localidad = cliente.localidad,
+                Provincia = cliente.localidad?.provincia,
 
-                Items = items.Select(i => new ItemResumenPedidoViewModel
-                {
-                    PerfumeId = i.PerfumeId,
-                    Nombre = i.Nombre,
-                    Imagen = i.Imagen,
-                    Presentacion = i.Presentacion,
-                    Cantidad = i.Cantidad,
-                    Precio = i.PrecioConDescuento ?? 0,  // unitario con promo
-
-                }).ToList(),
-
+                Items = itemsVm,      // ItemsCarrito alias funciona igual
                 Subtotal = subtotal,
                 Descuento = descuento,
                 Total = total,

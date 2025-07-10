@@ -54,7 +54,6 @@
 
             @foreach (var item in Model.ItemsCarrito)
             {
-                var totalPorItem = item.Precio * item.Cantidad;
                 <div class="resumen-producto">
                     <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
                     <div class="ms-2 w-100">
@@ -64,69 +63,72 @@
                     <div class="text-center w-25">
                         @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
                     </div>
-                    <div class="text-end w-25">$@totalPorItem.ToString("N0")</div>
+                    <!-- usa el Total que ya viene calculado -->
+                    <div class="text-end w-25">$@item.Total.ToString("N0")</div>
                 </div>
             }
 
             <!-- RESUMEN + BOTÓN ---------------------------------------- -->
-        <div class="resumen-carrito mt-4 mb-5">
+            <div class="resumen-carrito mt-4 mb-5">
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor">
-                    $@($"{Model.Subtotal:N0}")
-                </span>
-            </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Subtotal (sin descuento):</span>
+                    <span class="valor">
+                        $@($"{Model.Subtotal:N0}")
+                    </span>
+                </div>
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento">
-                    -$@($"{Model.Descuento:N0}")
-                </span>
-            </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Descuentos aplicados:</span>
+                    <span class="valor descuento">
+                        -$@($"{Model.Descuento:N0}")
+                    </span>
+                </div>
 
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor">$@($"{Model.Total:N0}")</span>
-            </div>
+                <div class="fila-resumen total">
+                    <span class="etiqueta">Total a pagar:</span>
+                    <span class="valor">$@($"{Model.Total:N0}")</span>
+                </div>
 
-            @if (Model.EnvioGratis)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
-            else
-            {
-                <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
-                    Los gastos de envío se calculan al finalizar la compra.<br />
-                    Envío gratis en compras mayores a $50.000.
+                @if (Model.EnvioGratis)
+                {
+                    <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+                }
+                else
+                {
+                    <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
+                        Los gastos de envío se calculan al finalizar la compra.<br />
+                        Envío gratis en compras mayores a $50.000.
+                    </p>
+                }
+
+                @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
+                @{
+                    Session["PedidoItems"] = Model.ItemsCarrito
+                        .Select(x => new PedidoItemVM
+                        {
+                            PerfumeId = x.PerfumeId,
+                            Cantidad = x.Cantidad
+                        })
+                        .ToList();
+                }
+
+                <!-- Botón “Ir a Pagar” -->
+                <div class="text-center">
+                    <a href="@Url.Action("SimularPago",
+                             "Pedido",
+                             new { monto = Model.Total.ToString(
+                                       System.Globalization.CultureInfo.InvariantCulture) })"
+                       class="btn btn-success btn-lg mx-auto mt-3 w-auto">
+                        <!-- sin d-block -->
+                        Ir a Pagar
+                    </a>
+                </div>
+
+                <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
+                    Será redireccionado a Mercado&nbsp;Pago
                 </p>
-            }
-
-            @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
-            @{
-                Session["PedidoItems"] = Model.ItemsCarrito
-                    .Select(x => new PedidoItemVM
-                    {
-                        PerfumeId = x.PerfumeId,
-                        Cantidad = x.Cantidad
-                    })
-                    .ToList();
-            }
-
-            <!-- Botón “Ir a Pagar” -->
-            <div class="text-center">
-                <a href="@Url.Action("SimularPago",
-                                         "Pedido",
-                                         new { monto = Model.Total.ToString(System.Globalization.CultureInfo.InvariantCulture) })"
-                   class="btn btn-success btn-lg d-block mx-auto mt-3">
-                    Ir a Pagar
-                </a>
             </div>
-
-            <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
-                Será redireccionado a Mercado&nbsp;Pago
-            </p>
-        </div>
         </div>
     </div>
 </div>
