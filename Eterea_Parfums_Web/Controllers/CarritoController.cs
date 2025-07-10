@@ -24,12 +24,15 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
-            // Paso 1: Obtener el carrito completo con perfumes
+           // Paso 1: Obtener el carrito completo con perfumes
             var carrito = db.carrito
                 .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)   // 👈 necesarias para el helper
+                .Include(c => c.perfume.stock)
                 .Where(c => c.cliente_id == clienteId)
                 .OrderByDescending(c => c.id)
                 .ToList();
+
 
             var perfumeIds = carrito.Select(c => c.perfume_id).ToList();
 
@@ -70,162 +73,30 @@ namespace Eterea_Parfums_Web.Controllers
                 ViewBag.MensajeStockActualizado = "Algunos productos del carrito fueron ajustados por cambios en el stock.";
             }
 
-            // Paso 4: Armar ViewModel usando carrito ya corregido
-            var viewModel = carrito.Select(item =>
-            {
-                var perfume = item.perfume;
-                int cantidad = item.cantidad;
+            /*// 1) Cargá el carrito ya con las relaciones necesarias
+            var carrito = db.carrito
+                .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)   // 👈 necesarias para el helper
+                .Include(c => c.perfume.stock)
+                .Where(c => c.cliente_id == clienteId)
+                .OrderByDescending(c => c.id)
+                .ToList();*/
 
-                int stockDisponible = stockPorPerfume.ContainsKey(perfume.id)
-                    ? stockPorPerfume[perfume.id]
-                    : 0;
+            // … (ajuste de stock tal como lo tenés) …
 
-                var promociones = perfume.promocion
-                    .Where(pr => pr.id != 1 &&
-                                 pr.activo &&
-                                 pr.fecha_inicio <= DateTime.Now &&
-                                 pr.fecha_fin >= DateTime.Now)
-                    .ToList();
-
-                var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
-                var promoPorCantidad = promociones.FirstOrDefault(pr => pr.descuento > 10);
-
-                double precioOriginal = perfume.precio_en_pesos;
-                double precioConDescuento = precioOriginal;
-                double total = 0;
-                bool tienePromo = false;
-
-                // Lógica de total
-               
-                string leyendaPromo = "";
-
-                if (promoPorCantidad != null && cantidad >= 2)
-                {
-                    tienePromo = true;
-
-                    int cantidadConDescuento = (cantidad / 2) * 2;
-                    int cantidadSinDescuento = cantidad % 2;
-                    double porcentajeDescuento = promoPorCantidad.descuento / 100.0;
-                    double porcentaje10 = 0.9;
-
-                    total = (cantidadConDescuento * precioOriginal * porcentajeDescuento) +
-                            (cantidadSinDescuento * precioOriginal * (promo10 != null ? porcentaje10 : 1.0));
-
-                    if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
-                    {
-                        precioConDescuento = precioOriginal * porcentaje10;
-                        // Solo hay una unidad → invitar a llevar otra
-                        leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {porcentajeDescuento}% de descuento</strong>";
-                    }
-                    else if (cantidad % 2 == 1 && stockDisponible > cantidad)
-                    {
-                        // Cantidad impar > 1 y hay stock → sugerir agregar uno más
-                        leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {porcentajeDescuento}% de descuento!</strong>";
-                    }
-                    else
-                    {
-                        precioConDescuento = precioOriginal * porcentajeDescuento;
-                    }
-
-                    int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-
-                    // Mensaje principal con cantidad con descuento
-                    leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
-                                   $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
-
-                    // Agregá mensaje para la unidad restante con promo 10%
-                    if (cantidadSinDescuento == 1 && promo10 != null)
-                    {
-                        leyendaPromo += $"<br /><span style='color: black;'>1 unidad:</span> Promoción 10% OFF";
-                    }
-
-                    // Agregá mensaje de "Si agregás uno más..." solo si no hay promo10
-                    if (cantidadSinDescuento == 1 && promo10 == null && stockDisponible > cantidad)
-                    {
-                        leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
-                    }
-
-                }
-                else if (promo10 != null)
-                {
-                    tienePromo = true;
-                    precioConDescuento = precioOriginal * 0.9;
-                    total = precioConDescuento * cantidad;
-                    leyendaPromo = "Promoción 10% OFF";
-
-                    if (promoPorCantidad != null && cantidad < 2 && stockDisponible > cantidad)
-                    {
-                        int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                        leyendaPromo += $"<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                    }
-                }
-                else if (promoPorCantidad != null)
-                {
-                    int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                    double porcentajePorCantidad = (100 - promoPorCantidad.descuento) / 100.0;
-
-                    if (cantidad == 1)
-                    {
-                        tienePromo = false;
-                        precioConDescuento = precioOriginal;
-                        total = precioOriginal;
-
-                        leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                    }
-                    else
-                    {
-                        tienePromo = true;
-
-                        int cantidadConDescuento = (cantidad / 2) * 2;
-                        int cantidadSinDescuento = cantidad % 2;
-
-                        total = (cantidadConDescuento * precioOriginal * porcentajePorCantidad) +
-                                (cantidadSinDescuento * precioOriginal);
-
-                        precioConDescuento = (cantidadSinDescuento > 0) ? precioOriginal : precioOriginal * porcentajePorCantidad;
-
-                        leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
-                                       $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
-
-                        if (cantidadSinDescuento == 1 && stockDisponible > cantidad)
-                        {
-                            leyendaPromo += $"<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
-                        }
-                    }
-                }
-
-                else
-                {
-                    total = precioOriginal * cantidad;
-                }
-
-
-                return new ItemCarritoViewModel
-                {
-                    PerfumeId = perfume.id,
-                    Nombre = perfume.nombre,
-                    TipoDePerfume = perfume.tipo_de_perfume.tipo_de_perfume1,
-                    Presentacion = perfume.presentacion_ml,
-                    Genero = perfume.genero.genero1,
-                    Imagen = perfume.imagen1,
-                    PrecioOriginal = precioOriginal,
-                    PrecioConDescuento = precioConDescuento,
-                    Cantidad = cantidad,
-                    Total = total,
-                    TienePromo = tienePromo,
-                    LeyendaPromo = leyendaPromo,
-                    StockDisponibleParaVentaWeb = stockDisponible,
-                    MostrarPrecioTachado = promo10 != null
-                    && (promoPorCantidad == null || cantidad < 2)
-                    && precioConDescuento < precioOriginal
-
-                };
-            }).ToList();
+            // 2) ViewModel usando el mismo método que usa ActualizarCantidad
+            var viewModel = carrito.Select(c =>
+                    BuildItemViewModel(
+                        c,
+                        stockPorPerfume.ContainsKey(c.perfume_id)
+                            ? stockPorPerfume[c.perfume_id]
+                            : 0))
+                .ToList();
 
             return View(viewModel);
         }
 
-        [HttpPost]
+            [HttpPost]
         public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
             if (Session["clienteId"] == null)
