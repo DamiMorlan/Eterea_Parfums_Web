@@ -7,7 +7,16 @@ namespace Eterea_Parfums_Web.ViewModels
 {
     public class PerfumeViewModel
     {
-        public string Nombre { get; set; }
-        public string Imagen1 { get; set; }
+        public List<PerfumeHomeViewModel> Perfumes { get; set; }
+        public List<MarcaViewModel> Marcas { get; set; }
+        public List<PerfumeHomeViewModel> MasVendidos { get; set; }
+
+
+        // Propiedad calculada para usar en los filtros (checkboxes)
+        public List<string> MarcasDisponibles => Marcas?
+            .Select(m => m.Nombre)
+            .Distinct()
+            .OrderBy(m => m)
+            .ToList();
     }
 }
