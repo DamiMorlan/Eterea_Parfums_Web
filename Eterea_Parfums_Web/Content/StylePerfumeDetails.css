@@ -27,7 +27,7 @@ h2 {
 
 h3 {
     font-family: 'Arial Black', sans-serif;
-    color:rgba(0, 0, 0, 0.77);
+    color: rgba(0, 0, 0, 0.77);
 }
 
 label {
@@ -153,7 +153,7 @@ hr {
         background-color: #a0435c;
     }
 
-.promo-item i{
+.promo-item i {
     color: #e44d5e;
     font-size: 1.2rem;
 }
@@ -194,16 +194,25 @@ hr {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+
+.card-box-info {
+    border: 2px solid var(--rosa-claro);
+    background-color: var(--rosa-claro);
+}
+
+.box-info {
+    border-left-color: var(--rosa-medio) !important;
+}
+
+    .box-info p {
+        font-size: 11px;
+        font-weight: bold;
+    }
+
 .fs-6 {
     font-weight: bold;
     color: #5a2a39;
 }
-
-.swiper-slide {
-    width: 250px;
-}
-
-
 
 .box-perfume-volumen a {
     text-decoration: none;
@@ -319,34 +328,34 @@ select {
         color: #000;
     }
 
-.box-tarjeta{
+.box-tarjeta {
     width: 70%;
 }
 
 
-.box-tarjeta p{
-    font-size: 13px;
-}
+    .box-tarjeta p {
+        font-size: 13px;
+    }
 
 .tarjeta {
     background-color: #fef6f8;
     box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075);
 }
 
-    .tarjeta-item{
-        width: 100px
-    }
+.tarjeta-item {
+    width: 100px
+}
 
 .img-mercadolibre {
-    width:512px;
-    
+    width: 512px;
 }
 
 @media (max-width: 768px) {
     .detalle .btn-eterea {
         width: 100%;
     }
-    .box-tarjeta{
+
+    .box-tarjeta {
         width: 100%;
     }
 }
