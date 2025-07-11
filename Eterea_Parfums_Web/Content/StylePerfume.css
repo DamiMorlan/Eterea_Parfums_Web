@@ -4,6 +4,7 @@
     --rosa-fondo: rgb(249, 230, 225);
     --rosa-profundo: rgb(209, 167, 180);
     --rosa-suave: rgb(250, 236, 239);
+    --rosa-suave2: rgb(239, 228, 225);
     --beige: #f5f5dc;
     --moka: #b89b82;
 }
@@ -13,6 +14,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ----- Cards generales (tanto normales como promocionales) ----- */
 .card {
     border: none;
     border-radius: 20px;
@@ -32,14 +34,7 @@ body {
 .card-title {
     font-size: 1.2rem;
     font-weight: bold;
-}
-
-.custom-img {
-    height: 140px; /* Imagen más chica */
-    width: auto; /* Mantiene proporción */
-    display: block;
-    margin: 0 auto; /* Centra horizontalmente */
-    border-radius: 12px;
+    margin-bottom: 0.5rem;
 }
 
 .card-body {
@@ -48,11 +43,20 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    text-align: center; /* <-- Esto centra el contenido de texto */
+    text-align: center;
 }
 
+.custom-img {
+    height: 140px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+}
+
+/* ----- Botón personalizado ----- */
 .btn-eterea {
-    background-color: rgb(209, 167, 180);
+    background-color: var(--rosa-profundo);
     color: white;
     width: 100%;
     border: none;
@@ -68,21 +72,84 @@ body {
         color: white;
     }
 
-.pagination .page-link {
-    color: rgb(209, 167, 180);
+/* ----- Botones de presentación (tamaños) ----- */
+.btn-tamanio {
+    background-color: var(--rosa-suave2);
+    border: 1px solid;
+    border-radius: 20px;
+    margin: 2px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.pagination .page-item.active .page-link {
-    background-color: rgb(209, 167, 180);
-    border-color: rgb(209, 167, 180);
+    .btn-tamanio:hover {
+        background-color: var(--rosa-medio);
+        color: white;
+    }
+
+    .btn-tamanio.active {
+        background-color: var(--rosa-profundo);
+        color: white;
+        font-weight: bold;
+    }
+
+.selector-tamanios .btn-tamanio {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    min-width: 55px;
+    text-align: center;
+}
+
+    .selector-tamanios .btn-tamanio.active,
+    .selector-tamanios .btn-tamanio:hover {
+        background-color: var(--rosa-profundo);
+        color: white;
+    }
+
+/* ----- Precio con promoción ----- */
+.precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* ----- Leyenda de promoción ----- */
+.leyenda-promocion {
+    background-color: var(--rosa-medio);
     color: white;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 6px;
 }
 
+.promo-placeholder {
+    min-height: 1.2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
+}
+
+/* ----- Estado de stock ----- */
 .text-danger.fw-bold {
     color: #c0392b !important;
     font-size: 0.95rem;
 }
 
+/* ----- Carrito Offcanvas ----- */
 #carrito-offcanvas {
     position: fixed;
     top: 20px;
@@ -98,20 +165,8 @@ body {
 }
 
     #carrito-offcanvas.show {
-        right: 20px; /* se desliza desde la derecha */
+        right: 20px;
     }
-
-.offcanvas-contenido img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-.offcanvas-contenido p {
-    margin: 0;
-    font-size: 14px;
-}
 
 .offcanvas-contenido {
     display: flex;
@@ -120,8 +175,47 @@ body {
     text-align: center;
 }
 
+    .offcanvas-contenido img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .offcanvas-contenido p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+/* ----- Paginación ----- */
+.pagination .page-link {
+    color: var(--rosa-profundo);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--rosa-profundo);
+    border-color: var(--rosa-profundo);
+    color: white;
+}
+
+/* ----- Card destacada para promociones (opcional visual extra) ----- */
 .resaltado {
     border: 2px solid #a0435c;
     box-shadow: 0 0 12px #d1a7b4;
     transition: all 0.5s ease;
+}
+
+
+
+
+
+/* Nuevo Filtrod*/
+
+.filtro-checkbox-list {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #fff;
 }
