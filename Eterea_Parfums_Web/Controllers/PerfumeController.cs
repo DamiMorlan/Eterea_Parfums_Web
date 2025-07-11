@@ -13,7 +13,7 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index()
+        public ActionResult Index(List<string> marcasSeleccionadas)
         {
             // 1. Obtener stock completo
             var stock = db.stock.ToList();
@@ -36,6 +36,13 @@ namespace Eterea_Parfums_Web.Controllers
                  .Where(p => p.activo)
                  .ToList();
 
+            // 🔸 NUEVO: Aplicar filtro por marcas seleccionadas (si hay)
+            if (marcasSeleccionadas != null && marcasSeleccionadas.Any())
+            {
+                perfumes = perfumes
+                    .Where(p => marcasSeleccionadas.Contains(p.marca.nombre))
+                    .ToList();
+            }
 
             // 5. Agrupar perfumes por nombre y marca
             var perfumesAgrupados = perfumes
