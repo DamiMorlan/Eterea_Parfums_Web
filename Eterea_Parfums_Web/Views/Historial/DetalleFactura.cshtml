@@ -43,7 +43,7 @@
         }
 
         .detalle-perfume-card h5 {
-            font-size: 1.4rem; 
+            font-size: 1.4rem;
             font-weight: 600;
             color: var(--rosa-profundo);
             margin-bottom: 12px;
@@ -57,7 +57,7 @@
 
         .detalle-perfume-card img {
             max-width: 100%;
-            max-height: 180px; 
+            max-height: 180px;
             border-radius: 8px;
             object-fit: contain;
         }
@@ -103,7 +103,7 @@
     .text-right {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; 
+        justify-content: flex-end;
         height: 100%;
     }
 
@@ -112,7 +112,6 @@
         margin-bottom: 20px;
         margin-top: 20px;
     }
-
 </style>
 
 
@@ -164,24 +163,26 @@
                                 <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
                                 <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
                                 <p><strong>Promoción:</strong> @perfume.Promocion</p>
+                                <p><strong>Precio Total:</strong> $@perfume.PrecioTotal.ToString("N2")</p>
+
                             </div>
-                                <div class="col-md-2">
-                                    <input type="hidden" name="id" value="@perfume.Id" />
-                                    <div class="text-right">
-                                        <button type="submit" class="btn btn-primary mt-2">Volver a comprar</button>
-                                    </div>
+                            <div class="col-md-2">
+                                <input type="hidden" name="id" value="@perfume.Id" />
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-primary mt-2">Volver a comprar</button>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 }
             }
-        <div class="factura-total">
-            Precio Total: $@Model.PrecioTotal.ToString("N2")
-        </div>
+            <div class="factura-total">
+                Precio Total: $@Model.PrecioTotal.ToString("N2")
+            </div>
         }
         else
         {
-        <p>No se encontraron perfumes en esta factura.</p>
+            <p>No se encontraron perfumes en esta factura.</p>
         }
     </div>
 </div>
