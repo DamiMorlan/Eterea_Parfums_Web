@@ -22,7 +22,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
             int clienteId = (int)Session["clienteId"];
 
-            using (var db = new etereaEntities7())
+            using (var db = new etereaEntities1())
             {
                 var usuario = db.cliente.Find(clienteId);
 
@@ -72,7 +72,7 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Login", "Cliente");
             }
 
-            using (var db = new etereaEntities7())
+            using (var db = new etereaEntities1())
             {
                 var factura = db.factura.FirstOrDefault(f => f.id == factura_id);
                 if (factura == null)
@@ -92,7 +92,7 @@ namespace Eterea_Parfums_Web.Controllers
                     if (perfumeData == null) continue;
 
                     var marca = db.marca.FirstOrDefault(m => m.id == perfumeData.marca_id);
-                    var promocion = d.promocion_id <= 0
+                    var promocion = d.promocion_id != null
                                     ? db.promocion.FirstOrDefault(promo => promo.id == d.promocion_id)
                                     : null;
 
