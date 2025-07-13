@@ -9,6 +9,9 @@ namespace Eterea_Parfums_Web.ViewModels
     {
         public List<PerfumeHomeViewModel> Perfumes { get; set; }
         public List<MarcaViewModel> Marcas { get; set; }
-        
+        public List<string> Generos { get; set; }
+        public List<int> Tamanios { get; set; }
+        public List<string> TipoDePerfumes { get; set; }
+        public List<string> TiposDeAroma { get; set; }
     }
 }

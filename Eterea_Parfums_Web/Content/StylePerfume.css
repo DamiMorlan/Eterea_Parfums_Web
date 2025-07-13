@@ -219,3 +219,81 @@ body {
     border-radius: 5px;
     background-color: #fff;
 }
+
+
+/* ----- Botones de filtro ----- */
+.btn-filtro-aplicar {
+    background-color: var(--rosa-profundo);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-filtro-aplicar:hover {
+        background-color: rgb(189, 147, 160);
+        transform: scale(1.02);
+    }
+
+.btn-filtro-limpiar {
+    background-color: var(--rosa-suave2);
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+    .btn-filtro-limpiar:hover {
+        background-color: var(--rosa-claro);
+        color: #000;
+    }
+
+/* Ocultamos el checkbox original */
+.form-check-input {
+    display: none;
+}
+
+/* Estilo del label que reemplaza al checkbox */
+.form-check-label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 1.5;
+    user-select: none;
+}
+
+    /* Caja visual del checkbox */
+    .form-check-label::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--rosa-profundo);
+        border-radius: 4px;
+        background-color: white;
+        transition: background-color 0.2s ease;
+    }
+
+/* Tilde cuando está chequeado */
+.form-check-input:checked + .form-check-label::after {
+    content: '✔';
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    font-size: 14px;
+    color: white;
+}
+
+/* Fondo cuando está chequeado */
+.form-check-input:checked + .form-check-label::before {
+    background-color: var(--rosa-profundo);
+    border-color: var(--rosa-profundo);
+}

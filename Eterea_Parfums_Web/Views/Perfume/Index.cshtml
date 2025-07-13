@@ -15,6 +15,12 @@
             <form method="get" id="form-filtros">
                 <h5 class="mb-3">Filtros</h5>
 
+                <!-- Limpiar todos los filtros -->
+                <a href="@Url.Action("Index", "Perfume")"
+                   class="btn-filtro-limpiar mt-2 text-center text-decoration-none d-block">
+                    ❌ Limpiar todos los filtros
+                </a>
+
                 <div class="mb-3">
                     <label class="form-label d-block">Marca</label>
                     <div class="filtro-checkbox-list" id="filtro-marca">
@@ -35,53 +41,99 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Género</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Femenino</option>
-                        <option>Masculino</option>
-                        <option>Unisex</option>
-                    </select>
+                    <label class="form-label d-block">Género</label>
+                    <div class="filtro-checkbox-list" id="filtro-genero">
+                        @foreach (var genero in Model.Generos)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="generosSeleccionados"
+                                       value="@genero"
+                                       id="genero-@genero"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("generosSeleccionados")?.Contains(genero) == true ? "checked" : "") />
+                                <label class="form-check-label" for="genero-@genero">@genero</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Tamaño</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>30 ml</option>
-                        <option>50 ml</option>
-                        <option>100 ml</option>
-                    </select>
+                    <label class="form-label d-block">Tamaño</label>
+                    <div class="filtro-checkbox-list" id="filtro-tamanio">
+                        @foreach (var ml in Model.Tamanios)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tamaniosSeleccionados"
+                                       value="@ml"
+                                       id="tamanio-@ml"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tamaniosSeleccionados")?.Contains(ml.ToString()) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tamanio-@ml">@ml ml</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Aroma</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Floral</option>
-                        <option>Frutal</option>
-                        <option>Amaderado</option>
-                    </select>
+                    <label class="form-label d-block">Tipo de perfume</label>
+                    <div class="filtro-checkbox-list" id="filtro-tipo">
+                        @foreach (var tipo in Model.TipoDePerfumes)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tipoDePerfumeSeleccionados"
+                                       value="@tipo"
+                                       id="tipo-@tipo"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tipoDePerfumeSeleccionados")?.Contains(tipo) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tipo-@tipo">@tipo</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Tipo de aroma</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Dulce</option>
-                        <option>Fresco</option>
-                        <option>Intenso</option>
-                    </select>
+                    <label class="form-label d-block">Tipo de aroma</label>
+                    <div class="filtro-checkbox-list" id="filtro-aroma">
+                        @foreach (var tipoAroma in Model.TiposDeAroma)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tipoDeAromaSeleccionados"
+                                       value="@tipoAroma"
+                                       id="tipoAroma-@tipoAroma"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tipoDeAromaSeleccionados")?.Contains(tipoAroma) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tipoAroma-@tipoAroma">@tipoAroma</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Precio</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Hasta $10.000</option>
-                        <option>$10.000 - $30.000</option>
-                        <option>Más de $30.000</option>
-                    </select>
+                    <label class="form-label">Precio (ARS)</label>
+                    <div class="d-flex gap-2">
+                        <input type="number" class="form-control" name="precioMin" placeholder="Desde"
+                               value="@(Request["precioMin"])" />
+                        <input type="number" class="form-control" name="precioMax" placeholder="Hasta"
+                               value="@(Request["precioMax"])" />
+                    </div>
+
+                    <button type="submit" class="btn-filtro-aplicar mt-2">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+
+                    <button type="button"
+                            class="btn-filtro-limpiar mt-2"
+                            onclick="limpiarPrecio()">
+                        🧹 Limpiar precio
+                    </button>
                 </div>
             </form>
         </aside>
@@ -383,27 +435,11 @@
              });
          });
 
+        function limpiarPrecio() {
+            document.querySelector('input[name="precioMin"]').value = '';
+            document.querySelector('input[name="precioMax"]').value = '';
+            document.getElementById('form-filtros').submit();
+        }
 
-            // Evento de filtrado por marca
-            document.querySelectorAll('.filtro-marca-checkbox').forEach(cb => {
-                cb.addEventListener('change', aplicarFiltros);
-            });
-
-            function aplicarFiltros() {
-                // Obtener todas las marcas seleccionadas
-                const marcasSeleccionadas = Array.from(document.querySelectorAll('.filtro-marca-checkbox:checked'))
-                    .map(cb => cb.value.toLowerCase().trim());
-
-                // Para cada tarjeta de perfume
-                document.querySelectorAll('.perfume-card').forEach(card => {
-                    const marca = card.getAttribute('data-marca');
-
-                    // Si no hay filtros activos, mostrar todas
-                    const mostrar = marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(marca);
-
-                    // Mostrar u ocultar según el filtro
-                    card.closest('.perfume-card-container').style.display = mostrar ? 'flex' : 'none';
-                });
-            }
     </script>
 }
