@@ -1,5 +1,27 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.PerfumeViewModel
 
+@functions {
+    string ConstruirUrlConParametros(int pagina)
+    {
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        var request = HttpContext.Current.Request;
+
+        foreach (string key in request.QueryString.Keys)
+        {
+            if (key != null && key != "pagina")
+            {
+                foreach (var value in request.QueryString.GetValues(key))
+                {
+                    query.Add(key, value);
+                }
+            }
+        }
+
+        query["pagina"] = pagina.ToString();
+        return "?" + query.ToString();
+    }
+}
+
 @{
     ViewBag.Title = "Perfumes";
 }
@@ -20,6 +42,8 @@
                    class="btn-filtro-limpiar mt-2 text-center text-decoration-none d-block">
                     ❌ Limpiar todos los filtros
                 </a>
+
+                <hr class="linea-filtros" />
 
                 <div class="mb-3">
                     <label class="form-label d-block">Marca</label>
@@ -224,9 +248,9 @@
                                     </span>
                                 </p>
 
-                                <div class="promo-placeholder">
+                                <div class="promo-placeholder @(string.IsNullOrEmpty(perfume.LeyendaPromocion) ? "sin-promocion" : "con-promocion")">
                                     <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                        @perfume.LeyendaPromocion
+                                        @(!string.IsNullOrEmpty(perfume.LeyendaPromocion) ? perfume.LeyendaPromocion : "")
                                     </span>
                                 </div>
 
@@ -281,28 +305,29 @@
                     </div>
                 }
             </div>
-        </section>
 
-        <!-- Paginación -->
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link">Anterior</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
+            <!-- Paginación con fondo -->
+            <nav class="mt-5">
+                <div class="titulo-perfumes d-flex justify-content-center py-3">
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual - 1)">Anterior</a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.TotalPaginas; i++)
+                        {
+                            <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(i)">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                            <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual + 1)">Siguiente</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </section>
 
     </div>
 </div>

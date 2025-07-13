@@ -50,7 +50,7 @@ body {
     height: 140px;
     width: auto;
     display: block;
-    margin: 0 auto;
+    margin: 20px auto 0 auto; /* ↑ margen arriba, centrado horizontalmente */
     border-radius: 12px;
 }
 
@@ -142,6 +142,17 @@ body {
     display: block;
     font-weight: 600;
 }
+
+    .promo-placeholder.sin-promocion {
+        margin-top:1.3rem;
+        margin-bottom: 1.3rem; /* más espacio debajo solo cuando no hay promo */
+    }
+
+    /* Cuando tiene promo → menos margen */
+    .promo-placeholder.con-promocion {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
 
 /* ----- Estado de stock ----- */
 .text-danger.fw-bold {
@@ -378,6 +389,8 @@ aside .mb-3 {
         background-color: #bbb;
         color: white;
     }
+
+
 
 .titulo-perfumes {
     background-color: var(--rosa-suave2); /* igual que el fondo del filtro */

@@ -13,5 +13,8 @@ namespace Eterea_Parfums_Web.ViewModels
         public List<int> Tamanios { get; set; }
         public List<string> TipoDePerfumes { get; set; }
         public List<string> TiposDeAroma { get; set; }
+
+        public int PaginaActual { get; set; }
+        public int TotalPaginas { get; set; }
     }
 }

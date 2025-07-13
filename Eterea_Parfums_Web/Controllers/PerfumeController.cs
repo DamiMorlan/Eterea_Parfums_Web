@@ -13,8 +13,9 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden)
+        public ActionResult Index(List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1)
         {
+
             // 1. Obtener stock completo
             var stock = db.stock.ToList();
 
@@ -222,15 +223,24 @@ namespace Eterea_Parfums_Web.Controllers
                     break;
             }
 
+            int perfumesPorPagina = 8;
+
+            var perfumesPaginados = perfumesAgrupados
+                .Skip((pagina - 1) * perfumesPorPagina)
+                .Take(perfumesPorPagina)
+                .ToList();
+
             // 10. ViewModel combinado
             var viewModel = new PerfumeViewModel
             {
-                Perfumes = perfumesAgrupados,
+                Perfumes = perfumesPaginados,
                 Marcas = marcas,
                 Generos = generos,
                 Tamanios = tamaniosDisponibles,
                 TipoDePerfumes = tipo_de_perfume,
-                TiposDeAroma = tiposDeAroma
+                TiposDeAroma = tiposDeAroma,
+                PaginaActual = pagina,
+                TotalPaginas = (int)Math.Ceiling((double)perfumesAgrupados.Count / perfumesPorPagina)
             };
 
             ViewBag.OrdenSeleccionado = orden;
