@@ -139,6 +139,40 @@
         </aside>
 
         <section class="col-md-10">
+            <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
+                <h2 class="mb-3 mb-md-0">Perfumes</h2>
+
+                <form method="get" class="d-flex align-items-center" id="form-orden">
+                    @* Conserva filtros seleccionados al cambiar orden *@
+                    @foreach (string key in Request.QueryString.AllKeys)
+                    {
+                        if (key != "orden")
+                        {
+                            var values = Request.QueryString.GetValues(key);
+                            if (values != null)
+                            {
+                                foreach (var value in values)
+                                {
+                                    <input type="hidden" name="@key" value="@value" />
+                                }
+                            }
+                        }
+                    }
+
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle ordenar-dropdown-btn" type="button" data-bs-toggle="dropdown">
+                            Ordenar por
+                        </button>
+                        <ul class="dropdown-menu ordenar-dropdown-menu">
+                            <li><a class="dropdown-item" href="?orden=nombreAsc">Nombre A-Z</a></li>
+                            <li><a class="dropdown-item" href="?orden=nombreDesc">Nombre Z-A</a></li>
+                            <li><a class="dropdown-item" href="?orden=precioAsc">Precio menor a mayor</a></li>
+                            <li><a class="dropdown-item" href="?orden=precioDesc">Precio mayor a menor</a></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                 @{
                     var perfumesAgrupados = Model.Perfumes

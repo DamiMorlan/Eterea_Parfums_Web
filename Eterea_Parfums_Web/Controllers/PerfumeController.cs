@@ -13,7 +13,7 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax)
+        public ActionResult Index(List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden)
         {
             // 1. Obtener stock completo
             var stock = db.stock.ToList();
@@ -205,6 +205,23 @@ namespace Eterea_Parfums_Web.Controllers
                 .Where(p => p != null)
                 .ToList();
 
+            // Ordenar perfumes agrupados
+            switch (orden)
+            {
+                case "nombreAsc":
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.Nombre).ToList();
+                    break;
+                case "nombreDesc":
+                    perfumesAgrupados = perfumesAgrupados.OrderByDescending(p => p.Nombre).ToList();
+                    break;
+                case "precioAsc":
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.PrecioConDescuento ?? p.Precio).ToList();
+                    break;
+                case "precioDesc":
+                    perfumesAgrupados = perfumesAgrupados.OrderByDescending(p => p.PrecioConDescuento ?? p.Precio).ToList();
+                    break;
+            }
+
             // 10. ViewModel combinado
             var viewModel = new PerfumeViewModel
             {
@@ -216,6 +233,7 @@ namespace Eterea_Parfums_Web.Controllers
                 TiposDeAroma = tiposDeAroma
             };
 
+            ViewBag.OrdenSeleccionado = orden;
             return View(viewModel);
         }
 
