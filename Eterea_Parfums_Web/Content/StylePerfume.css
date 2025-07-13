@@ -341,6 +341,12 @@ aside .mb-3 {
         border-bottom: none;
     }
 
+.linea-filtros {
+    border: none;
+    border-top: 1px dashed ;
+    margin: 20px 0;
+}
+
 /* ---------- SCROLL INTERNO DE LISTAS ---------- */
 .filtro-checkbox-list {
     max-height: 160px;
