@@ -13,7 +13,7 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1)
+        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1)
         {
 
             // 1. Obtener stock completo
@@ -123,6 +123,15 @@ namespace Eterea_Parfums_Web.Controllers
                 float max = (float)precioMax.Value;
                 perfumes = perfumes.Where(p => p.precio_en_pesos <= max).ToList();
             }
+
+            // Aplicar filtro por nombre si se ingresó algo
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                perfumes = perfumes
+                    .Where(p => p.nombre.IndexOf(busqueda, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
 
             // 5. Agrupar perfumes por nombre y marca
             var perfumesAgrupados = perfumes
@@ -234,6 +243,7 @@ namespace Eterea_Parfums_Web.Controllers
             var viewModel = new PerfumeViewModel
             {
                 Perfumes = perfumesPaginados,
+                Busqueda = busqueda,
                 Marcas = marcas,
                 Generos = generos,
                 Tamanios = tamaniosDisponibles,
