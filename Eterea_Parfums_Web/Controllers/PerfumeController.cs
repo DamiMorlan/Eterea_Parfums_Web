@@ -127,8 +127,6 @@ namespace Eterea_Parfums_Web.Controllers
                 perfumes = perfumes.Where(p => p.precio_en_pesos <= max).ToList();
             }
 
-
-
             // 17. Filtro por nombre
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
@@ -236,7 +234,7 @@ namespace Eterea_Parfums_Web.Controllers
                 .Where(p => p != null)
                 .ToList();
 
-            // Ordenar perfumes agrupados
+            // 20. Ordenar perfumes
             switch (orden)
             {
                 case "nombreAsc":
@@ -266,6 +264,7 @@ namespace Eterea_Parfums_Web.Controllers
                     break;
             }
 
+            // 20. Paginacion
             int perfumesPorPagina = 8;
 
             var perfumesPaginados = perfumesAgrupados
@@ -273,7 +272,7 @@ namespace Eterea_Parfums_Web.Controllers
                 .Take(perfumesPorPagina)
                 .ToList();
 
-            // 10. ViewModel combinado
+            // 21. ViewModel combinado
             var viewModel = new PerfumeViewModel
             {
                 Perfumes = perfumesPaginados,
