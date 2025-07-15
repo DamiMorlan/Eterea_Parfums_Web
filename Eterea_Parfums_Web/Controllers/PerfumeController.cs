@@ -13,7 +13,7 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1)
+        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1, string filtrarSoloConPromocion = null)
         {
 
             // 1. Obtener stock completo
@@ -36,7 +36,7 @@ namespace Eterea_Parfums_Web.Controllers
             var perfumes = db.perfume
                  .Where(p => p.activo)
                  .ToList();
-
+                        
             // 5. Obtener marcas
             var marcas = db.marca
                 .Select(m => new MarcaViewModel
@@ -132,6 +132,19 @@ namespace Eterea_Parfums_Web.Controllers
                     .ToList();
             }
 
+            if (!string.IsNullOrEmpty(filtrarSoloConPromocion) && filtrarSoloConPromocion == "on")
+            {
+                perfumes = perfumes
+                    .Where(p =>
+                        p.promocion.Any(pr =>
+                            pr.activo &&
+                            pr.id != 1 &&
+                            pr.fecha_inicio <= DateTime.Now &&
+                            pr.fecha_fin >= DateTime.Now
+                        )
+                    )
+                    .ToList();
+            }
 
             // 5. Agrupar perfumes por nombre y marca
             var perfumesAgrupados = perfumes
@@ -229,6 +242,19 @@ namespace Eterea_Parfums_Web.Controllers
                     break;
                 case "precioDesc":
                     perfumesAgrupados = perfumesAgrupados.OrderByDescending(p => p.PrecioConDescuento ?? p.Precio).ToList();
+                    break;
+                case "masVendidos":
+                    perfumesAgrupados = perfumesAgrupados
+                        .OrderByDescending(p =>
+                            db.detalle_factura
+                                .Where(df => df.perfume_id == p.Id)
+                                .Sum(df => (int?)df.cantidad) ?? 0
+                        )
+                        .ToList();
+                    break;
+                default:
+                    // Orden por defecto (por nombre A-Z)
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.Nombre).ToList();
                     break;
             }
 

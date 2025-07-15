@@ -159,6 +159,19 @@
                         🧹 Limpiar precio
                     </button>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Con promoción</label>
+                    <div class="filtro-checkbox-list form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="filtrarSoloConPromocion"
+                               id="filtrarSoloConPromocion"
+                               onchange="document.getElementById('form-filtros').submit();"
+                               @(Request.QueryString.Get("filtrarSoloConPromocion") == "on" ? "checked" : "") />
+                        <label class="form-check-label" for="filtrarSoloConPromocion">Mostrar solo perfumes con promoción</label>
+                    </div>
+                </div>
             </form>
         </aside>
 
@@ -219,11 +232,12 @@
                         <button class="btn dropdown-toggle ordenar-dropdown-btn" type="button" data-bs-toggle="dropdown">
                             Ordenar por
                         </button>
-                        <ul class="dropdown-menu ordenar-dropdown-menu">
+                        <ul class="dropdown-menu ordenar-dropdown-menu">                          
                             <li><a class="dropdown-item" href="?orden=nombreAsc">Nombre A-Z</a></li>
                             <li><a class="dropdown-item" href="?orden=nombreDesc">Nombre Z-A</a></li>
                             <li><a class="dropdown-item" href="?orden=precioAsc">Precio menor a mayor</a></li>
                             <li><a class="dropdown-item" href="?orden=precioDesc">Precio mayor a menor</a></li>
+                            <li><a class="dropdown-item" href="?orden=masVendidos">Más vendidos</a></li>
                         </ul>
                     </div>
                 </form>
