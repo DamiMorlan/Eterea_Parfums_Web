@@ -15,7 +15,7 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1, string filtrarSoloConPromocion = null)
+        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1, string filtrarSoloConPromocion = null, int? promocionId = null)
         {
 
             // 1. Obtener stock completo
@@ -38,7 +38,19 @@ namespace Eterea_Parfums_Web.Controllers
             var perfumes = db.perfume
                  .Where(p => p.activo)
                  .ToList();
-                        
+
+            // 4.1. Filtro por ID de promoción (si vino desde la pantalla de promociones)
+            if (promocionId.HasValue)
+            {
+                perfumes = perfumes
+                    .Where(p => p.promocion.Any(pr =>
+                        pr.id == promocionId.Value &&
+                        pr.activo &&
+                        pr.fecha_inicio <= DateTime.Now &&
+                        pr.fecha_fin >= DateTime.Now))
+                    .ToList();
+            }
+
             // 5. Obtener marcas
             var marcas = db.marca
                 .Select(m => new MarcaViewModel

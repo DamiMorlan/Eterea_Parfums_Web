@@ -80,3 +80,16 @@ h2 {
     font-size: 0.95rem;
     color: #fff;
 }
+
+.promo-item .btn {
+    background-color: white;
+    border: 1px solid #d1a7b4;
+    color: #d1a7b4;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .promo-item .btn:hover {
+        background-color: #d1a7b4;
+        color: white;
+    }
