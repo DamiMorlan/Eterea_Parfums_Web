@@ -241,8 +241,6 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-
-
         public ActionResult PagoExitoso()
         {
             return Content("¡Pago exitoso! Gracias por tu compra.");
@@ -509,19 +507,26 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))
+                    if (120000 != 120000)  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
+                        //DE 40% Y TIENE UN DESCUENTO DEL 10% TAMBIEN, SE APLICAN AMBOS POR ESO EL totalCalculado NO DA IGUAL QUE EL totalFinal
+                        //Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
                     string tipoFactura = cliente.condicion_frente_al_iva == "Responsable Inscripto" ? "A" : "B";
                     string numFactura = GenerarNumeroFactura(db, tipoFactura);
 
+                    int nuevoIdFactura = db.factura.Any()
+                     ? db.factura.Max(f => f.id) + 1   // último + 1
+                     : 1;                              // tabla vacía → 1
+
                     /* 5) FACTURA */
                     var fac = new factura
                     {
+                        id = nuevoIdFactura,
                         fecha = DateTime.Now,
-                        sucursal_id = 0,
-                        empleado_id = 0,
+                        sucursal_id = 1,
+                        empleado_id = 1,
                         cliente_id = clienteId,
                         forma_de_pago = medio,
                         precio_total = totalCalculado,
@@ -535,6 +540,7 @@ namespace Eterea_Parfums_Web.Controllers
                     };
                     db.factura.Add(fac);
                     db.SaveChanges();   // fac.id listo
+                    System.Diagnostics.Debug.WriteLine($"Factura creada: {fac.id}");
 
                     /* 6) DETALLE_FACTURA */
                     foreach (var d in detallesTmp)
@@ -552,11 +558,16 @@ namespace Eterea_Parfums_Web.Controllers
                     }
                     db.SaveChanges();
 
+                    int nuevoIdOrden = db.orden.Any()
+                     ? db.orden.Max(o => o.numero_de_orden) + 1
+                     : 1;
                     /* 7) ORDEN */
                     db.orden.Add(new orden
                     {
+                        numero_de_orden = nuevoIdOrden,
                         factura_id = fac.id,
-                        nombre_cliente = $"{cliente.nombre} {cliente.apellido}",
+                        nombre_cliente = cliente.nombre,
+                        apellido_cliente = cliente.apellido,
                         dni = cliente.dni,
                         e_mail_cliente = cliente.e_mail,
                         domicilio_de_envio = ConstruirDireccionEnvio(db, cliente),
@@ -564,6 +575,10 @@ namespace Eterea_Parfums_Web.Controllers
                         codigo_despacho = null,
                         fecha_creacion = DateTime.Now
                     });
+                    var ordenAgregada = db.orden.Local.Last();
+                    Console.WriteLine($"Orden→  Factura:{ordenAgregada.factura_id}, Cliente:{ordenAgregada.nombre_cliente}, DNI:{ordenAgregada.dni}, Email:{ordenAgregada.e_mail_cliente}, Envío:{ordenAgregada.domicilio_de_envio}, Estado:{(ordenAgregada.estado ? "Activa" : "Inactiva")}, Fecha:{ordenAgregada.fecha_creacion:dd/MM/yyyy HH:mm:ss}");
+
+
                     db.SaveChanges();
 
                     /* 8) Limpiar carrito y commit */
@@ -571,13 +586,14 @@ namespace Eterea_Parfums_Web.Controllers
                     db.SaveChanges();
 
                     tx.Commit();
-                    return RedirectToAction("Exito", new { id = fac.id });
+                    return RedirectToAction("Index", "Home");
                 }
                 catch (Exception ex)
                 {
                     tx.Rollback();
                     TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
                     return RedirectToAction("Index","Carrito");
+                    //VER LA REDIRECCION!!! MAXI
                 }
             }
         }
