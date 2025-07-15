@@ -2,7 +2,9 @@
 using Eterea_Parfums_Web.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -103,7 +105,7 @@ namespace Eterea_Parfums_Web.Controllers
                     .ToList();
             }
 
-            // 13. Filtro por tipos de aromas
+            // 14. Filtro por tipos de aromas
             if (tipoDeAromaSeleccionados != null && tipoDeAromaSeleccionados.Any())
             {
                 perfumes = perfumes
@@ -111,27 +113,33 @@ namespace Eterea_Parfums_Web.Controllers
                     .ToList();
             }
 
-            // 14. Filtro por precio dinámico (rango libre)
+            // 15. Filtro por precio Min
             if (precioMin.HasValue)
             {
                 float min = (float)precioMin.Value;
                 perfumes = perfumes.Where(p => p.precio_en_pesos >= min).ToList();
             }
 
+            // 16. Filtro por precio Max
             if (precioMax.HasValue)
             {
                 float max = (float)precioMax.Value;
                 perfumes = perfumes.Where(p => p.precio_en_pesos <= max).ToList();
             }
 
-            // Aplicar filtro por nombre si se ingresó algo
+
+
+            // 17. Filtro por nombre
             if (!string.IsNullOrWhiteSpace(busqueda))
             {
+                string nombreNormalizado = RemoverAcentos(busqueda);
+
                 perfumes = perfumes
-                    .Where(p => p.nombre.IndexOf(busqueda, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(p => RemoverAcentos(p.nombre).Contains(nombreNormalizado))
                     .ToList();
             }
 
+            // 18. Filtro por Promocion
             if (!string.IsNullOrEmpty(filtrarSoloConPromocion) && filtrarSoloConPromocion == "on")
             {
                 perfumes = perfumes
@@ -146,7 +154,7 @@ namespace Eterea_Parfums_Web.Controllers
                     .ToList();
             }
 
-            // 5. Agrupar perfumes por nombre y marca
+            // 19. Mostrar los perfumes
             var perfumesAgrupados = perfumes
                 .GroupBy(p => p.nombre)
                 .Select(g =>
@@ -461,6 +469,16 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 return View();
             }
+        }
+
+        private string RemoverAcentos(string texto)
+        {
+            if (texto == null) return null;
+            return new string(texto
+                .Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                .ToArray())
+                .ToLowerInvariant();
         }
     }
 }
