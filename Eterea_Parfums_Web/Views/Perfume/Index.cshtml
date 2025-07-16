@@ -177,7 +177,7 @@
 
         <section class="col-md-10">
             <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
-                <h2 class="mb-3 mb-md-0">Perfumes</h2>                
+                <h2 class="mb-3 mb-md-0">Perfumes</h2>
             </div>
 
 
@@ -232,7 +232,7 @@
                         <button class="btn dropdown-toggle ordenar-dropdown-btn" type="button" data-bs-toggle="dropdown">
                             Ordenar por
                         </button>
-                        <ul class="dropdown-menu ordenar-dropdown-menu">                          
+                        <ul class="dropdown-menu ordenar-dropdown-menu">
                             <li><a class="dropdown-item" href="?orden=nombreAsc">Nombre A-Z</a></li>
                             <li><a class="dropdown-item" href="?orden=nombreDesc">Nombre Z-A</a></li>
                             <li><a class="dropdown-item" href="?orden=precioAsc">Precio menor a mayor</a></li>
@@ -243,15 +243,29 @@
                 </form>
             </div>
 
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                    @{
-                        var perfumesAgrupados = Model.Perfumes
-                            .GroupBy(p => p.Nombre)
-                            .Select(g => g.First())
-                            .ToList();
-                    }
+            <div class="row justify-content-center">
+                @{
+                    var perfumesAgrupados = Model.Perfumes
+                        .GroupBy(p => p.Nombre)
+                        .Select(g => g.First())
+                        .ToList();
+                }
 
-                    @foreach (var perfume in perfumesAgrupados)
+                @if (!perfumesAgrupados.Any())
+                {
+                    <div class="col-12">
+                        <div class="d-flex flex-column justify-content-center align-items-center"
+                             style="min-height: 400px; text-align: center;">
+                            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                            <h4 class="mb-2">No se encontraron perfumes disponibles</h4>
+                            <p class="text-muted">Podés intentar modificando los filtros o la búsqueda.</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+                    foreach (var perfume in perfumesAgrupados)
                     {
                         <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
@@ -350,8 +364,12 @@
                             </div>
                         </div>
                     }
-                </div>
+                }
 
+            </div>
+
+            @if (perfumesAgrupados.Count > 4)
+            {
                 <!-- Paginación con fondo -->
                 <nav class="mt-5">
                     <div class="titulo-perfumes d-flex justify-content-center py-3">
@@ -373,6 +391,33 @@
                         </ul>
                     </div>
                 </nav>
+
+            }
+            else
+            {
+                <!-- Paginación con fondo -->
+                <nav class="mt-espaciado-footer">
+                    <div class="titulo-perfumes d-flex justify-content-center py-3">
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual - 1)">Anterior</a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPaginas; i++)
+                            {
+                                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                                    <a class="page-link" href="@ConstruirUrlConParametros(i)">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual + 1)">Siguiente</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            }
+
         </section>
 
     </div>
