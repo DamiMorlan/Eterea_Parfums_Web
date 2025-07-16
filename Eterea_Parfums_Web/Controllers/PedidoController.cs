@@ -631,7 +631,7 @@ namespace Eterea_Parfums_Web.Controllers
                     tx.Rollback();
                     TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
                     return RedirectToAction("Index","Carrito");
-                    //VER LA REDIRECCION!!! MAXI
+
                 }
             }
         }
