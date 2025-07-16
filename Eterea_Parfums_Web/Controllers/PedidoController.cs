@@ -545,6 +545,34 @@ namespace Eterea_Parfums_Web.Controllers
                     /* 6) DETALLE_FACTURA */
                     foreach (var d in detallesTmp)
                     {
+                        int cantidadRestante = d.CarritoItem.cantidad;
+
+                        // Trae una tabla con los datos del stock donde el id del perfume sea igual al perfume del carrito
+                        var stockSucursales = db.stock
+                         .Where(s => s.perfume_id == d.CarritoItem.perfume_id && s.cantidad > 5)
+                         .OrderBy(s => s.sucursal_id)
+                         .ToList();
+
+                        // Descuenta el stock por sucursal empezando por la 1
+                        foreach (var stock in stockSucursales)
+                        {
+                            if (cantidadRestante <= 0)
+                                break;
+
+                            int stockDisponibleWeb = stock.cantidad - 5; // solo se puede vender lo que excede el mínimo
+                            if (stockDisponibleWeb <= 0)
+                                continue;
+                            int aDescontar = Math.Min(cantidadRestante, stock.cantidad);
+                            stock.cantidad -= aDescontar;
+                            cantidadRestante -= aDescontar;
+                        }
+
+                        // Si aún queda cantidad comprada sin descontar del stock, hace un roll back
+                        if (cantidadRestante > 0)
+                        {
+                            throw new InvalidOperationException($"Stock insuficiente para el perfume ID {d.CarritoItem.perfume_id}");
+                        }
+
                         // Si promocion_id NO es nullable en BD, reemplazá null con 0 o un valor dummy
                         db.detalle_factura.Add(new detalle_factura
                         {
@@ -552,8 +580,8 @@ namespace Eterea_Parfums_Web.Controllers
                             perfume_id = d.CarritoItem.perfume_id,
                             cantidad = d.CarritoItem.cantidad,
                             precio_unitario = d.CarritoItem.perfume.precio_en_pesos,
-                            promocion_id = d.Promo1Id ?? 0,      // ← 0 si no hay promo1
-                            promocion2_id = d.Promo2Id            // nullable
+                            promocion_id = d.Promo1Id ?? 1,      //  1 si no hay promo1
+                            promocion2_id = d.Promo2Id            
                         });
                     }
                     db.SaveChanges();
@@ -586,7 +614,7 @@ namespace Eterea_Parfums_Web.Controllers
                     db.SaveChanges();
 
                     tx.Commit();
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("PagoExitoso", "Pedido");
                 }
                 catch (Exception ex)
                 {
