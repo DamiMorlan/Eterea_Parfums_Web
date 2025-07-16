@@ -472,28 +472,38 @@ namespace Eterea_Parfums_Web.Controllers
 
                     foreach (var item in carrito)
                     {
-                        // Promos vigentes
                         var promosVigentes = item.perfume.promocion
-                                                       .Where(p => p.activo
-                                                                 && p.fecha_inicio <= DateTime.Today
-                                                                 && p.fecha_fin >= DateTime.Today)
-                                                       .OrderByDescending(p => p.descuento)  // prioridad mayor % primero
-                                                       .Take(2)                              // máx 2
-                                                       .ToList();
+                         .Where(p => p.activo && p.fecha_inicio <= DateTime.Today && p.fecha_fin >= DateTime.Today)
+                         .ToList();
 
-                        int? p1 = promosVigentes.ElementAtOrDefault(0)?.id;
-                        int? p2 = promosVigentes.ElementAtOrDefault(1)?.id;
+                        // Clasificamos por tipo de promo
+                        var promoDiez = promosVigentes.FirstOrDefault(p => p.descuento == 10);
+                        var promoMayor = promosVigentes.FirstOrDefault(p => p.descuento > 10);
 
-                        // Descuento aplicado a este ítem
+                        int cantidad = item.cantidad;
+                        double precioUnitario = item.perfume.precio_en_pesos;
                         double descItem = 0;
-                        foreach (var prm in promosVigentes)
+                        int? p1 = null;
+                        int? p2 = null;
+
+                        // Aplicamos promo mayor a 10% por cada par
+                        if (promoMayor != null && cantidad >= 2)
                         {
-                            // Ejemplo: descuento % sobre cada unidad
-                            descItem += prm.descuento / 100.0 * item.perfume.precio_en_pesos * item.cantidad;
+                            int pares = cantidad / 2;
+                            descItem += pares * (promoMayor.descuento / 100.0) * precioUnitario * 2;
+                            p2 = promoMayor.id;
+                            cantidad -= pares * 2; // Reducimos lo que queda por aplicar
                         }
+
+                        // Aplicamos promo del 10% por unidad restante
+                        if (promoDiez != null && cantidad > 0)
+                        {
+                            descItem += cantidad * (promoDiez.descuento / 100.0) * precioUnitario;
+                            p1 = promoDiez.id;
+                        }
+
                         descuentoTotal += descItem;
 
-                        // Guardo info temporal para la inserción posterior
                         detallesTmp.Add(new DetalleTmp
                         {
                             CarritoItem = item,
@@ -507,7 +517,7 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (120000 != 120000)  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
+                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
                         //DE 40% Y TIENE UN DESCUENTO DEL 10% TAMBIEN, SE APLICAN AMBOS POR ESO EL totalCalculado NO DA IGUAL QUE EL totalFinal
                         //Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)
                         throw new InvalidOperationException("Los totales no coinciden");
