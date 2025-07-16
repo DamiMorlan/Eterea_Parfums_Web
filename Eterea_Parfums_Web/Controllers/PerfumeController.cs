@@ -150,101 +150,148 @@ namespace Eterea_Parfums_Web.Controllers
         public ActionResult Details(int? id)
         {
             if (id == null)
-            {
-                return RedirectToAction("Index"); // O HttpNotFound
-            }
+                return RedirectToAction("Index");
 
-
-            // Traer stock completo y calcular stock ajustado por perfume
+            // Traer y procesar stock completo
             var stock = db.stock.ToList();
             var stockDisponiblePorPerfume = stock
-               .GroupBy(s => s.perfume_id)
-               .ToDictionary(
-                g => g.Key,
-                g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
                 );
 
-            //Traemos el perfumes
+            // Obtener perfume base
             var perfume = db.perfume.Find(id);
-
             if (perfume == null)
-            {
                 return HttpNotFound();
-            }
 
-            // Cargar relaciones manualmente
+            // Cargar relaciones necesarias
             db.Entry(perfume).Collection(p => p.nota_con_tipo_de_nota).Load();
             db.Entry(perfume).Collection(p => p.tipo_de_aroma).Load();
             db.Entry(perfume).Collection(p => p.stock).Load();
 
-            // obtené el stock ajustado del perfume actual:
             int stockPerfumeActual = stockDisponiblePorPerfume.ContainsKey(perfume.id)
                 ? stockDisponiblePorPerfume[perfume.id]
                 : 0;
 
-
-            //Obtener los perfumes iguales al perfume con distinta presentacion en ml
-
+            // Obtener presentaciones iguales (mismo nombre y marca)
             var perfumesIgualesConDistintaPresentacion = db.perfume
-                .Where(p => p.nombre == perfume.nombre
-                      && p.marca.nombre == perfume.marca.nombre)
+                .Where(p => p.nombre == perfume.nombre && p.activo && p.marca.nombre == perfume.marca.nombre)
                 .OrderBy(p => p.presentacion_ml)
                 .ToList();
 
-
-            // Obtener notas y aromas directamente del perfume cargado
+            // Notas y aromas a comparar
             var notasComparar = perfume.nota_con_tipo_de_nota.Select(n => n.nota_id).ToList();
             var aromasComparar = perfume.tipo_de_aroma.Select(a => a.id).ToList();
 
-
-            // Obtener perfumes relacionados
-            var perfumesRelacionados = db.perfume
+            // Perfumes relacionados base
+            var perfumesRelacionadosQuery = db.perfume
                 .Where(p => p.id != perfume.id &&
-                   p.activo &&
-                   p.nota_con_tipo_de_nota.Any(n => notasComparar.Contains(n.nota_id)) &&
-                   p.tipo_de_aroma.Any(a => aromasComparar.Contains(a.id)))
-                .ToList()
-                .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id) && stockDisponiblePorPerfume[p.id] > 0)
-                .Select(p => new PerfumeRelacionadoDto
+                            p.activo &&
+                            p.nota_con_tipo_de_nota.Any(n => notasComparar.Contains(n.nota_id)) &&
+                            p.tipo_de_aroma.Any(a => aromasComparar.Contains(a.id)))
+                .ToList();
+
+            // Agrupar por nombre y traer TODAS las presentaciones del grupo
+            var perfumesRelacionados = perfumesRelacionadosQuery
+                .GroupBy(p => p.nombre)
+                .Select(g =>
                 {
-                    id = p.id,
-                    codigo = p.codigo,
-                    marca = p.marca.nombre,
-                    nombre = p.nombre,
-                    tipo_de_perfume_id = p.tipo_de_perfume_id,
-                    genero_id = p.genero_id,
-                    presentacion_ml = p.presentacion_ml,
-                    pais_id = p.pais_id,
-                    spray = p.spray,
-                    recargable = p.recargable,
-                    descripcion = p.descripcion,
-                    anio_de_lanzamiento = p.anio_de_lanzamiento,
-                    precio_en_pesos = p.precio_en_pesos,
-                    activo = p.activo,
-                    imagen1 = p.imagen1,
-                    imagen2 = p.imagen2,
-                    fecha_baja = p.fecha_baja,
+                    var presentacionesEnMemoria = db.perfume
+                     .Where(x => x.nombre == g.Key && x.activo)
+                     .ToList();
+                    var presentaciones = presentacionesEnMemoria
+                        .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id))
+                        .Select(p =>
+                        {
+                            var promocionesActivas = p.promocion
+                                .Where(pr => pr.activo && pr.id != 1 &&
+                                             pr.fecha_inicio <= DateTime.Now &&
+                                             pr.fecha_fin >= DateTime.Now)
+                                .ToList();
 
-                    NotasComunes = p.nota_con_tipo_de_nota
-                       .Where(n => (n.tipo_de_nota_id == 2 || n.tipo_de_nota_id == 3) &&
-                                   notasComparar.Contains(n.nota_id))
-                       .Select(n => n.nota_id)
-                       .Distinct()
-                       .Count(),
+                            var promo10 = promocionesActivas.FirstOrDefault(pr => pr.descuento == 10);
+                            var promoPorCantidad = promocionesActivas.FirstOrDefault(pr => pr.descuento > 10);
 
-                    AromasComunes = p.tipo_de_aroma
-                       .Where(a => aromasComparar.Contains(a.id))
-                       .Select(a => a.id)
-                       .Distinct()
-                       .Count(),
+                            string leyendaPromo = null;
+                            double? precioDescuento = null;
+                            bool tienePromo = false;
 
-                    TotalStock = stockDisponiblePorPerfume[p.id] // ← usamos el stock ajustado
+                            if (promoPorCantidad != null)
+                            {
+                                tienePromo = true;
+                                if (promoPorCantidad.descuento * 2 == 100)
+                                {
+                                    leyendaPromo = "Promoción 2x1";
+                                    precioDescuento = Math.Round(p.precio_en_pesos * 0.5, 2);
+                                }
+                                else
+                                {
+                                    var descuento = promoPorCantidad.descuento;
+                                    var precio2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
+                                    precioDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
+                                    leyendaPromo = $"Promoción {descuento * 2}% en la segunda unidad";
+                                }
+                            }
+                            else if (promo10 != null)
+                            {
+                                tienePromo = true;
+                                leyendaPromo = "Promoción 10% OFF";
+                                precioDescuento = Math.Round(p.precio_en_pesos * 0.9, 2);
+                            }
+
+                            return new PerfumeDto
+                            {
+                                Id = p.id,
+                                Ml = p.presentacion_ml,
+                                Precio = p.precio_en_pesos,
+                                TienePromocion = tienePromo,
+                                LeyendaPromocion = leyendaPromo,
+                                PrecioConDescuento = precioDescuento,
+                                StockDisponible = stockDisponiblePorPerfume[p.id],
+                                Imagen = p.imagen1,
+                                Marca = p.marca.nombre,
+                                NotasComunes = p.nota_con_tipo_de_nota
+                                    .Where(n => (n.tipo_de_nota_id == 2 || n.tipo_de_nota_id == 3) &&
+                                                notasComparar.Contains(n.nota_id))
+                                    .Select(n => n.nota_id)
+                                    .Distinct()
+                                    .Count(),
+                                AromasComunes = p.tipo_de_aroma
+                                    .Where(a => aromasComparar.Contains(a.id))
+                                    .Select(a => a.id)
+                                    .Distinct()
+                                    .Count()
+                            };
+                        })
+                        .OrderBy(p => p.Ml)
+                        .ToList();
+
+                    var principal = presentaciones.FirstOrDefault();
+
+                    return new PerfumeRelacionadoDto
+                    {
+                        Id = principal.Id,
+                        Nombre = g.Key,
+                        Imagen = principal?.Imagen,
+                        Marca = principal?.Marca,
+                        Precio = principal?.Precio ?? 0,
+                        Presentacion = principal?.Ml ?? 0,
+                        StockDisponibleParaWeb = principal?.StockDisponible ?? 0,
+                        TienePromocion = principal?.TienePromocion ?? false,
+                        LeyendaPromocion = principal?.LeyendaPromocion,
+                        PrecioConDescuento = principal?.PrecioConDescuento,
+                        Presentaciones = presentaciones
+                    };
                 })
-                   .OrderByDescending(p => p.NotasComunes)
-                   .ThenByDescending(p => p.AromasComunes)
-                   .Take(10)
-                   .ToList();
+                .OrderByDescending(p => p.Presentaciones.FirstOrDefault()?.NotasComunes ?? 0)
+                .ThenByDescending(p => p.Presentaciones.FirstOrDefault()?.AromasComunes ?? 0)
+                .ThenBy(p => p.Presentacion)
+                .Take(10)
+                .ToList();
 
+            // Armar ViewModel
             var viewModel = new PerfumeDetailsViewModel
             {
                 Perfume = perfume,
@@ -254,8 +301,8 @@ namespace Eterea_Parfums_Web.Controllers
             };
 
             return View(viewModel);
-
         }
+
 
 
 

@@ -7,29 +7,40 @@ using Eterea_Parfums_Web.Models;
 namespace Eterea_Parfums_Web.ViewModels
 {
 
-    public class PerfumeRelacionadoDto
+    public class PerfumeDto
     {
-        public int id { get; set; }
-        public string codigo { get; set; }
-        public string marca { get; set; }
-        public string nombre { get; set; }
-        public int tipo_de_perfume_id { get; set; }
-        public int genero_id { get; set; }
-        public int presentacion_ml { get; set; }
-        public int pais_id { get; set; }
-        public bool spray { get; set; }
-        public bool recargable { get; set; }
-        public string descripcion { get; set; }
-        public int anio_de_lanzamiento { get; set; }
-        public double precio_en_pesos { get; set; }
-        public bool activo { get; set; }
-        public string imagen1 { get; set; }
-        public string imagen2 { get; set; }
-        public System.DateTime? fecha_baja { get; set; }
-
+        public int Id { get; set; }
+        public int Ml { get; set; }
+        public double Precio { get; set; }
+        public string Imagen { get; set; }
+        public string Marca { get; set; }
+        public bool TienePromocion { get; set; }
+        public string LeyendaPromocion { get; set; }
+        public double? PrecioConDescuento { get; set; }
+        public int StockDisponible { get; set; }
         public int NotasComunes { get; set; }
         public int AromasComunes { get; set; }
-        public int TotalStock { get; set; }
+
+    }
+
+    public class PerfumeRelacionadoDto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; }
+        public string Imagen { get; set; }
+        public string Marca { get; set; }
+        public double Precio { get; set; }
+        public int Presentacion { get; set; }
+        public int StockDisponibleParaWeb { get; set; }
+
+        // Tamaño de los perfumes
+        public List<PerfumeDto> Presentaciones { get; set; }
+
+        // NUEVOS CAMPOS
+        public bool TienePromocion { get; set; }
+        public string LeyendaPromocion { get; set; }
+        public double? PrecioConDescuento { get; set; }
+
     }
 
     public class PerfumeDetailsViewModel
