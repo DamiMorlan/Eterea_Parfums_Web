@@ -13,20 +13,22 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+
+
 .contact-section {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 15px;
-    max-width: 1200px;
-    margin: 40px auto;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 2rem 2rem;
+    border-radius: 12px;
+    margin: 20px 60px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .section-title {
     text-align: center;
-    font-size: 2.5rem;
-    color: rgb(209, 167, 180);
-    margin-bottom: 10px;
+    font-size: 2.8rem;
+    margin-bottom: 25px;
+    color: #973f5c; /* rosa profundo */
+    font-weight: 700;
 }
 
 .intro-text {
@@ -37,7 +39,7 @@ body {
 
 .contact-box h3,
 .contact-form-box h3 {
-    color: #333;
+    color: #973f5c;
     margin-bottom: 20px;
     font-size: 1.5rem;
 }
@@ -124,3 +126,77 @@ button[type="submit"] {
     button[type="submit"]:hover {
         background-color: rgb(189, 147, 160);
     }
+
+
+.logo-eterea-container {
+    animation: fadeInLogo 1.5s ease-in-out;
+}
+
+.logo-eterea {
+    max-height: 200px;
+    width: auto;
+    border-radius: 100px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease;
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+    .logo-eterea:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+/* Animación de entrada */
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de flotación suave */
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Separador visual entre bloques */
+.linea-separadora {
+    border: none;
+    border-top: 2px solid var(--rosa-profundo);
+    width: 60%;
+    margin: 50px auto;
+}
+
+/* Ajustes visuales para los bloques */
+.contact-box {
+    background-color: var(--rosa-suave);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+
+.titulo-contacto {
+    color: var(--rosa-profundo);
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+.section-subtitle {
+    color: #973f5c;
+    font-weight: 600;
+    border-bottom: 2px solid #e2c3cc;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+}
