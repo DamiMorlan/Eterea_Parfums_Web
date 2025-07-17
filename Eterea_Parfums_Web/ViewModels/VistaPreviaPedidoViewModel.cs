@@ -12,6 +12,8 @@ namespace Eterea_Parfums_Web.ViewModels
         public calle Calle { get; set; }
         public localidad Localidad { get; set; }
         public provincia Provincia { get; set; }
+        public string DomicilioDeEnvioTexto { get; set; }
+
 
         // ← tipo corregido
         public List<ItemResumenPedidoViewModel> Items { get; set; }

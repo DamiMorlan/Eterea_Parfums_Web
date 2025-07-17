@@ -1,0 +1,52 @@
+﻿@model List<string>
+@using System.Web
+
+@{
+    ViewBag.Title = "Seleccionar dirección";
+    var direccionActual = Session["NuevoDomicilioEntrega"] as string;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4 text-center">Seleccionar dirección de entrega</h2>
+
+            @* MOSTRAR LA DIRECCIÓN ACTUAL GUARDADA *@
+            @if (!string.IsNullOrEmpty(direccionActual))
+            {
+                <div class="alert alert-info">
+                    <strong>Dirección seleccionada:</strong><br />
+                    <pre class="mb-0">@direccionActual</pre>
+                </div>
+            }
+
+            @* LISTADO DE DIRECCIONES *@
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning">No se encontraron direcciones anteriores.</div>
+            }
+            else
+            {
+                foreach (var direccion in Model)
+                {
+                    <div class="card mb-3 p-3">
+                        <pre>@direccion</pre>
+                        <div class="d-flex justify-content-end">
+                            <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")" method="post">
+                                <input type="hidden" name="texto" value="@direccion" />
+                                <button type="submit" class="btn btn-sm btn-primary">Seleccionar</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+            }
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("AgregarDireccion", "Cliente")" class="btn btn-success">
+                    Agregar nuevo domicilio de entrega
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

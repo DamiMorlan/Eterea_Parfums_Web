@@ -166,7 +166,10 @@ namespace Eterea_Parfums_Web.Controllers
                 Subtotal = subtotal,
                 Descuento = descuento,
                 Total = total,
-                EnvioGratis = total >= 50_000
+                EnvioGratis = total >= 50_000,
+                DomicilioDeEnvioTexto = Session["NuevoDomicilioEntrega"]?.ToString()
+                         ?? ConstruirDireccionEnvio(db, cliente)
+
             };
 
             return View(vm);
