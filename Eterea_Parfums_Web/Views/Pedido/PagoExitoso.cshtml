@@ -3,16 +3,93 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head {   <!-- si tu _Layout.cshtml define un section Head -->
-    <meta http-equiv="refresh"
-          content="5;url=@Url.Action("Index","Home")" />
-}
 
-<div class="container text-center my-5">
+<!--<div class="container text-center my-5">
     <h2 class="text-success">¡Pago aprobado!</h2>
     <p>@TempData["PagoOK"]</p>
     <p class="text-muted">Serás redirigido en 5 segundos…</p>
     <a href="@Url.Action("Index","Home")" class="btn btn-primary mt-3">
         Ir ahora
     </a>
+</div>-->
+
+<style>
+
+    :root {
+        --rosa-claro: rgb(235, 199, 206);
+        --rosa-medio: rgb(228, 137, 164);
+        --rosa-fondo: rgb(249, 230, 225);
+        --rosa-profundo: rgb(209, 167, 180);
+        --rosa-suave: rgb(250, 236, 239);
+        --beige: #f5f5dc;
+        --moka: #b89b82;
+    }
+
+    body {
+        background-color: var(--rosa-suave);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .bg-success-mp {
+        background-color: var(--rosa-claro) !important; /* Verde MercadoPago */
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        background-color: white;
+        color: var(--rosa-claro);
+        border-radius: 50%;
+        font-size: 40px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .payment-box {
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        margin-top: -30px;
+    }
+
+    .btn-custom {
+        background-color: var(--rosa-profundo);
+        color: white;
+    }
+
+        .btn-custom:hover {
+            background-color: var(--rosa-fondo);
+            background-color: rgb(189, 147, 160);
+            transform: scale(1.02);
+            color: white;
+        }
+</style>
+
+
+<div class="container-fluid bg-success-mp text-white py-5 text-center">
+    <div class="icon-circle mb-3">
+        <i class="fa-solid fa-check"></i><!-- Usa Bootstrap Icons si están cargadas -->
+    </div>
+    <h2 class="fw-bold">¡Listo! Se acreditó tu pago</h2>
+    <p class="mb-0">Numero de Operacion: <strong>@ViewBag.NumOrden</strong></p>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="payment-box text-center mt-3">
+                <p class="fs-5 mb-1">Pagaste <strong>$@ViewBag.TotalFibal.ToString("N2", new System.Globalization.CultureInfo("es-AR"))</strong></p>
+                <p class="text-muted small">
+                    En el resumen de tu tarjeta verás el cargo a nombre de:<br>
+                    <strong>MERCADOPAGO*ETEREAPARFUMS</strong>
+                </p>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-custom mt-3">
+                    Volver al sitio
+                </a>
+            </div>
+        </div>
+    </div>
+    <!--<p class="text-center text-muted mt-3">Serás redirigido en 5 segundos…</p>-->
 </div>
