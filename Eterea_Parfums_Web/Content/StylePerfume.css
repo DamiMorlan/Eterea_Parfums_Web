@@ -7,6 +7,7 @@
     --rosa-suave2: rgb(239, 228, 225);
     --beige: #f5f5dc;
     --moka: #b89b82;
+    --rosa-claro-contenedor: #fef6f8;
 }
 
 body {
@@ -311,7 +312,7 @@ body {
 
 /* ---------- PANEL DE FILTROS COMPLETO ---------- */
 aside.col-md-2 {
-    background-color: var(--rosa-suave2);
+    background-color: var(--rosa-claro-contenedor);
     padding: 20px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -399,7 +400,7 @@ aside .mb-3 {
 
 
 .titulo-perfumes {
-    background-color: var(--rosa-suave2); /* igual que el fondo del filtro */
+    background-color: var(--rosa-claro-contenedor); /* igual que el fondo del filtro */
     color: var(--moka); /* igual que el color del texto del filtro */
     padding: 20px 30px;
     border-radius: 16px;

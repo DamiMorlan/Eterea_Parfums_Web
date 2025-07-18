@@ -2,108 +2,18 @@
     ViewBag.Title = "Login";
 }
 
-<style>
-    /* Contenedor que centra todo en pantalla, sin superponerse al navbar/footer */
-    .login-wrapper {
-        min-height: calc(100vh - 160px); /* Ajuste para navbar + footer */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 30px 15px;
-    }
+@section Styles {
+    <link href="~/Content/StyleLogin.css" rel="stylesheet" type="text/css" />
+}
 
-    .login-container {
-        max-width: 400px;
-        width: 100%;
-        padding: 30px 25px;
-        background-color: #fef6f8;
-        border: 1px solid #e0bfc7;
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-        .login-container h2 {
-            text-align: center;
-            color: #a0435c;
-            margin-bottom: 10px;
-        }
-
-    .separator {
-        border: none;
-        height: 2px;
-        background-color: #d1a7b4;
-        margin: 15px 0;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #5a2a39;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d9b8c1;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-            .form-group input:focus {
-                border-color: #a0435c;
-                outline: none;
-            }
-
-    .btn-login {
-        width: 100%;
-        padding: 12px;
-        background-color: #d1a7b4;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        font-size: 1em;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-        .btn-login:hover {
-            background-color: #a0435c;
-        }
-
-    .error-message {
-        color: #b1002c;
-        margin-top: 10px;
-        text-align: center;
-        font-weight: 500;
-    }
-
-    .register-message {
-        text-align: center;
-        margin-top: 15px;
-        color: #5a2a39;
-    }
-
-        .register-message a {
-            color: #a0435c;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-            .register-message a:hover {
-                text-decoration: underline;
-            }
-</style>
 
 <div class="login-wrapper">
     <div class="login-container">
+
+        <!-- Logo -->
+        <div class="logo-eterea-container text-center mb-4">
+            <img src="~/Imagenes/LogoEterea.png" alt="Logo Eterea Parfums" class="logo-eterea" />
+        </div>
 
         <h2>@ViewBag.Title</h2>
         <hr class="separator" />
