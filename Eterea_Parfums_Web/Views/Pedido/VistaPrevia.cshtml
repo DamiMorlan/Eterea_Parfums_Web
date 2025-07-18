@@ -33,7 +33,7 @@
         <div class="col-md-8">
             <h4>Resumen de compra</h4>
 
-            @foreach (var item in Model.ItemsCarrito)
+            @foreach (var item in Model.Items)
             {
                 <div class="resumen-producto">
                     <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
@@ -85,7 +85,7 @@
 
                 @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
                 @{
-                    Session["PedidoItems"] = Model.ItemsCarrito
+                    Session["PedidoItems"] = Model.Items
                         .Select(x => new PedidoItemVM
                         {
                             PerfumeId = x.PerfumeId,

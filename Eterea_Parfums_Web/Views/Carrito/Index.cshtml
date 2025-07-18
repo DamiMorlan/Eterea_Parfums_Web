@@ -92,55 +92,46 @@
             </div>
         }
 
-        <div class="resumen-carrito">
-            @{
-                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
-                var total = Model.Sum(m => m.Total);
-                var descuento = subtotal - total;
-            }
+<div class="resumen-carrito">
+    @{
+        var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
+        var total = Model.Sum(m => m.Total);
+        var descuento = subtotal - total;
+    }
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
-            </div>
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
-            </div>
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor" id="total">$@total.ToString("N0")</span>
-            </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Subtotal (sin descuento):</span>
+        <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
+    </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Descuentos aplicados:</span>
+        <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
+    </div>
+    <div class="fila-resumen total">
+        <span class="etiqueta">Total a pagar:</span>
+        <span class="valor" id="total">$@total.ToString("N0")</span>
+    </div>
 
-            @if (total >= 50000)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
-            else
-            {
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                </p>
-            }
+    @if (total >= 50000)
+    {
+        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+    }
+    else
+    {
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+        </p>
+    }
 
-            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Post))
-            {
-                foreach (var item in Model)
-                {
-                    <input type="hidden" name="PerfumeIds" value="@item.PerfumeId" />
-                    <input type="hidden" name="Cantidades" value="@item.Cantidad" />
-                }
-
-                <input type="hidden" name="Subtotal" value="@subtotal" />
-                <input type="hidden" name="Descuento" value="@descuento" />
-                <input type="hidden" name="Total" value="@total" />
-
-                <div class="contenedor-boton-finalizar text-center mt-3">
-                    <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
-                </div>
-            }
-
+    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+    {
+        <div class="contenedor-boton-finalizar text-center mt-3">
+            <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
         </div>
+    }
+
+
+</div>
 
     }
     else

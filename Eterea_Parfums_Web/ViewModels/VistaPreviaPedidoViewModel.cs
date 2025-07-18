@@ -16,14 +16,9 @@ namespace Eterea_Parfums_Web.ViewModels
 
 
         // ← tipo corregido
-        public List<ItemResumenPedidoViewModel> Items { get; set; }
+        public List<ItemCarritoViewModel> Items { get; set; }
 
-        // Alias retro-compatible para vistas antiguas
-        public List<ItemResumenPedidoViewModel> ItemsCarrito
-        {
-            get => Items;
-            set => Items = value;
-        }
+
 
         public double Subtotal { get; set; }
         public double Descuento { get; set; }

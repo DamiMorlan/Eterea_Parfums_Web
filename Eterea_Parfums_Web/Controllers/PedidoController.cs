@@ -66,24 +66,34 @@ namespace Eterea_Parfums_Web.Controllers
             Session["DomicilioDeEnvioTexto"] = domicilioTexto;
 
             // ✅ Cargar ítems del pedido
-            var items = new List<ItemResumenPedidoViewModel>();
+            var items = new List<ItemCarritoViewModel>();
             for (int i = 0; i < PerfumeIds.Count; i++)
             {
                 int perfumeId = PerfumeIds[i];
                 int cantidad = Cantidades[i];
 
-                var perfume = db.perfume.FirstOrDefault(p => p.id == perfumeId);
+                var perfume = db.perfume
+                    .Include(p => p.promocion)
+                    .Include(p => p.tipo_de_perfume)
+                    .Include(p => p.genero)
+                    .Include(p => p.stock)
+                    .FirstOrDefault(p => p.id == perfumeId);
+
                 if (perfume != null && cantidad > 0)
                 {
-                    items.Add(new ItemResumenPedidoViewModel
+                    // Simular un objeto carrito para reusar el helper
+                    var carritoFake = new carrito
                     {
-                        PerfumeId = perfume.id,
-                        Nombre = perfume.nombre,
-                        Imagen = perfume.imagen1,
-                        Presentacion = perfume.presentacion_ml,
-                        Cantidad = cantidad,
-                        Precio = perfume.precio_en_pesos
-                    });
+                        perfume = perfume,
+                        cantidad = cantidad
+                    };
+
+                    // Podés calcular stock real si querés, o dejarlo en 0
+                    int stockDisponible = perfume.stock.Sum(s => s.cantidad) - 5;
+
+                    var itemVM = CarritoHelper.BuildItemViewModel(carritoFake, stockDisponible);
+
+                    items.Add(itemVM);
                 }
             }
 
@@ -113,92 +123,79 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpGet]
         public ActionResult VistaPrevia()
         {
-            /* ─────────────────────── Validación de sesión ────────────────────── */
             if (Session["clienteId"] == null)
-                return RedirectToAction("Login", "Cliente");
+                return RedirectToAction("Login", "Cuenta");
 
             int clienteId = (int)Session["clienteId"];
 
-            /* ─────────── 1) Carrito con relaciones necesarias ──────────── */
+
+
+            var cliente = db.cliente.FirstOrDefault(c => c.id == clienteId);
+            var calle = db.calle.FirstOrDefault(c => c.id == cliente.calle_id);
+            var localidad = db.localidad.FirstOrDefault(l => l.id == cliente.localidad_id);
+            var provincia = db.provincia.FirstOrDefault(p => p.id == cliente.provincia_id);
+
             var carrito = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)
-                .Include(c => c.perfume.stock)
-                .Where(c => c.cliente_id == clienteId)
+                .Where(c => c.cliente_id == clienteId && c.cantidad > 0)
                 .ToList();
 
-            /* ─────────── 2) Stock neto por perfume (regla “–5”) ─────────── */
-            var perfumeIds = carrito
-                .Select(c => c.perfume_id)
-                .Distinct()
-                .ToList();                   // materializamos como List<int>
+            var itemsCarrito = new List<ItemCarritoViewModel>();
+            double subtotal = 0;
+            double total = 0;
 
-            var stockDict = db.stock
-                .Where(s => perfumeIds.Contains(s.perfume_id))
-                .ToList()
-                .GroupBy(s => s.perfume_id)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Sum(s => Math.Max(0, s.cantidad - 5))
-                );
-
-            /* ─────────── 3) Ítems del carrito usando el helper ──────────── */
-            var items = carrito
-                .Select(c => CarritoHelper.BuildItemViewModel(
-                    c,
-                    stockDict.ContainsKey(c.perfume_id)
-                        ? stockDict[c.perfume_id]
-                        : 0))
-                .ToList();
-
-            /* ─────────── 4) Mapear a ViewModel para la vista ───────────── */
-            var itemsVm = items.Select(i => new ItemResumenPedidoViewModel
+            foreach (var item in carrito)
             {
-                PerfumeId = i.PerfumeId,
-                Nombre = i.Nombre,
-                Imagen = i.Imagen,
-                Presentacion = i.Presentacion,
-                Cantidad = i.Cantidad,
+                // 🚨 Aquí podrías agregar lógica real para stock por perfume si querés
+                int stockDisponible = item.perfume.stock.Sum(s => s.cantidad) - 5; // ejemplo
 
-                Precio = i.PrecioConDescuento ?? i.PrecioOriginal,
-                           
-            }).ToList();
+                var itemVM = CarritoHelper.BuildItemViewModel(item, stockDisponible);
 
-            /* ─────────── 5) Totales globales ───────────────────────────── */
+                subtotal += itemVM.PrecioOriginal * itemVM.Cantidad;
+                total += itemVM.Total;
+                itemsCarrito.Add(itemVM);
+            }
 
-            double subtotal = items.Sum(x => x.PrecioOriginal * x.Cantidad);
-            double total = itemsVm.Sum(x => x.Total);   // 👈 usa el correcto
             double descuento = subtotal - total;
+            bool envioGratis = total >= 50000;
 
-            /* ─────────── 6) Datos de dirección del cliente ─────────────── */
-            var cliente = db.cliente
-                .Include(cl => cl.calle)
-                .Include(cl => cl.localidad)
-                .Include(cl => cl.localidad.provincia)
-                .First(cl => cl.id == clienteId);
+            string domicilioTexto;
 
-            var vm = new VistaPreviaPedidoViewModel
+            if (Session["DomicilioDeEnvioTexto"] != null)
+            {
+                domicilioTexto = Session["DomicilioDeEnvioTexto"].ToString();
+            }
+            else
+            {
+                domicilioTexto =
+                    $"{calle?.nombre}, {cliente.numeracion_calle}" +
+                    $"{(string.IsNullOrWhiteSpace(cliente.piso) ? "" : $" Piso {cliente.piso}")}" +
+                    $"{(string.IsNullOrWhiteSpace(cliente.departamento) ? "" : $" Dpto. {cliente.departamento}")}" +
+                    $"\n{cliente.codigo_postal}, {localidad?.nombre}, {provincia?.nombre}";
+            }
+
+
+            var model = new VistaPreviaPedidoViewModel
             {
                 Cliente = cliente,
-                Calle = cliente.calle,
-                Localidad = cliente.localidad,
-                Provincia = cliente.localidad?.provincia,
-
-                Items = itemsVm,      // ItemsCarrito alias funciona igual
+                Calle = calle,
+                Localidad = localidad,
+                Provincia = provincia,
+                Items = itemsCarrito, // Usa los ItemCarritoViewModel directamente
                 Subtotal = subtotal,
                 Descuento = descuento,
                 Total = total,
-                EnvioGratis = total >= 50_000,
-                DomicilioDeEnvioTexto = Session["NuevoDomicilioEntrega"]?.ToString()
-                         ?? ConstruirDireccionEnvio(db, cliente)
-
+                EnvioGratis = envioGratis,
+                DomicilioDeEnvioTexto = domicilioTexto
             };
 
-            return View(vm);
+            return View(model);
         }
-    
 
-    [HttpPost]
+
+
+        [HttpPost]
         public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos, string montoFinal)
         {
             if (string.IsNullOrWhiteSpace(montoFinal))
