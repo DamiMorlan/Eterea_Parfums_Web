@@ -261,11 +261,17 @@
     <Content Include="Content\StyleAbout.css" />
     <Content Include="Content\StyleCarrito.css" />
     <Content Include="Content\StyleContacto.css" />
+    <Content Include="Content\StyleHistorial.css" />
     <Content Include="Content\StyleHome.css" />
+    <Content Include="Content\StyleLogin.css" />
+    <Content Include="Content\StylePerfil.css" />
     <Content Include="Content\StylePerfume.css" />
     <Content Include="Content\StylePerfumeDetails.css" />
     <Content Include="Content\StylePromocion.css" />
+    <Content Include="Content\StyleLayout.css" />
+    <Content Include="Content\StyleRegistro.css" />
     <Content Include="Content\StyleSimularPago.css" />
+    <Content Include="Content\StyleVerPerfil.css" />
     <Content Include="Content\StyleVistaPrevia.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

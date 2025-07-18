@@ -2,7 +2,9 @@
 using Eterea_Parfums_Web.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,10 +15,11 @@ namespace Eterea_Parfums_Web.Controllers
         private etereaEntities7 db = new etereaEntities7();
 
         // GET: Perfume
-        public ActionResult Index(List<string> marcasSeleccionadas)
+        public ActionResult Index(string busqueda, List<string> marcasSeleccionadas, List<string> generosSeleccionados, List<string> tamaniosSeleccionados, List<string> tipoDePerfumeSeleccionados, List<string> tipoDeAromaSeleccionados, decimal? precioMin, decimal? precioMax, string orden, int pagina = 1, string filtrarSoloConPromocion = null, int? promocionId = null)
         {
+
             // 1. Obtener stock completo
-            var stock = db.stock.ToList();
+            var stock = db.stock.Where(s => s.sucursal_id == 1).ToList();
 
             // 2. Calcular stock disponible por perfume
             var stockDisponiblePorPerfume = stock
@@ -36,7 +39,54 @@ namespace Eterea_Parfums_Web.Controllers
                  .Where(p => p.activo)
                  .ToList();
 
-            // 🔸 NUEVO: Aplicar filtro por marcas seleccionadas (si hay)
+            // 4.1. Filtro por ID de promoción (si vino desde la pantalla de promociones)
+            if (promocionId.HasValue)
+            {
+                perfumes = perfumes
+                    .Where(p => p.promocion.Any(pr =>
+                        pr.id == promocionId.Value &&
+                        pr.activo &&
+                        pr.fecha_inicio <= DateTime.Now &&
+                        pr.fecha_fin >= DateTime.Now))
+                    .ToList();
+            }
+
+            // 5. Obtener marcas
+            var marcas = db.marca
+                .Select(m => new MarcaViewModel
+                {
+                    Id = m.id,
+                    Nombre = m.nombre
+                })
+                .ToList();
+
+            // 6. Obtener marcas
+            var generos = db.genero
+                .Select(g => g.genero1)
+                .Distinct()
+                .ToList();
+
+            // 7. Obtener todos los tamaños 
+            var tamaniosDisponibles = db.perfume
+                .Where(p => p.activo)
+                .Select(p => p.presentacion_ml)
+                .Distinct()
+                .OrderBy(p => p)
+                .ToList();
+
+            // 8. Obtener tipos de perfumes
+            var tipo_de_perfume = db.tipo_de_perfume
+                .Select(t => t.tipo_de_perfume1)
+                .Distinct()
+                .ToList();
+
+            // 9. Obtener tipos de aromas
+            var tiposDeAroma = db.tipo_de_aroma
+                .Select(a => a.nombre)
+                .Distinct()
+                .ToList();
+
+            // 10. Filtro por marcas 
             if (marcasSeleccionadas != null && marcasSeleccionadas.Any())
             {
                 perfumes = perfumes
@@ -44,7 +94,77 @@ namespace Eterea_Parfums_Web.Controllers
                     .ToList();
             }
 
-            // 5. Agrupar perfumes por nombre y marca
+            // 11. Filtro por género
+            if (generosSeleccionados != null && generosSeleccionados.Any())
+            {
+                perfumes = perfumes
+                    .Where(p => generosSeleccionados.Contains(p.genero.genero1))
+                    .ToList();
+            }
+
+            // 12. Filtro por tamaño
+            if (tamaniosSeleccionados != null && tamaniosSeleccionados.Any())
+            {
+                var tamaniosMl = tamaniosSeleccionados.Select(int.Parse).ToList();
+                perfumes = perfumes.Where(p => tamaniosMl.Contains(p.presentacion_ml)).ToList();
+            }
+
+            // 13. Filtro por tipos de perfumes
+            if (tipoDePerfumeSeleccionados != null && tipoDePerfumeSeleccionados.Any())
+            {
+                perfumes = perfumes
+                    .Where(p => tipoDePerfumeSeleccionados.Contains(p.tipo_de_perfume.tipo_de_perfume1))
+                    .ToList();
+            }
+
+            // 14. Filtro por tipos de aromas
+            if (tipoDeAromaSeleccionados != null && tipoDeAromaSeleccionados.Any())
+            {
+                perfumes = perfumes
+                    .Where(p => p.tipo_de_aroma.Any(a => tipoDeAromaSeleccionados.Contains(a.nombre)))
+                    .ToList();
+            }
+
+            // 15. Filtro por precio Min
+            if (precioMin.HasValue)
+            {
+                float min = (float)precioMin.Value;
+                perfumes = perfumes.Where(p => p.precio_en_pesos >= min).ToList();
+            }
+
+            // 16. Filtro por precio Max
+            if (precioMax.HasValue)
+            {
+                float max = (float)precioMax.Value;
+                perfumes = perfumes.Where(p => p.precio_en_pesos <= max).ToList();
+            }
+
+            // 17. Filtro por nombre
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                string nombreNormalizado = RemoverAcentos(busqueda);
+
+                perfumes = perfumes
+                    .Where(p => RemoverAcentos(p.nombre).Contains(nombreNormalizado))
+                    .ToList();
+            }
+
+            // 18. Filtro por Promocion
+            if (!string.IsNullOrEmpty(filtrarSoloConPromocion) && filtrarSoloConPromocion == "on")
+            {
+                perfumes = perfumes
+                    .Where(p =>
+                        p.promocion.Any(pr =>
+                            pr.activo &&
+                            pr.id != 1 &&
+                            pr.fecha_inicio <= DateTime.Now &&
+                            pr.fecha_fin >= DateTime.Now
+                        )
+                    )
+                    .ToList();
+            }
+
+            // 19. Mostrar los perfumes
             var perfumesAgrupados = perfumes
                 .GroupBy(p => p.nombre)
                 .Select(g =>
@@ -126,22 +246,59 @@ namespace Eterea_Parfums_Web.Controllers
                 .Where(p => p != null)
                 .ToList();
 
-            // 7. Obtener marcas
-            var marcas = db.marca
-                .Select(m => new MarcaViewModel
-                {
-                    Id = m.id,
-                    Nombre = m.nombre
-                })
+            // 20. Ordenar perfumes
+            switch (orden)
+            {
+                case "nombreAsc":
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.Nombre).ToList();
+                    break;
+                case "nombreDesc":
+                    perfumesAgrupados = perfumesAgrupados.OrderByDescending(p => p.Nombre).ToList();
+                    break;
+                case "precioAsc":
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.PrecioConDescuento ?? p.Precio).ToList();
+                    break;
+                case "precioDesc":
+                    perfumesAgrupados = perfumesAgrupados.OrderByDescending(p => p.PrecioConDescuento ?? p.Precio).ToList();
+                    break;
+                case "masVendidos":
+                    perfumesAgrupados = perfumesAgrupados
+                        .OrderByDescending(p =>
+                            db.detalle_factura
+                                .Where(df => df.perfume_id == p.Id)
+                                .Sum(df => (int?)df.cantidad) ?? 0
+                        )
+                        .ToList();
+                    break;
+                default:
+                    // Orden por defecto (por nombre A-Z)
+                    perfumesAgrupados = perfumesAgrupados.OrderBy(p => p.Nombre).ToList();
+                    break;
+            }
+
+            // 20. Paginacion
+            int perfumesPorPagina = 8;
+
+            var perfumesPaginados = perfumesAgrupados
+                .Skip((pagina - 1) * perfumesPorPagina)
+                .Take(perfumesPorPagina)
                 .ToList();
 
-            // 10. ViewModel combinado
+            // 21. ViewModel combinado
             var viewModel = new PerfumeViewModel
             {
-                Perfumes = perfumesAgrupados,
-                Marcas = marcas
+                Perfumes = perfumesPaginados,
+                Busqueda = busqueda,
+                Marcas = marcas,
+                Generos = generos,
+                Tamanios = tamaniosDisponibles,
+                TipoDePerfumes = tipo_de_perfume,
+                TiposDeAroma = tiposDeAroma,
+                PaginaActual = pagina,
+                TotalPaginas = (int)Math.Ceiling((double)perfumesAgrupados.Count / perfumesPorPagina)
             };
 
+            ViewBag.OrdenSeleccionado = orden;
             return View(viewModel);
         }
 
@@ -370,6 +527,16 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 return View();
             }
+        }
+
+        private string RemoverAcentos(string texto)
+        {
+            if (texto == null) return null;
+            return new string(texto
+                .Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                .ToArray())
+                .ToLowerInvariant();
         }
     }
 }

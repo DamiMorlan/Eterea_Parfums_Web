@@ -37,12 +37,12 @@
 
         <!-- FLECHA IZQUIERDA -->
         <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-            <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+            <span class="fa-solid fa-chevron-left flecha-carousel-banner"></span>
         </button>
 
         <!-- FLECHA DERECHA -->
         <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-            <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+            <span class="fa-solid fa-chevron-right flecha-carousel-banner"></span>
         </button>
     </div>
 
@@ -68,7 +68,11 @@
                                     <div class="col-3 col-md-3">
                                         <div class="card text-center mb-3 border-0 shadow-sm rounded">
                                             <div class="card-body">
-                                                <h5 class="card-title" style="font-family: 'Georgia', serif;">@marca.Nombre</h5>
+                                               <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
+                                                  class="card-title text-decoration-none"
+                                                  style="font-family: 'Georgia', serif; color: inherit;">
+                                                   @marca.Nombre
+                                               </a>
                                             </div>
                                         </div>
                                     </div>

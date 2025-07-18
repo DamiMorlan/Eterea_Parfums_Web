@@ -10,8 +10,8 @@
 }
 
 <div class="container">
-    <h2 class="text-center my-4 mt-1">Nuestras Promociones</h2>
-    <div class="">
+    <h2 class="titulo-promociones">Nuestras Promociones</h2>
+    
         <div class="d-flex flex-column align-content-center box-promo">
             @if (Model != null && Model.Any())
             {
@@ -30,6 +30,9 @@
                                     </p>
                                     <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
 
+                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })" class="btn btn-light mt-2">
+                                        Ver perfumes
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -47,6 +50,9 @@
                                     </p>
                                     <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
 
+                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })" class="btn btn-light mt-2">
+                                        Ver perfumes
+                                    </a>
                                 </div>
                             </div>
                         </div>

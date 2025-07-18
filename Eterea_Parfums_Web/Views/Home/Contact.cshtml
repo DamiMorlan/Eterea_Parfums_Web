@@ -6,17 +6,22 @@
     <link href="~/Content/StyleContacto.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="contact-section">
-    <h2 class="section-title">@ViewBag.Title</h2>
+<div class="container-fluid">
+    <div class="contact-section">
+        <!-- Logo -->
+        <div class="logo-eterea-container text-center mb-4">
+            <img src="~/Imagenes/LogoEterea.png" alt="Logo Eterea Parfums" class="logo-eterea" />
+        </div>
 
-    <p class="intro-text text-center">
-        ¡Nos encantaría saber de ti! Si tienes preguntas, comentarios o necesitas asistencia, no dudes en ponerte en contacto con nosotros.
-    </p>
+        <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
 
-    <div class="row">
+        <p class="intro-text text-center">
+            ¡Nos encantaría saber de ti! Si tienes preguntas, comentarios o necesitas asistencia, no dudes en ponerte en contacto con nosotros.
+        </p>
+
         <!-- Formas de contacto -->
-        <div class="col-md-6 contact-box">
-            <h3>Formas de Contacto</h3>
+        <div class="contact-box mb-5 text-center">
+            <h3 class="titulo-contacto">Formas de Contacto</h3>
             <ul class="contact-list">
                 <li>
                     <i class="fas fa-headset me-2"></i>
@@ -37,7 +42,7 @@
                 </li>
             </ul>
 
-            <h3 class="mt-4">Síguenos</h3>
+            <h3 class="mt-4 titulo-contacto">Síguenos</h3>
             <p>Conéctate con nosotros para conocer novedades y promociones:</p>
             <div class="social-icons">
                 <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
@@ -47,9 +52,12 @@
             </div>
         </div>
 
-        <!-- Formulario -->
-        <div class="col-md-6 contact-form-box">
-            <h3>Formulario de Contacto</h3>
+        <!-- Separador -->
+        <hr class="my-5 linea-separadora" />
+
+        <!-- Formulario de contacto -->
+        <div class="contact-form-box">
+            <h3 class="section-subtitle mb-3" >Formulario de Contacto</h3>
             <form action="/enviarContacto" method="post">
                 <div class="form-group">
                     <label for="nombre">Nombre:</label>

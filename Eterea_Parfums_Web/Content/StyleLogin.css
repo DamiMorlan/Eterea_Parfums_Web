@@ -1,0 +1,157 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background-color: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor que centra todo en pantalla, sin superponerse al navbar/footer */
+.login-wrapper {
+    min-height: calc(100vh - 160px); /* Ajuste para navbar + footer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+}
+
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px 25px;
+    background-color: #fef6f8;
+    border: 1px solid #e0bfc7;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+    .login-container h2 {
+        text-align: center;
+        color: #a0435c;
+        margin-bottom: 10px;
+    }
+
+.separator {
+    border: none;
+    height: 2px;
+    background-color: #d1a7b4;
+    margin: 15px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #5a2a39;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d9b8c1;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border-color 0.3s;
+    }
+
+        .form-group input:focus {
+            border-color: #a0435c;
+            outline: none;
+        }
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background-color: #d1a7b4;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .btn-login:hover {
+        background-color: #a0435c;
+    }
+
+.error-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+.register-message {
+    text-align: center;
+    margin-top: 15px;
+    color: #5a2a39;
+}
+
+    .register-message a {
+        color: #a0435c;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .register-message a:hover {
+            text-decoration: underline;
+        }
+
+.logo-eterea-container {
+    animation: fadeInLogo 1.5s ease-in-out;
+}
+
+.logo-eterea {
+    max-height: 150px;
+    width: auto;
+    border-radius: 100px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease;
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+    .logo-eterea:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+/* Animación de entrada */
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de flotación suave */
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}

@@ -1,0 +1,102 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-container {
+    max-width: 980px;
+    margin: 30px auto;
+    padding: 40px;
+    background-color: #fef6f8;
+    border: 1px solid #ecc7d3;
+    border-radius: 18px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+    .register-container h2 {
+        color: #a0435c;
+        margin-bottom: 25px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+.separator {
+    border: none;
+    height: 2px;
+    background-color: #d1a7b4;
+    margin: 30px 0;
+}
+
+.subtitulo {
+    color: #6e2b3a;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e4b4c2;
+    padding-bottom: 8px;
+}
+
+.info-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eed3da;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+}
+
+    .info-box p {
+        margin: 6px 0;
+        color: #333;
+    }
+
+    .info-box strong {
+        color: #a0435c;
+    }
+
+.btn-register {
+    display: inline-block;
+    background-color: #d1a7b4;
+    padding: 12px 25px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+    text-decoration: none;
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+    .btn-register:hover {
+        background-color: #a0435c;
+        text-decoration: none;
+    }
+
+.text-center {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .info-box {
+        padding: 15px;
+    }
+}

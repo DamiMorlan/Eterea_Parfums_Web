@@ -6,20 +6,31 @@
     <link href="~/Content/StyleAbout.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="about-section">
-    <h2 class="section-title">@ViewBag.Title</h2>
 
-    <div class="about-content">
-        <p class="intro-text">
-            Bienvenidos a <strong>Eterea Parfums</strong>, una experiencia sensorial donde el arte de la perfumería cobra vida. Nos dedicamos a ofrecer fragancias exclusivas y de alta calidad, cuidadosamente seleccionadas para reflejar tu personalidad, estilo y esencia.
-        </p>
+<div class="container-fluid">
+    <div class="about-section">
 
-        <p>
-            En <strong>Eterea Parfums</strong>, creemos que un perfume es mucho más que una fragancia: es una expresión de identidad, un recuerdo inolvidable, un sello personal. Nuestro objetivo es ayudarte a encontrar esa fragancia perfecta que te acompañe todos los días o en momentos especiales.
-        </p>
+        <!-- Logo -->
+        <div class="logo-eterea-container text-center mb-4">
+            <img src="~/Imagenes/LogoEterea.png" alt="Logo Eterea Parfums" class="logo-eterea" />
+        </div>
 
-        <div class="mission-section">
-            <h3>¿Por qué elegirnos?</h3>
+        <!-- Título principal -->
+        <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
+
+        <!-- Introducción -->
+        <section class="text-center mb-5">
+            <p class="intro-text">
+                Bienvenidos a <strong>Eterea Parfums</strong>, una experiencia sensorial donde el arte de la perfumería cobra vida. Nos dedicamos a ofrecer fragancias exclusivas y de alta calidad, cuidadosamente seleccionadas para reflejar tu personalidad, estilo y esencia.
+            </p>
+            <p>
+                En <strong>Eterea Parfums</strong>, creemos que un perfume es mucho más que una fragancia: es una expresión de identidad, un recuerdo inolvidable, un sello personal. Nuestro objetivo es ayudarte a encontrar esa fragancia perfecta que te acompañe todos los días o en momentos especiales.
+            </p>
+        </section>
+
+        <!-- Por qué elegirnos -->
+        <section class="contact-box mb-5">
+            <h3 class="section-subtitle mb-3">¿Por qué elegirnos?</h3>
             <ul class="benefits-list">
                 <li><i class="fas fa-spray-can-sparkles me-2"></i><strong>Amplia variedad:</strong> Fragancias femeninas, masculinas y unisex, de reconocidas marcas internacionales y locales.</li>
                 <li><i class="fas fa-percent me-2"></i><strong>Precios accesibles:</strong> Ofertas especiales, promociones y beneficios exclusivos para nuestros clientes frecuentes.</li>
@@ -27,27 +38,86 @@
                 <li><i class="fas fa-heart me-2"></i><strong>Atención personalizada:</strong> Te asesoramos según tus preferencias aromáticas y necesidades.</li>
                 <li><i class="fas fa-star me-2"></i><strong>Calidad garantizada:</strong> Productos 100% originales y certificados.</li>
             </ul>
-        </div>
+        </section>
 
-        <div class="community-section">
-            <h3>Una comunidad que inspira</h3>
+        <!-- Comunidad -->
+        <section class="contact-box mb-5">
+            <h3 class="section-subtitle mb-3">Una comunidad que inspira</h3>
             <p>
                 Más que una tienda, somos una comunidad apasionada por las esencias. Compartimos contigo lanzamientos, reseñas, tips de uso y cuidados para tus perfumes favoritos.
             </p>
-
             <ul class="community-list">
                 <li><i class="fas fa-bottle-droplet me-2"></i><strong>Lanzamientos exclusivos:</strong> Sé el primero en descubrir nuevas colecciones.</li>
                 <li><i class="fas fa-hand-holding-heart me-2"></i><strong>Eventos sensoriales:</strong> Participá en sorteos, workshops y experiencias olfativas.</li>
                 <li><i class="fas fa-comments me-2"></i><strong>Reseñas y consejos:</strong> Escuchamos tu opinión y compartimos recomendaciones útiles.</li>
             </ul>
-        </div>
+        </section>
 
-        <p>
-            En <strong>Eterea Parfums</strong>, queremos acompañarte en cada paso con una fragancia que hable por vos. Explorá nuestro catálogo, descubrí nuevas notas y dejate llevar por el mundo de los perfumes.
-        </p>
+        <!-- Despedida -->
+        <section class="contact-box text-center mb-5">
+            <p>
+                En <strong>Eterea Parfums</strong>, queremos acompañarte en cada paso con una fragancia que hable por vos. Explorá nuestro catálogo, descubrí nuevas notas y dejate llevar por el mundo de los perfumes.
+            </p>
+            <p class="team-signature mt-4">– El equipo de Eterea Parfums -</p>
+        </section>
 
-        <p class="team-signature">
-            – El equipo de Eterea Parfums
-        </p>
+        <!-- Preguntas Frecuentes -->
+        <section class="faq-section mt-5">
+            <h3 class="section-subtitle mb-4">Preguntas Frecuentes</h3>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq1">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                            ¿Los perfumes que venden son originales?
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Sí, todos nuestros perfumes son 100% originales y provienen de distribuidores autorizados.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                            ¿Realizan envíos a todo el país?
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Sí, realizamos envíos a todo el territorio argentino con seguimiento y entrega segura.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                            ¿Cuáles son las formas de pago disponibles?
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Aceptamos tarjetas de crédito, débito, transferencias bancarias y pagos por MercadoPago.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq4">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                            ¿Puedo cambiar o devolver un producto?
+                        </button>
+                    </h2>
+                    <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Sí, dentro de los primeros 10 días desde la recepción, siempre que el producto esté sin uso y en su empaque original.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>

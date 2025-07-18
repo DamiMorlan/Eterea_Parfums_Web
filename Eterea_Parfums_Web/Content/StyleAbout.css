@@ -14,11 +14,10 @@ body {
 }
 
 .about-section {
-    background-color: #fff;
-    padding: 40px 30px;
+    background-color: white;
+    padding: 2rem 2rem;
     border-radius: 12px;
-    max-width: 1100px;
-    margin: 40px auto;
+    margin: 20px 60px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
@@ -26,7 +25,7 @@ body {
     text-align: center;
     font-size: 2.8rem;
     margin-bottom: 25px;
-    color: #2d2d2d;
+    color: #973f5c; /* rosa profundo */
     font-weight: 700;
 }
 
@@ -35,6 +34,8 @@ body {
     color: #555;
     font-size: 1.1rem;
 }
+
+
 
 .intro-text {
     font-size: 1.2rem;
@@ -81,4 +82,96 @@ body {
     margin-top: 40px;
     font-size: 1.15rem;
     color: #666;
+}
+
+
+.logo-eterea-container {
+    animation: fadeInLogo 1.5s ease-in-out;
+}
+
+.logo-eterea {
+    max-height: 200px;
+    width: auto;
+    border-radius: 100px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease;
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+    .logo-eterea:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+/* Animación de entrada */
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de flotación suave */
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+
+}
+
+.faq-section h3 {
+    font-weight: bold;
+    color: #aa667a;
+}
+
+.accordion-button {
+    background-color: #f9f1f3;
+    font-weight: 500;
+    color: #5a2e3f;
+}
+
+    .accordion-button:not(.collapsed) {
+        background-color: #e7d1d7;
+        color: #3a1c25;
+    }
+
+.section-subtitle {
+    color: #973f5c;
+    font-weight: 600;
+    border-bottom: 2px solid #e2c3cc;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+}
+
+/* Quita bordes y sombreado al seleccionar una pregunta */
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: transparent;
+    outline: none;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa; /* o el fondo que uses normalmente */
+    color: #333;
+    box-shadow: none;
+    border-color: transparent;
+}
+
+/* Ajustes visuales para los bloques */
+.contact-box {
+    background-color: var(--rosa-suave);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
 }
