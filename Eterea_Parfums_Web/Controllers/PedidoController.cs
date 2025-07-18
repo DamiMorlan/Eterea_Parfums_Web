@@ -138,12 +138,10 @@ namespace Eterea_Parfums_Web.Controllers
             var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
 
             var stockDict = db.stock
-                .Where(s => perfumeIds.Contains(s.perfume_id))
-                .ToList()
-                .GroupBy(s => s.perfume_id)
+                .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
                 .ToDictionary(
-                    g => g.Key,
-                    g => g.Sum(s => Math.Max(0, s.cantidad - 5))
+                    s => s.perfume_id,
+                    s => Math.Max(0, s.cantidad - 5)
                 );
 
             var items = carrito.Select(c =>
