@@ -10,9 +10,7 @@ namespace Eterea_Parfums_Web.Helpers
         /// <summary>
         /// Construye el ItemCarritoViewModel aplicando todas las reglas de promos.
         /// </summary>
-        public static ItemCarritoViewModel BuildItemViewModel(
-            carrito item,
-            int stockDisponible)
+        public static ItemCarritoViewModel BuildItemViewModel(carrito item, int stockDisponible)
         {
             var perfume = item.perfume;
             int cantidad = item.cantidad;
@@ -56,7 +54,12 @@ namespace Eterea_Parfums_Web.Helpers
                     int resto = cantidad % 2;
                     double descuentoPorcentaje = promoPorCantidad.descuento;
 
-                    total = Math.Round((pares * (precioOriginal + (precioOriginal * (1 - descuentoPorcentaje / 100.0)))) + (resto * precioOriginal), 2);
+                    double precioPrimero = precioOriginal;
+                    double precioSegundo = descuentoPorcentaje == 50 ? 0 : precioOriginal * (1 - descuentoPorcentaje / 100.0);
+
+                    total = Math.Round((pares * (precioPrimero + precioSegundo)) + (resto * precioOriginal), 2);
+                    precioConDescuento = total / cantidad;
+
                     tienePromo = true;
                     leyendaPromo = descuentoPorcentaje == 50
                         ? "Promoción 2 x 1"
@@ -65,20 +68,27 @@ namespace Eterea_Parfums_Web.Helpers
                 else
                 {
                     total = precioOriginal * cantidad;
+                    precioConDescuento = precioOriginal;
+
                     tienePromo = true;
                     leyendaPromo = $"Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
                 }
             }
-            else if (promo10 != null && promoPorCantidad != null)
+
+            if (promo10 == null && promoPorCantidad != null)
             {
                 if (cantidad >= 2)
                 {
-                    // Aplicar solo promo por cantidad
                     int pares = cantidad / 2;
                     int resto = cantidad % 2;
                     double descuentoPorcentaje = promoPorCantidad.descuento;
 
-                    total = Math.Round((pares * (precioOriginal + (precioOriginal * (1 - descuentoPorcentaje / 100.0)))) + (resto * precioOriginal), 2);
+                    double precioPrimero = precioOriginal;
+                    double precioSegundo = descuentoPorcentaje == 50 ? 0 : precioOriginal * (1 - descuentoPorcentaje / 100.0);
+
+                    total = Math.Round((pares * (precioPrimero + precioSegundo)) + (resto * precioOriginal), 2);
+                    precioConDescuento = total / cantidad;
+
                     tienePromo = true;
                     leyendaPromo = descuentoPorcentaje == 50
                         ? "Promoción 2 x 1"
@@ -86,13 +96,14 @@ namespace Eterea_Parfums_Web.Helpers
                 }
                 else
                 {
-                    // Solo aplica promo del 10%
-                    precioConDescuento = precioOriginal * 0.90;
-                    total = Math.Round(precioConDescuento * cantidad, 2);
+                    total = precioOriginal * cantidad;
+                    precioConDescuento = precioOriginal;
+
                     tienePromo = true;
-                    leyendaPromo = $"Promoción 10% OFF - Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
+                    leyendaPromo = $"Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
                 }
             }
+
             else
             {
                 // Sin promoción
@@ -122,5 +133,6 @@ namespace Eterea_Parfums_Web.Helpers
                     && precioConDescuento < precioOriginal
             };
         }
+
     }
 }

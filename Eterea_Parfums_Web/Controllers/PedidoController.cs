@@ -23,7 +23,7 @@ namespace Eterea_Parfums_Web.Controllers
     {
         private etereaEntities7 db = new etereaEntities7();
 
-        [HttpPost]
+      /*  [HttpPost]
         public ActionResult VistaPrevia(List<int> PerfumeIds, List<int> Cantidades, double Subtotal, double Descuento, double Total)
         {
             if (Session["clienteId"] == null)
@@ -97,10 +97,11 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
-            double subtotal = Subtotal;
-            double descuento = Descuento;
-            double total = Total;
+            double subtotal = items.Sum(i => i.PrecioOriginal * i.Cantidad);
+            double total = items.Sum(i => i.Total);
+            double descuento = subtotal - total;
             bool envioGratis = total >= 50000;
+
 
             var model = new VistaPreviaPedidoViewModel
             {
@@ -117,78 +118,96 @@ namespace Eterea_Parfums_Web.Controllers
             };
 
             return View(model);
-        }
-
+        }*/
 
         [HttpGet]
         public ActionResult VistaPrevia()
         {
             if (Session["clienteId"] == null)
-                return RedirectToAction("Login", "Cuenta");
+                return RedirectToAction("Login", "Cliente");
 
             int clienteId = (int)Session["clienteId"];
-
-
-
-            var cliente = db.cliente.FirstOrDefault(c => c.id == clienteId);
-            var calle = db.calle.FirstOrDefault(c => c.id == cliente.calle_id);
-            var localidad = db.localidad.FirstOrDefault(l => l.id == cliente.localidad_id);
-            var provincia = db.provincia.FirstOrDefault(p => p.id == cliente.provincia_id);
 
             var carrito = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)
-                .Where(c => c.cliente_id == clienteId && c.cantidad > 0)
+                .Include(c => c.perfume.stock)
+                .Where(c => c.cliente_id == clienteId)
                 .ToList();
 
-            var itemsCarrito = new List<ItemCarritoViewModel>();
-            double subtotal = 0;
-            double total = 0;
+            var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
 
-            foreach (var item in carrito)
-            {
-                // 🚨 Aquí podrías agregar lógica real para stock por perfume si querés
-                int stockDisponible = item.perfume.stock.Sum(s => s.cantidad) - 5; // ejemplo
+            var stockDict = db.stock
+                .Where(s => perfumeIds.Contains(s.perfume_id))
+                .ToList()
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(s => Math.Max(0, s.cantidad - 5))
+                );
 
-                var itemVM = CarritoHelper.BuildItemViewModel(item, stockDisponible);
+            var items = carrito.Select(c =>
+                CarritoHelper.BuildItemViewModel(
+                    c,
+                    stockDict.ContainsKey(c.perfume_id)
+                        ? stockDict[c.perfume_id]
+                        : 0)).ToList();
 
-                subtotal += itemVM.PrecioOriginal * itemVM.Cantidad;
-                total += itemVM.Total;
-                itemsCarrito.Add(itemVM);
-            }
-
+            // 🚨 CORRECTO cálculo de totales y descuentos
+            double subtotal = items.Sum(x => x.PrecioOriginal * x.Cantidad);
+            double total = items.Sum(x => x.Total);
             double descuento = subtotal - total;
-            bool envioGratis = total >= 50000;
 
-            string domicilioTexto;
+            // ✅ Dirección de envío desde Session
+
+            string domicilio;
 
             if (Session["DomicilioDeEnvioTexto"] != null)
             {
-                domicilioTexto = Session["DomicilioDeEnvioTexto"].ToString();
+                domicilio = Session["DomicilioDeEnvioTexto"].ToString();
             }
             else
             {
-                domicilioTexto =
-                    $"{calle?.nombre}, {cliente.numeracion_calle}" +
-                    $"{(string.IsNullOrWhiteSpace(cliente.piso) ? "" : $" Piso {cliente.piso}")}" +
-                    $"{(string.IsNullOrWhiteSpace(cliente.departamento) ? "" : $" Dpto. {cliente.departamento}")}" +
-                    $"\n{cliente.codigo_postal}, {localidad?.nombre}, {provincia?.nombre}";
-            }
+                // Busco la última dirección usada o la dirección del cliente
+                var cliente = db.cliente
+                    .Include(c => c.calle)
+                    .Include(c => c.localidad)
+                    .Include(c => c.localidad.provincia)
+                    .FirstOrDefault(c => c.id == clienteId);
 
+                if (cliente != null)
+                {
+                    var calle = cliente.calle?.nombre ?? "";
+                    var numero = cliente.numeracion_calle;
+                    var piso = string.IsNullOrEmpty(cliente.piso) ? "" : $"Piso {cliente.piso}";
+                    var depto = string.IsNullOrEmpty(cliente.departamento) ? "" : $"Dpto. {cliente.departamento}";
+                    var cp = cliente.codigo_postal;
+                    var localidad = cliente.localidad?.nombre ?? "";
+                    var provincia = cliente.localidad?.provincia?.nombre ?? "";
+
+                    domicilio = $"{calle}, {numero} {piso} {depto}\n{cp}, {localidad}, {provincia}";
+                }
+                else
+                {
+                    domicilio = "Domicilio no disponible.";
+                }
+            }
+        
 
             var model = new VistaPreviaPedidoViewModel
             {
-                Cliente = cliente,
-                Calle = calle,
-                Localidad = localidad,
-                Provincia = provincia,
-                Items = itemsCarrito, // Usa los ItemCarritoViewModel directamente
+                Items = items,
                 Subtotal = subtotal,
-                Descuento = descuento,
                 Total = total,
-                EnvioGratis = envioGratis,
-                DomicilioDeEnvioTexto = domicilioTexto
+                Descuento = descuento,
+                EnvioGratis = total >= 50000,
+                DomicilioDeEnvioTexto = domicilio
             };
+
+            foreach (var i in items)
+            {
+                System.Diagnostics.Debug.WriteLine($"PerfumeId: {i.PerfumeId} | PrecioOriginal: {i.PrecioOriginal} | Cantidad: {i.Cantidad} | Total: {i.Total} | PrecioConDescuento: {i.PrecioConDescuento} | Promo: {i.LeyendaPromo}");
+            }
 
             return View(model);
         }
@@ -368,16 +387,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
         }
 
-        // GET: Pedido/SimularPago
-        /*public ActionResult RealizarPago(double monto)
-        {
-            var model = new SimularPagoViewModel
-            {
-                Monto = monto,
-                Usuario = "AdriCamp"   // o leés el nombre de la sesión
-            };
-            return View(model);
-        }*/
+     
 
         public ActionResult SimularPago(string monto)
         {
@@ -396,72 +406,6 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-      /*  [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ConfirmarPago()
-        {
-            var items = Session["PedidoItems"] as List<PedidoItemVM>;
-            if (items == null || !items.Any())
-            {
-                TempData["ErrorPago"] = "No se encontró el pedido en sesión.";
-                return RedirectToAction("Index", "Carrito");
-            }
-
-            int clienteId = (int)Session["clienteId"];   // ← id del cliente logueado
-
-            using (var tx = db.Database.BeginTransaction())
-            {
-                try
-                {
-                    // ---------- 1. Descontar stock -----------------------------
-                    foreach (var it in items)
-                    {
-                        int restante = it.Cantidad;
-                        while (restante > 0)
-                        {
-                            var st1 = db.stock.FirstOrDefault(s => s.perfume_id == it.PerfumeId &&
-                                                                   s.sucursal_id == 1);
-                            if (st1 != null && st1.cantidad > 5)
-                            {
-                                st1.cantidad--;
-                                restante--;
-                                continue;
-                            }
-
-                            var st2 = db.stock.FirstOrDefault(s => s.perfume_id == it.PerfumeId &&
-                                                                   s.sucursal_id == 2);
-                            if (st2 != null && st2.cantidad > 5)
-                            {
-                                st2.cantidad--;
-                                restante--;
-                                continue;
-                            }
-
-                            throw new InvalidOperationException(
-                                $"No hay stock disponible para el perfume {it.PerfumeId}.");
-                        }
-                    }
-
-                    // ---------- 2. Vaciar el carrito en la BD ------------------
-                    var lineasCarrito = db.carrito.Where(c => c.cliente_id == clienteId).ToList();
-                    db.carrito.RemoveRange(lineasCarrito);
-
-                    // ---------- 3. Guardar y confirmar -------------------------
-                    db.SaveChanges();
-                    tx.Commit();
-
-                    Session.Remove("PedidoItems");
-                    TempData["PagoOK"] = "¡Pago aprobado, stock actualizado y carrito vaciado!";
-                    return RedirectToAction("PagoExitoso");
-                }
-                catch (Exception ex)
-                {
-                    tx.Rollback();
-                    TempData["ErrorPago"] = $"Error al procesar el pago: {ex.Message}";
-                    return RedirectToAction("Index", "Carrito");
-                }
-            }
-        }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
