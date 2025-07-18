@@ -43,8 +43,30 @@ namespace Eterea_Parfums_Web.Controllers
             var localidad = db.localidad.FirstOrDefault(l => l.id == cliente.localidad_id);
             var provincia = db.provincia.FirstOrDefault(p => p.id == cliente.provincia_id);
 
-            var items = new List<ItemResumenPedidoViewModel>();
+            // ✅ Armar el texto del domicilio para mostrar
+            string domicilioTexto = "";
 
+            if (calle != null)
+                domicilioTexto += calle.nombre + " ";
+            domicilioTexto += cliente.numeracion_calle;
+
+            if (!string.IsNullOrEmpty(cliente.piso))
+                domicilioTexto += " Piso " + cliente.piso;
+            if (!string.IsNullOrEmpty(cliente.departamento))
+                domicilioTexto += " Dpto. " + cliente.departamento;
+
+            domicilioTexto += "\n";
+            domicilioTexto += "C.P. " + cliente.codigo_postal + ", ";
+            if (localidad != null)
+                domicilioTexto += localidad.nombre + ", ";
+            if (provincia != null)
+                domicilioTexto += provincia.nombre;
+
+            // ✅ Guardar en sesión
+            Session["DomicilioDeEnvioTexto"] = domicilioTexto;
+
+            // ✅ Cargar ítems del pedido
+            var items = new List<ItemResumenPedidoViewModel>();
             for (int i = 0; i < PerfumeIds.Count; i++)
             {
                 int perfumeId = PerfumeIds[i];
@@ -68,9 +90,7 @@ namespace Eterea_Parfums_Web.Controllers
             double subtotal = Subtotal;
             double descuento = Descuento;
             double total = Total;
-            bool envioGratis = total >= 50_000;        // regla de negocio
-
-        
+            bool envioGratis = total >= 50000;
 
             var model = new VistaPreviaPedidoViewModel
             {
@@ -78,15 +98,17 @@ namespace Eterea_Parfums_Web.Controllers
                 Calle = calle,
                 Localidad = localidad,
                 Provincia = provincia,
-                Items = items,           // <- ya compila, tipado correcto
+                Items = items,
                 Subtotal = subtotal,
                 Descuento = descuento,
                 Total = total,
-                EnvioGratis = envioGratis     // <- variable definida arriba
+                EnvioGratis = envioGratis,
+                DomicilioDeEnvioTexto = domicilioTexto  // ✅ pasarlo al modelo también
             };
 
             return View(model);
         }
+
 
         [HttpGet]
         public ActionResult VistaPrevia()

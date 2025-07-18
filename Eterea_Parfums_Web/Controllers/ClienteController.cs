@@ -232,15 +232,43 @@ namespace Eterea_Parfums_Web.Controllers
                 .Select(c => c.dni)
                 .FirstOrDefault();
 
-            // 2. Buscar domicilios por DNI en orden
-            var domicilios = db.orden
+            // 2. Buscar los domicilios usados por ese cliente (texto completo)
+            var textos = db.orden
                 .Where(o => o.dni == dni && o.domicilio_de_envio != null)
                 .Select(o => o.domicilio_de_envio)
                 .Distinct()
                 .ToList();
 
-            return View(domicilios);
+            // 3. Transformar en ViewModels divididos en dos líneas
+            var modelo = textos.Select(t =>
+            {
+                string linea1 = "";
+                string linea2 = "";
+
+                int indiceCP = t.IndexOf("C.P.");
+
+                if (indiceCP > 0)
+                {
+                    linea1 = t.Substring(0, indiceCP).Trim();
+                    linea2 = t.Substring(indiceCP).Trim();
+                }
+                else
+                {
+                    // Por si no se encuentra "C.P.:"
+                    linea1 = t;
+                }
+
+
+                return new DireccionFormateadaViewModel
+                {
+                    Linea1 = linea1,
+                    Linea2 = linea2
+                };
+            }).ToList();
+
+            return View(modelo);
         }
+
 
         [HttpGet]
         public ActionResult AgregarDireccion()
@@ -262,16 +290,18 @@ namespace Eterea_Parfums_Web.Controllers
             return RedirectToAction("VistaPrevia", "Pedido");
         }
 
-  
+
 
         [HttpPost]
         public ActionResult SeleccionarDireccionConfirmar(string texto)
         {
-            if (!string.IsNullOrWhiteSpace(texto))
-                Session["NuevoDomicilioEntrega"] = texto;
+            Session["DomicilioDeEnvioTexto"] = texto;
+            Session["NuevoDomicilioEntrega"] = texto;
 
+            // Redirige a VistaPrevia
             return RedirectToAction("VistaPrevia", "Pedido");
         }
+
 
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
         {
