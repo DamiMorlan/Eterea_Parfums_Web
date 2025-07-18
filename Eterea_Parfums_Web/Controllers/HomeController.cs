@@ -15,7 +15,7 @@ namespace Eterea_Parfums_Web.Controllers
         public ActionResult Index()
         {
             // 1. Obtener stock completo
-            var stock = db.stock.ToList();
+            var stock = db.stock.Where(s => s.sucursal_id == 1).ToList();
 
             // 2. Calcular stock disponible por perfume
             var stockDisponiblePorPerfume = stock
