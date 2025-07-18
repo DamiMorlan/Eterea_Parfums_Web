@@ -220,16 +220,24 @@ namespace Eterea_Parfums_Web.Controllers
                 auto_return = "approved"
             };
 
+            Console.WriteLine(preference.back_urls.success);
+
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "TEST-5038567099517736-070123-746239afa62e81d9d67bce507d09076f-130528138");
                 var content = new StringContent(JsonConvert.SerializeObject(preference), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
 
+                Console.WriteLine(response.StatusCode);
+
+
                 if (response.IsSuccessStatusCode)
                 {
                     var result = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
                     string initPoint = result.init_point;
+
+                    Console.WriteLine(initPoint);
+
                     return Redirect(initPoint);
                 }
                 else
@@ -491,7 +499,7 @@ namespace Eterea_Parfums_Web.Controllers
                         foreach (var prm in promosVigentes)
                         {
                             // Ejemplo: descuento % sobre cada unidad
-                            descItem += prm.descuento / 100.0 * item.perfume.precio_en_pesos * item.cantidad;
+                            descItem += (prm.descuento / 100.0) * (item.perfume.precio_en_pesos * item.cantidad);
                         }
                         descuentoTotal += descItem;
 
@@ -508,6 +516,10 @@ namespace Eterea_Parfums_Web.Controllers
                     double subtotalOriginal = carrito.Sum(i => i.perfume.precio_en_pesos * i.cantidad);
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+
+                    Console.Write("Resultado: " + Math.Round(totalFinal, 2));
+                    Console.Write(Math.Round(Math.Round(totalCalculado, 2)));
+
 
                     if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))
                         throw new InvalidOperationException("Los totales no coinciden");

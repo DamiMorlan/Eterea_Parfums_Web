@@ -350,6 +350,19 @@ select {
     width: 512px;
 }
 
+/* ----- Precio con promoción ----- */
+.precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
 @media (max-width: 768px) {
     .detalle .btn-eterea {
         width: 100%;
@@ -358,4 +371,39 @@ select {
     .box-tarjeta {
         width: 100%;
     }
+}
+
+.selector-tamanios .btn-tamanio {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    min-width: 55px;
+    text-align: center;
+}
+
+    .selector-tamanios .btn-tamanio.active,
+    .selector-tamanios .btn-tamanio:hover {
+        background-color: var(--rosa-profundo);
+        color: white;
+    }
+
+/* ----- Leyenda de promoción ----- */
+.leyenda-promocion {
+    background-color: var(--rosa-medio);
+    color: white;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.promo-placeholder {
+    min-height: 1.2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
 }
