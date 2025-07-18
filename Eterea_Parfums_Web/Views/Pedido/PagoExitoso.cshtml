@@ -3,16 +3,41 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Head {   <!-- si tu _Layout.cshtml define un section Head -->
-    <meta http-equiv="refresh"
-          content="5;url=@Url.Action("Index","Home")" />
+@section Styles {
+    <link href="~/Content/StylePagoExitoso.css" rel="stylesheet" type="text/css" />
 }
-
-<div class="container text-center my-5">
+<!--<div class="container text-center my-5">
     <h2 class="text-success">¡Pago aprobado!</h2>
     <p>@TempData["PagoOK"]</p>
     <p class="text-muted">Serás redirigido en 5 segundos…</p>
     <a href="@Url.Action("Index","Home")" class="btn btn-primary mt-3">
         Ir ahora
     </a>
+</div>-->
+
+
+<div class="container-fluid bg-success-mp text-white py-5 text-center">
+    <div class="icon-circle mb-3">
+        <i class="fa-solid fa-check"></i><!-- Usa Bootstrap Icons si están cargadas -->
+    </div>
+    <h2 class="fw-bold">¡Listo! Se acreditó tu pago</h2>
+    <p class="mb-0">Numero de Operacion: <strong>@ViewBag.NumOrden</strong></p>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="payment-box text-center mt-3">
+                <p class="fs-5 mb-1">Pagaste <strong>$@ViewBag.TotalFibal.ToString("N2", new System.Globalization.CultureInfo("es-AR"))</strong></p>
+                <p class="text-muted small">
+                    En el resumen de tu tarjeta verás el cargo a nombre de:<br>
+                    <strong>MERCADOPAGO*ETEREAPARFUMS</strong>
+                </p>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-custom mt-3">
+                    Volver al sitio
+                </a>
+            </div>
+        </div>
+    </div>
+    <!--<p class="text-center text-muted mt-3">Serás redirigido en 5 segundos…</p>-->
 </div>

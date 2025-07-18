@@ -241,9 +241,11 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-        public ActionResult PagoExitoso()
+        public ActionResult PagoExitoso(int numOrden, double totalFibal)
         {
-            return Content("¡Pago exitoso! Gracias por tu compra.");
+            ViewBag.NumOrden = numOrden;
+            ViewBag.TotalFibal = totalFibal;
+            return View();
         }
 
         public ActionResult PagoFallido()
@@ -624,7 +626,9 @@ namespace Eterea_Parfums_Web.Controllers
                     db.SaveChanges();
 
                     tx.Commit();
-                    return RedirectToAction("PagoExitoso", "Pedido");
+                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
+
+
                 }
                 catch (Exception ex)
                 {
