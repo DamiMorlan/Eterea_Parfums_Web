@@ -560,30 +560,25 @@ namespace Eterea_Parfums_Web.Controllers
                         int cantidadRestante = d.CarritoItem.cantidad;
 
                         // Trae una tabla con los datos del stock donde el id del perfume sea igual al perfume del carrito
-                        var stockSucursales = db.stock
-                         .Where(s => s.perfume_id == d.CarritoItem.perfume_id && s.cantidad > 5)
-                         .OrderBy(s => s.sucursal_id)
-                         .ToList();
+                        var stock = db.stock
+                        .FirstOrDefault(s => s.perfume_id == d.CarritoItem.perfume_id
+                                          && s.cantidad > 5
+                                          && s.sucursal_id == 1);
 
-                        // Descuenta el stock por sucursal empezando por la 1
-                        foreach (var stock in stockSucursales)
+
+                        if (stock != null)
                         {
-                            if (cantidadRestante <= 0)
-                                break;
-
-                            int stockDisponibleWeb = stock.cantidad - 5; // solo se puede vender lo que excede el mínimo
-                            if (stockDisponibleWeb <= 0)
-                                continue;
-                            int aDescontar = Math.Min(cantidadRestante, stock.cantidad);
-                            stock.cantidad -= aDescontar;
-                            cantidadRestante -= aDescontar;
+                            int stockDisponibleWeb = stock.cantidad - 5; // solo lo que excede el mínimo
+                            if (stockDisponibleWeb >= cantidadRestante)
+                            {
+                                stock.cantidad -= cantidadRestante;
+                            }
+                            else // Si aún queda cantidad comprada sin descontar del stock, hace un roll back
+                            {
+                                throw new InvalidOperationException($"Stock insuficiente para el perfume ID {d.CarritoItem.perfume_id}");
+                            }
                         }
 
-                        // Si aún queda cantidad comprada sin descontar del stock, hace un roll back
-                        if (cantidadRestante > 0)
-                        {
-                            throw new InvalidOperationException($"Stock insuficiente para el perfume ID {d.CarritoItem.perfume_id}");
-                        }
 
                         // Si promocion_id NO es nullable en BD, reemplazá null con 0 o un valor dummy
                         db.detalle_factura.Add(new detalle_factura
