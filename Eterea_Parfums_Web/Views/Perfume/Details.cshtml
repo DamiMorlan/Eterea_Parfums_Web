@@ -22,7 +22,12 @@
             <ul class="breadcrumb-nav">
                 <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a></li>
                 <li><span>&gt;</span> <a href="@Url.Action("Index", "Perfume")">Perfumes</a></li>
-                <li><span>&gt;</span> <a href="#">@Model.Perfume.genero.genero1</a></li>
+                <li>
+                    <span>&gt;</span>
+                    <a href="@Url.Action("Index", new { generosSeleccionados = Model.Perfume.genero.genero1 })">
+                        @Model.Perfume.genero.genero1
+                    </a>
+                </li>
                 <li><span>&gt;</span> <span>@Model.Perfume.nombre</span></li>
             </ul>
         </div>
