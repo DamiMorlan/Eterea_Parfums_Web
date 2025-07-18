@@ -17,13 +17,13 @@ namespace Eterea_Parfums_Web.ViewModels
 
         public string ConstruirTextoCompleto()
         {
-            string linea1 = $"{Calle}, {Numeracion}";
+            string linea1 = $"{Calle}  {Numeracion}";
             if (!string.IsNullOrWhiteSpace(Piso))
-                linea1 += $" {Piso}";
+                linea1 += $" Piso {Piso}";
             if (!string.IsNullOrWhiteSpace(Departamento))
                 linea1 += $" Dpto. {Departamento}";
 
-            string linea2 = $"{CodigoPostal}, {Localidad}, {Provincia}";
+            string linea2 = $"C.P. {CodigoPostal}, {Localidad}, {Provincia}";
 
             return linea1 + "\n" + linea2;
         }
