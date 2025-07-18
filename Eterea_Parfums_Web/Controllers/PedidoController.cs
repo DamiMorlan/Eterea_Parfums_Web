@@ -249,11 +249,11 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-
-
-        public ActionResult PagoExitoso()
+        public ActionResult PagoExitoso(int numOrden, double totalFibal)
         {
-            return Content("¡Pago exitoso! Gracias por tu compra.");
+            ViewBag.NumOrden = numOrden;
+            ViewBag.TotalFibal = totalFibal;
+            return View();
         }
 
         public ActionResult PagoFallido()
@@ -482,28 +482,38 @@ namespace Eterea_Parfums_Web.Controllers
 
                     foreach (var item in carrito)
                     {
-                        // Promos vigentes
                         var promosVigentes = item.perfume.promocion
-                                                       .Where(p => p.activo
-                                                                 && p.fecha_inicio <= DateTime.Today
-                                                                 && p.fecha_fin >= DateTime.Today)
-                                                       .OrderByDescending(p => p.descuento)  // prioridad mayor % primero
-                                                       .Take(2)                              // máx 2
-                                                       .ToList();
+                         .Where(p => p.activo && p.fecha_inicio <= DateTime.Today && p.fecha_fin >= DateTime.Today)
+                         .ToList();
 
-                        int? p1 = promosVigentes.ElementAtOrDefault(0)?.id;
-                        int? p2 = promosVigentes.ElementAtOrDefault(1)?.id;
+                        // Clasificamos por tipo de promo
+                        var promoDiez = promosVigentes.FirstOrDefault(p => p.descuento == 10);
+                        var promoMayor = promosVigentes.FirstOrDefault(p => p.descuento > 10);
 
-                        // Descuento aplicado a este ítem
+                        int cantidad = item.cantidad;
+                        double precioUnitario = item.perfume.precio_en_pesos;
                         double descItem = 0;
-                        foreach (var prm in promosVigentes)
+                        int? p1 = null;
+                        int? p2 = null;
+
+                        // Aplicamos promo mayor a 10% por cada par
+                        if (promoMayor != null && cantidad >= 2)
                         {
-                            // Ejemplo: descuento % sobre cada unidad
-                            descItem += (prm.descuento / 100.0) * (item.perfume.precio_en_pesos * item.cantidad);
+                            int pares = cantidad / 2;
+                            descItem += pares * (promoMayor.descuento / 100.0) * precioUnitario * 2;
+                            p2 = promoMayor.id;
+                            cantidad -= pares * 2; // Reducimos lo que queda por aplicar
                         }
+
+                        // Aplicamos promo del 10% por unidad restante
+                        if (promoDiez != null && cantidad > 0)
+                        {
+                            descItem += cantidad * (promoDiez.descuento / 100.0) * precioUnitario;
+                            p1 = promoDiez.id;
+                        }
+
                         descuentoTotal += descItem;
 
-                        // Guardo info temporal para la inserción posterior
                         detallesTmp.Add(new DetalleTmp
                         {
                             CarritoItem = item,
@@ -517,23 +527,26 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    Console.Write("Resultado: " + Math.Round(totalFinal, 2));
-                    Console.Write(Math.Round(Math.Round(totalCalculado, 2)));
-
-
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))
+                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
+                        //DE 40% Y TIENE UN DESCUENTO DEL 10% TAMBIEN, SE APLICAN AMBOS POR ESO EL totalCalculado NO DA IGUAL QUE EL totalFinal
+                        //Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
                     string tipoFactura = cliente.condicion_frente_al_iva == "Responsable Inscripto" ? "A" : "B";
                     string numFactura = GenerarNumeroFactura(db, tipoFactura);
 
+                    int nuevoIdFactura = db.factura.Any()
+                     ? db.factura.Max(f => f.id) + 1   // último + 1
+                     : 1;                              // tabla vacía → 1
+
                     /* 5) FACTURA */
                     var fac = new factura
                     {
+                        id = nuevoIdFactura,
                         fecha = DateTime.Now,
-                        sucursal_id = 0,
-                        empleado_id = 0,
+                        sucursal_id = 1,
+                        empleado_id = 1,
                         cliente_id = clienteId,
                         forma_de_pago = medio,
                         precio_total = totalCalculado,
@@ -547,10 +560,34 @@ namespace Eterea_Parfums_Web.Controllers
                     };
                     db.factura.Add(fac);
                     db.SaveChanges();   // fac.id listo
+                    System.Diagnostics.Debug.WriteLine($"Factura creada: {fac.id}");
 
                     /* 6) DETALLE_FACTURA */
                     foreach (var d in detallesTmp)
                     {
+                        int cantidadRestante = d.CarritoItem.cantidad;
+
+                        // Trae una tabla con los datos del stock donde el id del perfume sea igual al perfume del carrito
+                        var stock = db.stock
+                        .FirstOrDefault(s => s.perfume_id == d.CarritoItem.perfume_id
+                                          && s.cantidad > 5
+                                          && s.sucursal_id == 1);
+
+
+                        if (stock != null)
+                        {
+                            int stockDisponibleWeb = stock.cantidad - 5; // solo lo que excede el mínimo
+                            if (stockDisponibleWeb >= cantidadRestante)
+                            {
+                                stock.cantidad -= cantidadRestante;
+                            }
+                            else // Si aún queda cantidad comprada sin descontar del stock, hace un roll back
+                            {
+                                throw new InvalidOperationException($"Stock insuficiente para el perfume ID {d.CarritoItem.perfume_id}");
+                            }
+                        }
+
+
                         // Si promocion_id NO es nullable en BD, reemplazá null con 0 o un valor dummy
                         db.detalle_factura.Add(new detalle_factura
                         {
@@ -558,17 +595,22 @@ namespace Eterea_Parfums_Web.Controllers
                             perfume_id = d.CarritoItem.perfume_id,
                             cantidad = d.CarritoItem.cantidad,
                             precio_unitario = d.CarritoItem.perfume.precio_en_pesos,
-                            promocion_id = d.Promo1Id ?? 0,      // ← 0 si no hay promo1
-                            promocion2_id = d.Promo2Id            // nullable
+                            promocion_id = d.Promo1Id ?? 1,      //  1 si no hay promo1
+                            promocion2_id = d.Promo2Id            
                         });
                     }
                     db.SaveChanges();
 
+                    int nuevoIdOrden = db.orden.Any()
+                     ? db.orden.Max(o => o.numero_de_orden) + 1
+                     : 1;
                     /* 7) ORDEN */
                     db.orden.Add(new orden
                     {
+                        numero_de_orden = nuevoIdOrden,
                         factura_id = fac.id,
-                        nombre_cliente = $"{cliente.nombre} {cliente.apellido}",
+                        nombre_cliente = cliente.nombre,
+                        apellido_cliente = cliente.apellido,
                         dni = cliente.dni,
                         e_mail_cliente = cliente.e_mail,
                         domicilio_de_envio = ConstruirDireccionEnvio(db, cliente),
@@ -576,6 +618,10 @@ namespace Eterea_Parfums_Web.Controllers
                         codigo_despacho = null,
                         fecha_creacion = DateTime.Now
                     });
+                    var ordenAgregada = db.orden.Local.Last();
+                    Console.WriteLine($"Orden→  Factura:{ordenAgregada.factura_id}, Cliente:{ordenAgregada.nombre_cliente}, DNI:{ordenAgregada.dni}, Email:{ordenAgregada.e_mail_cliente}, Envío:{ordenAgregada.domicilio_de_envio}, Estado:{(ordenAgregada.estado ? "Activa" : "Inactiva")}, Fecha:{ordenAgregada.fecha_creacion:dd/MM/yyyy HH:mm:ss}");
+
+
                     db.SaveChanges();
 
                     /* 8) Limpiar carrito y commit */
@@ -583,13 +629,16 @@ namespace Eterea_Parfums_Web.Controllers
                     db.SaveChanges();
 
                     tx.Commit();
-                    return RedirectToAction("Exito", new { id = fac.id });
+                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
+
+
                 }
                 catch (Exception ex)
                 {
                     tx.Rollback();
                     TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
                     return RedirectToAction("Index","Carrito");
+
                 }
             }
         }

@@ -263,6 +263,7 @@
     <Content Include="Content\StyleContacto.css" />
     <Content Include="Content\StyleHistorial.css" />
     <Content Include="Content\StyleHome.css" />
+    <Content Include="Content\StylePagoExitoso.css" />
     <Content Include="Content\StyleLogin.css" />
     <Content Include="Content\StylePerfil.css" />
     <Content Include="Content\StylePerfume.css" />
