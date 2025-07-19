@@ -17,40 +17,51 @@
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.Calle)
                         @Html.TextBoxFor(m => m.Calle, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Calle, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.Numeracion)
                         @Html.TextBoxFor(m => m.Numeracion, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Numeracion, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.Piso)
                         @Html.TextBoxFor(m => m.Piso, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Piso, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.Departamento)
                         @Html.TextBoxFor(m => m.Departamento, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Departamento, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.CodigoPostal)
                         @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.CodigoPostal, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-2">
                         @Html.LabelFor(m => m.Localidad)
                         @Html.TextBoxFor(m => m.Localidad, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Localidad, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group mb-3">
                         @Html.LabelFor(m => m.Provincia)
                         @Html.TextBoxFor(m => m.Provincia, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "text-danger" })
                     </div>
 
                     <button type="submit" class="btn btn-success">Guardar dirección</button>
                     <a href="@Url.Action("SeleccionarDireccion", "Cliente")" class="btn btn-secondary ms-2">Cancelar</a>
+                }
+
+                @section Scripts {
+                    @Scripts.Render("~/bundles/jqueryval")
                 }
             </div>
         </div>
