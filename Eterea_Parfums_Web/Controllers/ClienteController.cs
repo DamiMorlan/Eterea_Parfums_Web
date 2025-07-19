@@ -7,6 +7,7 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Eterea_Parfums_Web.Helpers;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -234,10 +235,13 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 2. Buscar los domicilios usados por ese cliente (texto completo)
             var textos = db.orden
-                .Where(o => o.dni == dni && o.domicilio_de_envio != null)
-                .Select(o => o.domicilio_de_envio)
-                .Distinct()
-                .ToList();
+               .Where(o => o.dni == dni && o.domicilio_de_envio != null)
+               .AsEnumerable() // importante para trabajar en memoria
+               .Select(o => o.domicilio_de_envio.Trim().Replace("\r\n", "\n"))
+               .Distinct()
+               .ToList();
+
+            // Esto evita duplicados con saltos de línea distintos o espacios
 
             // 3. Transformar en ViewModels divididos en dos líneas
             var modelo = textos.Select(t =>
@@ -275,7 +279,6 @@ namespace Eterea_Parfums_Web.Controllers
         {
             return View(new DireccionEntregaViewModel());
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AgregarDireccion(DireccionEntregaViewModel model)
@@ -283,10 +286,33 @@ namespace Eterea_Parfums_Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Guarda temporal en Session el texto del domicilio
-            Session["NuevoDomicilioEntrega"] = model.ConstruirTextoCompleto();
+            // Conversión segura de datos al llamar al helper
+            string calle = model.Calle?.Trim() ?? "";
+            int numeracion = 0;
+            int? cp = null;
 
-            // Volver a vista previa o a donde desees
+            if (!string.IsNullOrWhiteSpace(model.Numeracion))
+                int.TryParse(model.Numeracion.Trim(), out numeracion);
+
+            if (!string.IsNullOrWhiteSpace(model.CodigoPostal))
+                cp = int.TryParse(model.CodigoPostal.Trim(), out int tmp) ? tmp : (int?)null;
+
+            string piso = model.Piso?.Trim() ?? "";
+            string depto = model.Departamento?.Trim() ?? "";
+            string localidad = model.Localidad?.Trim() ?? "";
+            string provincia = model.Provincia?.Trim() ?? "";
+
+            // Usa el helper centralizado para construir el texto formateado
+            Session["NuevoDomicilioEntrega"] = DireccionHelper.ConstruirTextoCompleto(
+                calle,
+                numeracion,
+                piso,
+                depto,
+                cp,
+                localidad,
+                provincia
+            );
+
             return RedirectToAction("VistaPrevia", "Pedido");
         }
 
@@ -305,19 +331,21 @@ namespace Eterea_Parfums_Web.Controllers
 
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
         {
-            var calle = db.calle.Find(cli.calle_id)?.nombre;
-            var loc = db.localidad.Find(cli.localidad_id)?.nombre;
-            var prov = db.provincia.Find(cli.provincia_id)?.nombre;
+            // Obtener nombres desde claves foráneas
+            var calle = db.calle.Find(cli.calle_id)?.nombre ?? "";
+            var localidad = db.localidad.Find(cli.localidad_id)?.nombre ?? "";
+            var provincia = db.provincia.Find(cli.provincia_id)?.nombre ?? "";
 
-            string linea1 = $"{calle?.Trim()}{cli.numeracion_calle}".Trim();
-            if (!string.IsNullOrWhiteSpace(cli.piso))
-                linea1 += $" Piso {cli.piso}";
-            if (!string.IsNullOrWhiteSpace(cli.departamento))
-                linea1 += $" Dpto. {cli.departamento}";
-
-            string linea2 = $"C.P. {cli.codigo_postal}, {loc}, {prov}";
-
-            return linea1 + "\n" + linea2;
+            // Usar el helper centralizado con tipos correctos
+            return DireccionHelper.ConstruirTextoCompleto(
+                calle,
+                cli.numeracion_calle,
+                cli.piso ?? "",
+                cli.departamento ?? "",
+                cli.codigo_postal,
+                localidad,
+                provincia
+            );
         }
 
 

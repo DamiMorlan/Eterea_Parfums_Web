@@ -119,7 +119,6 @@ namespace Eterea_Parfums_Web.Controllers
 
               return View(model);
           }*/
-
         [HttpGet]
         public ActionResult VistaPrevia()
         {
@@ -128,14 +127,12 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = (int)Session["clienteId"];
 
-            //Carga de domicilio en la vista
+            // Carga de domicilio en la vista
             if (Session["NuevoDomicilioEntrega"] != null)
             {
                 Session["DomicilioDeEnvioTexto"] = Session["NuevoDomicilioEntrega"];
                 Session.Remove("NuevoDomicilioEntrega"); // ya se usó
             }
-
-
 
             var carrito = db.carrito
                 .Include(c => c.perfume)
@@ -162,46 +159,35 @@ namespace Eterea_Parfums_Web.Controllers
                         ? stockDict[c.perfume_id]
                         : 0)).ToList();
 
-            // 🚨 CORRECTO cálculo de totales y descuentos
             double subtotal = items.Sum(x => x.PrecioOriginal * x.Cantidad);
             double total = items.Sum(x => x.Total);
             double descuento = subtotal - total;
 
-            // ✅ Dirección de envío desde Session
-
+            // Dirección de envío
             string domicilio;
-
             if (Session["DomicilioDeEnvioTexto"] != null)
             {
                 domicilio = Session["DomicilioDeEnvioTexto"].ToString();
             }
             else
             {
-                // Busco la última dirección usada o la dirección del cliente
                 var cliente = db.cliente
                     .Include(c => c.calle)
                     .Include(c => c.localidad)
                     .Include(c => c.localidad.provincia)
                     .FirstOrDefault(c => c.id == clienteId);
 
-                if (cliente != null)
-                {
-                    var calle = cliente.calle?.nombre ?? "";
-                    var numero = cliente.numeracion_calle;
-                    var piso = string.IsNullOrEmpty(cliente.piso) ? "" : $"Piso {cliente.piso}";
-                    var depto = string.IsNullOrEmpty(cliente.departamento) ? "" : $"Dpto. {cliente.departamento}";
-                    var cp = $"C.P. {cliente.codigo_postal}";
-                    var localidad = cliente.localidad?.nombre ?? "";
-                    var provincia = cliente.localidad?.provincia?.nombre ?? "";
-
-                    domicilio = $"{calle} {numero} {piso} {depto}\n{cp}, {localidad}, {provincia}";
-                }
-                else
-                {
-                    domicilio = "Domicilio no disponible.";
-                }
+                domicilio = cliente != null
+                    ? DireccionHelper.ConstruirTextoCompleto(
+                        cliente.calle?.nombre ?? "",
+                        cliente.numeracion_calle,
+                        cliente.piso,
+                        cliente.departamento,
+                        cliente.codigo_postal,
+                        cliente.localidad?.nombre ?? "",
+                        cliente.localidad?.provincia?.nombre ?? "")
+                    : "Domicilio no disponible.";
             }
-
 
             var model = new VistaPreviaPedidoViewModel
             {
