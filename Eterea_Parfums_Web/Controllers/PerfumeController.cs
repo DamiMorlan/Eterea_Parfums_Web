@@ -309,13 +309,19 @@ namespace Eterea_Parfums_Web.Controllers
             if (id == null)
                 return RedirectToAction("Index");
 
-            // Traer y procesar stock completo
-            var stock = db.stock.ToList();
-            var stockDisponiblePorPerfume = stock
+            // Traer solo el stock del local 1
+            int sucursalWebId = 1;
+
+            var stockSucursal1 = db.stock
+                .Where(s => s.sucursal_id == sucursalWebId)
+                .ToList();
+
+            // Calcular stock excedente de sucursal 1 (solo si hay más de 5 unidades)
+            var stockDisponiblePorPerfume = stockSucursal1
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
                     g => g.Key,
-                    g => g.Select(s => Math.Max(0, s.cantidad - 5)).Sum()
+                    g => Math.Max(0, g.Sum(s => s.cantidad) - 5)
                 );
 
             // Obtener perfume base
