@@ -190,11 +190,11 @@ namespace Eterea_Parfums_Web.Controllers
                     var numero = cliente.numeracion_calle;
                     var piso = string.IsNullOrEmpty(cliente.piso) ? "" : $"Piso {cliente.piso}";
                     var depto = string.IsNullOrEmpty(cliente.departamento) ? "" : $"Dpto. {cliente.departamento}";
-                    var cp = cliente.codigo_postal;
+                    var cp = $"C.P. {cliente.codigo_postal}";
                     var localidad = cliente.localidad?.nombre ?? "";
                     var provincia = cliente.localidad?.provincia?.nombre ?? "";
 
-                    domicilio = $"{calle}, {numero} {piso} {depto}\n{cp}, {localidad}, {provincia}";
+                    domicilio = $"{calle} {numero} {piso} {depto}\n{cp}, {localidad}, {provincia}";
                 }
                 else
                 {

@@ -309,17 +309,16 @@ namespace Eterea_Parfums_Web.Controllers
             var loc = db.localidad.Find(cli.localidad_id)?.nombre;
             var prov = db.provincia.Find(cli.provincia_id)?.nombre;
 
-            string linea1 = $"{calle}, {cli.numeracion_calle}";
+            string linea1 = $"{calle?.Trim()}{cli.numeracion_calle}".Trim();
             if (!string.IsNullOrWhiteSpace(cli.piso))
                 linea1 += $" Piso {cli.piso}";
             if (!string.IsNullOrWhiteSpace(cli.departamento))
                 linea1 += $" Dpto. {cli.departamento}";
 
-            string linea2 = $"{cli.codigo_postal}, {loc}, {prov}";
+            string linea2 = $"C.P. {cli.codigo_postal}, {loc}, {prov}";
 
             return linea1 + "\n" + linea2;
         }
-
 
 
         [HttpPost]
