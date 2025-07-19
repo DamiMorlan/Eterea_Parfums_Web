@@ -27,16 +27,18 @@
         foreach (var direccion in Model)
         {
             <div class="card mb-3 p-3">
-                <!-- Asegura 2 líneas -->
-                <pre>@direccion.TextoCompleto</pre>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="me-3" style="white-space: pre-line;">
+                        @direccion.TextoCompleto
+                    </div>
 
-                <div class="d-flex justify-content-end">
-                    <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")" method="post">
+                    <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")" method="post" class="mb-0">
                         <input type="hidden" name="texto" value="@direccion.TextoCompleto" />
                         <button type="submit" class="btn btn-sm btn-primary">Seleccionar</button>
                     </form>
                 </div>
             </div>
+
         }
     }
 

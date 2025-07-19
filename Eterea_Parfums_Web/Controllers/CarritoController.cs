@@ -38,13 +38,12 @@ namespace Eterea_Parfums_Web.Controllers
 
             // Paso 2: Calcular stock disponible para cada perfume
             var stockPorPerfume = db.stock
-                .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
-                .ToList() // <-- ejecuta el SQL primero
-                .GroupBy(s => s.perfume_id)
-                .ToDictionary(
-                    g => g.Key,
-                    g => Math.Max(0, g.Sum(s => s.cantidad) - 5)
-                );
+              .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
+              .ToList()
+              .ToDictionary(
+                  s => s.perfume_id,
+                  s => Math.Max(0, s.cantidad - 5)
+              );
             bool huboCambios = false;
 
             // Paso 3: Ajustar cantidades por stock

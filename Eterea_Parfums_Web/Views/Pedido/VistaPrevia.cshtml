@@ -36,18 +36,27 @@
             @foreach (var item in Model.Items)
             {
                 <div class="resumen-producto">
-                    <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" alt="@item.Nombre" />
+                    <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
+                        <img src="@Url.Action("Mostrar", "Imagen", new { nombre = item.Imagen + ".jpg" })"
+                             alt="@item.Nombre"
+                             class="img-fluid rounded"
+                             style="max-height: 80px; object-fit: contain;" />
+                    </a>
                     <div class="ms-2 w-100">
-                        <div><strong>@item.Nombre</strong></div>
+                        <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })" class="text-decoration-none text-dark">
+                            <div><strong>@item.Nombre</strong></div>
+                        </a>
                         <div>@item.Presentacion ml</div>
                     </div>
                     <div class="text-center w-25">
                         @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
                     </div>
-                    <!-- usa el Total que ya viene calculado -->
-                    <div class="text-end w-25">$@item.Total.ToString("N0")</div>
+                    <div class="text-end w-25">
+                        $@item.Total.ToString("N0")
+                    </div>
                 </div>
             }
+
 
             <!-- RESUMEN + BOTÓN ---------------------------------------- -->
             <div class="resumen-carrito mt-4 mb-5">

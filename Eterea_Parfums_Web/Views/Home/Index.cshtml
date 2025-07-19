@@ -30,7 +30,7 @@
             {
                 var promo = Model.Promociones[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Url.Content("~/Imagenes/" + promo.banner + ".jpg" )" class="d-block w-100" alt="@promo.nombre" />
+                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = promo.banner + ".jpg" })" class="d-block w-100" alt="@promo.nombre" />
                 </div>
             }
         </div>
@@ -123,7 +123,7 @@
 
                                     <div class="col-md-3 col-6 mb-4 d-flex">
                                         <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="imagen-@perfume.Id" />
@@ -257,10 +257,11 @@
 
                                     <div class="col-md-3 col-6 mb-4 d-flex">
                                         <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="imagen-@perfume.Id" />
+
 
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
@@ -503,7 +504,7 @@
                         }
 
                         contenedor.innerHTML = `
-                            <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                            <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
                             <p><strong>${data.nombre}</strong></p>
                             <p>${data.tipo} - ${data.presentacion} ml</p>
                             <p>Género: ${data.genero}</p>

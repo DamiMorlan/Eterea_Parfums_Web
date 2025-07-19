@@ -40,10 +40,11 @@
                 <div class="swiper gallery-thumbs-vertical">
                     <div class="swiper-wrapper bg-white mx-2">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
                         </div>
                     </div>
                 </div>
@@ -55,12 +56,13 @@
                     <div class="swiper-wrapper me-0">
                         <div class="swiper-slide text-center me-0">
                             <div class="swiper-zoom-container me-0">
-                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
                             </div>
                         </div>
                         <div class="swiper-slide text-center me-0">
                             <div class="swiper-zoom-container">
-                                <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
                             </div>
                         </div>
                     </div>
@@ -72,10 +74,12 @@
                 <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
+
                         </div>
                         <div class="swiper-slide">
-                            <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
                         </div>
                     </div>
                 </div>
@@ -458,13 +462,13 @@
                     {
                         <div class="swiper-slide">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Marca">
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                              <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Marca"
                                      id="imagen-@perfume.Id" />
 
                                 <div class="card-body d-flex flex-column text-center">
-                                    <h5 class="card-title">@perfume.Marca</h5>
+                                    <h5 class="card-title">@perfume.Nombre</h5>
                                     <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
 
                                     <p class="card-text mb-1"><strong>Tamaño:</strong></p>
@@ -619,7 +623,7 @@
 
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `
-                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                   <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
                     <p><strong>${data.nombre}</strong></p>
                     <p>${data.tipo} - ${data.presentacion} ml</p>
                     <p>Género: ${data.genero}</p>
