@@ -252,10 +252,9 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 2) Stock neto disponible para venta web
             int stockDisponible = db.stock
-            .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
-            .ToList()
-            .Select(s => Math.Max(0, s.cantidad - 5))
-            .FirstOrDefault();
+              .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
+              .ToList() // ← fuerza ejecución y convierte a lista
+              .Sum(s => s.cantidad); // sumamos todas las unidades de sucursal 1
 
             // 3) Ítem actual en carrito (si existe)
             var itemEnCarrito = db.carrito
