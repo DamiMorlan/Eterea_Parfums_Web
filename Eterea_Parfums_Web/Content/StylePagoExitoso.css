@@ -1,0 +1,50 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background-color: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bg-success-mp {
+    background-color: var(--rosa-claro) !important; /* Verde MercadoPago */
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    background-color: white;
+    color: var(--rosa-claro);
+    border-radius: 50%;
+    font-size: 40px;
+    display: inline-block;
+    text-align: center;
+}
+
+.payment-box {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    margin-top: -30px;
+}
+
+.btn-custom {
+    background-color: var(--rosa-profundo);
+    color: white;
+}
+
+    .btn-custom:hover {
+        background-color: var(--rosa-fondo);
+        background-color: rgb(189, 147, 160);
+        transform: scale(1.02);
+        color: white;
+    }

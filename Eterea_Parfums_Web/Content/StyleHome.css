@@ -8,6 +8,8 @@
     --moka: #b89b82;
     --beige: #f5f5dc;
     --moka: #b89b82;
+    --rosa-claro-contenedor: #fef6f8;
+    --flechas: rgb(209, 167, 180);
 }
 
 body {
@@ -46,12 +48,24 @@ body {
 /* Estilo para las flechas con Font Awesome */
 .flecha-carousel {
     font-size: 3rem;
-    color: white;
+    color: var(--flechas);
     border-radius: 50%;
     transition: transform 0.2s ease;
 }
 
     .flecha-carousel:hover {
+        transform: scale(1.1);
+    }
+
+/* Estilo para las flechas promos banner */
+.flecha-carousel-banner {
+    font-size: 3rem;
+    color: white;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .flecha-carousel-banner:hover {
         transform: scale(1.1);
     }
 
@@ -166,13 +180,13 @@ body {
     }
 
 h2 {
-    color: var(--rosa-profundo);
+    color: #973f5c;
     font-weight: bold;
 }
 
 /* ----- Carrusel y cards de Marcas ----- */
 .bg-marcas {
-    background-color: var(--rosa-suave2);
+    background-color: var(--rosa-claro-contenedor);
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 3.5rem; /* más espacio para flechas */

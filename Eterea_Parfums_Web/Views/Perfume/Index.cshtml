@@ -1,5 +1,27 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.PerfumeViewModel
 
+@functions {
+    string ConstruirUrlConParametros(int pagina)
+    {
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        var request = HttpContext.Current.Request;
+
+        foreach (string key in request.QueryString.Keys)
+        {
+            if (key != null && key != "pagina")
+            {
+                foreach (var value in request.QueryString.GetValues(key))
+                {
+                    query.Add(key, value);
+                }
+            }
+        }
+
+        query["pagina"] = pagina.ToString();
+        return "?" + query.ToString();
+    }
+}
+
 @{
     ViewBag.Title = "Perfumes";
 }
@@ -14,6 +36,14 @@
         <aside class="col-md-2 mb-4">
             <form method="get" id="form-filtros">
                 <h5 class="mb-3">Filtros</h5>
+
+                <!-- Limpiar todos los filtros -->
+                <a href="@Url.Action("Index", "Perfume")"
+                   class="btn-filtro-limpiar mt-2 text-center text-decoration-none d-block">
+                    ❌ Limpiar todos los filtros
+                </a>
+
+                <hr class="linea-filtros" />
 
                 <div class="mb-3">
                     <label class="form-label d-block">Marca</label>
@@ -35,59 +65,185 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Género</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Femenino</option>
-                        <option>Masculino</option>
-                        <option>Unisex</option>
-                    </select>
+                    <label class="form-label d-block">Género</label>
+                    <div class="filtro-checkbox-list" id="filtro-genero">
+                        @foreach (var genero in Model.Generos)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="generosSeleccionados"
+                                       value="@genero"
+                                       id="genero-@genero"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("generosSeleccionados")?.Contains(genero) == true ? "checked" : "") />
+                                <label class="form-check-label" for="genero-@genero">@genero</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Tamaño</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>30 ml</option>
-                        <option>50 ml</option>
-                        <option>100 ml</option>
-                    </select>
+                    <label class="form-label d-block">Tamaño</label>
+                    <div class="filtro-checkbox-list" id="filtro-tamanio">
+                        @foreach (var ml in Model.Tamanios)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tamaniosSeleccionados"
+                                       value="@ml"
+                                       id="tamanio-@ml"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tamaniosSeleccionados")?.Contains(ml.ToString()) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tamanio-@ml">@ml ml</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Aroma</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Floral</option>
-                        <option>Frutal</option>
-                        <option>Amaderado</option>
-                    </select>
+                    <label class="form-label d-block">Tipo de perfume</label>
+                    <div class="filtro-checkbox-list" id="filtro-tipo">
+                        @foreach (var tipo in Model.TipoDePerfumes)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tipoDePerfumeSeleccionados"
+                                       value="@tipo"
+                                       id="tipo-@tipo"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tipoDePerfumeSeleccionados")?.Contains(tipo) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tipo-@tipo">@tipo</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Tipo de aroma</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Dulce</option>
-                        <option>Fresco</option>
-                        <option>Intenso</option>
-                    </select>
+                    <label class="form-label d-block">Tipo de aroma</label>
+                    <div class="filtro-checkbox-list" id="filtro-aroma">
+                        @foreach (var tipoAroma in Model.TiposDeAroma)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="tipoDeAromaSeleccionados"
+                                       value="@tipoAroma"
+                                       id="tipoAroma-@tipoAroma"
+                                       onchange="document.getElementById('form-filtros').submit();"
+                                       @(Request.QueryString.GetValues("tipoDeAromaSeleccionados")?.Contains(tipoAroma) == true ? "checked" : "") />
+                                <label class="form-check-label" for="tipoAroma-@tipoAroma">@tipoAroma</label>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Precio</label>
-                    <select class="form-select">
-                        <option>Todos</option>
-                        <option>Hasta $10.000</option>
-                        <option>$10.000 - $30.000</option>
-                        <option>Más de $30.000</option>
-                    </select>
+                    <label class="form-label">Precio (ARS)</label>
+                    <div class="d-flex gap-2">
+                        <input type="number" class="form-control" name="precioMin" placeholder="Desde"
+                               value="@(Request["precioMin"])" />
+                        <input type="number" class="form-control" name="precioMax" placeholder="Hasta"
+                               value="@(Request["precioMax"])" />
+                    </div>
+
+                    <button type="submit" class="btn-filtro-aplicar mt-2">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+
+                    <button type="button"
+                            class="btn-filtro-limpiar mt-2"
+                            onclick="limpiarPrecio()">
+                        🧹 Limpiar precio
+                    </button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Con promoción</label>
+                    <div class="filtro-checkbox-list form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="filtrarSoloConPromocion"
+                               id="filtrarSoloConPromocion"
+                               onchange="document.getElementById('form-filtros').submit();"
+                               @(Request.QueryString.Get("filtrarSoloConPromocion") == "on" ? "checked" : "") />
+                        <label class="form-check-label" for="filtrarSoloConPromocion">Mostrar solo perfumes con promoción</label>
+                    </div>
                 </div>
             </form>
         </aside>
 
         <section class="col-md-10">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
+                <h2 class="mb-3 mb-md-0">Perfumes</h2>
+            </div>
+
+
+            <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
+                <!-- Campo de búsqueda por nombre -->
+                <form method="get" id="form-busqueda" class="d-flex align-items-center" style="max-width: 650px; width: 100%;">
+                    @* Mantener filtros ya aplicados *@
+                    @foreach (string key in Request.QueryString.AllKeys)
+                    {
+                        if (key != "busqueda")
+                        {
+                            var values = Request.QueryString.GetValues(key);
+                            if (values != null)
+                            {
+                                foreach (var value in values)
+                                {
+                                    <input type="hidden" name="@key" value="@value" />
+                                }
+                            }
+                        }
+                    }
+
+                    <input type="text"
+                           class="form-control me-2 no-outline"
+                           name="busqueda"
+                           placeholder="Buscar por nombre..."
+                           value="@Model.Busqueda" />
+
+                    <button type="submit" class="btn btn-buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <form method="get" class="d-flex align-items-center" id="form-orden">
+                    @* Conserva filtros seleccionados al cambiar orden *@
+                    @foreach (string key in Request.QueryString.AllKeys)
+                    {
+                        if (key != "orden")
+                        {
+                            var values = Request.QueryString.GetValues(key);
+                            if (values != null)
+                            {
+                                foreach (var value in values)
+                                {
+                                    <input type="hidden" name="@key" value="@value" />
+                                }
+                            }
+                        }
+                    }
+
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle ordenar-dropdown-btn" type="button" data-bs-toggle="dropdown">
+                            Ordenar por
+                        </button>
+                        <ul class="dropdown-menu ordenar-dropdown-menu">
+                            <li><a class="dropdown-item" href="?orden=nombreAsc">Nombre A-Z</a></li>
+                            <li><a class="dropdown-item" href="?orden=nombreDesc">Nombre Z-A</a></li>
+                            <li><a class="dropdown-item" href="?orden=precioAsc">Precio menor a mayor</a></li>
+                            <li><a class="dropdown-item" href="?orden=precioDesc">Precio mayor a menor</a></li>
+                            <li><a class="dropdown-item" href="?orden=masVendidos">Más vendidos</a></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row justify-content-center">
                 @{
                     var perfumesAgrupados = Model.Perfumes
                         .GroupBy(p => p.Nombre)
@@ -95,128 +251,174 @@
                         .ToList();
                 }
 
-                @foreach (var perfume in perfumesAgrupados)
+                @if (!perfumesAgrupados.Any())
                 {
-                    <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
-                        <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
-                                 class="card-img-top custom-img"
-                                 alt="@perfume.Nombre"
-                                 id="imagen-@perfume.Id" />
-
-                            <div class="card-body d-flex flex-column text-center">
-                                <h5 class="card-title">@perfume.Nombre</h5>
-                                <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
-
-                                <p class="card-text mb-1"><strong>Tamaño:</strong></p>
-                                <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
-                                    @foreach (var p in perfume.Presentaciones)
-                                    {
-                                        <button type="button"
-                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
-                                                data-id="@perfume.Id"
-                                                data-perfumeid="@p.Id"
-                                                data-precio="@p.Precio"
-                                                data-descuento="@p.PrecioConDescuento"
-                                                data-tiene-promo="@p.TienePromocion"
-                                                data-leyenda="@p.LeyendaPromocion"
-                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
-                                                data-marca="@p.Marca"
-                                                data-stock="@p.StockDisponible"
-                                                onclick="cambiarPresentacion(this, @perfume.Id)">
-                                            @p.Ml ml
-                                        </button>
-                                    }
-                                </div>
-
-                                <p class="card-text mt-3 mb-1">
-                                    <span class="precio-original" id="precio-original-@perfume.Id">
-                                        @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
-                                    </span>
-                                    <span class="precio-descuento" id="precio-descuento-@perfume.Id">
-                                        $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
-                                    </span>
-                                </p>
-
-                                <div class="promo-placeholder">
-                                    <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                        @perfume.LeyendaPromocion
-                                    </span>
-                                </div>
-
-                                <div class="espacio-stock mt-1" id="stock-@perfume.Id">
-                                    @if (perfume.StockDisponibleParaWeb == 0)
-                                    {
-                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
-                                    }
-                                    else if (perfume.StockDisponibleParaWeb == 1)
-                                    {
-                                        <p class="text-danger fw-bold">¡Último disponible!</p>
-                                    }
-                                    else if (perfume.StockDisponibleParaWeb <= 10)
-                                    {
-                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
-                                    }
-                                </div>
-
-                                <div class="mt-auto d-flex flex-column">
-                                    <!-- Botón Ver detalle -->
-                                    <button class="btn-eterea mb-2 btn-ver-detalle"
-                                            data-baseid="@perfume.Id"
-                                            data-id="@perfume.Presentaciones.First().Id"
-                                            onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
-                                        <i class="fas fa-eye"></i> Ver
-                                    </button>
-
-                                    <!-- Botón Agregar al carrito (con control de stock) -->
-                                    @if (perfume.StockDisponibleParaWeb == 0)
-                                    {
-                                        <button class="btn-eterea btn-agregar-carrito"
-                                                disabled
-                                                style="opacity: 0.6; cursor: not-allowed;">
-                                            <i class="fas fa-cart-plus"></i> Agotado
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn-eterea btn-agregar-carrito"
-                                                data-baseid="@perfume.Id"
-                                                data-id="@perfume.Presentaciones.First().Id">
-                                            <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                        </button>
-                                    }
-                                </div>
-                            </div>
+                    <div class="col-12">
+                        <div class="d-flex flex-column justify-content-center align-items-center"
+                             style="min-height: 400px; text-align: center;">
+                            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                            <h4 class="mb-2">No se encontraron perfumes disponibles</h4>
+                            <p class="text-muted">Podés intentar modificando los filtros o la búsqueda.</p>
                         </div>
                     </div>
                 }
-            </div>
-        </section>
+                else
+                {
 
-        <!-- Paginación -->
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link">Anterior</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
+                    foreach (var perfume in perfumesAgrupados)
+                    {
+                        <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
+                            <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
+                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                     class="card-img-top custom-img"
+                                     alt="@perfume.Nombre"
+                                     id="imagen-@perfume.Id" />
+
+                                <div class="card-body d-flex flex-column text-center">
+                                    <h5 class="card-title">@perfume.Nombre</h5>
+                                    <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
+
+                                    <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+                                    <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                        @foreach (var p in perfume.Presentaciones)
+                                        {
+                                            <button type="button"
+                                                    class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                    data-id="@perfume.Id"
+                                                    data-perfumeid="@p.Id"
+                                                    data-precio="@p.Precio"
+                                                    data-descuento="@p.PrecioConDescuento"
+                                                    data-tiene-promo="@p.TienePromocion"
+                                                    data-leyenda="@p.LeyendaPromocion"
+                                                    data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
+                                                    data-marca="@p.Marca"
+                                                    data-stock="@p.StockDisponible"
+                                                    onclick="cambiarPresentacion(this, @perfume.Id)">
+                                                @p.Ml ml
+                                            </button>
+                                        }
+                                    </div>
+
+                                    <p class="card-text mt-3 mb-1">
+                                        <span class="precio-original" id="precio-original-@perfume.Id">
+                                            @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
+                                        </span>
+                                        <span class="precio-descuento" id="precio-descuento-@perfume.Id">
+                                            $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
+                                        </span>
+                                    </p>
+
+                                    <div class="promo-placeholder @(string.IsNullOrEmpty(perfume.LeyendaPromocion) ? "sin-promocion" : "con-promocion")">
+                                        <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
+                                            @(!string.IsNullOrEmpty(perfume.LeyendaPromocion) ? perfume.LeyendaPromocion : "")
+                                        </span>
+                                    </div>
+
+                                    <div class="espacio-stock mt-1" id="stock-@perfume.Id">
+                                        @if (perfume.StockDisponibleParaWeb == 0)
+                                        {
+                                            <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                        }
+                                        else if (perfume.StockDisponibleParaWeb == 1)
+                                        {
+                                            <p class="text-danger fw-bold">¡Último disponible!</p>
+                                        }
+                                        else if (perfume.StockDisponibleParaWeb <= 10)
+                                        {
+                                            <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                        }
+                                    </div>
+
+                                    <div class="mt-auto d-flex flex-column">
+                                        <!-- Botón Ver detalle -->
+                                        <button class="btn-eterea mb-2 btn-ver-detalle"
+                                                data-baseid="@perfume.Id"
+                                                data-id="@perfume.Presentaciones.First().Id"
+                                                onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+
+                                        <!-- Botón Agregar al carrito (con control de stock) -->
+                                        @if (perfume.StockDisponibleParaWeb == 0)
+                                        {
+                                            <button class="btn-eterea btn-agregar-carrito"
+                                                    disabled
+                                                    style="opacity: 0.6; cursor: not-allowed;">
+                                                <i class="fas fa-cart-plus"></i> Agotado
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn-eterea btn-agregar-carrito"
+                                                    data-baseid="@perfume.Id"
+                                                    data-id="@perfume.Presentaciones.First().Id">
+                                                <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+
+            @if (perfumesAgrupados.Count > 4)
+            {
+                <!-- Paginación con fondo -->
+                <nav class="mt-5">
+                    <div class="titulo-perfumes d-flex justify-content-center py-3">
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual - 1)">Anterior</a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPaginas; i++)
+                            {
+                                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                                    <a class="page-link" href="@ConstruirUrlConParametros(i)">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual + 1)">Siguiente</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+            }
+            else
+            {
+                <!-- Paginación con fondo -->
+                <nav class="mt-espaciado-footer">
+                    <div class="titulo-perfumes d-flex justify-content-center py-3">
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual - 1)">Anterior</a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPaginas; i++)
+                            {
+                                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                                    <a class="page-link" href="@ConstruirUrlConParametros(i)">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                                <a class="page-link" href="@ConstruirUrlConParametros(Model.PaginaActual + 1)">Siguiente</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            }
+
+        </section>
 
     </div>
 </div>
@@ -383,27 +585,11 @@
              });
          });
 
+        function limpiarPrecio() {
+            document.querySelector('input[name="precioMin"]').value = '';
+            document.querySelector('input[name="precioMax"]').value = '';
+            document.getElementById('form-filtros').submit();
+        }
 
-            // Evento de filtrado por marca
-            document.querySelectorAll('.filtro-marca-checkbox').forEach(cb => {
-                cb.addEventListener('change', aplicarFiltros);
-            });
-
-            function aplicarFiltros() {
-                // Obtener todas las marcas seleccionadas
-                const marcasSeleccionadas = Array.from(document.querySelectorAll('.filtro-marca-checkbox:checked'))
-                    .map(cb => cb.value.toLowerCase().trim());
-
-                // Para cada tarjeta de perfume
-                document.querySelectorAll('.perfume-card').forEach(card => {
-                    const marca = card.getAttribute('data-marca');
-
-                    // Si no hay filtros activos, mostrar todas
-                    const mostrar = marcasSeleccionadas.length === 0 || marcasSeleccionadas.includes(marca);
-
-                    // Mostrar u ocultar según el filtro
-                    card.closest('.perfume-card-container').style.display = mostrar ? 'flex' : 'none';
-                });
-            }
     </script>
 }

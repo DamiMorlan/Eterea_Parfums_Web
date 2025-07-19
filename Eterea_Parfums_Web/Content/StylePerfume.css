@@ -7,6 +7,7 @@
     --rosa-suave2: rgb(239, 228, 225);
     --beige: #f5f5dc;
     --moka: #b89b82;
+    --rosa-claro-contenedor: #fef6f8;
 }
 
 body {
@@ -50,7 +51,7 @@ body {
     height: 140px;
     width: auto;
     display: block;
-    margin: 0 auto;
+    margin: 20px auto 0 auto; /* ↑ margen arriba, centrado horizontalmente */
     border-radius: 12px;
 }
 
@@ -143,6 +144,17 @@ body {
     font-weight: 600;
 }
 
+    .promo-placeholder.sin-promocion {
+        margin-top:1.3rem;
+        margin-bottom: 1.3rem; /* más espacio debajo solo cuando no hay promo */
+    }
+
+    /* Cuando tiene promo → menos margen */
+    .promo-placeholder.con-promocion {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
 /* ----- Estado de stock ----- */
 .text-danger.fw-bold {
     color: #c0392b !important;
@@ -218,4 +230,260 @@ body {
     padding: 8px;
     border-radius: 5px;
     background-color: #fff;
+}
+
+
+/* ----- Botones de filtro ----- */
+.btn-filtro-aplicar {
+    background-color: var(--rosa-profundo);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-filtro-aplicar:hover {
+        background-color: rgb(189, 147, 160);
+        transform: scale(1.02);
+    }
+
+.btn-filtro-limpiar {
+    background-color: var(--rosa-suave2);
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+    .btn-filtro-limpiar:hover {
+        background-color: var(--rosa-claro);
+        color: #000;
+    }
+
+/* Ocultamos el checkbox original */
+.form-check-input {
+    display: none;
+}
+
+/* Estilo del label que reemplaza al checkbox */
+.form-check-label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 1.5;
+    user-select: none;
+}
+
+    /* Caja visual del checkbox */
+    .form-check-label::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--rosa-profundo);
+        border-radius: 4px;
+        background-color: white;
+        transition: background-color 0.2s ease;
+    }
+
+/* Tilde cuando está chequeado */
+.form-check-input:checked + .form-check-label::after {
+    content: '✔';
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    font-size: 14px;
+    color: white;
+}
+
+/* Fondo cuando está chequeado */
+.form-check-input:checked + .form-check-label::before {
+    background-color: var(--rosa-profundo);
+    border-color: var(--rosa-profundo);
+}
+
+/* ---------- PANEL DE FILTROS COMPLETO ---------- */
+aside.col-md-2 {
+    background-color: var(--rosa-claro-contenedor);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+/* ---------- TÍTULOS DE FILTROS ---------- */
+aside h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--rosa-profundo);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--rosa-medio);
+    padding-bottom: 5px;
+}
+
+/* ---------- BLOQUES INDIVIDUALES DE FILTROS ---------- */
+aside .mb-3 {
+    margin-bottom: 20px !important;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+}
+
+    aside .mb-3:last-child {
+        border-bottom: none;
+    }
+
+.linea-filtros {
+    border: none;
+    border-top: 1px dashed ;
+    margin: 20px 0;
+}
+
+/* ---------- SCROLL INTERNO DE LISTAS ---------- */
+.filtro-checkbox-list {
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background-color: white;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rosa-profundo) transparent;
+}
+
+    .filtro-checkbox-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filtro-checkbox-list::-webkit-scrollbar-thumb {
+        background-color: var(--rosa-profundo);
+        border-radius: 10px;
+    }
+
+    /* ---------- BOTONES DE FILTROS ---------- */
+    aside .btn-outline-danger,
+    aside .btn-outline-primary,
+    aside .btn-outline-secondary {
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        width: 100%;
+        margin-top: 6px;
+        transition: all 0.3s ease;
+    }
+
+    aside .btn-outline-danger:hover {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    aside .btn-outline-primary:hover {
+        background-color: var(--rosa-profundo);
+        border-color: var(--rosa-profundo);
+        color: white;
+    }
+
+    aside .btn-outline-secondary:hover {
+        background-color: #bbb;
+        color: white;
+    }
+
+
+
+.titulo-perfumes {
+    background-color: var(--rosa-claro-contenedor); /* igual que el fondo del filtro */
+    color: var(--moka); /* igual que el color del texto del filtro */
+    padding: 20px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+
+    .titulo-perfumes h2 {
+        flex: 1;
+        text-align: center;
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: var(--rosa-profundo); /* color igual al filtro */
+    }
+
+    /* Botón del dropdown */
+    .titulo-perfumes .dropdown-toggle {
+        background-color: var(--rosa-claro);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-weight: 500;
+        transition: background-color 0.3s ease, color 0.2s ease;
+    }
+
+        .titulo-perfumes .dropdown-toggle:hover {
+            background-color: var(--rosa-profundo);
+            color: white;
+        }
+
+    /* Menú desplegado */
+    .titulo-perfumes .dropdown-menu {
+        
+        border: 1px solid var(--rosa-profundo);
+        border-radius: 12px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Opciones del menú */
+    .titulo-perfumes .dropdown-item {
+        
+        padding: 10px 16px;
+        font-weight: 500;
+        color: var(--moka);
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+        .titulo-perfumes .dropdown-item:hover {
+            background-color: var(--rosa-profundo); /* Fondo al pasar el mouse */
+            color: white; /* Texto al pasar el mouse */
+        }
+
+
+input.no-outline:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: inherit;
+}
+
+.btn-buscar {
+    background-color: var(--rosa-claro); 
+    color: white;
+    border: none;
+}
+
+    .btn-buscar:hover {
+        background-color: var(--rosa-profundo); 
+        color: white;
+    }
+
+.sin-resultados {
+    text-align: center;
+    padding: 60px 20px;
+    color: #555;
+}
+
+.mt-espaciado-footer {
+    margin-top: 620px;
 }
