@@ -24,7 +24,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             int clienteId = Convert.ToInt32(Session["clienteId"]);
 
-           // Paso 1: Obtener el carrito completo con perfumes
+            // Paso 1: Obtener el carrito completo con perfumes
             var carrito = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)   // 👈 necesarias para el helper
@@ -238,170 +238,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
         }
 
-        /*[HttpPost]
-        public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
-        {
-            if (Session["clienteId"] == null)
-            {
-                return Json(new { redirect = Url.Action("Login", "Cliente") });
-            }
 
-            int clienteId = Convert.ToInt32(Session["clienteId"]);
-
-            var item = db.carrito
-                .Include(c => c.perfume)
-                .Include(c => c.perfume.promocion)
-                .Include(c => c.perfume.tipo_de_perfume)
-                .Include(c => c.perfume.genero)
-                .Include(c => c.perfume.stock)
-                .FirstOrDefault(c => c.perfume_id == perfumeId && c.cliente_id == clienteId);
-
-            if (item == null)
-            {
-                return Json(new { success = false, error = "Item no encontrado" });
-            }
-
-
-
-            bool seElimino = false;
-
-            if (cantidad == 0)
-            {
-                db.carrito.Remove(item);
-                db.SaveChanges();
-                seElimino = true;
-            }
-            else
-            {
-                item.cantidad = cantidad;
-                db.SaveChanges();
-            }
-
-            var perfumesEnCarrito = db.carrito
-                .Where(c => c.cliente_id == clienteId)
-                .Include(c => c.perfume)
-                .Include(c => c.perfume.promocion)
-                .ToList();
-
-            double subtotal = perfumesEnCarrito.Sum(p => p.perfume.precio_en_pesos * p.cantidad);
-            double total = 0;
-            double totalPerfume = 0;
-
-            foreach (var c in perfumesEnCarrito)
-            {
-                var perfume = c.perfume;
-                var promo = perfume.promocion.FirstOrDefault(pr =>
-                    pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now);
-
-                double precioAplicado;
-
-                if (promo != null)
-                {
-                    if (promo.descuento == 10)
-                    {
-                        precioAplicado = perfume.precio_en_pesos * 0.9 * c.cantidad;
-                    }
-                    else
-                    {
-                        int pares = (c.cantidad / 2) * 2;
-                        int impares = c.cantidad % 2;
-                        double porcentaje = (100 - promo.descuento) / 100.0;
-                        precioAplicado = (pares * perfume.precio_en_pesos * porcentaje) + (impares * perfume.precio_en_pesos);
-                    }
-                }
-                else
-                {
-                    precioAplicado = perfume.precio_en_pesos * c.cantidad;
-                }
-
-                total += precioAplicado;
-
-                if (c.perfume_id == perfumeId)
-                {
-                    totalPerfume = precioAplicado;
-                }
-            }
-
-            if (seElimino)
-            {
-                return Json(new
-                {
-                    success = true,
-                    eliminado = true,
-                    subtotal = subtotal.ToString("N0"),
-                    total = total.ToString("N0"),
-                    descuento = (subtotal - total).ToString("N0"),
-                    envioGratis = total >= 50000,
-                    perfumeId = perfumeId
-                });
-            }
-
-            // PROMOCIÓN lógica detallada para la fila actual
-            double precioOriginal = item.perfume.precio_en_pesos;
-            double precioConDescuentoUnitario = precioOriginal;
-            bool mostrarPrecioTachado = false;
-
-            var promociones = item.perfume.promocion
-                .Where(pr => pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now)
-                .ToList();
-
-            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
-            var promoCantidad = promociones.Where(p => p.descuento > 10).OrderByDescending(p => p.descuento).FirstOrDefault();
-
-            int cantidadActual = item.cantidad;
-            int paresActuales = (cantidadActual / 2) * 2;
-            int imparesActuales = cantidadActual % 2;
-
-            if (promoCantidad != null && paresActuales >= 2)
-            {
-                mostrarPrecioTachado = false;
-                precioConDescuentoUnitario = precioOriginal;
-
-                if (imparesActuales == 1 && promo10 != null)
-                {
-                    mostrarPrecioTachado = false;
-                }
-            }
-            else if (promo10 != null)
-            {
-                mostrarPrecioTachado = true;
-                precioConDescuentoUnitario = precioOriginal * 0.9;
-            }
-
-            // ViewModel
-            int stockDisponible = item.perfume.stock.Sum(s => Math.Max(0, s.cantidad - 5));
-            var model = ConstruirItemViewModel(item, stockDisponible);
-
-
-            string filaHtml = RenderPartialViewToString("_FilaCarrito", model);
-
-            return Json(new
-            {
-                success = true,
-                eliminado = false,
-                perfumeId = perfumeId,
-                subtotal = subtotal.ToString("N0"),
-                total = total.ToString("N0"),
-                descuento = (subtotal - total).ToString("N0"),
-                envioGratis = total >= 50000,
-                perfumeTotal = totalPerfume.ToString("N0"),
-                filaHtml = filaHtml
-            });
-        }*/
-
-       /* protected string RenderPartialViewToString(string viewName, object model)
-        {
-            ViewData.Model = model;
-
-            using (var sw = new System.IO.StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
-                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-                viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
-                return sw.GetStringBuilder().ToString();
-            }
-        }*/
 
 
         [HttpPost]
@@ -484,75 +321,6 @@ namespace Eterea_Parfums_Web.Controllers
                 leyenda = vm.LeyendaPromo
             });
         }
-
-
-        [HttpPost]
-        public JsonResult Agregar2(int perfumeId, int cantidad=1)
-        {
-            if (Session["clienteId"] == null)
-                return Json(new { redirect = Url.Action("Login", "Cliente") });
-
-            int clienteId = (int)Session["clienteId"];
-
-            var perfume = db.perfume.Find(perfumeId);
-            if (perfume == null || !perfume.activo)
-                return Json(new { error = "El perfume no existe o está inactivo." });
-
-            int stockDisponible = db.stock
-                .Where(s => s.perfume_id == perfumeId)
-                .ToList()
-                .Select(s => Math.Max(0, s.cantidad - 5))
-                .Sum();
-
-            var itemEnCarrito = db.carrito
-                .FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
-
-            int cantidadEnCarrito = itemEnCarrito?.cantidad ?? 0;
-
-            if (cantidadEnCarrito + cantidad > stockDisponible)
-                return Json(new { error = "Ya agregaste todas las unidades disponibles de este perfume." });
-
-            carrito nuevoItem = null;
-
-            if (itemEnCarrito != null)
-            {
-                itemEnCarrito.cantidad += cantidad;
-            }
-            else
-            {
-                int nuevoId = db.carrito.Any() ? db.carrito.Max(c => c.id) + 1 : 1;
-
-                nuevoItem = new carrito
-                {
-                    id = nuevoId,
-                    cliente_id = clienteId,
-                    perfume_id = perfumeId,
-                    cantidad = cantidad
-                };
-                db.carrito.Add(nuevoItem);
-            }
-
-            db.SaveChanges();
-
-            var itemActual = itemEnCarrito ?? nuevoItem;
-            var vm = BuildItemViewModel(itemActual, stockDisponible);
-
-            return Json(new
-            {
-                nombre = vm.Nombre,
-                imagen = vm.Imagen,
-                tipo = vm.TipoDePerfume,
-                presentacion = vm.Presentacion,
-                genero = vm.Genero,
-                precioOriginal = vm.PrecioOriginal.ToString("N0"),
-                precioDescuento = vm.MostrarPrecioTachado
-                                    ? vm.PrecioConDescuento?.ToString("N0")
-                                    : null,
-                tienePromo = vm.TienePromo,
-                leyenda = vm.LeyendaPromo
-            });
-        }
-
 
 
         // GET: Carrito/Details/5
@@ -760,100 +528,6 @@ namespace Eterea_Parfums_Web.Controllers
             return "";
         }
 
-        /*private ItemCarritoViewModel ConstruirItemViewModel(carrito item, int stockDisponible)
-        {
-            var perfume = item.perfume;
-            int cantidad = item.cantidad;
-
-            var promociones = perfume.promocion
-                .Where(pr => pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now)
-                .ToList();
-
-            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
-            var promoPorCantidad = promociones.FirstOrDefault(pr => pr.descuento > 10);
-
-            double precioOriginal = perfume.precio_en_pesos;
-            double precioConDescuento = precioOriginal;
-            double total = 0;
-            bool tienePromo = false;
-            string leyendaPromo = "";
-
-            if (promoPorCantidad != null && cantidad >= 2)
-            {
-                tienePromo = true;
-                int cantidadConDescuento = (cantidad / 2) * 2;
-                int cantidadSinDescuento = cantidad % 2;
-                double porcentajePorCantidad = (100 - promoPorCantidad.descuento) / 100.0;
-                double porcentaje10 = 0.9;
-
-                total = (cantidadConDescuento * precioOriginal * porcentajePorCantidad) +
-                        (cantidadSinDescuento * precioOriginal * (promo10 != null ? porcentaje10 : 1.0));
-
-                if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
-                    precioConDescuento = precioOriginal * porcentaje10;
-                else
-                    precioConDescuento = precioOriginal * porcentajePorCantidad;
-
-                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-
-                leyendaPromo = $"<span style='color: black;'>{cantidadConDescuento} unidades:</span> " +
-                               $"{(descuentoSegundaUnidad == 100 ? "Promoción 2 x 1" : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad")}";
-
-                if (cantidadSinDescuento == 1 && promo10 != null && stockDisponible > cantidad)
-                    leyendaPromo += $"<br /><span style='color: black;'>1 unidad:</span> Promoción 10% OFF";
-            }
-            else if (promo10 != null)
-            {
-                tienePromo = true;
-                precioConDescuento = precioOriginal * 0.9;
-                total = precioConDescuento * cantidad;
-                leyendaPromo = "Promoción 10% OFF";
-
-                if (promoPorCantidad != null && cantidad < 2 && stockDisponible > cantidad)
-                {
-                    int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                    leyendaPromo += $"<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                }
-            }
-            else if (promoPorCantidad != null && cantidad == 1)
-            {
-                tienePromo = false;
-                precioConDescuento = precioOriginal;
-                total = precioOriginal;
-                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                leyendaPromo = $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-            }
-            else if (promoPorCantidad != null && cantidad > 1 && cantidad % 2 == 1 && stockDisponible > cantidad)
-            {
-                tienePromo = false;
-                precioConDescuento = precioOriginal;
-                total = precioOriginal * cantidad;
-                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-                leyendaPromo = $"<strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
-            }
-            else
-            {
-                total = precioOriginal * cantidad;
-            }
-
-            return new ItemCarritoViewModel
-            {
-                PerfumeId = perfume.id,
-                Nombre = perfume.nombre,
-                TipoDePerfume = perfume.tipo_de_perfume?.tipo_de_perfume1,
-                Presentacion = perfume.presentacion_ml,
-                Genero = perfume.genero?.genero1,
-                Imagen = perfume.imagen1,
-                PrecioOriginal = precioOriginal,
-                PrecioConDescuento = precioConDescuento,
-                Cantidad = cantidad,
-                Total = total,
-                TienePromo = tienePromo,
-                LeyendaPromo = leyendaPromo,
-                StockDisponibleParaVentaWeb = stockDisponible,
-                MostrarPrecioTachado = promo10 != null && (promoPorCantidad == null || cantidad < 2)
-            };
-        }*/
 
         private ItemCarritoViewModel BuildItemViewModel(carrito item, int stockDisponible)
         {
@@ -986,61 +660,52 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // CarritoController.cs
-public ActionResult VistaPrevia()
-{
-    if (Session["clienteId"] == null)
-        return RedirectToAction("Login", "Cliente");
+        public ActionResult VistaPrevia()
+        {
+            if (Session["clienteId"] == null)
+                return RedirectToAction("Login", "Cliente");
 
-    int clienteId = (int)Session["clienteId"];
+            int clienteId = (int)Session["clienteId"];
 
-    /* 1) Carrito actualizado desde BD */
-    var carrito = db.carrito
-        .Where(c => c.cliente_id == clienteId)
-        .Include(c => c.perfume)
-        .Include(c => c.perfume.promocion)
-        .Include(c => c.perfume.stock)
-        .ToList();
+            /* 1) Carrito actualizado desde BD */
+            var carrito = db.carrito
+                .Where(c => c.cliente_id == clienteId)
+                .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)
+                .Include(c => c.perfume.stock)
+                .ToList();
 
-    /* 2) Stock neto x perfume (regla “-5”) */
-    var stockDict = db.stock
-        .Where(s => carrito.Select(c => c.perfume_id).Contains(s.perfume_id))
-        .ToList()
-        .GroupBy(s => s.perfume_id)
-        .ToDictionary(
-            g => g.Key,
-            g => g.Sum(s => Math.Max(0, s.cantidad - 5))
-        );
+            /* 2) Stock neto x perfume (regla “-5”) */
+            var stockDict = db.stock
+                .Where(s => carrito.Select(c => c.perfume_id).Contains(s.perfume_id))
+                .ToList()
+                .GroupBy(s => s.perfume_id)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(s => Math.Max(0, s.cantidad - 5))
+                );
 
-    /* 3) Reutilizá TU helper central */
-    var itemsVm = carrito.Select(c =>
-        BuildItemViewModel(
-            c,
-            stockDict.ContainsKey(c.perfume_id) ? stockDict[c.perfume_id] : 0
-        )
-    ).ToList();
+            /* 3) Reutilizá TU helper central */
+            var itemsVm = carrito.Select(c =>
+                BuildItemViewModel(
+                    c,
+                    stockDict.ContainsKey(c.perfume_id) ? stockDict[c.perfume_id] : 0
+                )
+            ).ToList();
 
 
 
-            // Mapeo a ItemResumenPedidoViewModel
-            var itemsResumen = itemsVm.Select(i => new ItemResumenPedidoViewModel
-            {
-                PerfumeId = i.PerfumeId,
-                Nombre = i.Nombre,
-                Imagen = i.Imagen,
-                Presentacion = i.Presentacion,
-                Cantidad = i.Cantidad,
-                Precio = i.Total / i.Cantidad          // precio final por unidad
-            }).ToList();
+
 
             // 4) Calculá totales con la lista resumida
-            double subtotal = itemsResumen.Sum(r => r.Precio * r.Cantidad);  // ya es precio final
-            double total = subtotal;               // mismo valor (sin lógica extra)
-            double descuento = 0;                      // o calcula si guardás info aparte
-            bool envioGratis = total >= 50_000;
+            double subtotal = itemsVm.Sum(i => i.PrecioOriginal * i.Cantidad);
+            double total = itemsVm.Sum(i => i.Total);
+            double descuento = subtotal - total;
+            bool envioGratis = total >= 50000;
 
             var vistaPreviaVm = new VistaPreviaPedidoViewModel
             {
-                Items = itemsResumen,
+                Items = itemsVm,
                 Subtotal = subtotal,
                 Descuento = descuento,
                 Total = total,
@@ -1056,4 +721,3 @@ public ActionResult VistaPrevia()
 
     }
 }
-

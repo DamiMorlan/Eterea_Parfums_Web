@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Eterea_Parfums_Desktop;
+using Eterea_Parfums_Web.Models;
+using Eterea_Parfums_Web.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Desktop;
-using Eterea_Parfums_Web.Models;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -195,7 +196,7 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
-       public ActionResult Perfil()
+        public ActionResult Perfil()
         {
             if (Session["clienteId"] == null)
             {
@@ -217,6 +218,109 @@ namespace Eterea_Parfums_Web.Controllers
                 return View(cliente);
             }
         }
+
+        public ActionResult SeleccionarDireccion()
+        {
+            if (Session["clienteId"] == null)
+                return RedirectToAction("Login", "Cliente");
+
+            int clienteId = (int)Session["clienteId"];
+
+            // 1. Obtener el DNI del cliente logueado
+            var dni = db.cliente
+                .Where(c => c.id == clienteId)
+                .Select(c => c.dni)
+                .FirstOrDefault();
+
+            // 2. Buscar los domicilios usados por ese cliente (texto completo)
+            var textos = db.orden
+                .Where(o => o.dni == dni && o.domicilio_de_envio != null)
+                .Select(o => o.domicilio_de_envio)
+                .Distinct()
+                .ToList();
+
+            // 3. Transformar en ViewModels divididos en dos líneas
+            var modelo = textos.Select(t =>
+            {
+                string linea1 = "";
+                string linea2 = "";
+
+                int indiceCP = t.IndexOf("C.P.");
+
+                if (indiceCP > 0)
+                {
+                    linea1 = t.Substring(0, indiceCP).Trim();
+                    linea2 = t.Substring(indiceCP).Trim();
+                }
+                else
+                {
+                    // Por si no se encuentra "C.P.:"
+                    linea1 = t;
+                }
+
+
+                return new DireccionFormateadaViewModel
+                {
+                    Linea1 = linea1,
+                    Linea2 = linea2
+                };
+            }).ToList();
+
+            return View(modelo);
+        }
+
+
+        [HttpGet]
+        public ActionResult AgregarDireccion()
+        {
+            return View(new DireccionEntregaViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AgregarDireccion(DireccionEntregaViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // Guarda temporal en Session el texto del domicilio
+            Session["NuevoDomicilioEntrega"] = model.ConstruirTextoCompleto();
+
+            // Volver a vista previa o a donde desees
+            return RedirectToAction("VistaPrevia", "Pedido");
+        }
+
+
+
+        [HttpPost]
+        public ActionResult SeleccionarDireccionConfirmar(string texto)
+        {
+            Session["DomicilioDeEnvioTexto"] = texto;
+            Session["NuevoDomicilioEntrega"] = texto;
+
+            // Redirige a VistaPrevia
+            return RedirectToAction("VistaPrevia", "Pedido");
+        }
+
+
+        private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
+        {
+            var calle = db.calle.Find(cli.calle_id)?.nombre;
+            var loc = db.localidad.Find(cli.localidad_id)?.nombre;
+            var prov = db.provincia.Find(cli.provincia_id)?.nombre;
+
+            string linea1 = $"{calle}, {cli.numeracion_calle}";
+            if (!string.IsNullOrWhiteSpace(cli.piso))
+                linea1 += $" Piso {cli.piso}";
+            if (!string.IsNullOrWhiteSpace(cli.departamento))
+                linea1 += $" Dpto. {cli.departamento}";
+
+            string linea2 = $"{cli.codigo_postal}, {loc}, {prov}";
+
+            return linea1 + "\n" + linea2;
+        }
+
+
 
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)

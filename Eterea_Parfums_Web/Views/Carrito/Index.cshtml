@@ -123,22 +123,13 @@
                 </p>
             }
 
-            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Post))
+            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
             {
-                foreach (var item in Model)
-                {
-                    <input type="hidden" name="PerfumeIds" value="@item.PerfumeId" />
-                    <input type="hidden" name="Cantidades" value="@item.Cantidad" />
-                }
-
-                <input type="hidden" name="Subtotal" value="@subtotal" />
-                <input type="hidden" name="Descuento" value="@descuento" />
-                <input type="hidden" name="Total" value="@total" />
-
                 <div class="contenedor-boton-finalizar text-center mt-3">
                     <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
                 </div>
             }
+
 
         </div>
 
@@ -281,7 +272,6 @@
 
     </script>
 }
-
 
 
 
