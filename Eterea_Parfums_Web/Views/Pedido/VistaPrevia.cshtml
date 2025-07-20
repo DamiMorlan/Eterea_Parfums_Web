@@ -52,7 +52,7 @@
                         @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
                     </div>
                     <div class="text-end w-25">
-                        $@item.Total.ToString("N0")
+                        $@item.TotalSinDescuento.ToString("N0")
                     </div>
                 </div>
             }
@@ -64,20 +64,20 @@
                 <div class="fila-resumen">
                     <span class="etiqueta">Subtotal (sin descuento):</span>
                     <span class="valor">
-                        $@($"{Model.Subtotal:N0}")
+                        $@($"{Model.Subtotal:N2}")
                     </span>
                 </div>
 
                 <div class="fila-resumen">
                     <span class="etiqueta">Descuentos aplicados:</span>
                     <span class="valor descuento">
-                        -$@($"{Model.Descuento:N0}")
+                        -$@($"{Model.Descuento:N2}")
                     </span>
                 </div>
 
                 <div class="fila-resumen total">
                     <span class="etiqueta">Total a pagar:</span>
-                    <span class="valor">$@($"{Model.Total:N0}")</span>
+                    <span class="valor">$@($"{Model.Total:N2}")</span>
                 </div>
 
                 @if (Model.EnvioGratis)

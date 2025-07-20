@@ -157,9 +157,9 @@ namespace Eterea_Parfums_Web.Controllers
                         ? stockDict[c.perfume_id]
                         : 0)).ToList();
 
-            double subtotal = items.Sum(x => x.PrecioOriginal * x.Cantidad);
+            double subtotal = items.Sum(x => x.TotalSinDescuento);
             double total = items.Sum(x => x.Total);
-            double descuento = subtotal - total;
+            double descuento = items.Sum(x => x.DescuentoAplicado);
 
             // Dirección de envío
             string domicilio;

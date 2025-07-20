@@ -53,16 +53,16 @@
                         @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
                         {
                             <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                                $@item.PrecioOriginal.ToString("N0")
+                                $@item.PrecioOriginal.ToString("N2")
                             </p>
                             <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                                $@item.PrecioConDescuento.Value.ToString("N0")
+                                $@item.PrecioConDescuento.Value.ToString("N2")
                             </p>
                         }
                         else
                         {
                             <p class="precio-descuento" style="color: black;">
-                                $@item.PrecioOriginal.ToString("N0")
+                                $@item.PrecioOriginal.ToString("N2")
                             </p>
                         }
 
@@ -81,7 +81,7 @@
 
 
                         <div class="producto-precio">
-                            <p id="total-perfume-@item.PerfumeId">Total: $@item.Total.ToString("N0")</p>
+                            <p id="total-perfume-@item.PerfumeId">Total: $@item.Total.ToString("N2")</p>
                         </div>
                     </div>
                 </div>
@@ -103,15 +103,15 @@
 
             <div class="fila-resumen">
                 <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor" id="subtotal">$@subtotal.ToString("N0")</span>
+                <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
             </div>
             <div class="fila-resumen">
                 <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento" id="descuento">-$@descuento.ToString("N0")</span>
+                <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
             </div>
             <div class="fila-resumen total">
                 <span class="etiqueta">Total a pagar:</span>
-                <span class="valor" id="total">$@total.ToString("N0")</span>
+                <span class="valor" id="total">$@total.ToString("N2")</span>
             </div>
 
             @if (total >= 50000)

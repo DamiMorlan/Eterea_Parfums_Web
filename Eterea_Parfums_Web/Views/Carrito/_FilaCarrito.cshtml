@@ -3,7 +3,9 @@
 <div class="fila-producto" id="perfume-@Model.PerfumeId">
     <div class="contenedor-producto">
         <a href="@Url.Action("Details", "Perfume", new { id = Model.PerfumeId })">
-            <img src="@Url.Content("~/Imagenes/" + Model.Imagen + ".jpg")" alt="@Model.Nombre" />
+            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Imagen + ".jpg" })"
+                 alt="@Model.Nombre"
+                 class="img-perfume" />
         </a>
 
         <div class="producto-detalles">
