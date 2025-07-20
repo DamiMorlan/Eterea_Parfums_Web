@@ -15,7 +15,6 @@ namespace Eterea_Parfums_Web.Helpers
             var perfume = item.perfume;
             int cantidad = item.cantidad;
 
-            // --- PROMOCIONES DISPONIBLES ----------------------------------
             var promociones = perfume.promocion
                 .Where(pr => pr.id != 1 &&
                              pr.activo &&
@@ -34,8 +33,6 @@ namespace Eterea_Parfums_Web.Helpers
             double total = precioOriginal * cantidad;
             bool tienePromo = false;
             string leyendaPromo = "";
-
-            // --- LÓGICA DE DESCUENTOS --------------------------------------
 
             if (promo10 != null && promoPorCantidad == null)
             {
@@ -69,14 +66,22 @@ namespace Eterea_Parfums_Web.Helpers
                 {
                     total = precioOriginal * cantidad;
                     precioConDescuento = precioOriginal;
-
                     tienePromo = true;
-                    leyendaPromo = $"Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
+
+                    // ✅ Mostramos la leyenda solo si hay suficiente stock para llevar 2
+                    if (stockDisponible >= 2)
+                    {
+                        leyendaPromo = $"Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
+                    }
+                    else
+                    {
+                        leyendaPromo = ""; // no mostrar nada si no hay stock suficiente
+                    }
                 }
             }
-
-            if (promo10 == null && promoPorCantidad != null)
+            else if (promo10 != null && promoPorCantidad != null)
             {
+                // Ambas promos existen
                 if (cantidad >= 2)
                 {
                     int pares = cantidad / 2;
@@ -96,14 +101,19 @@ namespace Eterea_Parfums_Web.Helpers
                 }
                 else
                 {
-                    total = precioOriginal * cantidad;
-                    precioConDescuento = precioOriginal;
-
+                    precioConDescuento = precioOriginal * 0.90;
+                    total = Math.Round(precioConDescuento * cantidad, 2);
                     tienePromo = true;
-                    leyendaPromo = $"Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
+
+                    leyendaPromo = "Promoción 10% OFF";
+
+                    // ✅ Agregamos la leyenda adicional solo si hay stock para 2
+                    if (stockDisponible >= 2)
+                    {
+                        leyendaPromo += $" | Si llevás 2 iguales, el segundo tiene {promoPorCantidad.descuento}% de descuento";
+                    }
                 }
             }
-
             else
             {
                 // Sin promoción
@@ -112,6 +122,8 @@ namespace Eterea_Parfums_Web.Helpers
                 tienePromo = false;
                 leyendaPromo = "";
             }
+
+            Console.WriteLine($"perfumeId={perfume.id}, stockDisponible={stockDisponible}, cantidad={cantidad}, leyenda={leyendaPromo}");
 
             return new ItemCarritoViewModel
             {
@@ -133,6 +145,7 @@ namespace Eterea_Parfums_Web.Helpers
                     && precioConDescuento < precioOriginal
             };
         }
+
 
     }
 }

@@ -71,16 +71,8 @@ namespace Eterea_Parfums_Web.Controllers
                 ViewBag.MensajeStockActualizado = "Algunos productos del carrito fueron ajustados por cambios en el stock.";
             }
 
-            /*// 1) Cargá el carrito ya con las relaciones necesarias
-            var carrito = db.carrito
-                .Include(c => c.perfume)
-                .Include(c => c.perfume.promocion)   // 👈 necesarias para el helper
-                .Include(c => c.perfume.stock)
-                .Where(c => c.cliente_id == clienteId)
-                .OrderByDescending(c => c.id)
-                .ToList();*/
 
-            // … (ajuste de stock tal como lo tenés) …
+          
 
             // 2) ViewModel usando el mismo método que usa ActualizarCantidad
             var viewModel = carrito.Select(c =>
@@ -252,9 +244,10 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 2) Stock neto disponible para venta web
             int stockDisponible = db.stock
-              .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
-              .ToList() // ← fuerza ejecución y convierte a lista
-              .Sum(s => s.cantidad); // sumamos todas las unidades de sucursal 1
+             .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
+             .ToList() // 👈 importante
+             .Select(s => Math.Max(0, s.cantidad - 5))
+             .FirstOrDefault();
 
             // 3) Ítem actual en carrito (si existe)
             var itemEnCarrito = db.carrito
@@ -316,6 +309,90 @@ namespace Eterea_Parfums_Web.Controllers
                 leyenda = vm.LeyendaPromo
             });
         }
+
+
+        [HttpPost]
+        public JsonResult Agregar2(int perfumeId, int cantidad = 1)
+        {
+            if (Session["clienteId"] == null)
+                return Json(new { redirect = Url.Action("Login", "Cliente") });
+
+            int clienteId = (int)Session["clienteId"];
+
+            var perfume = db.perfume.Find(perfumeId);
+            if (perfume == null || !perfume.activo)
+                return Json(new { error = "El perfume no existe o está inactivo." });
+
+            // ✅ Stock excedente solo del local 1
+            int stockDisponible = db.stock
+                .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
+                .ToList()
+                .Select(s => Math.Max(0, s.cantidad - 5))
+                .Sum(); // por si hay más de una fila
+
+            var itemEnCarrito = db.carrito
+                .FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
+
+            int cantidadEnCarrito = itemEnCarrito?.cantidad ?? 0;
+            int cantidadMaximaParaAgregar = stockDisponible - cantidadEnCarrito;
+
+            if (cantidadMaximaParaAgregar <= 0)
+            {
+                return Json(new { error = "Ya tenés todas las unidades disponibles de este perfume." });
+            }
+
+            int cantidadFinal = Math.Min(cantidad, cantidadMaximaParaAgregar);
+            string mensaje = null;
+
+            if (cantidadFinal < cantidad)
+            {
+                mensaje = $"Solo se agregaron {cantidadFinal} unidad/es disponibles (total permitido: {stockDisponible}).";
+            }
+
+            carrito nuevoItem = null;
+
+            if (itemEnCarrito != null)
+            {
+                itemEnCarrito.cantidad += cantidadFinal;
+            }
+            else
+            {
+                int nuevoId = db.carrito.Any() ? db.carrito.Max(c => c.id) + 1 : 1;
+
+                nuevoItem = new carrito
+                {
+                    id = nuevoId,
+                    cliente_id = clienteId,
+                    perfume_id = perfumeId,
+                    cantidad = cantidadFinal
+                };
+                db.carrito.Add(nuevoItem);
+            }
+
+            db.SaveChanges();
+
+            var itemActual = itemEnCarrito ?? nuevoItem;
+            var vm = BuildItemViewModel(itemActual, stockDisponible);
+
+            return Json(new
+            {
+                nombre = vm.Nombre,
+                imagen = vm.Imagen,
+                tipo = vm.TipoDePerfume,
+                presentacion = vm.Presentacion,
+                genero = vm.Genero,
+                precioOriginal = vm.PrecioOriginal.ToString("N0"),
+                precioDescuento = vm.MostrarPrecioTachado
+                                    ? vm.PrecioConDescuento?.ToString("N0")
+                                    : null,
+                tienePromo = vm.TienePromo,
+                leyenda = vm.LeyendaPromo,
+                mensaje = mensaje // 👈 mensaje opcional para mostrar en view
+            });
+        }
+
+
+
 
 
         // GET: Carrito/Details/5

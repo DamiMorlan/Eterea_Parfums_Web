@@ -623,16 +623,17 @@
 
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `
-                   <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
+                    <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
                     <p><strong>${data.nombre}</strong></p>
                     <p>${data.tipo} - ${data.presentacion} ml</p>
                     <p>Género: ${data.genero}</p>
                     <p>Precio: ${data.precioDescuento
-                        ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                        : `<strong>$${data.precioOriginal}</strong>`
-                    }</p>
+                                        ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                        : `<strong>$${data.precioOriginal}</strong>`}</p>
                     ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                    ${data.mensaje ? `<p class="text-warning fw-bold">⚠️ ${data.mensaje}</p>` : ''}
                 `;
+
 
                 const offcanvas = document.getElementById("carrito-offcanvas");
                 offcanvas.classList.add("show");
