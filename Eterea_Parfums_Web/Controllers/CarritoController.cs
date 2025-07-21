@@ -1,13 +1,14 @@
-﻿using Eterea_Parfums_Web.Models;
+﻿using Eterea_Parfums_Web.Helpers;
+using Eterea_Parfums_Web.Models;
 using Eterea_Parfums_Web.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
-using System.IO;
-using System.Data.Entity;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -76,7 +77,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 2) ViewModel usando el mismo método que usa ActualizarCantidad
             var viewModel = carrito.Select(c =>
-                    BuildItemViewModel(
+                    CarritoHelper.BuildItemViewModel(
                         c,
                         stockPorPerfume.ContainsKey(c.perfume_id)
                             ? stockPorPerfume[c.perfume_id]
@@ -146,7 +147,7 @@ namespace Eterea_Parfums_Web.Controllers
               );
 
             var vms = carrito.Select(c =>
-                    BuildItemViewModel(
+                   CarritoHelper.BuildItemViewModel(
                         c,
                         stockDict.ContainsKey(c.perfume_id)
                             ? stockDict[c.perfume_id]
@@ -286,7 +287,7 @@ namespace Eterea_Parfums_Web.Controllers
              * 5) ViewModel con las reglas centrales
              *------------------------------------------------*/
             var itemActual = itemEnCarrito ?? nuevoItem;        // seguro ≠ null
-            var vm = BuildItemViewModel(itemActual, stockDisponible);
+            var vm = CarritoHelper.BuildItemViewModel(itemActual, stockDisponible);
 
             /*-------------------------------------------------
              * 6) Respuesta JSON
@@ -372,7 +373,7 @@ namespace Eterea_Parfums_Web.Controllers
             db.SaveChanges();
 
             var itemActual = itemEnCarrito ?? nuevoItem;
-            var vm = BuildItemViewModel(itemActual, stockDisponible);
+            var vm = CarritoHelper.BuildItemViewModel(itemActual, stockDisponible);
 
             return Json(new
             {
@@ -538,70 +539,10 @@ namespace Eterea_Parfums_Web.Controllers
             base.Dispose(disposing);
         }
 
-        private string ObtenerLeyendaPromoSegunCantidad(carrito item, int stockDisponible)
-        {
-            var perfume = item.perfume;
-            int cantidad = item.cantidad;
-
-            var promociones = perfume.promocion
-                .Where(pr => pr.id != 1 &&
-                             pr.activo &&
-                             pr.fecha_inicio <= DateTime.Now &&
-                             pr.fecha_fin >= DateTime.Now)
-                .ToList();
-
-            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
-            var promoPorCantidad = promociones
-                .Where(pr => pr.descuento > 10)
-                .OrderByDescending(pr => pr.descuento)
-                .FirstOrDefault();
-
-            if (promo10 != null && promoPorCantidad != null)
-            {
-                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-
-                if (cantidad == 1)
-                {
-                    return $"Promoción 10% OFF<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                }
-                else
-                {
-                    return (descuentoSegundaUnidad == 100)
-                        ? "Promoción 2 x 1"
-                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
-                }
-            }
-
-            if (promo10 != null)
-            {
-                return "Promoción 10% OFF";
-            }
-
-            if (promoPorCantidad != null)
-            {
-                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
-
-                if (cantidad == 1)
-                {
-                    return $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
-                }
-                else if (cantidad % 2 == 1 && cantidad > 1 && stockDisponible >= cantidad + 1)
-                {
-                    return $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
-                }
-                else
-                {
-                    return (descuentoSegundaUnidad == 100)
-                        ? "Promoción 2 x 1"
-                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
-                }
-            }
-
-            return "";
-        }
+       
 
 
-        private ItemCarritoViewModel BuildItemViewModel(carrito item, int stockDisponible)
+       /* private ItemCarritoViewModel BuildItemViewModel(carrito item, int stockDisponible)
         {
             var perfume = item.perfume;
             int cantidad = item.cantidad;
@@ -624,7 +565,7 @@ namespace Eterea_Parfums_Web.Controllers
             string leyendaPromo = "";
             bool mostrarPrecioTachado = false;
 
-            /* ----------  REGLAS  ---------- */
+             //----------  REGLAS  ---------- 
             if (promoCantidad != null && cantidad >= 2)
             {
                 tienePromo = true;
@@ -729,7 +670,7 @@ namespace Eterea_Parfums_Web.Controllers
                 StockDisponibleParaVentaWeb = stockDisponible,
                 MostrarPrecioTachado = mostrarPrecioTachado
             };
-        }
+        }*/
 
         // CarritoController.cs
         public ActionResult VistaPrevia()
@@ -759,7 +700,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             /* 3) Reutilizá TU helper central */
             var itemsVm = carrito.Select(c =>
-                BuildItemViewModel(
+                CarritoHelper.BuildItemViewModel(
                     c,
                     stockDict.ContainsKey(c.perfume_id) ? stockDict[c.perfume_id] : 0
                 )

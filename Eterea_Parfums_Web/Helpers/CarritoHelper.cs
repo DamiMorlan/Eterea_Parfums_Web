@@ -32,71 +32,37 @@ namespace Eterea_Parfums_Web.Helpers
             double totalSinDescuento = precioOriginal * cantidad;
             double totalConDescuento = totalSinDescuento;
             double descuentoAplicado = 0;
-            bool tienePromo = false;
-            string leyendaPromo = "";
 
+            // Cálculo de descuentos
             if (promo10 != null && promoPorCantidad == null)
             {
-                // Solo promo del 10%
                 descuentoAplicado = totalSinDescuento * 0.10;
                 totalConDescuento = totalSinDescuento - descuentoAplicado;
-                tienePromo = true;
-                leyendaPromo = "Promoción 10% OFF";
             }
             else if (promo10 == null && promoPorCantidad != null)
             {
-                if (cantidad >= 2)
-                {
-                    int pares = cantidad / 2;
-                    int resto = cantidad % 2;
+                int pares = cantidad / 2;
+                int resto = cantidad % 2;
 
-                    double descuentoPorcentajePar = promoPorCantidad.descuento; // Ej: 40 significa 80% OFF en 2da unidad
-                    double descuentoPorPar = (2 * precioOriginal) * (descuentoPorcentajePar / 100.0);
+                double descuentoPorPar = (2 * precioOriginal) * (promoPorCantidad.descuento / 100.0);
 
-                    descuentoAplicado = pares * descuentoPorPar;
-                    totalConDescuento = totalSinDescuento - descuentoAplicado;
-
-                    tienePromo = true;
-                    leyendaPromo = $"Promoción {descuentoPorcentajePar}% OFF aplicados al total de cada par";
-                }
-                else
-                {
-                    totalConDescuento = totalSinDescuento;
-                    descuentoAplicado = 0;
-                    tienePromo = true;
-
-                    if (stockDisponible >= 2)
-                        leyendaPromo = $"Si llevás 2 iguales, la segunda unidad tiene {100 - promoPorCantidad.descuento}% de descuento";
-                }
+                descuentoAplicado = pares * descuentoPorPar;
+                totalConDescuento = totalSinDescuento - descuentoAplicado;
             }
             else if (promo10 != null && promoPorCantidad != null)
             {
                 int pares = cantidad / 2;
                 int resto = cantidad % 2;
 
-                double descuentoPorcentajePar = promoPorCantidad.descuento;
-                double descuentoPorPar = (2 * precioOriginal) * (descuentoPorcentajePar / 100.0);
+                double descuentoPorPar = (2 * precioOriginal) * (promoPorCantidad.descuento / 100.0);
                 double descuentoResto = resto * precioOriginal * 0.10;
 
                 descuentoAplicado = (pares * descuentoPorPar) + descuentoResto;
                 totalConDescuento = totalSinDescuento - descuentoAplicado;
-
-                tienePromo = true;
-                leyendaPromo = $"Promoción combinada: {descuentoPorcentajePar}% OFF en cada par";
-
-                if (resto == 1)
-                {
-                    leyendaPromo += " + 10% OFF en la unidad restante";
-                }
             }
-            else
-            {
-                // Sin promociones
-                totalConDescuento = totalSinDescuento;
-                descuentoAplicado = 0;
-                tienePromo = false;
-                leyendaPromo = "";
-            }
+
+            // Usamos el helper unificado para la leyenda
+            string leyendaPromo = ObtenerLeyendaPromoSegunCantidad(item, stockDisponible);
 
             return new ItemCarritoViewModel
             {
@@ -111,14 +77,79 @@ namespace Eterea_Parfums_Web.Helpers
                     cantidad > 0 ? totalConDescuento / cantidad : precioOriginal, 2),
                 Cantidad = cantidad,
                 Total = Math.Round(totalConDescuento, 2),
-                TienePromo = tienePromo,
+                TienePromo = (promo10 != null || promoPorCantidad != null),
                 LeyendaPromo = leyendaPromo,
                 StockDisponibleParaVentaWeb = stockDisponible,
-                MostrarPrecioTachado = promo10 != null
-                    && (promoPorCantidad == null || cantidad < 2),
+                MostrarPrecioTachado = promo10 != null && (promoPorCantidad == null || cantidad < 2),
                 TotalSinDescuento = Math.Round(totalSinDescuento, 2),
                 DescuentoAplicado = Math.Round(descuentoAplicado, 2)
             };
+        }
+
+        public static string ObtenerLeyendaPromoSegunCantidad(carrito item, int stockDisponible)
+        {
+            var perfume = item.perfume;
+            int cantidad = item.cantidad;
+
+            // ✅ Nueva validación al principio
+            if (stockDisponible < 2)
+                return "";
+
+            var promociones = perfume.promocion
+                .Where(pr => pr.id != 1 &&
+                             pr.activo &&
+                             pr.fecha_inicio <= DateTime.Now &&
+                             pr.fecha_fin >= DateTime.Now)
+                .ToList();
+
+            var promo10 = promociones.FirstOrDefault(pr => pr.descuento == 10);
+            var promoPorCantidad = promociones
+                .Where(pr => pr.descuento > 10)
+                .OrderByDescending(pr => pr.descuento)
+                .FirstOrDefault();
+
+            if (promo10 != null && promoPorCantidad != null)
+            {
+                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+
+                if (cantidad == 1)
+                {
+                    return $"Promoción 10% OFF<br /><strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
+                }
+                else
+                {
+                    return (descuentoSegundaUnidad == 100)
+                        ? "Promoción 2 x 1"
+                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
+                }
+            }
+
+            if (promo10 != null)
+            {
+                return "Promoción 10% OFF";
+            }
+
+            if (promoPorCantidad != null)
+            {
+                int descuentoSegundaUnidad = promoPorCantidad.descuento * 2;
+
+                if (cantidad == 1)
+                {
+                    return $"<strong>Si llevás 2 iguales, el segundo tiene {descuentoSegundaUnidad}% de descuento</strong>";
+                }
+                else if (cantidad % 2 == 1 && cantidad > 1 && stockDisponible >= cantidad + 1)
+                {
+                    return $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad<br /><strong>¡Si agregás uno más lo llevás con el {descuentoSegundaUnidad}% de descuento!</strong>";
+                }
+                else
+                {
+                    return (descuentoSegundaUnidad == 100)
+                        ? "Promoción 2 x 1"
+                        : $"Promoción {descuentoSegundaUnidad}% de descuento en la segunda unidad";
+                }
+            }
+
+            return "";
         }
 
 
