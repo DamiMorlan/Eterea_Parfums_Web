@@ -9,7 +9,13 @@ namespace Eterea_Parfums_Web.Controllers
 {
     public class ImagenController : Controller
     {
-        private string rutaBase = @"C:\Users\intersan\Desktop\TESIS_New\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+
+        /*Adri*/
+        //private string rutaBase = @"C:\Users\intersan\Desktop\TESIS_New\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+
+        /*Dami*/
+        private string rutaBase = @"C:\Users\damim\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+
 
         public ActionResult Mostrar(string nombre)
         {
