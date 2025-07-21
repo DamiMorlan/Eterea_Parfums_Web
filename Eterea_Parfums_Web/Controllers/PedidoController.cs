@@ -193,7 +193,7 @@ namespace Eterea_Parfums_Web.Controllers
                 Subtotal = subtotal,
                 Total = total,
                 Descuento = descuento,
-                EnvioGratis = total >= 50000,
+                EnvioGratis = total >= 70000,
                 DomicilioDeEnvioTexto = domicilio
             };
 

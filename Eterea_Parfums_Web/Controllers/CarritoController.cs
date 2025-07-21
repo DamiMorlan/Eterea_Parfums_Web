@@ -187,7 +187,7 @@ namespace Eterea_Parfums_Web.Controllers
                 total = total.ToString("N0"),
                 descuento = descuento.ToString("N0"),
 
-                envioGratis = total >= 50_000,
+                envioGratis = total >= 70_000,
                 perfumeTotal = totalPerfume.ToString("N0")
             });
         }
@@ -509,7 +509,7 @@ namespace Eterea_Parfums_Web.Controllers
                 subtotal = subtotal.ToString("N0"),
                 total = total.ToString("N0"),
                 descuento = (subtotal - total).ToString("N0"),
-                envioGratis = total >= 50000
+                envioGratis = total >= 70000
             });
         }
 
@@ -714,7 +714,7 @@ namespace Eterea_Parfums_Web.Controllers
             double subtotal = itemsVm.Sum(i => i.PrecioOriginal * i.Cantidad);
             double total = itemsVm.Sum(i => i.Total);
             double descuento = subtotal - total;
-            bool envioGratis = total >= 50000;
+            bool envioGratis = total >= 70000;
 
             var vistaPreviaVm = new VistaPreviaPedidoViewModel
             {
