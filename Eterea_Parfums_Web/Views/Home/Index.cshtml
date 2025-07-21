@@ -68,11 +68,11 @@
                                     <div class="col-3 col-md-3">
                                         <div class="card text-center mb-3 border-0 shadow-sm rounded">
                                             <div class="card-body">
-                                               <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
-                                                  class="card-title text-decoration-none"
-                                                  style="font-family: 'Georgia', serif; color: inherit;">
-                                                   @marca.Nombre
-                                               </a>
+                                                <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
+                                                   class="card-title text-decoration-none"
+                                                   style="font-family: 'Georgia', serif; color: inherit;">
+                                                    @marca.Nombre
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -100,13 +100,12 @@
     <div class="bg-marcas py-4 mt-5">
         <h2 class="text-center mb-4 mt-1">Perfumes en Promoción</h2>
 
-        <!-- Perfumes -->
         <div id="carouselPerfumesEnPromo" class="carousel slide" data-bs-ride="false">
             <div class="carousel-inner">
                 @{
                     var perfumesAgrupados = Model.Perfumes
                         .GroupBy(p => p.Nombre)
-                        .Select(g => g.First()) // Mostramos solo una card por nombre
+                        .Select(g => g.First())
                         .ToList();
 
                     var itemsPorSlidePromo = 4;
@@ -120,84 +119,110 @@
                                 @for (int j = 0; j < itemsPorSlidePromo && (i * itemsPorSlidePromo + j) < totalItemsPromo; j++)
                                 {
                                     var perfume = perfumesAgrupados[i * itemsPorSlidePromo + j];
+                                    var presentacionActiva = perfume.Presentaciones.FirstOrDefault(p => p.Ml == perfume.Presentacion) ?? perfume.Presentaciones.First();
+                                    var promos = presentacionActiva.Promociones;
+                                    var tieneVariasPromos = promos.Count > 1;
+                                    var primeraPromo = promos.FirstOrDefault();
+                                    var cardId = presentacionActiva.Id;
 
                                     <div class="col-md-3 col-6 mb-4 d-flex">
-                                        <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                        <div class="card w-100 perfume-card" id="perfume-card-@cardId"
+                                             data-nombre="@perfume.Nombre"
+                                             data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
+
+                                            <img src="@Url.Content("~/Imagenes/" + presentacionActiva.Imagen + ".jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
-                                                 id="imagen-@perfume.Id" />
+                                                 id="imagen-@cardId" />
 
                                             <div class="card-body d-flex flex-column text-center">
                                                 <h5 class="card-title">@perfume.Nombre</h5>
-                                                <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
+                                                <p class="card-text mb-3 marca-text" id="marca-@cardId">@perfume.Marca</p>
 
                                                 <p class="card-text mb-1"><strong>Tamaño:</strong></p>
                                                 <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
                                                     @foreach (var p in perfume.Presentaciones)
                                                     {
+                                                        var promo = p.Promociones.FirstOrDefault();
                                                         <button type="button"
-                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == presentacionActiva.Ml ? "active" : "")"
                                                                 data-id="@perfume.Id"
                                                                 data-perfumeid="@p.Id"
                                                                 data-precio="@p.Precio"
-                                                                data-descuento="@p.PrecioConDescuento"
-                                                                data-tiene-promo="@p.TienePromocion"
-                                                                data-leyenda="@p.LeyendaPromocion"
+                                                                data-descuento="@(promo?.PrecioConDescuento ?? (double?)null)"
+                                                                data-tiene-promo="@(p.TienePromocion)"
+                                                                data-leyenda="@(promo?.LeyendaPromocion ?? "")"
                                                                 data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
+                                                                data-ml="@p.Ml"
                                                                 onclick="cambiarPresentacion(this, @perfume.Id)">
                                                             @p.Ml ml
                                                         </button>
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1">
-                                                    <span class="precio-original" id="precio-original-@perfume.Id">
-                                                        @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
-                                                    </span>
-                                                    <span class="precio-descuento" id="precio-descuento-@perfume.Id">
-                                                        $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
-                                                    </span>
-                                                </p>
+                                                <!-- Carousel Promociones -->
+                                                <div class="promo-carousel mt-3" data-perfumeid="@cardId">
+                                                    <div class="promo-display">
+                                                        <span class="precio-original" id="precio-original-@cardId">
+                                                            @(primeraPromo != null ? "$" + primeraPromo.PrecioOriginal.ToString("N0") : "")
+                                                        </span>
+                                                        <span class="precio-descuento" id="precio-descuento-@cardId">
+                                                            $@(primeraPromo != null ? primeraPromo.PrecioConDescuento?.ToString("N0") : presentacionActiva.Precio.ToString("N0"))
+                                                        </span>
+                                                    </div>
 
-                                                <div class="promo-placeholder">
-                                                    <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                                        @perfume.LeyendaPromocion
-                                                    </span>
+                                                    <div class="promo-placeholder mt-1">
+                                                        <span class="leyenda-promocion" id="promo-leyenda-@cardId">
+                                                            @(primeraPromo?.LeyendaPromocion ?? "")
+                                                        </span>
+                                                    </div>
+
+                                                    @if (tieneVariasPromos)
+                                                    {
+                                                        <div class="promo-nav mt-2 d-flex justify-content-center gap-3">
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-prev" data-perfumeid="@cardId" type="button">
+                                                                <i class="fas fa-chevron-left"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-next" data-perfumeid="@cardId" type="button">
+                                                                <i class="fas fa-chevron-right"></i>
+                                                            </button>
+                                                        </div>
+                                                    }
                                                 </div>
 
-                                                <div class="espacio-stock mt-1" id="stock-@perfume.Id">
-                                                    @if (perfume.StockDisponibleParaWeb == 0)
-                                                    {
-                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
-                                                    }
-                                                    else if (perfume.StockDisponibleParaWeb == 1)
-                                                    {
-                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
-                                                    }
-                                                    else if (perfume.StockDisponibleParaWeb <= 10)
-                                                    {
-                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                <div class="espacio-stock mt-1" id="stock-@cardId">
+                                                    @{
+                                                        var stock = presentacionActiva.StockDisponible;
+                                                        if (stock == 0)
+                                                        {
+                                                            <p class="text-danger fw-bold">❌ Stock agotado</p>;
+                                                        }
+                                                        else if (stock == 1)
+                                                        {
+                                                            <p class="text-danger fw-bold">¡Último disponible!</p>;
+                                                        }
+                                                        else if (stock <= 10)
+                                                        {
+                                                            <p class="text-warning fw-bold">¡Stock limitado!</p>;
+                                                        }
+                                                        else
+                                                        {
+                                                            <p class="text-success fw-bold">✔️ Stock disponible</p>;
+                                                        }
                                                     }
                                                 </div>
 
                                                 <div class="mt-auto d-flex flex-column">
-                                                    <!-- Botón Ver detalle -->
                                                     <button class="btn-eterea mb-2 btn-ver-detalle"
                                                             data-baseid="@perfume.Id"
-                                                            data-id="@perfume.Presentaciones.First().Id"
+                                                            data-id="@presentacionActiva.Id"
                                                             onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
                                                         <i class="fas fa-eye"></i> Ver
                                                     </button>
 
-                                                    <!-- Botón Agregar al carrito (con control de stock) -->
-                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    @if (presentacionActiva.StockDisponible == 0)
                                                     {
                                                         <button class="btn-eterea btn-agregar-carrito"
                                                                 disabled
@@ -209,7 +234,7 @@
                                                     {
                                                         <button class="btn-eterea btn-agregar-carrito"
                                                                 data-baseid="@perfume.Id"
-                                                                data-id="@perfume.Presentaciones.First().Id">
+                                                                data-id="@presentacionActiva.Id">
                                                             <i class="fas fa-cart-plus"></i> Agregar al carrito
                                                         </button>
                                                     }
@@ -235,6 +260,7 @@
     </div>
 
 
+
     <!-- Carousel Perfumes Más Vendidos -->
     <div class="bg-marcas py-4 mb-4 mt-5">
         <h2 class="text-center mb-4 mt-1">Más Vendidos</h2>
@@ -255,9 +281,16 @@
                                     var index = i * itemsPorSlideVendidos + j;
                                     var perfume = Model.MasVendidos[index];
 
+                                    // Presentación activa según perfume.Presentacion o primera presentación disponible
+                                    var presentacionActiva = perfume.Presentaciones.FirstOrDefault(p => p.Ml == perfume.Presentacion) ?? perfume.Presentaciones.First();
+                                    var promos = presentacionActiva.Promociones ?? new List<Eterea_Parfums_Web.ViewModels.PromocionDetalleViewModel>();
+                                    var tieneVariasPromos = promos.Count > 1;
+                                    var primeraPromo = promos.FirstOrDefault();
+
                                     <div class="col-md-3 col-6 mb-4 d-flex">
-                                        <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                        <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
+                                             data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
+                                            <img src="@Url.Content("~/Imagenes/" + presentacionActiva.Imagen + ".jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="imagen-@perfume.Id" />
@@ -271,13 +304,13 @@
                                                     @foreach (var p in perfume.Presentaciones)
                                                     {
                                                         <button type="button"
-                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                                class="btn-tamanio btn btn-outline-secondary @(p.Ml == presentacionActiva.Ml ? "active" : "")"
                                                                 data-id="@perfume.Id"
                                                                 data-perfumeid="@p.Id"
                                                                 data-precio="@p.Precio"
-                                                                data-descuento="@(p.PrecioConDescuento ?? 0)"
-                                                                data-tiene-promo="@(p.PrecioConDescuento.HasValue ? "True" : "False")"
-                                                                data-leyenda="@p.LeyendaPromocion"
+                                                                data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
+                                                                data-tiene-promo="@(p.TienePromocion)"
+                                                                data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
                                                                 data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
@@ -288,51 +321,67 @@
                                                     }
                                                 </div>
 
-                                                <p class="card-text mt-3 mb-1">
-                                                    <span class="precio-original" id="precio-original-@perfume.Id">
-                                                        @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
-                                                    </span>
-                                                    <span class="precio-descuento" id="precio-descuento-@perfume.Id">
-                                                        $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
-                                                    </span>
-                                                </p>
+                                                <!-- Carousel Promociones -->
+                                                <div class="promo-carousel mt-3" data-perfumeid="@perfume.Id">
+                                                    <div class="promo-display">
+                                                        <span class="precio-original" id="precio-original-@perfume.Id">
+                                                            @(primeraPromo != null ? "$" + primeraPromo.PrecioOriginal.ToString("N0") : "")
+                                                        </span>
+                                                        <span class="precio-descuento" id="precio-descuento-@perfume.Id">
+                                                            $@(primeraPromo != null ? primeraPromo.PrecioConDescuento?.ToString("N0") : presentacionActiva.Precio.ToString("N0"))
+                                                        </span>
+                                                    </div>
 
-                                                <div class="promo-placeholder">
-                                                    <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                                        @perfume.LeyendaPromocion
-                                                    </span>
+                                                    <div class="promo-placeholder mt-1">
+                                                        <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
+                                                            @(primeraPromo?.LeyendaPromocion ?? "")
+                                                        </span>
+                                                    </div>
+
+                                                    @if (tieneVariasPromos)
+                                                    {
+                                                        <div class="promo-nav mt-2 d-flex justify-content-center gap-3">
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-prev" data-perfumeid="@perfume.Id" type="button">
+                                                                <i class="fas fa-chevron-left"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-next" data-perfumeid="@perfume.Id" type="button">
+                                                                <i class="fas fa-chevron-right"></i>
+                                                            </button>
+                                                        </div>
+                                                    }
                                                 </div>
 
                                                 <div class="espacio-stock mt-1" id="stock-@perfume.Id">
-                                                    @if (perfume.StockDisponibleParaWeb == 0)
-                                                    {
-                                                        <p class="text-danger fw-bold">❌ Stock agotado</p>
-                                                    }
-                                                    else if (perfume.StockDisponibleParaWeb == 1)
-                                                    {
-                                                        <p class="text-danger fw-bold">¡Último disponible!</p>
-                                                    }
-                                                    else if (perfume.StockDisponibleParaWeb <= 10)
-                                                    {
-                                                        <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                    @{
+                                                        var stock = presentacionActiva.StockDisponible;
+                                                        if (stock == 0)
+                                                        {
+                                                            <p class="text-danger fw-bold">❌ Stock agotado</p>;
+                                                        }
+                                                        else if (stock == 1)
+                                                        {
+                                                            <p class="text-danger fw-bold">¡Último disponible!</p>;
+                                                        }
+                                                        else if (stock <= 10)
+                                                        {
+                                                            <p class="text-warning fw-bold">¡Stock limitado!</p>;
+                                                        }
+                                                        else
+                                                        {
+                                                            <p class="text-success fw-bold">✔️ Stock disponible</p>;
+                                                        }
                                                     }
                                                 </div>
 
                                                 <div class="mt-auto d-flex flex-column">
-                                                    <!-- Ver detalle -->
                                                     <button class="btn-eterea mb-2 btn-ver-detalle"
                                                             data-baseid="@perfume.Id"
-                                                            data-id="@perfume.Presentaciones.First().Id"
+                                                            data-id="@presentacionActiva.Id"
                                                             onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
                                                         <i class="fas fa-eye"></i> Ver
                                                     </button>
 
-                                                    <!-- Agregar al carrito -->
-                                                    @if (perfume.StockDisponibleParaWeb == 0)
+                                                    @if (presentacionActiva.StockDisponible == 0)
                                                     {
                                                         <button class="btn-eterea btn-agregar-carrito"
                                                                 disabled
@@ -344,7 +393,7 @@
                                                     {
                                                         <button class="btn-eterea btn-agregar-carrito"
                                                                 data-baseid="@perfume.Id"
-                                                                data-id="@perfume.Presentaciones.First().Id">
+                                                                data-id="@presentacionActiva.Id">
                                                             <i class="fas fa-cart-plus"></i> Agregar al carrito
                                                         </button>
                                                     }
@@ -371,6 +420,7 @@
 
 
 
+
     <!-- Carrito -->
     <div id="carrito-offcanvas" class="offcanvas-carrito">
         <div class="offcanvas-contenido">
@@ -384,54 +434,135 @@
     <!-- Java Script -->
     @section Scripts {
         <script>
-            // Manejo del cambio de tamaño y actualización en cada card
+        document.addEventListener("DOMContentLoaded", () => {
+            const promoIndices = {};
+
+            function actualizarPromo(perfumeId, nuevoIndice, promociones) {
+                if (!promociones || promociones.length === 0) return;
+
+                if (nuevoIndice < 0) nuevoIndice = promociones.length - 1;
+                if (nuevoIndice >= promociones.length) nuevoIndice = 0;
+
+                promoIndices[perfumeId] = nuevoIndice;
+                const promo = promociones[nuevoIndice];
+                const card = document.querySelector(`#perfume-card-${perfumeId}`);
+                if (!card) return;
+
+                const precioOriginalElem = card.querySelector('.precio-original');
+                const precioDescuentoElem = card.querySelector('.precio-descuento');
+                const leyendaPromoEl = card.querySelector('.leyenda-promocion');
+                const btnPrev = card.querySelector(".btn-promo-prev");
+                const btnNext = card.querySelector(".btn-promo-next");
+
+                if (promociones.length > 1) {
+                    btnPrev.style.display = "inline-block";
+                    btnNext.style.display = "inline-block";
+                } else {
+                    btnPrev.style.display = "none";
+                    btnNext.style.display = "none";
+                }
+
+                if (precioOriginalElem) {
+                    if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
+                        precioOriginalElem.style.display = '';
+                        precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                    } else {
+                        precioOriginalElem.style.display = 'none';
+                    }
+                }
+
+                if (precioDescuentoElem) {
+                    precioDescuentoElem.textContent = promo.PrecioConDescuento
+                        ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
+                        : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                }
+
+                if (leyendaPromoEl) {
+                    leyendaPromoEl.textContent = promo.LeyendaPromocion || '';
+                }
+            }
+
+            // Flechas promo
+            document.querySelectorAll(".btn-promo-prev").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const perfumeId = btn.dataset.perfumeid;
+                    const card = document.querySelector(`#perfume-card-${perfumeId}`);
+                    const promosJson = card?.getAttribute('data-promos');
+                    if (!promosJson) return;
+                    const promociones = JSON.parse(promosJson);
+                    const currentIndex = promoIndices[perfumeId] ?? 0;
+                    actualizarPromo(perfumeId, currentIndex - 1, promociones);
+                });
+            });
+
+            document.querySelectorAll(".btn-promo-next").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const perfumeId = btn.dataset.perfumeid;
+                    const card = document.querySelector(`#perfume-card-${perfumeId}`);
+                    const promosJson = card?.getAttribute('data-promos');
+                    if (!promosJson) return;
+                    const promociones = JSON.parse(promosJson);
+                    const currentIndex = promoIndices[perfumeId] ?? 0;
+                    actualizarPromo(perfumeId, currentIndex + 1, promociones);
+                });
+            });
+
+            // Cambio de presentación
             document.querySelectorAll('.selector-tamanios').forEach(container => {
                 container.addEventListener('click', function (e) {
                     const btn = e.target.closest('.btn-tamanio');
                     if (!btn) return;
 
-                    // Remover clase 'active' de los hermanos y activar el botón clickeado
                     container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
 
-                    // Obtener la card padre y actualizar datos visibles
                     const card = container.closest('.card');
-                    const nuevoPrecio = btn.getAttribute('data-precio');
-                    const nuevoDescuento = btn.getAttribute('data-descuento');
-                    const nuevoMl = btn.getAttribute('data-ml');
-                    const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
-                    const tienePromo = btn.getAttribute('data-tiene-promo') === 'True';
-                    const leyenda = btn.getAttribute('data-leyenda');
-                    const imagen = btn.getAttribute('data-imagen');
-                    const stock = parseInt(btn.getAttribute('data-stock') || "0");
+                    const nuevoPrecio = btn.dataset.precio;
+                    const nuevoDescuento = btn.dataset.descuento;
+                    const nuevoMl = btn.dataset.ml;
+                    const nuevoPerfumeId = btn.dataset.perfumeid;
+                    const tienePromo = btn.dataset.tienePromo === 'True';
+                    const leyenda = btn.dataset.leyenda;
+                    const imagen = btn.dataset.imagen;
+                    const stock = parseInt(btn.dataset.stock || "0");
+                    const promosJson = btn.dataset.promos;
 
-                    // Actualizar imagen
+                    // Imagen
                     const imagenElem = card.querySelector('img.custom-img');
-                    if (imagenElem) {
-                        imagenElem.src = imagen;
-                    }
+                    if (imagenElem) imagenElem.src = imagen;
 
-                    // Actualizar precios
-                    const precioOriginalElem = card.querySelector('.precio-original');
-                    const precioDescuentoElem = card.querySelector('.precio-descuento');
-                    if (precioOriginalElem && precioDescuentoElem) {
-                        if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                            precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                            precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                            precioOriginalElem.style.display = '';
-                        } else {
-                            precioOriginalElem.style.display = 'none';
-                            precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                    // Promociones
+                    if (promosJson) {
+                        const promociones = JSON.parse(promosJson);
+                        promoIndices[nuevoPerfumeId] = 0;
+                        card.setAttribute('data-promos', promosJson);
+                        actualizarPromo(nuevoPerfumeId, 0, promociones);
+                    } else {
+                        const precioOriginalElem = card.querySelector('.precio-original');
+                        const precioDescuentoElem = card.querySelector('.precio-descuento');
+                        if (precioOriginalElem && precioDescuentoElem) {
+                            if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
+                                precioOriginalElem.style.display = '';
+                                precioOriginalElem.textContent = `$${Number(nuevoPrecio).toLocaleString('es-AR')}`;
+                                precioDescuentoElem.textContent = `$${Number(nuevoDescuento).toLocaleString('es-AR')}`;
+                            } else {
+                                precioOriginalElem.style.display = 'none';
+                                precioDescuentoElem.textContent = `$${Number(nuevoPrecio).toLocaleString('es-AR')}`;
+                            }
                         }
+
+                        const leyendaElem = card.querySelector('.leyenda-promocion');
+                        if (leyendaElem) {
+                            leyendaElem.textContent = tienePromo ? leyenda : '';
+                        }
+
+                        const btnPrev = card.querySelector(".btn-promo-prev");
+                        const btnNext = card.querySelector(".btn-promo-next");
+                        btnPrev.style.display = "none";
+                        btnNext.style.display = "none";
                     }
 
-                    // Actualizar leyenda promoción
-                    const leyendaElem = card.querySelector('.leyenda-promocion');
-                    if (leyendaElem) {
-                        leyendaElem.textContent = tienePromo ? leyenda : '';
-                    }
-
-                    // Actualizar mensaje de stock
+                    // Stock
                     const stockElem = card.querySelector('.espacio-stock');
                     if (stockElem) {
                         if (stock === 0) {
@@ -445,7 +576,7 @@
                         }
                     }
 
-                    // Actualizar botones Ver y Agregar al carrito
+                    // Botones
                     const btnAgregar = card.querySelector('.btn-agregar-carrito');
                     if (btnAgregar) {
                         btnAgregar.setAttribute('data-id', nuevoPerfumeId);
@@ -469,16 +600,13 @@
                 });
             });
 
-            // Función para manejar el click en "Agregar al carrito"
+            // Agregar al carrito
             document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
                 btn.addEventListener('click', function () {
-                    const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
-
+                    const perfumeId = btn.getAttribute('data-id');
                     fetch('@Url.Action("Agregar", "Carrito")', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `perfumeId=${perfumeId}`
                     })
                     .then(res => res.json())
@@ -489,19 +617,6 @@
                         }
 
                         const contenedor = document.getElementById("info-perfume-agregado");
-
-                        if (data.error) {
-                            contenedor.innerHTML = `
-                                <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
-                                <p>${data.error}</p>
-                            `;
-                            document.getElementById("carrito-offcanvas").classList.add("show");
-                            setTimeout(() => {
-                                document.getElementById("carrito-offcanvas").classList.remove("show");
-                            }, 5000);
-                            return;
-                        }
-
                         contenedor.innerHTML = `
                             <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
                             <p><strong>${data.nombre}</strong></p>
@@ -527,13 +642,14 @@
                 });
             });
 
-            // Listener para botón Ver detalle
+            // Ver detalle
             document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
                 btn.addEventListener('click', function () {
-                    const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+                    const perfumeId = btn.getAttribute('data-id');
                     window.location.href = `/Perfume/Details/${perfumeId}`;
                 });
             });
+        });
         </script>
 
     </div>

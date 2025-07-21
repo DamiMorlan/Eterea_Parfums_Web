@@ -267,9 +267,16 @@
 
                     foreach (var perfume in perfumesAgrupados)
                     {
-                        <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
-                            <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                       
+                        var presentacionActiva = perfume.Presentaciones.FirstOrDefault(p => p.Ml == perfume.Presentacion) ?? perfume.Presentaciones.First();
+                        var promos = presentacionActiva.Promociones;
+                        var tieneVariasPromos = promos.Count > 1;
+                        var primeraPromo = promos.FirstOrDefault();
+
+                        <div class="col-md-3 col-6 mb-4 d-flex">
+                            <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
+                                 data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
+                                <img src="@Url.Content("~/Imagenes/" + presentacionActiva.Imagen + ".jpg")"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
@@ -283,35 +290,51 @@
                                         @foreach (var p in perfume.Presentaciones)
                                         {
                                             <button type="button"
-                                                    class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
+                                                    class="btn-tamanio btn btn-outline-secondary @(p.Ml == presentacionActiva.Ml ? "active" : "")"
                                                     data-id="@perfume.Id"
                                                     data-perfumeid="@p.Id"
                                                     data-precio="@p.Precio"
-                                                    data-descuento="@p.PrecioConDescuento"
-                                                    data-tiene-promo="@p.TienePromocion"
-                                                    data-leyenda="@p.LeyendaPromocion"
+                                                    data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
+                                                    data-tiene-promo="@(p.TienePromocion)"
+                                                    data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
                                                     data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
                                                     data-marca="@p.Marca"
                                                     data-stock="@p.StockDisponible"
+                                                    data-ml="@p.Ml"
                                                     onclick="cambiarPresentacion(this, @perfume.Id)">
                                                 @p.Ml ml
                                             </button>
                                         }
                                     </div>
 
-                                    <p class="card-text mt-3 mb-1">
-                                        <span class="precio-original" id="precio-original-@perfume.Id">
-                                            @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
-                                        </span>
-                                        <span class="precio-descuento" id="precio-descuento-@perfume.Id">
-                                            $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
-                                        </span>
-                                    </p>
+                                    <!-- Carousel Promociones -->
+                                    <div class="promo-carousel mt-3" data-perfumeid="@perfume.Id">
+                                        <div class="promo-display">
+                                            <span class="precio-original" id="precio-original-@perfume.Id">
+                                                @(primeraPromo != null ? "$" + primeraPromo.PrecioOriginal.ToString("N0") : "")
+                                            </span>
+                                            <span class="precio-descuento" id="precio-descuento-@perfume.Id">
+                                                $@(primeraPromo != null ? primeraPromo.PrecioConDescuento?.ToString("N0") : presentacionActiva.Precio.ToString("N0"))
+                                            </span>
+                                        </div>
 
-                                    <div class="promo-placeholder @(string.IsNullOrEmpty(perfume.LeyendaPromocion) ? "sin-promocion" : "con-promocion")">
-                                        <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                            @(!string.IsNullOrEmpty(perfume.LeyendaPromocion) ? perfume.LeyendaPromocion : "")
-                                        </span>
+                                        <div class="promo-placeholder mt-1">
+                                            <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
+                                                @(primeraPromo?.LeyendaPromocion ?? "")
+                                            </span>
+                                        </div>
+
+                                        @if (tieneVariasPromos)
+                                        {
+                                            <div class="promo-nav mt-2 d-flex justify-content-center gap-3">
+                                                <button class="btn btn-sm btn-outline-primary btn-promo-prev" data-perfumeid="@perfume.Id" type="button">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary btn-promo-next" data-perfumeid="@perfume.Id" type="button">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                        }
                                     </div>
 
                                     <div class="espacio-stock mt-1" id="stock-@perfume.Id">
