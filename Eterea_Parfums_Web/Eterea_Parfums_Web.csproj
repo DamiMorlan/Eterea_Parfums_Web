@@ -569,6 +569,7 @@
     <Content Include="Views\Pedido\PagoExitoso.cshtml" />
     <Content Include="Views\Pedido\SimularPago.cshtml" />
     <Content Include="Views\Promocion\Index.cshtml" />
+    <Content Include="Views\Home\News.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -260,5 +260,12 @@ namespace Eterea_Parfums_Web.Controllers
 
             return View();
         }
+
+        public ActionResult News()
+        {
+            ViewBag.Message = "Your news page.";
+
+            return View();
+        }
     }
 }
