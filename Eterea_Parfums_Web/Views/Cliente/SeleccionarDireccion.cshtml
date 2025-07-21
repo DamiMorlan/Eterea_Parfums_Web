@@ -1,0 +1,50 @@
+﻿﻿@model List<Eterea_Parfums_Web.ViewModels.DireccionFormateadaViewModel>
+@using System.Web
+
+@{
+    ViewBag.Title = "Seleccionar dirección";
+    var direccionActual = Session["DomicilioDeEnvioTexto"] as string;
+
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Seleccionar dirección de entrega</h2>
+
+    @if (!string.IsNullOrEmpty(direccionActual))
+    {
+        <div class="alert alert-info">
+            <strong>Dirección seleccionada:</strong><br />
+            <pre class="mb-0">@direccionActual</pre>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">No se encontraron direcciones anteriores.</div>
+    }
+    else
+    {
+        foreach (var direccion in Model)
+        {
+            <div class="card mb-3 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="me-3" style="white-space: pre-line;">
+                        @direccion.TextoCompleto
+                    </div>
+
+                    <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")" method="post" class="mb-0">
+                        <input type="hidden" name="texto" value="@direccion.TextoCompleto" />
+                        <button type="submit" class="btn btn-sm btn-primary">Seleccionar</button>
+                    </form>
+                </div>
+            </div>
+
+        }
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("AgregarDireccion", "Cliente")" class="btn btn-success">
+            Agregar nuevo domicilio de entrega
+        </a>
+    </div>
+</div>

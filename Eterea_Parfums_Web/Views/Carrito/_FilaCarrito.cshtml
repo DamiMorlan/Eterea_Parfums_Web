@@ -3,7 +3,9 @@
 <div class="fila-producto" id="perfume-@Model.PerfumeId">
     <div class="contenedor-producto">
         <a href="@Url.Action("Details", "Perfume", new { id = Model.PerfumeId })">
-            <img src="@Url.Content("~/Imagenes/" + Model.Imagen + ".jpg")" alt="@Model.Nombre" />
+            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Imagen + ".jpg" })"
+                 alt="@Model.Nombre"
+                 class="img-perfume" />
         </a>
 
         <div class="producto-detalles">
@@ -20,16 +22,16 @@
             @if (Model.MostrarPrecioTachado && Model.PrecioConDescuento.HasValue && Model.PrecioConDescuento.Value < Model.PrecioOriginal)
             {
                 <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                    $@Model.PrecioOriginal.ToString("N0")
+                    $@Model.PrecioOriginal.ToString("N2")
                 </p>
                 <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                    $@Model.PrecioConDescuento.Value.ToString("N0")
+                    $@Model.PrecioConDescuento.Value.ToString("N2")
                 </p>
             }
             else
             {
                 <p class="precio-descuento" style="color: black;">
-                    $@Model.PrecioOriginal.ToString("N0")
+                    $@Model.PrecioOriginal.ToString("N2")
                 </p>
             }
 
@@ -51,9 +53,10 @@
             </select>
 
 
-            <p id="total-perfume-@Model.PerfumeId" style="margin-top: 10px;">
+            <p id="total-perfume-@Model.PerfumeId" class="total-perfume" style="margin-top: 10px;">
                 Total: $@Model.Total.ToString("N0")
             </p>
+
         </div>
     </div>
 

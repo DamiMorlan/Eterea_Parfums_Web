@@ -132,6 +132,7 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImagenController.cs" />
     <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\PerfumeController.cs" />
     <Compile Include="Controllers\PromocionController.cs" />
@@ -139,6 +140,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CarritoHelper.cs" />
+    <Compile Include="Helpers\DireccionHelper.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Models\caja.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -226,6 +228,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\DetalleFacturaViewModel.cs" />
+    <Compile Include="ViewModels\DireccionEntregaViewModel.cs" />
+    <Compile Include="ViewModels\DireccionFormateadaViewModel.cs" />
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MarcaViewModel.cs" />
@@ -277,232 +281,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Imagenes\212 Héroes FY - 2068 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Héroes FY - 8227 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 NYC EDT - 1329 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 NYC EDT - 7404 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip - 3684 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip - 5981 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip - 8209 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip - 9262 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip Black - 7306 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip Black - 8262 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\212 Vip Men - 5386 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\amex.png" />
-    <Content Include="Imagenes\banner CK verano.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\banner CK.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Banner promo CH.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Banner Promo Dia de la madre con Carolina Herrera.jpg" />
-    <Content Include="Imagenes\Banner promo Hugo.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Banner Promo navidad Hugo.jpg" />
-    <Content Include="Imagenes\BannerPromoFlash.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Calvin klein 2da a 80%25-7796-banner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\carro-vacio.png" />
-    <Content Include="Imagenes\CerrarSesion.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\CK Be EDP - 1300 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\CK Be EDP - 5403 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\CK ONE-envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Deep Red EDP-envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\desc 10%25 hugo boss y 212vip-7671-banner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\desc 10%25 hugo boss-4442-banner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Diseño Logo1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Diseño Logo2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Diseño Promo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_604122-MLA47526882006_092021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_627893-MLU70795642080_082023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_630463-MLA45188087898_032021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_645783-MLA50952734271_082022-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_673576-MLU70031592001_062023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_688988-MLU70795642068_082023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_700635-MLA52216166349_102022-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_705780-MLA48255741780_112021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_712407-MLA45188087434_032021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_768183-MLA48255767649_112021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_796187-MLA45928834458_052021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_797940-MLA47573480525_092021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_802460-MLU69802416420_062023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_817775-MLA51801011364_102022-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_866111-MLA47615332247_092021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_867757-MLA52216166345_102022-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_877178-MLA70418347439_072023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_877341-MLA45928975230_052021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_881099-MLA44749843781_012021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_897919-MLA48462096686_122021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_898514-MLA47573635229_092021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_929885-MLU69818930113_062023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_946485-MLA45261776803_032021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_969536-MLA47615314708_092021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_975099-MLA70393349584_072023-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_985024-MLA51801024240_102022-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\D_NQ_NP_2X_998017-MLA45188141313_032021-F.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\FacturaA.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Femme EDP - 3915 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Femme EDP - 8576 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Hugo Man - 6962 - envase y caja.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Hugo Man - 7623 - envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\imagen1.jpeg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\imagen2.jpeg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\imagen_por_defecto.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\imagen_por_defecto2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Just Different EDT-envase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\LogoEterea.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\LogoEtereaFactura.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\mastercard.png" />
-    <Content Include="Imagenes\mp.png" />
-    <Content Include="Imagenes\PlantillaFactura.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\PlantillaInformeVentas.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Promo Dia de la madre con Carolina Herrera -2668-banner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\Promo Dia de la madre con Carolina Herrera-8438-banner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\promo_no_acumulable_2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\sinImagen.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Imagenes\visa.png" />
-    <Content Include="Imagenes\warning-sign1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>
@@ -569,9 +347,13 @@
     <Content Include="Views\Pedido\PagoExitoso.cshtml" />
     <Content Include="Views\Pedido\SimularPago.cshtml" />
     <Content Include="Views\Promocion\Index.cshtml" />
+    <Content Include="Views\Cliente\AgregarDireccion.cshtml" />
+    <Content Include="Views\Cliente\SeleccionarDireccion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Imagenes\" />
+    <Folder Include="Views\Imagen\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

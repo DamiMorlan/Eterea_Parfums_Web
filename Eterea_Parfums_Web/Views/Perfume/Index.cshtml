@@ -269,7 +269,7 @@
                     {
                         <div class="col-md-3 col-6 mb-4 d-flex perfume-card-container">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre">
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                             <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
@@ -553,7 +553,7 @@
                      }
 
                      contenedor.innerHTML = `
-                         <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                       <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
                          <p><strong>${data.nombre}</strong></p>
                          <p>${data.tipo} - ${data.presentacion} ml</p>
                          <p>Género: ${data.genero}</p>

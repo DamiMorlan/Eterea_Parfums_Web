@@ -15,15 +15,18 @@ namespace Eterea_Parfums_Web.ViewModels
         public string Imagen { get; set; }
         public double PrecioOriginal { get; set; }
 
-        public double? PrecioConDescuento { get; set; } // ✅ CAMBIO A double? (nullable)
+        public double? PrecioConDescuento { get; set; } // ✅ Nullable por precaución
 
         public int Cantidad { get; set; }
-        public double Total { get; set; }
+        public double Total { get; set; } // Total con descuento aplicado
         public bool TienePromo { get; set; }
         public string LeyendaPromo { get; set; }
         public int StockDisponibleParaVentaWeb { get; set; }
 
         public bool MostrarPrecioTachado { get; set; }
-    }
 
+        // ✅ Nuevas propiedades para cálculos en VistaPrevia
+        public double TotalSinDescuento { get; set; }
+        public double DescuentoAplicado { get; set; }
+    }
 }

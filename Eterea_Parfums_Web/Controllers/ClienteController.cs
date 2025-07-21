@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Eterea_Parfums_Desktop;
+using Eterea_Parfums_Web.Models;
+using Eterea_Parfums_Web.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Desktop;
-using Eterea_Parfums_Web.Models;
+using Eterea_Parfums_Web.Helpers;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -195,7 +197,7 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
-       public ActionResult Perfil()
+        public ActionResult Perfil()
         {
             if (Session["clienteId"] == null)
             {
@@ -217,6 +219,135 @@ namespace Eterea_Parfums_Web.Controllers
                 return View(cliente);
             }
         }
+
+        public ActionResult SeleccionarDireccion()
+        {
+            if (Session["clienteId"] == null)
+                return RedirectToAction("Login", "Cliente");
+
+            int clienteId = (int)Session["clienteId"];
+
+            // 1. Obtener el DNI del cliente logueado
+            var dni = db.cliente
+                .Where(c => c.id == clienteId)
+                .Select(c => c.dni)
+                .FirstOrDefault();
+
+            // 2. Buscar los domicilios usados por ese cliente (texto completo)
+            var textos = db.orden
+               .Where(o => o.dni == dni && o.domicilio_de_envio != null)
+               .AsEnumerable() // importante para trabajar en memoria
+               .Select(o => o.domicilio_de_envio.Trim().Replace("\r\n", "\n"))
+               .Distinct()
+               .ToList();
+
+            // Esto evita duplicados con saltos de línea distintos o espacios
+
+            // 3. Transformar en ViewModels divididos en dos líneas
+            var modelo = textos.Select(t =>
+            {
+                string linea1 = "";
+                string linea2 = "";
+
+                int indiceCP = t.IndexOf("C.P.");
+
+                if (indiceCP > 0)
+                {
+                    linea1 = t.Substring(0, indiceCP).Trim();
+                    linea2 = t.Substring(indiceCP).Trim();
+                }
+                else
+                {
+                    // Por si no se encuentra "C.P.:"
+                    linea1 = t;
+                }
+
+
+                return new DireccionFormateadaViewModel
+                {
+                    Linea1 = linea1,
+                    Linea2 = linea2
+                };
+            }).ToList();
+
+            return View(modelo);
+        }
+
+
+        [HttpGet]
+        public ActionResult AgregarDireccion()
+        {
+            return View(new DireccionEntregaViewModel());
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AgregarDireccion(DireccionEntregaViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // Conversión segura de datos al llamar al helper
+            string calle = model.Calle?.Trim() ?? "";
+            int numeracion = 0;
+            int? cp = null;
+
+            if (!string.IsNullOrWhiteSpace(model.Numeracion))
+                int.TryParse(model.Numeracion.Trim(), out numeracion);
+
+            if (!string.IsNullOrWhiteSpace(model.CodigoPostal))
+                cp = int.TryParse(model.CodigoPostal.Trim(), out int tmp) ? tmp : (int?)null;
+
+            string piso = model.Piso?.Trim() ?? "";
+            string depto = model.Departamento?.Trim() ?? "";
+            string localidad = model.Localidad?.Trim() ?? "";
+            string provincia = model.Provincia?.Trim() ?? "";
+
+            // Usa el helper centralizado para construir el texto formateado
+            Session["NuevoDomicilioEntrega"] = DireccionHelper.ConstruirTextoCompleto(
+                calle,
+                numeracion,
+                piso,
+                depto,
+                cp,
+                localidad,
+                provincia
+            );
+
+            return RedirectToAction("VistaPrevia", "Pedido");
+        }
+
+
+
+        [HttpPost]
+        public ActionResult SeleccionarDireccionConfirmar(string texto)
+        {
+            Session["DomicilioDeEnvioTexto"] = texto;
+            Session["NuevoDomicilioEntrega"] = texto;
+
+            // Redirige a VistaPrevia
+            return RedirectToAction("VistaPrevia", "Pedido");
+        }
+
+
+        private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
+        {
+            // Obtener nombres desde claves foráneas
+            var calle = db.calle.Find(cli.calle_id)?.nombre ?? "";
+            var localidad = db.localidad.Find(cli.localidad_id)?.nombre ?? "";
+            var provincia = db.provincia.Find(cli.provincia_id)?.nombre ?? "";
+
+            // Usar el helper centralizado con tipos correctos
+            return DireccionHelper.ConstruirTextoCompleto(
+                calle,
+                cli.numeracion_calle,
+                cli.piso ?? "",
+                cli.departamento ?? "",
+                cli.codigo_postal,
+                localidad,
+                provincia
+            );
+        }
+
 
         [HttpPost]
         public ActionResult Perfil(cliente clienteEditado)
