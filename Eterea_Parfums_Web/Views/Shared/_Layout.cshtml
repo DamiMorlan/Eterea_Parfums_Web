@@ -123,8 +123,11 @@
                 <!-- Columna centro: logo centrado -->
                 <div class="col-md-4 d-flex justify-content-center">
                     <a href="@Url.Action("Index", "Home")" class="logo-link">
-                        <img src="~/Imagenes/LogoEterea.png" alt="Logo Eterea Parfums" style="max-height: 100px; max-width: 100%;" />
+                        <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "LogoEterea.png" })"
+                             alt="Logo Eterea Parfums"
+                             style="max-height: 100px; max-width: 100%;" />
                     </a>
+
                 </div>
 
                 <!-- Columna derecha: redes sociales -->
