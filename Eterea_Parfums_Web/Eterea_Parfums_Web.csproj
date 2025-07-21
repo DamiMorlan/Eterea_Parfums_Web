@@ -140,6 +140,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CarritoHelper.cs" />
+    <Compile Include="Helpers\CorreoHelper.cs" />
     <Compile Include="Helpers\DireccionHelper.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Models\caja.cs">
