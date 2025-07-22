@@ -477,7 +477,7 @@ namespace Eterea_Parfums_Web.Controllers
 
                     /* 3) Cálculos finales */
                     double subtotalOriginal = carrito.Sum(i => i.perfume.precio_en_pesos * i.cantidad);
-                    double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal);
+                    double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
                     if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
@@ -616,12 +616,12 @@ namespace Eterea_Parfums_Web.Controllers
 
         /* === helpers ======================================================= */
 
-        private double GetRecargo(string medio, int cuotas, double baseTotal)
+        private double GetRecargo(string medio, int cuotas, double baseTotal, double descuentoTotal)
         {
             if (medio != "MC" || cuotas == 1) return 0;
 
             var tabla = new Dictionary<int, double> { { 3, 0.10 }, { 6, 0.15 }, { 9, 0.18 }, { 12, 0.20 } };
-            return baseTotal * (tabla.ContainsKey(cuotas) ? tabla[cuotas] : 0);
+            return (baseTotal - descuentoTotal) * (tabla.ContainsKey(cuotas) ? tabla[cuotas] : 0);
         }
 
         private string GenerarNumeroFactura(etereaEntities7 db, string tipo)
