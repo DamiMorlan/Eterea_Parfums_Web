@@ -131,7 +131,7 @@ namespace Eterea_Parfums_Web.Controllers
             if (Session["NuevoDomicilioEntrega"] != null)
             {
                 Session["DomicilioDeEnvioTexto"] = Session["NuevoDomicilioEntrega"];
-                Session.Remove("NuevoDomicilioEntrega"); // ya se usó
+                
             }
 
             var carrito = db.carrito
@@ -185,6 +185,10 @@ namespace Eterea_Parfums_Web.Controllers
                         cliente.localidad?.nombre ?? "",
                         cliente.localidad?.provincia?.nombre ?? "")
                     : "Domicilio no disponible.";
+
+                // ✅ Guardamos el domicilio en sesión para que esté disponible en SimularPago
+                Session["NuevoDomicilioEntrega"] = domicilio;
+                Session["DomicilioDeEnvioTexto"] = domicilio;
             }
 
             var model = new VistaPreviaPedidoViewModel
@@ -557,6 +561,16 @@ namespace Eterea_Parfums_Web.Controllers
                     int nuevoIdOrden = db.orden.Any()
                      ? db.orden.Max(o => o.numero_de_orden) + 1
                      : 1;
+
+                    string domicilioEnvio = Session["NuevoDomicilioEntrega"]?.ToString();
+
+                    if (string.IsNullOrWhiteSpace(domicilioEnvio))
+                    {
+                        TempData["ErrorPago"] = "No se pudo determinar el domicilio de envío. Por favor, seleccioná o cargá uno.";
+                        return RedirectToAction("PagoFallido", "Pedido");
+                    }
+
+
                     /* 7) ORDEN */
                     db.orden.Add(new orden
                     {
@@ -566,7 +580,8 @@ namespace Eterea_Parfums_Web.Controllers
                         apellido_cliente = cliente.apellido,
                         dni = cliente.dni,
                         e_mail_cliente = cliente.e_mail,
-                        domicilio_de_envio = ConstruirDireccionEnvio(db, cliente),
+
+                        domicilio_de_envio = domicilioEnvio,
                         estado = true,
                         codigo_despacho = null,
                         fecha_creacion = DateTime.Now
@@ -649,14 +664,13 @@ namespace Eterea_Parfums_Web.Controllers
         
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
         {
-            // 1. Si hay una nueva dirección en sesión, usarla
             if (Session["NuevoDomicilioEntrega"] != null)
             {
                 return Session["NuevoDomicilioEntrega"].ToString();
             }
 
-            // 2. Si no hay, usar la dirección del cliente registrada en la base
-            return ConstruirDireccionEnvio(db, cli);  //CREAR HTML DE ERROR DE DOMICILIO
+            // Si no hay dirección en sesión, lanzamos una excepción controlada
+            throw new InvalidOperationException("No se ha definido un domicilio de envío en la sesión.");
         }   
 
     }
