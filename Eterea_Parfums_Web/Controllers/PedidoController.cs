@@ -646,16 +646,18 @@ namespace Eterea_Parfums_Web.Controllers
             // Devuelve “A00000124” ó “B00000001”
             return $"{tipo}{correlativo:D8}";
         }
-
+        
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
         {
-            var calle = db.calle.Find(cli.calle_id)?.nombre;
-            var loc = db.localidad.Find(cli.localidad_id)?.nombre;
-            var prov = db.provincia.Find(cli.provincia_id)?.nombre;
+            // 1. Si hay una nueva dirección en sesión, usarla
+            if (Session["NuevoDomicilioEntrega"] != null)
+            {
+                return Session["NuevoDomicilioEntrega"].ToString();
+            }
 
-            return $"{calle} {cli.piso ?? ""} {cli.departamento ?? ""}, CP {cli.codigo_postal}, {loc}, {prov}";
-        }
-
+            // 2. Si no hay, usar la dirección del cliente registrada en la base
+            return ConstruirDireccionEnvio(db, cli);  //CREAR HTML DE ERROR DE DOMICILIO
+        }   
 
     }
 }
