@@ -599,7 +599,7 @@ namespace Eterea_Parfums_Web.Controllers
                 catch (Exception ex)
                 {
                     tx.Rollback();
-                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta.";
+                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta." + ex;
                     return RedirectToAction("Index", "Carrito");
 
                 }
