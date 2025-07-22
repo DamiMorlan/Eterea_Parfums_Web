@@ -207,8 +207,8 @@ namespace Eterea_Parfums_Web.Controllers
 
 
 
-        [HttpPost]
-        public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos, string montoFinal)
+        //[HttpPost]
+        /*public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos, string montoFinal)
         {
             if (string.IsNullOrWhiteSpace(montoFinal))
             {
@@ -272,14 +272,16 @@ namespace Eterea_Parfums_Web.Controllers
                     return RedirectToAction("Index", "Carrito");
                 }
             }
-        }
+        }*/
 
 
 
 
-        public ActionResult PagoExitoso()
+        public ActionResult PagoExitoso(int numOrden, double totalFibal)
         {
-            return Content("¡Pago exitoso! Gracias por tu compra.");
+            ViewBag.NumOrden = numOrden;
+            ViewBag.TotalFibal = totalFibal;
+            return View();
         }
 
         public ActionResult PagoFallido()
