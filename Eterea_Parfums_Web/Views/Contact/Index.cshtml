@@ -54,25 +54,38 @@
 
         <!-- Separador -->
         <hr class="my-5 linea-separadora" />
-
         <!-- Formulario de contacto -->
         <div class="contact-form-box">
-            <h3 class="section-subtitle mb-3" >Formulario de Contacto</h3>
-            <form action="/enviarContacto" method="post">
-                <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" required>
+            <h3 class="section-subtitle mb-3">Formulario de Contacto</h3>
+
+            @if (TempData["MensajeEnviado"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    ¡Tu mensaje ha sido enviado con éxito! Te responderemos pronto.
                 </div>
-                <div class="form-group">
-                    <label for="email">Correo Electrónico:</label>
-                    <input type="email" id="email" name="email" required>
+            }
+            @if (TempData["MensajeError"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["MensajeError"]
                 </div>
-                <div class="form-group">
-                    <label for="mensaje">Mensaje:</label>
-                    <textarea id="mensaje" name="mensaje" required></textarea>
-                </div>
-                <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
-            </form>
+            }
+
+        <form action="@Url.Action("EnviarContacto", "Contact")" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required
+                       value="@Request.Form["nombre"]" />
+            </div>
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" required
+                       value="@Request.Form["email"]" />
+            </div>
+            <div class="form-group">
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" required>@Request.Form["mensaje"]</textarea>
+            </div>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
+        </form>
         </div>
-    </div>
-</div>

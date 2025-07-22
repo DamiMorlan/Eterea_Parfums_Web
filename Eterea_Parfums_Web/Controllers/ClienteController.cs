@@ -235,11 +235,11 @@ namespace Eterea_Parfums_Web.Controllers
 
             // 2. Buscar los domicilios usados por ese cliente (texto completo)
             var textos = db.orden
-               .Where(o => o.dni == dni && o.domicilio_de_envio != null)
-               .AsEnumerable() // importante para trabajar en memoria
-               .Select(o => o.domicilio_de_envio.Trim().Replace("\r\n", "\n"))
-               .Distinct()
-               .ToList();
+             .Where(o => o.dni == dni && o.domicilio_de_envio != null)
+             .AsEnumerable()
+             .Select(o => o.domicilio_de_envio.Trim().Replace("\r\n", "\n").Replace("\n", " ").Replace("  ", " ").Trim())
+             .Distinct(StringComparer.InvariantCultureIgnoreCase) // ✅ comparación sin mayúsculas/minúsculas
+             .ToList();
 
             // Esto evita duplicados con saltos de línea distintos o espacios
 

@@ -41,5 +41,31 @@ namespace Eterea_Parfums_Web.Helpers
             }
         }
 
+        public static void EnviarCorreoGenerico(string emailDestino, string asunto, string cuerpo)
+        {
+            try
+            {
+                var mail = new MailMessage();
+                mail.From = new MailAddress("etereaparfumsinfo@gmail.com", "Etérea Parfums");
+                mail.To.Add(emailDestino);
+                mail.Subject = asunto;
+                mail.Body = cuerpo;
+                mail.IsBodyHtml = false;
+
+                var smtp = new SmtpClient("smtp.gmail.com", 587)
+                {
+                    Credentials = new NetworkCredential("etereaparfumsinfo@gmail.com", "jcfy ubtj cknd bosb"),
+                    EnableSsl = true
+                };
+
+                smtp.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error al enviar correo: " + ex.Message);
+            }
+        }
+
+
     }
 }
