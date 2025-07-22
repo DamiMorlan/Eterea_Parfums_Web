@@ -60,12 +60,12 @@ namespace Eterea_Parfums_Web.Controllers
 
                                 if (promo.descuento * 2 == 100)
                                 {
-                                    leyenda = "Promoción 2x1";
+                                    leyenda = "Promoción <br> 2x1";
                                     precioConDescuento = Math.Round(p.precio_en_pesos * 0.5, 2);
                                 }
                                 else if (promo.descuento == 10)
                                 {
-                                    leyenda = "Promoción 10% OFF";
+                                    leyenda = "Promoción <br> 10% OFF";
                                     precioConDescuento = Math.Round(p.precio_en_pesos * 0.9, 2);
                                 }
                                 else if (promo.descuento > 10)
@@ -73,7 +73,7 @@ namespace Eterea_Parfums_Web.Controllers
                                     var descuento = promo.descuento;
                                     var precio2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
                                     precioConDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
-                                    leyenda = $"Promoción {descuento * 2}% en la segunda unidad";
+                                    leyenda = $"Promoción <br> {descuento * 2}% segunda unidad";
                                 }
 
                                 if (precioConDescuento.HasValue)

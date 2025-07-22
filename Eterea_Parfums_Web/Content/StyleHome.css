@@ -440,13 +440,14 @@ h2 {
 
 /* ----- Leyenda de promoción ----- */
 .leyenda-promocion {
+    font-size: 0.80rem;
     background-color: var(--rosa-medio);
     color: white;
-    font-size: 0.85rem;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    min-width: 120px;
+    text-align: center;
     display: inline-block;
-    margin-top: 6px;
 }
 
 .promo-placeholder {
@@ -456,3 +457,51 @@ h2 {
     display: block;
     font-weight: 600;
 }
+
+
+.promo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.promo-content {
+    flex: 1;
+    text-align: center;
+}
+
+.promo-display .precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.promo-display .precio-descuento {
+    color: var(--rosa-profundo); /* O tu color personalizado */
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.btn-promo-prev,
+.btn-promo-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1rem;
+    color: white;
+    background-color: var(--rosa-profundo);
+    border: none;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .btn-promo-prev:hover,
+    .btn-promo-next:hover {
+        transform: scale(1.1);
+        background-color: var(--rosa-medio);
+    }
