@@ -440,7 +440,7 @@ h2 {
 
 /* ----- Leyenda de promoción ----- */
 .leyenda-promocion {
-    font-size: 0.80rem;
+    font-size: 1rem;
     background-color: var(--rosa-medio);
     color: white;
     padding: 6px 14px;
@@ -504,4 +504,17 @@ h2 {
     .btn-promo-next:hover {
         transform: scale(1.1);
         background-color: var(--rosa-medio);
+    }
+
+
+    .btn-promo-prev:focus,
+    .btn-promo-next:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        
+    }
+    .btn-promo-prev:active,
+    .btn-promo-next:active {
+        background-color: transparent !important;
+        box-shadow: none !important;
     }
