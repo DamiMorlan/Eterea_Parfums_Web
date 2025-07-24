@@ -21,8 +21,8 @@
                     {
                         <div class="box-promo d-flex justify-content-center">
                             <div class="promo-item d-flex justify-content-end">
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "Banner " + p.nombre + ".jpg" })"
-                                     alt="Promo" class="promo-bg-img" />
+                              <img src="@Url.Action("Mostrar", "Imagen", new { nombre = p.banner + ".jpg" })"
+                                   alt="Promo" class="promo-bg-img" />
 
                                 <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->
                                 <div class="item-body">
@@ -43,7 +43,7 @@
                     {
                         <div class="box-promo d-flex justify-content-center">
                             <div class="promo-item d-flex">
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "Banner " + p.nombre + ".jpg" })"
+                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = p.banner + ".jpg" })"
                                      alt="Promo"
                                      class="promo-bg-img" />
                                 <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->

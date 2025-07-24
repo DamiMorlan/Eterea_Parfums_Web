@@ -15,6 +15,6 @@ namespace Eterea_Parfums_Web.ViewModels
         public DateTime FechaInicio { get; set; }
 
         public DateTime FechaFin { get; set; }
-        public string banner { get; set; } // opcional
+        public string banner { get; set; } 
     }
 }
