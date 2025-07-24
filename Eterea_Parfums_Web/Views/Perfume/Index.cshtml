@@ -33,146 +33,157 @@
 <div class="mt-4 px-3 px-md-3">
     <div class="row">
         <!-- Filtros -->
-        <aside class="col-md-2 mb-4">
-            <form method="get" id="form-filtros">
-                <h5 class="mb-3">Filtros</h5>
+        <aside class="col-12 col-md-2 mb-4">
 
-                <!-- Limpiar todos los filtros -->
-                <a href="@Url.Action("Index", "Perfume")"
-                   class="btn-filtro-limpiar mt-2 text-center text-decoration-none d-block">
-                    ❌ Limpiar todos los filtros
-                </a>
+            <details id="detalles-filtros" class="d-md mb-3" open>
+                <summary style="display:none"></summary> <!-- Ocultamos el <summary> visualmente -->
 
-                <hr class="linea-filtros" />
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Marca</label>
-                    <div class="filtro-checkbox-list" id="filtro-marca">
-                        @foreach (var marca in Model.Marcas)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="marcasSeleccionadas"
-                                       value="@marca.Nombre"
-                                       id="marca-@marca.Nombre"
-                                       onchange="document.getElementById('form-filtros').submit();"
-                                       @(Request.QueryString.GetValues("marcasSeleccionadas")?.Contains(marca.Nombre) == true ? "checked" : "") />
-                                <label class="form-check-label" for="marca-@marca.Nombre">@marca.Nombre</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Género</label>
-                    <div class="filtro-checkbox-list" id="filtro-genero">
-                        @foreach (var genero in Model.Generos)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="generosSeleccionados"
-                                       value="@genero"
-                                       id="genero-@genero"
-                                       onchange="document.getElementById('form-filtros').submit();"
-                                       @(Request.QueryString.GetValues("generosSeleccionados")?.Contains(genero) == true ? "checked" : "") />
-                                <label class="form-check-label" for="genero-@genero">@genero</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Tamaño</label>
-                    <div class="filtro-checkbox-list" id="filtro-tamanio">
-                        @foreach (var ml in Model.Tamanios)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="tamaniosSeleccionados"
-                                       value="@ml"
-                                       id="tamanio-@ml"
-                                       onchange="document.getElementById('form-filtros').submit();"
-                                       @(Request.QueryString.GetValues("tamaniosSeleccionados")?.Contains(ml.ToString()) == true ? "checked" : "") />
-                                <label class="form-check-label" for="tamanio-@ml">@ml ml</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Tipo de perfume</label>
-                    <div class="filtro-checkbox-list" id="filtro-tipo">
-                        @foreach (var tipo in Model.TipoDePerfumes)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="tipoDePerfumeSeleccionados"
-                                       value="@tipo"
-                                       id="tipo-@tipo"
-                                       onchange="document.getElementById('form-filtros').submit();"
-                                       @(Request.QueryString.GetValues("tipoDePerfumeSeleccionados")?.Contains(tipo) == true ? "checked" : "") />
-                                <label class="form-check-label" for="tipo-@tipo">@tipo</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">Tipo de aroma</label>
-                    <div class="filtro-checkbox-list" id="filtro-aroma">
-                        @foreach (var tipoAroma in Model.TiposDeAroma)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="checkbox"
-                                       name="tipoDeAromaSeleccionados"
-                                       value="@tipoAroma"
-                                       id="tipoAroma-@tipoAroma"
-                                       onchange="document.getElementById('form-filtros').submit();"
-                                       @(Request.QueryString.GetValues("tipoDeAromaSeleccionados")?.Contains(tipoAroma) == true ? "checked" : "") />
-                                <label class="form-check-label" for="tipoAroma-@tipoAroma">@tipoAroma</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Precio (ARS)</label>
-                    <div class="d-flex gap-2">
-                        <input type="number" class="form-control" name="precioMin" placeholder="Desde"
-                               value="@(Request["precioMin"])" />
-                        <input type="number" class="form-control" name="precioMax" placeholder="Hasta"
-                               value="@(Request["precioMax"])" />
-                    </div>
-
-                    <button type="submit" class="btn-filtro-aplicar mt-2">
-                        <i class="fas fa-filter"></i> Aplicar
-                    </button>
-
-                    <button type="button"
-                            class="btn-filtro-limpiar mt-2"
-                            onclick="limpiarPrecio()">
-                        🧹 Limpiar precio
+                <div class="filtros-header">
+                    <h5 class="mb-3">Filtros</h5>
+                    <button type="button" id="toggle-btn" class="btn-toggle-filtros" title="Ocultar filtros">
+                        <i id="icono-filtro" class="fas fa-eye"></i>
                     </button>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label d-block">Con promoción</label>
-                    <div class="filtro-checkbox-list form-check">
-                        <input class="form-check-input"
-                               type="checkbox"
-                               name="filtrarSoloConPromocion"
-                               id="filtrarSoloConPromocion"
-                               onchange="document.getElementById('form-filtros').submit();"
-                               @(Request.QueryString.Get("filtrarSoloConPromocion") == "on" ? "checked" : "") />
-                        <label class="form-check-label" for="filtrarSoloConPromocion">Mostrar solo perfumes con promoción</label>
+                <form method="get" id="form-filtros">                  
+
+                    <!-- Limpiar todos los filtros -->
+                    <a href="@Url.Action("Index", "Perfume")"
+                       class="btn-filtro-limpiar mt-2 text-center text-decoration-none d-block">
+                        ❌ Limpiar todos los filtros
+                    </a>
+
+                    <hr class="linea-filtros" />
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Marca</label>
+                        <div class="filtro-checkbox-list" id="filtro-marca">
+                            @foreach (var marca in Model.Marcas)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="marcasSeleccionadas"
+                                           value="@marca.Nombre"
+                                           id="marca-@marca.Nombre"
+                                           onchange="document.getElementById('form-filtros').submit();"
+                                           @(Request.QueryString.GetValues("marcasSeleccionadas")?.Contains(marca.Nombre) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="marca-@marca.Nombre">@marca.Nombre</label>
+                                </div>
+                            }
+                        </div>
                     </div>
-                </div>
-            </form>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Género</label>
+                        <div class="filtro-checkbox-list" id="filtro-genero">
+                            @foreach (var genero in Model.Generos)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="generosSeleccionados"
+                                           value="@genero"
+                                           id="genero-@genero"
+                                           onchange="document.getElementById('form-filtros').submit();"
+                                           @(Request.QueryString.GetValues("generosSeleccionados")?.Contains(genero) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="genero-@genero">@genero</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Tamaño</label>
+                        <div class="filtro-checkbox-list" id="filtro-tamanio">
+                            @foreach (var ml in Model.Tamanios)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="tamaniosSeleccionados"
+                                           value="@ml"
+                                           id="tamanio-@ml"
+                                           onchange="document.getElementById('form-filtros').submit();"
+                                           @(Request.QueryString.GetValues("tamaniosSeleccionados")?.Contains(ml.ToString()) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="tamanio-@ml">@ml ml</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Tipo de perfume</label>
+                        <div class="filtro-checkbox-list" id="filtro-tipo">
+                            @foreach (var tipo in Model.TipoDePerfumes)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="tipoDePerfumeSeleccionados"
+                                           value="@tipo"
+                                           id="tipo-@tipo"
+                                           onchange="document.getElementById('form-filtros').submit();"
+                                           @(Request.QueryString.GetValues("tipoDePerfumeSeleccionados")?.Contains(tipo) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="tipo-@tipo">@tipo</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Tipo de aroma</label>
+                        <div class="filtro-checkbox-list" id="filtro-aroma">
+                            @foreach (var tipoAroma in Model.TiposDeAroma)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="tipoDeAromaSeleccionados"
+                                           value="@tipoAroma"
+                                           id="tipoAroma-@tipoAroma"
+                                           onchange="document.getElementById('form-filtros').submit();"
+                                           @(Request.QueryString.GetValues("tipoDeAromaSeleccionados")?.Contains(tipoAroma) == true ? "checked" : "") />
+                                    <label class="form-check-label" for="tipoAroma-@tipoAroma">@tipoAroma</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Precio (ARS)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="precioMin" placeholder="Desde"
+                                   value="@(Request["precioMin"])" />
+                            <input type="number" class="form-control" name="precioMax" placeholder="Hasta"
+                                   value="@(Request["precioMax"])" />
+                        </div>
+
+                        <button type="submit" class="btn-filtro-aplicar mt-2">
+                            <i class="fas fa-filter"></i> Aplicar
+                        </button>
+
+                        <button type="button"
+                                class="btn-filtro-limpiar mt-2"
+                                onclick="limpiarPrecio()">
+                            🧹 Limpiar precio
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block">Con promoción</label>
+                        <div class="filtro-checkbox-list form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="filtrarSoloConPromocion"
+                                   id="filtrarSoloConPromocion"
+                                   onchange="document.getElementById('form-filtros').submit();"
+                                   @(Request.QueryString.Get("filtrarSoloConPromocion") == "on" ? "checked" : "") />
+                            <label class="form-check-label" for="filtrarSoloConPromocion">Mostrar solo perfumes con promoción</label>
+                        </div>
+                    </div>
+                </form>
+            </details>
         </aside>
 
         <section class="col-md-10">
@@ -273,7 +284,7 @@
                         var tieneVariasPromos = promos.Count > 1;
                         var primeraPromo = promos.FirstOrDefault();
 
-                        <div class="col-md-3 col-6 mb-4 d-flex">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
                                 <img src="@Url.Content("~/Imagenes/" + presentacionActiva.Imagen + ".jpg")"
@@ -289,6 +300,7 @@
                                     <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
                                         @foreach (var p in perfume.Presentaciones)
                                         {
+                                            var promo = p.Promociones.FirstOrDefault();
                                             <button type="button"
                                                     class="btn-tamanio btn btn-outline-secondary @(p.Ml == presentacionActiva.Ml ? "active" : "")"
                                                     data-id="@perfume.Id"
@@ -301,11 +313,13 @@
                                                     data-marca="@p.Marca"
                                                     data-stock="@p.StockDisponible"
                                                     data-ml="@p.Ml"
+                                                    data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(p.Promociones))'
                                                     onclick="cambiarPresentacion(this, @perfume.Id)">
                                                 @p.Ml ml
                                             </button>
                                         }
                                     </div>
+
 
                                     <!-- Carousel Promociones -->
                                     <div class="promo-carousel mt-3" data-perfumeid="@perfume.Id">
@@ -318,24 +332,28 @@
                                             </span>
                                         </div>
 
-                                        <div class="promo-placeholder mt-1">
-                                            <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                                @(primeraPromo?.LeyendaPromocion ?? "")
-                                            </span>
-                                        </div>
+                                        <!-- ✅ Leyenda con flechas a los costados -->
+                                        <div class="promo-container mt-2 @(primeraPromo == null ? "promo-sin-promocion" : "")">
+                                            <button class="btn btn-sm btn-outline-primary btn-promo-prev"
+                                                    data-perfumeid="@perfume.Id"
+                                                    type="button"
+                                                    style="display:@(tieneVariasPromos ? "inline-flex" : "none")">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
 
-                                        @if (tieneVariasPromos)
-                                        {
-                                            <div class="promo-nav mt-2 d-flex justify-content-center gap-3">
-                                                <button class="btn btn-sm btn-outline-primary btn-promo-prev" data-perfumeid="@perfume.Id" type="button">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-primary btn-promo-next" data-perfumeid="@perfume.Id" type="button">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </button>
-                                            </div>
-                                        }
+                                            <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
+                                                @Html.Raw(primeraPromo?.LeyendaPromocion ?? "")
+                                            </span>
+
+                                            <button class="btn btn-sm btn-outline-primary btn-promo-next"
+                                                    data-perfumeid="@perfume.Id"
+                                                    type="button"
+                                                    style="display:@(tieneVariasPromos ? "inline-flex" : "none")">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
                                     </div>
+                            
 
                                     <div class="espacio-stock mt-1" id="stock-@perfume.Id">
                                         @if (perfume.StockDisponibleParaWeb == 0)
@@ -457,162 +475,285 @@
 <!-- Java Script -->
 @section Scripts {
     <script>
-         // Manejo del cambio de tamaño y actualización en cada card
-         document.querySelectorAll('.selector-tamanios').forEach(container => {
-             container.addEventListener('click', function (e) {
-                 const btn = e.target.closest('.btn-tamanio');
-                 if (!btn) return;
+        document.addEventListener("DOMContentLoaded", () => {
+            const promoIndices = {};
 
-                 // Remover clase 'active' de los hermanos y activar el botón clickeado
-                 container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
-                 btn.classList.add('active');
+            function actualizarPromo(perfumeId, nuevoIndice, promociones, prefix) {
+                if (!promociones || promociones.length === 0) return;
 
-                 // Obtener la card padre y actualizar datos visibles
-                 const card = container.closest('.card');
-                 const nuevoPrecio = btn.getAttribute('data-precio');
-                 const nuevoDescuento = btn.getAttribute('data-descuento');
-                 const nuevoMl = btn.getAttribute('data-ml');
-                 const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
-                 const tienePromo = btn.getAttribute('data-tiene-promo') === 'True';
-                 const leyenda = btn.getAttribute('data-leyenda');
-                 const imagen = btn.getAttribute('data-imagen');
-                 const stock = parseInt(btn.getAttribute('data-stock') || "0");
+                if (nuevoIndice < 0) nuevoIndice = promociones.length - 1;
+                if (nuevoIndice >= promociones.length) nuevoIndice = 0;
 
-                 // Actualizar imagen
-                 const imagenElem = card.querySelector('img.custom-img');
-                 if (imagenElem) {
-                     imagenElem.src = imagen;
-                 }
+                promoIndices[perfumeId] = nuevoIndice;
+                const promo = promociones[nuevoIndice];
+                const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+                if (!card) return;
 
-                 // Actualizar precios
-                 const precioOriginalElem = card.querySelector('.precio-original');
-                 const precioDescuentoElem = card.querySelector('.precio-descuento');
-                 if (precioOriginalElem && precioDescuentoElem) {
-                     if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                         precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                         precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                         precioOriginalElem.style.display = '';
-                     } else {
-                         precioOriginalElem.style.display = 'none';
-                         precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                     }
-                 }
+                const precioOriginalElem = card.querySelector('.precio-original');
+                const precioDescuentoElem = card.querySelector('.precio-descuento');
+                const leyendaPromoEl = card.querySelector('.leyenda-promocion');
+                const btnPrev = card.querySelector(".btn-promo-prev");
+                const btnNext = card.querySelector(".btn-promo-next");
 
-                 // Actualizar leyenda promoción
-                 const leyendaElem = card.querySelector('.leyenda-promocion');
-                 if (leyendaElem) {
-                     leyendaElem.textContent = tienePromo ? leyenda : '';
-                 }
+                if (promociones.length > 1) {
+                    btnPrev.style.display = "inline-block";
+                    btnNext.style.display = "inline-block";
+                } else {
+                    btnPrev.style.display = "none";
+                    btnNext.style.display = "none";
+                }
 
-                 // Actualizar mensaje de stock
-                 const stockElem = card.querySelector('.espacio-stock');
-                 if (stockElem) {
-                     if (stock === 0) {
-                         stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
-                     } else if (stock === 1) {
-                         stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
-                     } else if (stock <= 10) {
-                         stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
-                     } else {
-                         stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
-                     }
-                 }
+                if (precioOriginalElem) {
+                    if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
+                        precioOriginalElem.style.display = '';
+                        precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                    } else {
+                        precioOriginalElem.style.display = 'none';
+                    }
+                }
 
-                 // Actualizar botones Ver y Agregar al carrito
-                 const btnAgregar = card.querySelector('.btn-agregar-carrito');
-                 if (btnAgregar) {
-                     btnAgregar.setAttribute('data-id', nuevoPerfumeId);
-                     if (stock === 0) {
-                         btnAgregar.setAttribute('disabled', 'disabled');
-                         btnAgregar.style.opacity = '0.6';
-                         btnAgregar.style.cursor = 'not-allowed';
-                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
-                     } else {
-                         btnAgregar.removeAttribute('disabled');
-                         btnAgregar.style.opacity = '';
-                         btnAgregar.style.cursor = '';
-                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
-                     }
-                 }
+                if (precioDescuentoElem) {
+                    precioDescuentoElem.textContent = promo.PrecioConDescuento
+                        ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
+                        : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                }
 
-                 const btnDetalle = card.querySelector('.btn-ver-detalle');
-                 if (btnDetalle) {
-                     btnDetalle.setAttribute('data-id', nuevoPerfumeId);
-                 }
-             });
-         });
+                if (leyendaPromoEl) {
+                    leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
+                }
+            }
 
-         // Función para manejar el click en "Agregar al carrito"
-         document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
-             btn.addEventListener('click', function () {
-                 const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+            // Flechas de promociones (unificadas para "promo-" y "top-")
+            document.querySelectorAll(".btn-promo-prev, .btn-promo-next").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const perfumeIdRaw = btn.dataset.perfumeid;
+                    let prefix = "";
 
-                 fetch('@Url.Action("Agregar", "Carrito")', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/x-www-form-urlencoded'
-                     },
-                     body: `perfumeId=${perfumeId}`
-                 })
-                 .then(res => res.json())
-                 .then(data => {
-                     if (data.redirect) {
-                         window.location.href = data.redirect;
-                         return;
-                     }
+                    if (perfumeIdRaw.startsWith("promo-")) {
+                        prefix = "promo-";
+                    } else if (perfumeIdRaw.startsWith("top-")) {
+                        prefix = "top-";
+                    }
 
-                     const contenedor = document.getElementById("info-perfume-agregado");
+                    const perfumeId = perfumeIdRaw.replace(prefix, "");
+                    const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+                    if (!card) return;
+                    const promosJson = card.getAttribute('data-promos');
+                    if (!promosJson) return;
 
-                     if (data.error) {
+                    const promociones = JSON.parse(promosJson);
+                    const currentIndex = promoIndices[perfumeId] ?? 0;
+                    const nextIndex = btn.classList.contains("btn-promo-next") ? currentIndex + 1 : currentIndex - 1;
+                    actualizarPromo(perfumeId, nextIndex, promociones, prefix);
+                });
+            });
+
+            // Cambio de presentación
+            document.querySelectorAll('.selector-tamanios').forEach(container => {
+                container.addEventListener('click', function (e) {
+                    const btn = e.target.closest('.btn-tamanio');
+                    if (!btn) return;
+
+                    container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const card = container.closest('.card');
+                    const nuevoPrecio = btn.dataset.precio;
+                    const nuevoDescuento = btn.dataset.descuento;
+                    const nuevoMl = btn.dataset.ml;
+                    const nuevoPerfumeIdRaw = btn.dataset.perfumeid;
+                    const nuevoPerfumeId = nuevoPerfumeIdRaw.replace("promo-", "").replace("top-", "");
+                    const tienePromo = btn.dataset.tienePromo === 'True';
+                    const leyenda = btn.dataset.leyenda;
+                    const imagen = btn.dataset.imagen;
+                    const stock = parseInt(btn.dataset.stock || "0");
+                    const promosJson = btn.dataset.promos;
+
+                    let prefix = "";
+                    if (card?.id?.startsWith("promo-")) {
+                        prefix = "promo-";
+                    } else if (card?.id?.startsWith("top-")) {
+                        prefix = "top-";
+                    }
+
+                    // Imagen
+                    const imagenElem = card.querySelector('img.custom-img');
+                    if (imagenElem) imagenElem.src = imagen;
+
+                    // Actualizar promociones del perfume
+                    if (card && btn.dataset.promos) {
+                        card.setAttribute('data-promos', btn.dataset.promos);
+                        promoIndices[nuevoPerfumeId] = 0;
+                    }
+
+                    // Precios
+                    const precioOriginalElem = card.querySelector('.precio-original');
+                    const precioDescuentoElem = card.querySelector('.precio-descuento');
+                    if (precioOriginalElem && precioDescuentoElem) {
+                        if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
+                            precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                            precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                            precioOriginalElem.style.display = '';
+                        } else {
+                            precioOriginalElem.style.display = 'none';
+                            precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                        }
+                    }
+
+                    // Leyenda
+                    const leyendaElem = card.querySelector('.leyenda-promocion');
+                    if (leyendaElem) {
+                        leyendaElem.innerHTML = tienePromo ? leyenda : '';
+                    }
+
+                    // Stock
+                    const stockElem = card.querySelector('.espacio-stock');
+                    if (stockElem) {
+                        if (stock === 0) {
+                            stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
+                        } else if (stock === 1) {
+                            stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
+                        } else if (stock <= 10) {
+                            stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
+                        } else {
+                            stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
+                        }
+                    }
+
+                    // Botones
+                    const btnAgregar = card.querySelector('.btn-agregar-carrito');
+                    if (btnAgregar) {
+                        btnAgregar.setAttribute('data-id', nuevoPerfumeId);
+                        if (stock === 0) {
+                            btnAgregar.setAttribute('disabled', 'disabled');
+                            btnAgregar.style.opacity = '0.6';
+                            btnAgregar.style.cursor = 'not-allowed';
+                            btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
+                        } else {
+                            btnAgregar.removeAttribute('disabled');
+                            btnAgregar.style.opacity = '';
+                            btnAgregar.style.cursor = '';
+                            btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
+                        }
+                    }
+
+                    const btnDetalle = card.querySelector('.btn-ver-detalle');
+                    if (btnDetalle) {
+                        btnDetalle.setAttribute('data-id', nuevoPerfumeId);
+                    }
+
+                    if (promosJson) {
+                        const promociones = JSON.parse(promosJson);
+                        actualizarPromo(nuevoPerfumeId, 0, promociones, prefix);
+
+                        const btnPrev = card.querySelector(".btn-promo-prev");
+                        const btnNext = card.querySelector(".btn-promo-next");
+
+                        if (btnPrev && btnNext) {
+                            if (promociones.length > 1) {
+                                btnPrev.style.display = "inline-block";
+                                btnNext.style.display = "inline-block";
+                            } else {
+                                btnPrev.style.display = "none";
+                                btnNext.style.display = "none";
+                            }
+                        }
+                    }
+                });
+            });
+
+             // Función para manejar el click en "Agregar al carrito"
+             document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+                 btn.addEventListener('click', function () {
+                     const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+
+                     fetch('@Url.Action("Agregar", "Carrito")', {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/x-www-form-urlencoded'
+                         },
+                         body: `perfumeId=${perfumeId}`
+                     })
+                     .then(res => res.json())
+                     .then(data => {
+                         if (data.redirect) {
+                             window.location.href = data.redirect;
+                             return;
+                         }
+
+                         const contenedor = document.getElementById("info-perfume-agregado");
+
+                         if (data.error) {
+                             contenedor.innerHTML = `
+                                 <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                                 <p>${data.error}</p>
+                             `;
+                             document.getElementById("carrito-offcanvas").classList.add("show");
+                             setTimeout(() => {
+                                 document.getElementById("carrito-offcanvas").classList.remove("show");
+                             }, 5000);
+                             return;
+                         }
+
                          contenedor.innerHTML = `
-                             <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
-                             <p>${data.error}</p>
+                             <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                             <p><strong>${data.nombre}</strong></p>
+                             <p>${data.tipo} - ${data.presentacion} ml</p>
+                             <p>Género: ${data.genero}</p>
+                             <p>Precio: ${
+                                 data.precioDescuento
+                                     ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                     : `<strong>$${data.precioOriginal}</strong>`
+                             }</p>
+                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                          `;
+
                          document.getElementById("carrito-offcanvas").classList.add("show");
                          setTimeout(() => {
                              document.getElementById("carrito-offcanvas").classList.remove("show");
-                         }, 5000);
-                         return;
-                     }
-
-                     contenedor.innerHTML = `
-                         <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
-                         <p><strong>${data.nombre}</strong></p>
-                         <p>${data.tipo} - ${data.presentacion} ml</p>
-                         <p>Género: ${data.genero}</p>
-                         <p>Precio: ${
-                             data.precioDescuento
-                                 ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                                 : `<strong>$${data.precioOriginal}</strong>`
-                         }</p>
-                         ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
-                     `;
-
-                     document.getElementById("carrito-offcanvas").classList.add("show");
-                     setTimeout(() => {
-                         document.getElementById("carrito-offcanvas").classList.remove("show");
-                     }, 6000);
-                 })
-                 .catch(err => {
-                     console.error('Error en la solicitud:', err);
-                     alert("Hubo un error al intentar agregar el perfume al carrito.");
+                         }, 6000);
+                     })
+                     .catch(err => {
+                         console.error('Error en la solicitud:', err);
+                         alert("Hubo un error al intentar agregar el perfume al carrito.");
+                     });
                  });
              });
-         });
 
-         // Listener para botón Ver detalle
-         document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-             btn.addEventListener('click', function () {
-                 const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
-                 window.location.href = `/Perfume/Details/${perfumeId}`;
+             // Listener para botón Ver detalle
+             document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+                 btn.addEventListener('click', function () {
+                     const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+                     window.location.href = `/Perfume/Details/${perfumeId}`;
+                 });
              });
-         });
 
-        function limpiarPrecio() {
-            document.querySelector('input[name="precioMin"]').value = '';
-            document.querySelector('input[name="precioMax"]').value = '';
-            document.getElementById('form-filtros').submit();
-        }
+            function limpiarPrecio() {
+                document.querySelector('input[name="precioMin"]').value = '';
+                document.querySelector('input[name="precioMax"]').value = '';
+                document.getElementById('form-filtros').submit();
+            }
+
+            //Ocultar o mostrar filtros
+            const btn = document.getElementById("toggle-btn");
+            const filtros = document.getElementById("form-filtros");
+            const icono = document.getElementById("icono-filtro");
+
+            btn.addEventListener("click", () => {
+                filtros.classList.toggle("oculto");
+
+                if (filtros.classList.contains("oculto")) {
+                    icono.classList.remove("fa-eye");
+                    icono.classList.add("fa-eye-slash");
+                    btn.title = "Mostrar filtros";
+                } else {
+                    icono.classList.remove("fa-eye-slash");
+                    icono.classList.add("fa-eye");
+                    btn.title = "Ocultar filtros";
+                }
+            });
+
+        });
 
     </script>
 }
