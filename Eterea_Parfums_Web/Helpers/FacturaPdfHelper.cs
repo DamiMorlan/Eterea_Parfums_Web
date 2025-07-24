@@ -5,19 +5,97 @@ using iTextSharp.tool.xml;
 using System;
 using System.IO;
 using System.Text;
+using System.Data.Entity;
+using System.Linq;
+
 
 namespace Eterea_Parfums_Web.Helpers
 {
     public static class FacturaHelper
     {
-        public static string GenerarHtmlFactura(factura factura, cliente cliente)
+        public static string GenerarHtmlFacturaB(etereaEntities7 db, factura factura, cliente cliente)
         {
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaB.html");
             string html = File.ReadAllText(templatePath);
 
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
-            double importeSinIva = factura.precio_total / 1.21;
-            double iva = factura.precio_total - importeSinIva;
+            double importe = factura.precio_total + factura.descuento - factura.recargo_tarjeta;
+            double total = factura.precio_total;
+
+            html = html.Replace("@NUMEROFACTURA", factura.num_factura);
+            html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
+            html = html.Replace("@CLIENTE", clienteNombre);
+            html = html.Replace("@CONDIVA", cliente.condicion_frente_al_iva);
+            html = html.Replace("@DOCUMENTO", cliente.dni.ToString());
+            string domicilio = $"{cliente.calle.nombre} {cliente.numeracion_calle}";
+            string localidad = $"{cliente.localidad.nombre}";
+            html = html.Replace("@DOMICILIO", domicilio);
+            html = html.Replace("@LOCALIDAD", localidad);
+            html = html.Replace("@IMPORTE", importe.ToString("0.00"));
+            html = html.Replace("@DESCUENTO", factura.descuento.ToString("0.00"));
+            html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
+            html = html.Replace("@TOTAL", factura.precio_total.ToString("0.00"));
+
+            // Generar filas detalle
+            var detallesFactura = db.detalle_factura
+                .Include(d => d.perfume)
+                .Include(d => d.promocion)
+                .Include(d => d.promocion1)
+                .Where(d => d.factura_id == factura.id)
+                .ToList();
+
+            StringBuilder filasHtml = new StringBuilder();
+
+            foreach (var detalle in detallesFactura)
+            {
+                string descripcion = detalle.perfume.nombre;
+                double precioUnitario = detalle.precio_unitario;
+                int cantidad = detalle.cantidad;
+                double descuento1 = detalle.promocion?.descuento ?? 0;
+                double descuento2 = detalle.promocion1?.descuento ?? 0;
+
+                double descuentoTotal = 0;
+                int cantRestante = cantidad;
+                
+            
+                if (descuento2 > 10 && cantRestante >= 2)
+                {
+                    int pares = cantRestante / 2;
+                    descuentoTotal += pares * (descuento2 / 100.0) * precioUnitario * 2;
+                    cantRestante -= pares * 2;
+                }
+
+                // Aplicamos promo del 10% a lo que quede
+                if (descuento1 == 10 && cantRestante > 0)
+                {
+                    descuentoTotal += cantRestante * (descuento1 / 100.0) * precioUnitario;
+                }
+
+                double subtotal = (precioUnitario * cantidad) - descuentoTotal;
+
+                filasHtml.AppendLine("<tr>");
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
+                filasHtml.AppendLine("</tr>");
+            }
+
+            html = html.Replace("@FILAS", filasHtml.ToString());
+
+            return html;
+        }
+
+        public static string GenerarHtmlFacturaA(etereaEntities7 db, factura factura, cliente cliente)
+        {
+            string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaA.html");
+            string html = File.ReadAllText(templatePath);
+
+            string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
+            double iva = factura.precio_total / 1.21 * 0.21;
+            double importeSinIva = (factura.precio_total - iva + factura.descuento - factura.recargo_tarjeta );
+            
 
             html = html.Replace("@NUMEROFACTURA", factura.num_factura);
             html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
@@ -34,9 +112,60 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
             html = html.Replace("@TOTAL", factura.precio_total.ToString("0.00"));
 
-            return html;
-        }
+            // Generar filas detalle
+            var detallesFactura = db.detalle_factura
+                .Include(d => d.perfume)
+                .Include(d => d.promocion)
+                .Include(d => d.promocion1)
+                .Where(d => d.factura_id == factura.id)
+                .ToList();
 
+            StringBuilder filasHtml = new StringBuilder();
+
+            foreach (var detalle in detallesFactura)
+            {
+                string descripcion = detalle.perfume.nombre;
+                double precioUnitario = detalle.precio_unitario;
+                int cantidad = detalle.cantidad;
+                double descuento1 = detalle.promocion?.descuento ?? 0;
+                double descuento2 = detalle.promocion1?.descuento ?? 0;
+
+                double descuentoTotal = 0;
+                int cantRestante = cantidad;
+
+
+                if (descuento2 > 10 && cantRestante >= 2)
+                {
+                    int pares = cantRestante / 2;
+                    descuentoTotal += pares * (descuento2 / 100.0) * precioUnitario * 2;
+                    cantRestante -= pares * 2;
+                }
+
+                // Aplicamos promo del 10% a lo que quede
+                if (descuento1 == 10 && cantRestante > 0)
+                {
+                    descuentoTotal += cantRestante * (descuento1 / 100.0) * precioUnitario;
+                }
+
+                double subtotal = ((precioUnitario * cantidad) - descuentoTotal)/1.21;
+                double subtotalConIva = (precioUnitario * cantidad) - descuentoTotal;
+
+                filasHtml.AppendLine("<tr>");
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");
+                filasHtml.AppendLine("</tr>");
+
+            }
+
+            html = html.Replace("@FILAS", filasHtml.ToString());
+
+            return html;
+
+        }
         public static byte[] GenerarFacturaPdf(string html)
         {
             using (var ms = new MemoryStream())

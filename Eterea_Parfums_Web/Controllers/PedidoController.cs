@@ -600,7 +600,17 @@ namespace Eterea_Parfums_Web.Controllers
                     db.carrito.RemoveRange(carrito);
                     db.SaveChanges();
 
-                    string htmlFactura = FacturaHelper.GenerarHtmlFactura(fac, cliente);
+                    string htmlFactura;
+
+                    if (tipoFactura == "A")
+                    {
+                       htmlFactura = FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente);
+                    }
+                    else
+                    {
+                       htmlFactura = FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
+                    }
+
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 
                     //Guardado del PDF en la ruta seleccionada
