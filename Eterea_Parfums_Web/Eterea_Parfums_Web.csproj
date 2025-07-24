@@ -235,6 +235,7 @@
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MarcaViewModel.cs" />
+    <Compile Include="ViewModels\NewViewModel.cs" />
     <Compile Include="ViewModels\PedidoItemVM.cs" />
     <Compile Include="ViewModels\PerfumeDetailsViewModel.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
@@ -351,6 +352,7 @@
     <Content Include="Views\Promocion\Index.cshtml" />
     <Content Include="Views\Cliente\AgregarDireccion.cshtml" />
     <Content Include="Views\Cliente\SeleccionarDireccion.cshtml" />
+    <Content Include="Views\Home\News.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

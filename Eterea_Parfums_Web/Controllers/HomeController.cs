@@ -260,5 +260,46 @@ namespace Eterea_Parfums_Web.Controllers
 
             return View();
         }
+
+        public ActionResult News()
+        {
+            ViewBag.Message = "Your news page.";
+
+            var perfumes = db.perfume
+              .Where(p => p.activo)
+              .ToList();
+            var perfume_tipo_uno = perfumes.Where(p=>p.tipo_de_perfume_id == 1).ToList();
+            var perfume_tipo_dos = perfumes.Where(p => p.tipo_de_perfume_id == 2).ToList();
+            var perfume_tipo_tres = perfumes.Where(p => p.tipo_de_perfume_id == 3).ToList();
+
+
+
+            var perfumesMasVendidosIds = db.detalle_factura
+             .GroupBy(d => d.perfume_id)
+             .Select(g => new
+             {
+                 PerfumeId = g.Key,
+                 TotalCantidad = g.Sum(d => d.cantidad)
+              })
+                 .OrderByDescending(g => g.TotalCantidad)
+                 .Take(3)
+                 .Select(g => g.PerfumeId)
+                 .ToList();
+
+            var perfumesMasVendidos = db.perfume
+                .Where(p => perfumesMasVendidosIds.Contains(p.id))
+                .ToList();
+
+            // Puedes usar un ViewModel para pasar estos datos a la vista
+            var viewModel = new NewViewModel
+            {
+                TipoUno = perfume_tipo_uno,
+                TipoDos = perfume_tipo_dos,
+                TipoTres = perfume_tipo_tres,
+                Recomendados = perfumesMasVendidos
+            };
+
+            return View(viewModel);
+        }
     }
 }
