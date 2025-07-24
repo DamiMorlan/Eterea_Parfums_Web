@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Data.Entity;
 using Eterea_Parfums_Web.Helpers;
+using System.IO;
 
 
 namespace Eterea_Parfums_Web.Controllers
@@ -422,7 +423,10 @@ namespace Eterea_Parfums_Web.Controllers
                 try
                 {
                     /* 1) Cliente y carrito */
-                    var cliente = db.cliente.Find(clienteId);
+                    var cliente = db.cliente
+                                    .Include(c => c.calle)
+                                    .Include(c => c.localidad)
+                                    .FirstOrDefault(c => c.id == clienteId);
 
                     var carrito = db.carrito
                                     .Include(c => c.perfume)
@@ -507,6 +511,7 @@ namespace Eterea_Parfums_Web.Controllers
                         cliente_id = clienteId,
                         forma_de_pago = medio,
                         precio_total = totalCalculado,
+                        recargo_tarjeta = recargoTotal,
                         descuento = descuentoTotal,
                         numero_de_caja = 10,
                         tipo_de_consumidor = cliente.condicion_frente_al_iva,
@@ -580,7 +585,6 @@ namespace Eterea_Parfums_Web.Controllers
                         apellido_cliente = cliente.apellido,
                         dni = cliente.dni,
                         e_mail_cliente = cliente.e_mail,
-
                         domicilio_de_envio = domicilioEnvio,
                         estado = true,
                         codigo_despacho = null,
@@ -596,16 +600,29 @@ namespace Eterea_Parfums_Web.Controllers
                     db.carrito.RemoveRange(carrito);
                     db.SaveChanges();
 
-                    tx.Commit();
+                    string htmlFactura = FacturaHelper.GenerarHtmlFactura(fac, cliente);
+                    byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
+
+                    //Guardado del PDF en la ruta seleccionada
+                    string nombreArchivo = $"Factura_{numFactura}.pdf";
+                    string rutaRelativa = $"~/Facturas/{nombreArchivo}";
+                    string rutaDelPdfGenerado = Server.MapPath(rutaRelativa);
+                    Directory.CreateDirectory(Path.GetDirectoryName(rutaDelPdfGenerado));
+                    System.IO.File.WriteAllBytes(rutaDelPdfGenerado, pdfBytes);
+
                     Task.Run(() =>
                     {
                         CorreoHelper.EnviarCorreoConfirmacionPedido(
                             emailDestino: cliente.e_mail,
                             nombreCliente: cliente.nombre,
                             numeroFactura: numFactura,
-                            total: totalCalculado
+                            total: totalCalculado,
+                            rutaPdf: rutaDelPdfGenerado
+
                         );
                     });
+
+                    tx.Commit();
 
                     return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
 
@@ -613,11 +630,20 @@ namespace Eterea_Parfums_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    tx.Rollback();
-                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta." + ex;
+                    try
+                    {
+                        tx.Rollback();
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        // Loguear el error del rollback sin interrumpir el flujo original
+                        System.Diagnostics.Debug.WriteLine("Error al hacer rollback: " + rollbackEx.Message);
+                    }
+                    System.Diagnostics.Debug.WriteLine("Error al procesar la venta: " + ex.Message);
+                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta ";
                     return RedirectToAction("Index", "Carrito");
-
                 }
+
             }
         }
 
