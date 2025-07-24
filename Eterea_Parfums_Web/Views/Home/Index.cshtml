@@ -179,7 +179,7 @@
                                                     </div>
 
                                                     <!-- ✅ Leyenda con flechas a los costados -->
-                                                    <div class="promo-container mt-2">
+                                                    <div class="promo-container mt-2 @(primeraPromo == null ? "promo-sin-promocion" : "")">
                                                         <button class="btn btn-sm btn-outline-primary btn-promo-prev"
                                                                 data-perfumeid="@($"{prefix}{cardId}")"
                                                                 type="button"
@@ -200,7 +200,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="espacio-stock mt-1" id="@($"{prefix}stock-{perfume.Id}")">
+                                                <div class="espacio-stock mt-2" id="@($"{prefix}stock-{perfume.Id}")">
                                                     @if (perfume.StockDisponibleParaWeb == 0)
                                                     {
                                                         <p class="text-danger fw-bold">❌ Stock agotado</p>
@@ -343,7 +343,7 @@
                                                     </div>
 
                                                     <!-- ✅ Leyenda con flechas a los costados -->
-                                                    <div class="promo-container mt-2">
+                                                    <div class="promo-container mt-2 @(primeraPromo == null ? "promo-sin-promocion" : "")">
                                                         <button class="btn btn-sm btn-outline-primary btn-promo-prev"
                                                                 data-perfumeid="@($"{prefix}{cardId}")"
                                                                 type="button"
@@ -364,7 +364,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="espacio-stock mt-1" id="@($"{prefix}stock-{perfume.Id}")">
+                                                <div class="espacio-stock mt-2" id="@($"{prefix}stock-{perfume.Id}")">
                                                     @if (perfume.StockDisponibleParaWeb == 0)
                                                     {
                                                         <p class="text-danger fw-bold">❌ Stock agotado</p>
@@ -446,181 +446,26 @@
     <!-- Java Script -->
     @section Scripts {
         <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const promoIndices = {};
+            document.addEventListener("DOMContentLoaded", () => {
+                const promoIndices = {};
 
-    function actualizarPromo(perfumeId, nuevoIndice, promociones, prefix) {
-        if (!promociones || promociones.length === 0) return;
+                function actualizarPromo(perfumeId, nuevoIndice, promociones, prefix) {
+                    if (!promociones || promociones.length === 0) return;
 
-        if (nuevoIndice < 0) nuevoIndice = promociones.length - 1;
-        if (nuevoIndice >= promociones.length) nuevoIndice = 0;
+                    if (nuevoIndice < 0) nuevoIndice = promociones.length - 1;
+                    if (nuevoIndice >= promociones.length) nuevoIndice = 0;
 
-        promoIndices[perfumeId] = nuevoIndice;
-        const promo = promociones[nuevoIndice];
-        const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
-        if (!card) return;
+                    promoIndices[perfumeId] = nuevoIndice;
+                    const promo = promociones[nuevoIndice];
+                    const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+                    if (!card) return;
 
-        const precioOriginalElem = card.querySelector('.precio-original');
-        const precioDescuentoElem = card.querySelector('.precio-descuento');
-        const leyendaPromoEl = card.querySelector('.leyenda-promocion');
-        const btnPrev = card.querySelector(".btn-promo-prev");
-        const btnNext = card.querySelector(".btn-promo-next");
+                    const precioOriginalElem = card.querySelector('.precio-original');
+                    const precioDescuentoElem = card.querySelector('.precio-descuento');
+                    const leyendaPromoEl = card.querySelector('.leyenda-promocion');
+                    const btnPrev = card.querySelector(".btn-promo-prev");
+                    const btnNext = card.querySelector(".btn-promo-next");
 
-        if (promociones.length > 1) {
-            btnPrev.style.display = "inline-block";
-            btnNext.style.display = "inline-block";
-        } else {
-            btnPrev.style.display = "none";
-            btnNext.style.display = "none";
-        }
-
-        if (precioOriginalElem) {
-            if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
-                precioOriginalElem.style.display = '';
-                precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
-            } else {
-                precioOriginalElem.style.display = 'none';
-            }
-        }
-
-        if (precioDescuentoElem) {
-            precioDescuentoElem.textContent = promo.PrecioConDescuento
-                ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
-                : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
-        }
-
-        if (leyendaPromoEl) {
-            leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
-        }
-    }
-
-    // Flechas de promociones (unificadas para "promo-" y "top-")
-    document.querySelectorAll(".btn-promo-prev, .btn-promo-next").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const perfumeIdRaw = btn.dataset.perfumeid;
-            let prefix = "";
-
-            if (perfumeIdRaw.startsWith("promo-")) {
-                prefix = "promo-";
-            } else if (perfumeIdRaw.startsWith("top-")) {
-                prefix = "top-";
-            }
-
-            const perfumeId = perfumeIdRaw.replace(prefix, "");
-            const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
-            if (!card) return;
-            const promosJson = card.getAttribute('data-promos');
-            if (!promosJson) return;
-
-            const promociones = JSON.parse(promosJson);
-            const currentIndex = promoIndices[perfumeId] ?? 0;
-            const nextIndex = btn.classList.contains("btn-promo-next") ? currentIndex + 1 : currentIndex - 1;
-            actualizarPromo(perfumeId, nextIndex, promociones, prefix);
-        });
-    });
-
-    // Cambio de presentación
-    document.querySelectorAll('.selector-tamanios').forEach(container => {
-        container.addEventListener('click', function (e) {
-            const btn = e.target.closest('.btn-tamanio');
-            if (!btn) return;
-
-            container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const card = container.closest('.card');
-            const nuevoPrecio = btn.dataset.precio;
-            const nuevoDescuento = btn.dataset.descuento;
-            const nuevoMl = btn.dataset.ml;
-            const nuevoPerfumeIdRaw = btn.dataset.perfumeid;
-            const nuevoPerfumeId = nuevoPerfumeIdRaw.replace("promo-", "").replace("top-", "");
-            const tienePromo = btn.dataset.tienePromo === 'True';
-            const leyenda = btn.dataset.leyenda;
-            const imagen = btn.dataset.imagen;
-            const stock = parseInt(btn.dataset.stock || "0");
-            const promosJson = btn.dataset.promos;
-
-            let prefix = "";
-            if (card?.id?.startsWith("promo-")) {
-                prefix = "promo-";
-            } else if (card?.id?.startsWith("top-")) {
-                prefix = "top-";
-            }
-
-            // Imagen
-            const imagenElem = card.querySelector('img.custom-img');
-            if (imagenElem) imagenElem.src = imagen;
-
-            // Actualizar promociones del perfume
-            if (card && btn.dataset.promos) {
-                card.setAttribute('data-promos', btn.dataset.promos);
-                promoIndices[nuevoPerfumeId] = 0;
-            }
-
-            // Precios
-            const precioOriginalElem = card.querySelector('.precio-original');
-            const precioDescuentoElem = card.querySelector('.precio-descuento');
-            if (precioOriginalElem && precioDescuentoElem) {
-                if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                    precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                    precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                    precioOriginalElem.style.display = '';
-                } else {
-                    precioOriginalElem.style.display = 'none';
-                    precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                }
-            }
-
-            // Leyenda
-            const leyendaElem = card.querySelector('.leyenda-promocion');
-            if (leyendaElem) {
-                leyendaElem.innerHTML = tienePromo ? leyenda : '';
-            }
-
-            // Stock
-            const stockElem = card.querySelector('.espacio-stock');
-            if (stockElem) {
-                if (stock === 0) {
-                    stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
-                } else if (stock === 1) {
-                    stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
-                } else if (stock <= 10) {
-                    stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
-                } else {
-                    stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
-                }
-            }
-
-            // Botones
-            const btnAgregar = card.querySelector('.btn-agregar-carrito');
-            if (btnAgregar) {
-                btnAgregar.setAttribute('data-id', nuevoPerfumeId);
-                if (stock === 0) {
-                    btnAgregar.setAttribute('disabled', 'disabled');
-                    btnAgregar.style.opacity = '0.6';
-                    btnAgregar.style.cursor = 'not-allowed';
-                    btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
-                } else {
-                    btnAgregar.removeAttribute('disabled');
-                    btnAgregar.style.opacity = '';
-                    btnAgregar.style.cursor = '';
-                    btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
-                }
-            }
-
-            const btnDetalle = card.querySelector('.btn-ver-detalle');
-            if (btnDetalle) {
-                btnDetalle.setAttribute('data-id', nuevoPerfumeId);
-            }
-
-            if (promosJson) {
-                const promociones = JSON.parse(promosJson);
-                actualizarPromo(nuevoPerfumeId, 0, promociones, prefix);
-
-                const btnPrev = card.querySelector(".btn-promo-prev");
-                const btnNext = card.querySelector(".btn-promo-next");
-
-                if (btnPrev && btnNext) {
                     if (promociones.length > 1) {
                         btnPrev.style.display = "inline-block";
                         btnNext.style.display = "inline-block";
@@ -628,65 +473,236 @@ document.addEventListener("DOMContentLoaded", () => {
                         btnPrev.style.display = "none";
                         btnNext.style.display = "none";
                     }
+
+                    if (precioOriginalElem) {
+                        if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
+                            precioOriginalElem.style.display = '';
+                            precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                        } else {
+                            precioOriginalElem.style.display = 'none';
+                        }
+                    }
+
+                    if (precioDescuentoElem) {
+                        precioDescuentoElem.textContent = promo.PrecioConDescuento
+                            ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
+                            : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                    }
+
+                    if (leyendaPromoEl) {
+                        leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
+                    }
                 }
-            }
-        });
-    });
 
-    // Agregar al carrito
-    document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const perfumeId = btn.getAttribute('data-id');
-            fetch('@Url.Action("Agregar", "Carrito")', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `perfumeId=${perfumeId}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                    return;
-                }
+                // Flechas de promociones (unificadas para "promo-" y "top-")
+                document.querySelectorAll(".btn-promo-prev, .btn-promo-next").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const perfumeIdRaw = btn.dataset.perfumeid;
+                        let prefix = "";
 
-                const contenedor = document.getElementById("info-perfume-agregado");
-                contenedor.innerHTML = `
-                    <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
-                    <p><strong>${data.nombre}</strong></p>
-                    <p>${data.tipo} - ${data.presentacion} ml</p>
-                    <p>Género: ${data.genero}</p>
-                    <p>Precio: ${
-                        data.precioDescuento
-                            ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                            : `<strong>$${data.precioOriginal}</strong>`
-                    }</p>
-                    ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
-                `;
+                        if (perfumeIdRaw.startsWith("promo-")) {
+                            prefix = "promo-";
+                        } else if (perfumeIdRaw.startsWith("top-")) {
+                            prefix = "top-";
+                        }
 
-                document.getElementById("carrito-offcanvas").classList.add("show");
-                setTimeout(() => {
-                    document.getElementById("carrito-offcanvas").classList.remove("show");
-                }, 6000);
-            })
-            .catch(err => {
-                console.error('Error en la solicitud:', err);
-                alert("Hubo un error al intentar agregar el perfume al carrito.");
+                        const perfumeId = perfumeIdRaw.replace(prefix, "");
+                        const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+                        if (!card) return;
+                        const promosJson = card.getAttribute('data-promos');
+                        if (!promosJson) return;
+
+                        const promociones = JSON.parse(promosJson);
+                        const currentIndex = promoIndices[perfumeId] ?? 0;
+                        const nextIndex = btn.classList.contains("btn-promo-next") ? currentIndex + 1 : currentIndex - 1;
+                        actualizarPromo(perfumeId, nextIndex, promociones, prefix);
+                    });
+                });
+
+                // Cambio de presentación
+                document.querySelectorAll('.selector-tamanios').forEach(container => {
+                    container.addEventListener('click', function (e) {
+                        const btn = e.target.closest('.btn-tamanio');
+                        if (!btn) return;
+
+                        container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const card = container.closest('.card');
+                        const nuevoPrecio = btn.dataset.precio;
+                        const nuevoDescuento = btn.dataset.descuento;
+                        const nuevoMl = btn.dataset.ml;
+                        const nuevoPerfumeIdRaw = btn.dataset.perfumeid;
+                        const nuevoPerfumeId = nuevoPerfumeIdRaw.replace("promo-", "").replace("top-", "");
+                        const tienePromo = btn.dataset.tienePromo === 'True';
+                        const leyenda = btn.dataset.leyenda;
+                        const imagen = btn.dataset.imagen;
+                        const stock = parseInt(btn.dataset.stock || "0");
+                        const promosJson = btn.dataset.promos;
+
+                        let prefix = "";
+                        if (card?.id?.startsWith("promo-")) {
+                            prefix = "promo-";
+                        } else if (card?.id?.startsWith("top-")) {
+                            prefix = "top-";
+                        }
+
+                        // Imagen
+                        const imagenElem = card.querySelector('img.custom-img');
+                        if (imagenElem) imagenElem.src = imagen;
+
+                        // Actualizar promociones del perfume
+                        if (card && btn.dataset.promos) {
+                            card.setAttribute('data-promos', btn.dataset.promos);
+                            promoIndices[nuevoPerfumeId] = 0;
+                        }
+
+                        // Precios
+                        const precioOriginalElem = card.querySelector('.precio-original');
+                        const precioDescuentoElem = card.querySelector('.precio-descuento');
+                        if (precioOriginalElem && precioDescuentoElem) {
+                            if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
+                                precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioOriginalElem.style.display = '';
+                            } else {
+                                precioOriginalElem.style.display = 'none';
+                                precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                            }
+                        }
+
+                        // Leyenda
+                        const leyendaElem = card.querySelector('.leyenda-promocion');
+                        if (leyendaElem) {
+                            leyendaElem.innerHTML = tienePromo ? leyenda : '';
+                        }
+
+                        // Stock
+                        const stockElem = card.querySelector('.espacio-stock');
+                        if (stockElem) {
+                            if (stock === 0) {
+                                stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
+                            } else if (stock === 1) {
+                                stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
+                            } else if (stock <= 10) {
+                                stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
+                            } else {
+                                stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
+                            }
+                        }
+
+                        // Botones
+                        const btnAgregar = card.querySelector('.btn-agregar-carrito');
+                        if (btnAgregar) {
+                            btnAgregar.setAttribute('data-id', nuevoPerfumeId);
+                            if (stock === 0) {
+                                btnAgregar.setAttribute('disabled', 'disabled');
+                                btnAgregar.style.opacity = '0.6';
+                                btnAgregar.style.cursor = 'not-allowed';
+                                btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
+                            } else {
+                                btnAgregar.removeAttribute('disabled');
+                                btnAgregar.style.opacity = '';
+                                btnAgregar.style.cursor = '';
+                                btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
+                            }
+                        }
+
+                        const btnDetalle = card.querySelector('.btn-ver-detalle');
+                        if (btnDetalle) {
+                            btnDetalle.setAttribute('data-id', nuevoPerfumeId);
+                        }
+
+                        if (promosJson) {
+                            const promociones = JSON.parse(promosJson);
+                            actualizarPromo(nuevoPerfumeId, 0, promociones, prefix);
+
+                            const btnPrev = card.querySelector(".btn-promo-prev");
+                            const btnNext = card.querySelector(".btn-promo-next");
+
+                            if (btnPrev && btnNext) {
+                                if (promociones.length > 1) {
+                                    btnPrev.style.display = "inline-block";
+                                    btnNext.style.display = "inline-block";
+                                } else {
+                                    btnPrev.style.display = "none";
+                                    btnNext.style.display = "none";
+                                }
+                            }
+                        }
+                    });
+                });
+
+                // Agregar al carrito
+                document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const perfumeId = btn.getAttribute('data-id');
+                        fetch('@Url.Action("Agregar", "Carrito")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `perfumeId=${perfumeId}`
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                                return;
+                            }
+
+                            const contenedor = document.getElementById("info-perfume-agregado");
+                            contenedor.innerHTML = `
+                                <img src="/Imagenes/${data.imagen}.jpg" alt="${data.nombre}" />
+                                <p><strong>${data.nombre}</strong></p>
+                                <p>${data.tipo} - ${data.presentacion} ml</p>
+                                <p>Género: ${data.genero}</p>
+                                <p>Precio: ${
+                                    data.precioDescuento
+                                        ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                        : `<strong>$${data.precioOriginal}</strong>`
+                                }</p>
+                                ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                            `;
+
+                            document.getElementById("carrito-offcanvas").classList.add("show");
+                            setTimeout(() => {
+                                document.getElementById("carrito-offcanvas").classList.remove("show");
+                            }, 6000);
+                        })
+                        .catch(err => {
+                            console.error('Error en la solicitud:', err);
+                            alert("Hubo un error al intentar agregar el perfume al carrito.");
+                        });
+                    });
+                });
+
+                // Ver detalle
+                document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const perfumeId = btn.getAttribute('data-id');
+                        window.location.href = `/Perfume/Details/${perfumeId}`;
+                    });
+                });
+
+                // ✅ Auto-avance de promociones
+                /*const autoPromoInterval = 4000; // 4 segundos
+
+                document.querySelectorAll('.promo-carousel').forEach(carousel => {
+                    const perfumeIdRaw = carousel.dataset.perfumeid;
+                    const btnNext = carousel.querySelector('.btn-promo-next');
+
+                    // Solo si hay botón (es decir, hay varias promociones)
+                    if (btnNext) {
+                        setInterval(() => {
+                            btnNext.click();
+                        }, autoPromoInterval);
+                    }
+                });*/
+
             });
-        });
-    });
-
-    // Ver detalle
-    document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const perfumeId = btn.getAttribute('data-id');
-            window.location.href = `/Perfume/Details/${perfumeId}`;
-        });
-    });
-});
         </script>
     }
 
 
 </div>
-    }
+    
 

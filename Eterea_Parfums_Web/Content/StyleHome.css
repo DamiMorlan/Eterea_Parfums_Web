@@ -518,3 +518,28 @@ h2 {
         background-color: transparent !important;
         box-shadow: none !important;
     }
+
+.promo-container.promo-sin-promocion {
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+  
+    .promo-container.promo-sin-promocion .leyenda-promocion {
+        display: inline-block;
+        font-size: 0.85rem;
+        color: #666;
+        background-color: #f5f5f5;
+        padding: 4px 8px;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 160px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
