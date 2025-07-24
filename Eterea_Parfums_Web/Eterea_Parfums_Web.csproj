@@ -277,6 +277,7 @@
     <Content Include="Content\StylePromocion.css" />
     <Content Include="Content\StyleLayout.css" />
     <Content Include="Content\StyleRegistro.css" />
+    <Content Include="Content\StyleSeleccionarDireccion.css" />
     <Content Include="Content\StyleSimularPago.css" />
     <Content Include="Content\StyleVerPerfil.css" />
     <Content Include="Content\StyleVistaPrevia.css" />

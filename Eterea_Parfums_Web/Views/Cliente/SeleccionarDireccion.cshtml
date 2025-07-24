@@ -1,14 +1,26 @@
 ﻿﻿@model List<Eterea_Parfums_Web.ViewModels.DireccionFormateadaViewModel>
 @using System.Web
 
+@section Styles {
+    <link href="~/Content/StyleSeleccionarDireccion.css" rel="stylesheet" />
+}
+
+
 @{
     ViewBag.Title = "Seleccionar dirección";
     var direccionActual = Session["DomicilioDeEnvioTexto"] as string;
 
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-center">Seleccionar dirección de entrega</h2>
+<div class="container mt-2">
+
+    <div class="contenedor-titulo d-flex justify-content-center align-items-center mb-4" style="position: relative;">
+        <a href="@Url.Action("VistaPrevia", "Pedido")"
+           class="volver-carrito"
+           title="Volver al resumen de compra">←</a>
+        <h2 class="m-0 titulo-central">Seleccionar dirección de entrega</h2>
+    </div>
+
 
     @if (!string.IsNullOrEmpty(direccionActual))
     {

@@ -1,0 +1,33 @@
+﻿.contenedor-titulo {
+    position: relative;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volver-carrito {
+    position: absolute;
+    left: 0;
+    font-size: 1.5rem;
+    background-color: #ffe6f0; /* rosado claro */
+    color: rgb(209, 167, 180); /* rosado oscuro */
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    z-index: 1;
+}
+
+    .volver-carrito:hover {
+        background-color: #f8bbd0;
+        color: #880e4f;
+        text-decoration: none;
+    }
+
+.titulo-central {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
