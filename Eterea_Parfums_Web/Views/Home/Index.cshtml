@@ -65,7 +65,7 @@
                                 @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
                                 {
                                     var marca = Model.Marcas[i * itemsPorSlide + j];
-                                    <div class="col-3 col-md-3">
+                                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4">
                                         <div class="card text-center mb-3 border-0 shadow-sm rounded">
                                             <div class="card-body">
                                                 <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
@@ -129,7 +129,7 @@
 
                                     var prefix = "promo-"; // Prefijo para IDs y data-perfumeid
 
-                                    <div class="col-md-3 col-6 mb-4 d-flex">
+                                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4 d-flex">
                                         <div class="card w-100 perfume-card" id="@($"{prefix}perfume-card-{cardId}")"
                                              data-nombre="@perfume.Nombre"
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
@@ -293,7 +293,7 @@
 
                                     var prefix = "top-"; // Prefijo para ids y data
 
-                                    <div class="col-md-3 col-6 mb-4 d-flex">
+                                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4 d-flex">
                                         <div class="card w-100 perfume-card" id="@($"{prefix}perfume-card-{cardId}")"
                                              data-nombre="@perfume.Nombre"
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
