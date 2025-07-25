@@ -47,7 +47,7 @@ namespace Eterea_Parfums_Web.Controllers
         {
             CargarPaises();
 
-            return View();
+            return View(new FormularioClienteViewModel());
         }
 
         [HttpGet]
@@ -113,7 +113,7 @@ namespace Eterea_Parfums_Web.Controllers
 
         // POST: Cliente/Registrar
         [HttpPost]
-        public ActionResult Registrar(cliente nuevoCliente)
+        /*public ActionResult Registrar(cliente nuevoCliente)
         {
 
             if (nuevoCliente.dni.ToString().Length != 8)
@@ -182,6 +182,117 @@ namespace Eterea_Parfums_Web.Controllers
                 // Redireccionar a otra vista
                 return RedirectToAction("Login", "Cliente");
             }
+        }*/
+
+        public ActionResult Registrar(FormularioClienteViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                CargarPaises();
+                return View(model);
+            }
+
+            using (var db = new etereaEntities7())
+            {
+                /*if (db.cliente.Any(c => c.usuario == model.Usuario))
+                {
+                    ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso.");
+                    CargarPaises();
+                    return View(model);
+                }
+
+                if (db.cliente.Any(c => c.dni == model.Dni))
+                {
+                    ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI.");
+                    CargarPaises();
+                    return View(model);
+                }
+
+                if (db.cliente.Any(c => c.e_mail == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
+                    CargarPaises();
+                    return View(model);
+                }*/
+
+                // Mapeo del ViewModel al Entity
+                var nuevoCliente = new cliente
+                {
+                    id = ObtenerProximoIdDelCliente(),
+                    nombre = model.Nombre,
+                    apellido = model.Apellido,
+                    usuario = model.Usuario,
+                    clave = PasswordHelper.CrearHash(model.Clave),
+                    dni = (long)model.Dni,
+                    fecha_nacimiento = model.FechaNacimiento,
+                    celular = model.Celular,
+                    e_mail = model.Email,
+                    pais_id = model.PaisId,
+                    provincia_id = model.ProvinciaId,
+                    localidad_id = model.LocalidadId,
+                    calle_id = model.CalleId,
+                    numeracion_calle = (int)model.NumeracionCalle,
+                    piso = model.Piso,
+                    departamento = model.Departamento,
+                    codigo_postal = model.CodigoPostal,
+                    comentarios_domicilio = model.ComentariosDomicilio,
+                    condicion_frente_al_iva = "Consumidor final",
+                    activo = true,
+                    rol = "cliente"
+                };
+
+                try
+                {
+                    db.cliente.Add(nuevoCliente);
+                    db.SaveChanges();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    foreach (var eve in ex.EntityValidationErrors)
+                    {
+                        Console.WriteLine($"Entidad de tipo {eve.Entry.Entity.GetType().Name} con estado {eve.Entry.State} tiene errores de validación:");
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
+                        }
+                    }
+                    throw;
+                }
+            }
+
+            return RedirectToAction("Login", "Cliente");
+        }
+
+
+        [HttpGet]
+        public JsonResult ValidarUsuario(string usuario)
+        {
+            using (var db = new etereaEntities7())
+            {
+                bool existe = db.cliente.Any(c => c.usuario == usuario);
+                return Json(!existe, JsonRequestBehavior.AllowGet); // Devuelve true si es válido (no existe)
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ValidarDni(long dni)
+        {
+            using (var db = new etereaEntities7())
+            {
+                bool existe = db.cliente.Any(c => c.dni == dni);
+                return Json(!existe, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ValidarEmail(string email)
+        {
+            using (var db = new etereaEntities7())
+            {
+                bool existe = db.cliente.Any(c => c.e_mail == email);
+                return Json(!existe, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public int ObtenerProximoIdDelCliente()
@@ -197,28 +308,42 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
+        [HttpGet]
         public ActionResult Perfil()
         {
             if (Session["clienteId"] == null)
-            {
                 return RedirectToAction("Login", "Cliente");
-            }
 
             int clienteId = (int)Session["clienteId"];
+            var cliente = db.cliente.Find(clienteId);
+            if (cliente == null)
+                return RedirectToAction("Login", "Cliente");
 
-            using (var db = new etereaEntities7())
+            var model = new FormularioPerfilViewModel
             {
-                var cliente = db.cliente.Find(clienteId);
+                Usuario = cliente.usuario,
+                Dni = cliente.dni,
+                Email = cliente.e_mail,
+                Nombre = cliente.nombre,
+                Apellido = cliente.apellido,
+                FechaNacimiento = cliente.fecha_nacimiento,
+                Celular = cliente.celular,
+                PaisId = cliente.pais_id,
+                ProvinciaId = cliente.provincia_id,
+                LocalidadId = cliente.localidad_id,
+                CalleId = cliente.calle_id,
+                NumeracionCalle = cliente.numeracion_calle,
+                Piso = cliente.piso,
+                Departamento = cliente.departamento,
+                CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
+                ComentariosDomicilio = cliente.comentarios_domicilio
+            };
 
-                if (cliente == null)
-                {
-                    return RedirectToAction("Login", "Cliente");
-                }
-
-                CargarPaises();
-                return View(cliente);
-            }
+            CargarPaises();
+            return View(model);
         }
+
+
 
         public ActionResult SeleccionarDireccion()
         {
@@ -350,110 +475,80 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         [HttpPost]
-        public ActionResult Perfil(cliente clienteEditado)
+        [ValidateAntiForgeryToken]
+        public ActionResult Perfil(FormularioPerfilViewModel model)
         {
-            string dniStr = clienteEditado.dni.ToString();
-            if (dniStr.Length != 8 && dniStr.Length != 11)
-            {
-                ModelState.AddModelError("dni", "El DNI/CUIT debe tener 8 o 11 digitos.");
-                CargarPaises();
-                return View(clienteEditado);
-            }
-
             if (!ModelState.IsValid)
             {
-
-                Console.WriteLine("Hay errores de validación.");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
                 CargarPaises();
-                return View(clienteEditado);
+                return View(model);
             }
 
-            using (var db = new etereaEntities7())
+            int clienteId = (int)Session["clienteId"];
+            var clienteExistente = db.cliente.Find(clienteId);
+            if (clienteExistente == null)
+                return RedirectToAction("Login", "Cliente");
+
+            // Validación manual por si DNI debe aceptar también CUIT
+            var dniStr = model.Dni.ToString();
+            if (dniStr.Length != 8 && dniStr.Length != 11)
             {
-                int clienteId = (int)Session["clienteId"];
-                var usuarioLogueado = db.cliente.Find(clienteId);
-                bool usuarioExiste = db.cliente.Any(c => c.usuario == clienteEditado.usuario && c.id != usuarioLogueado.id);
-                if (usuarioExiste)
-                {
-                    ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
-                    CargarPaises();
-                    return View(clienteEditado);
-                }
-
-                bool dniExiste = db.cliente.Any(d => d.dni == clienteEditado.dni && d.dni != usuarioLogueado.dni);
-                if (dniExiste)
-                {
-                    ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
-                    CargarPaises();
-                    return View(clienteEditado);
-                }
-
-                bool emailExiste = db.cliente.Any(e => e.e_mail == clienteEditado.e_mail && e.e_mail != usuarioLogueado.e_mail);
-                if (emailExiste)
-                {
-                    ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
-                    CargarPaises();
-                    return View(clienteEditado);
-                }
-
-                var clienteExistente = db.cliente.Find(usuarioLogueado.id);
-                if (clienteExistente == null)
-                {
-                    return RedirectToAction("Login", "Cliente");
-                }
-                clienteExistente.nombre = clienteEditado.nombre;
-                clienteExistente.apellido = clienteEditado.apellido;
-                clienteExistente.usuario = clienteEditado.usuario;
-                clienteExistente.e_mail = clienteEditado.e_mail;
-                clienteExistente.dni = clienteEditado.dni;
-                clienteExistente.fecha_nacimiento = clienteEditado.fecha_nacimiento;
-                clienteExistente.celular = clienteEditado.celular;
-                clienteExistente.pais_id = clienteEditado.pais_id;
-                clienteExistente.provincia_id = clienteEditado.provincia_id;
-                clienteExistente.localidad_id = clienteEditado.localidad_id;
-                clienteExistente.calle_id = clienteEditado.calle_id;
-                clienteExistente.numeracion_calle = clienteEditado.numeracion_calle;
-                clienteExistente.piso = clienteEditado.piso;
-                clienteExistente.departamento = clienteEditado.departamento;
-                clienteExistente.codigo_postal = clienteEditado.codigo_postal;
-                clienteExistente.comentarios_domicilio = clienteEditado.comentarios_domicilio;
-
-                clienteExistente.activo = usuarioLogueado.activo;
-                clienteExistente.rol = usuarioLogueado.rol;
-                clienteExistente.id = usuarioLogueado.id;
-                clienteExistente.condicion_frente_al_iva = usuarioLogueado.condicion_frente_al_iva;
-                if (!string.IsNullOrWhiteSpace(clienteEditado.clave))
-                {
-                    clienteExistente.clave = PasswordHelper.CrearHash(clienteEditado.clave);
-                }
-                try
-                {
-                    Session["usuarioLogueado"] = clienteExistente;
-
-                    db.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var eve in ex.EntityValidationErrors)
-                    {
-                        Console.WriteLine($"Entidad de tipo {eve.Entry.Entity.GetType().Name} con estado {eve.Entry.State} tiene errores de validación:");
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
-                        }
-                    }
-                    throw;
-                }
-
-                // Redireccionar a otra vista
-                return RedirectToAction("Index", "Home");
+                ModelState.AddModelError("Dni", "El DNI/CUIT debe tener 8 o 11 dígitos.");
+                CargarPaises();
+                return View(model);
             }
+
+            // Usuario, DNI, email únicos si cambiaron
+            if (db.cliente.Any(c => c.usuario == model.Usuario && c.id != clienteId))
+            {
+                ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso.");
+                CargarPaises();
+                return View(model);
+            }
+            if (db.cliente.Any(c => c.dni == model.Dni && c.id != clienteId))
+            {
+                ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI.");
+                CargarPaises();
+                return View(model);
+            }
+            if (db.cliente.Any(c => c.e_mail == model.Email && c.id != clienteId))
+            {
+                ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
+                CargarPaises();
+                return View(model);
+            }
+
+            // Mapear propiedades
+            clienteExistente.usuario = model.Usuario;
+            clienteExistente.dni = model.Dni;
+            clienteExistente.e_mail = model.Email;
+            clienteExistente.nombre = model.Nombre;
+            clienteExistente.apellido = model.Apellido;
+            clienteExistente.fecha_nacimiento = model.FechaNacimiento;
+            clienteExistente.celular = model.Celular;
+            clienteExistente.pais_id = model.PaisId;
+            clienteExistente.provincia_id = model.ProvinciaId;
+            clienteExistente.localidad_id = model.LocalidadId;
+            clienteExistente.calle_id = model.CalleId;
+            clienteExistente.numeracion_calle = model.NumeracionCalle.Value;
+            clienteExistente.piso = model.Piso;
+            clienteExistente.departamento = model.Departamento;
+            clienteExistente.codigo_postal = model.CodigoPostal;
+            clienteExistente.comentarios_domicilio = model.ComentariosDomicilio;
+
+            if (!string.IsNullOrWhiteSpace(model.Clave))
+            {
+                clienteExistente.clave = PasswordHelper.CrearHash(model.Clave);
+            }
+
+            db.SaveChanges();
+            Session["usuarioLogueado"] = clienteExistente;
+
+            return RedirectToAction("Index", "Home");
         }
 
+
+        [HttpGet]
         public ActionResult VerPerfil()
         {
             if (Session["clienteId"] == null)

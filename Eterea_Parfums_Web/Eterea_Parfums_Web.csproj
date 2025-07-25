@@ -232,6 +232,8 @@
     <Compile Include="ViewModels\DetalleFacturaViewModel.cs" />
     <Compile Include="ViewModels\DireccionEntregaViewModel.cs" />
     <Compile Include="ViewModels\DireccionFormateadaViewModel.cs" />
+    <Compile Include="ViewModels\FormularioClienteViewModel.cs" />
+    <Compile Include="ViewModels\FormularioPerfilViewModel.cs" />
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MarcaViewModel.cs" />

@@ -1,138 +1,141 @@
-﻿@{
-    ViewBag.Title = "Perfil";
+﻿@model Eterea_Parfums_Web.ViewModels.FormularioPerfilViewModel
+
+@{
+    ViewBag.Title = "Mi Perfil";
 }
 
 @section Styles {
-    <link href="~/Content/StylePerfil.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/StyleRegistro.css" rel="stylesheet" type="text/css" />
 }
 
-
-@model Eterea_Parfums_Web.Models.cliente
-
-
 <div class="register-container">
-    <h2 id="title" class="text-center">@ViewBag.Title</h2>
-    <hr class="separator">
-    <!-- MODIFICAR el class = "perfil-form" cuando este el CSS -->
-    @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "perfil-form" }))
+    <h2 class="text-center">@ViewBag.Title</h2>
+
+    @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb‑3" })
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", required = "required" })
+                    @Html.LabelFor(m => m.Usuario)
+                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="apellido">Apellido:</label>
-                    @Html.TextBoxFor(m => m.apellido, new { @class = "form-control", required = "required" })
+                    @Html.LabelFor(m => m.Dni)
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", type = "number" })
+                    @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="usuario">Nombre de Usuario:</label>
-                    @Html.TextBoxFor(m => m.usuario, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessage("usuario", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="clave">Contraseña:</label>
-                    @Html.PasswordFor(m => m.clave, new { @class = "form-control", placeholder = "Dejar en blanco si no querés cambiarla" })
+                    @Html.LabelFor(m => m.Clave, "Nueva contraseña (opcional):")
+                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", placeholder = "Dejar en blanco si no desea cambiarla" })
+                    @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    @Html.TextBoxFor(m => m.e_mail, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessage("email", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.FechaNacimiento)
+                    @Html.EditorFor(m => m.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="dni">DNI:</label>
-                    @Html.TextBoxFor(m => m.dni, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessage("dni", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-                    <input type="date" class="form-control" name="fecha_nacimiento" value="@Model.fecha_nacimiento.ToString("yyyy-MM-dd")" required />
-                    @Html.ValidationMessage("fechadenacimiento", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Apellido)
+                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="celular">Celular:</label>
-                    @Html.TextBoxFor(m => m.celular, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessage("celular", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Celular)
+                    @Html.TextBoxFor(m => m.Celular, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pais">País:</label>
-                    <select id="pais" name="pais_id" class="form-control" data-selected="@Model.pais_id" required>
-                        @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
-                        {
-                            <option value="@pais.Value" @(pais.Value == Model.pais_id.ToString() ? "selected" : "")>
-                                @pais.Text
-                            </option>
-                        }
-                    </select>
+                    @Html.LabelFor(m => m.PaisId)
+                    @Html.DropDownListFor(m => m.PaisId, ViewBag.Paises as List<SelectListItem>,
+                        "Seleccione un país", new { @class = "form-control", id = "pais", data_selected = Model.PaisId })
+                    @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia_id" class="form-control" data-selected="@Model.provincia_id" required>
-                        <option value="">Seleccione una provincia</option>
-                    </select>
+                    @Html.LabelFor(m => m.ProvinciaId)
+                    @Html.DropDownListFor(m => m.ProvinciaId, new List<SelectListItem>(),
+                        "Seleccione una provincia", new { @class = "form-control", id = "provincia", data_selected = Model.ProvinciaId })
+                    @Html.ValidationMessageFor(m => m.ProvinciaId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="localidad">Localidad:</label>
-                    <select id="localidad" name="localidad_id" class="form-control" data-selected="@Model.localidad_id" required>
-                        <option value="">Seleccione una localidad</option>
-                    </select>
+                    @Html.LabelFor(m => m.LocalidadId)
+                    @Html.DropDownListFor(m => m.LocalidadId, new List<SelectListItem>(),
+                        "Seleccione una localidad", new { @class = "form-control", id = "localidad", data_selected = Model.LocalidadId })
+                    @Html.ValidationMessageFor(m => m.LocalidadId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="calle">Calle:</label>
-                    <select id="calle" name="calle_id" class="form-control" data-selected="@Model.calle_id" required>
-                        <option value="">Seleccione una calle</option>
-                    </select>
+                    @Html.LabelFor(m => m.CalleId)
+                    @Html.DropDownListFor(m => m.CalleId, new List<SelectListItem>(),
+                        "Seleccione una calle", new { @class = "form-control", id = "calle", data_selected = Model.CalleId })
+                    @Html.ValidationMessageFor(m => m.CalleId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="numeracion">Numeración:</label>
-                    @Html.TextBoxFor(m => m.numeracion_calle, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessage("numeracion", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.NumeracionCalle)
+                    @Html.TextBoxFor(m => m.NumeracionCalle, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.NumeracionCalle, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="piso">Piso:</label>
-                    @Html.TextBoxFor(m => m.piso, new { @class = "form-control" })
-                    @Html.ValidationMessage("piso", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Piso)
+                    @Html.TextBoxFor(m => m.Piso, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Piso, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="departamento">Departamento:</label>
-                    @Html.TextBoxFor(m => m.departamento, new { @class = "form-control" })
-                    @Html.ValidationMessage("departamento", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.Departamento)
+                    @Html.TextBoxFor(m => m.Departamento, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Departamento, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
-                    <label for="codigopostal">Código Postal:</label>
-                    @Html.TextBoxFor(m => m.codigo_postal, new { @class = "form-control" })
-                    @Html.ValidationMessage("codigopostal", "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.CodigoPostal)
+                    @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CodigoPostal, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="form-group">
-                <label for="comentarios">Comentario del domicilio:</label>
-                @Html.TextAreaFor(m => m.comentarios_domicilio, new { @class = "form-control" })
-                @Html.ValidationMessage("comentarios", "", new { @class = "text-danger" })
+
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.ComentariosDomicilio)
+                @Html.TextAreaFor(m => m.ComentariosDomicilio, new { @class = "form-control", rows = 3, maxlength = 50 })
+                @Html.ValidationMessageFor(m => m.ComentariosDomicilio, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn-register">Actualizar perfil</button>
             </div>
         </div>
-
-        <hr class="separator">
-
-        <button type="submit" class="btn-register">Guardar cambios</button>
     }
 </div>
 
-<div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/UbicacionDinamica.js"></script>
+}
