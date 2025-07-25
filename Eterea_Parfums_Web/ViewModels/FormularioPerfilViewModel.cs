@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using Eterea_Parfums_Web.Validations;
     using System.Web.Mvc;
 
     public class FormularioPerfilViewModel
@@ -17,7 +18,8 @@
         public string Apellido { get; set; }
 
         [Display(Name = "Usuario:")]
-        [Required, StringLength(8, MinimumLength = 4)]
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+        [StringLength(8, MinimumLength = 4, ErrorMessage = "Debe tener entre 4 y 8 caracteres.")]
         public string Usuario { get; set; }
 
         [Display(Name = "Clave:")]
@@ -27,12 +29,13 @@
         public string Clave { get; set; }
 
         [Display(Name = "DNI:")]
-        [Required, Range(10000000, 99999999)]
+        [Range(10000000, 99999999, ErrorMessage = "El DNI debe tener 8 dígitos.")]
         public long Dni { get; set; }
 
         [Display(Name = "Fecha de Nacimiento:")]
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.Date)]
+        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 120, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
         public DateTime FechaNacimiento { get; set; }
 
         [Display(Name = "Celular")]
@@ -41,7 +44,9 @@
         public string Celular { get; set; }
 
         [Display(Name = "Email:")]
-        [Required, StringLength(30)]
+        [EmailAddress(ErrorMessage = "Ingrese un email válido.")]
+        [Required(ErrorMessage = "El email es obligatorio.")]
+        [StringLength(30, ErrorMessage = "Máximo 30 caracteres.")]
         public string Email { get; set; }
 
         [Display(Name = "País:")]

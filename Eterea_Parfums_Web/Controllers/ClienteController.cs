@@ -113,77 +113,7 @@ namespace Eterea_Parfums_Web.Controllers
 
         // POST: Cliente/Registrar
         [HttpPost]
-        /*public ActionResult Registrar(cliente nuevoCliente)
-        {
-
-            if (nuevoCliente.dni.ToString().Length != 8)
-            {
-                ModelState.AddModelError("dni", "El DNI debe tener 8 números.");
-                CargarPaises();
-                return View(nuevoCliente);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                CargarPaises();
-                return View(nuevoCliente);
-            }
-
-            using (var db = new etereaEntities7())
-            {
-                bool usuarioExiste = db.cliente.Any(c => c.usuario == nuevoCliente.usuario);
-                if (usuarioExiste)
-                {
-                    ModelState.AddModelError("usuario", "El nombre de usuario ya está en uso.");
-                    CargarPaises();
-                    return View(nuevoCliente);
-                }
-
-                bool dniExiste = db.cliente.Any(d => d.dni == nuevoCliente.dni);
-                if (dniExiste)
-                {
-                    ModelState.AddModelError("dni", "Hay una cuenta existente con ese DNI.");
-                    CargarPaises();
-                    return View(nuevoCliente);
-                }
-
-                bool emailExiste = db.cliente.Any(e => e.e_mail == nuevoCliente.e_mail);
-                if (emailExiste)
-                {
-                    ModelState.AddModelError("email", "Hay una cuenta existente con ese email.");
-                    CargarPaises();
-                    return View(nuevoCliente);
-                }
-
-                // Si todo está bien, lo guardás en la base:
-                nuevoCliente.clave = PasswordHelper.CrearHash(nuevoCliente.clave);
-                nuevoCliente.activo = true;
-                nuevoCliente.rol = "cliente";
-                nuevoCliente.id = ObtenerProximoIdDelCliente();
-                nuevoCliente.condicion_frente_al_iva = "Consumidor final";
-                try
-                {
-                    db.cliente.Add(nuevoCliente);
-                    db.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var eve in ex.EntityValidationErrors)
-                    {
-                        Console.WriteLine($"Entidad de tipo {eve.Entry.Entity.GetType().Name} con estado {eve.Entry.State} tiene errores de validación:");
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            Console.WriteLine($"- Propiedad: {ve.PropertyName}, Error: {ve.ErrorMessage}");
-                        }
-                    }
-                    throw;
-                }
-
-                // Redireccionar a otra vista
-                return RedirectToAction("Login", "Cliente");
-            }
-        }*/
-
+        [ValidateAntiForgeryToken]
         public ActionResult Registrar(FormularioClienteViewModel model)
         {
 
@@ -195,26 +125,6 @@ namespace Eterea_Parfums_Web.Controllers
 
             using (var db = new etereaEntities7())
             {
-                /*if (db.cliente.Any(c => c.usuario == model.Usuario))
-                {
-                    ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso.");
-                    CargarPaises();
-                    return View(model);
-                }
-
-                if (db.cliente.Any(c => c.dni == model.Dni))
-                {
-                    ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI.");
-                    CargarPaises();
-                    return View(model);
-                }
-
-                if (db.cliente.Any(c => c.e_mail == model.Email))
-                {
-                    ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
-                    CargarPaises();
-                    return View(model);
-                }*/
 
                 // Mapeo del ViewModel al Entity
                 var nuevoCliente = new cliente
@@ -225,7 +135,7 @@ namespace Eterea_Parfums_Web.Controllers
                     usuario = model.Usuario,
                     clave = PasswordHelper.CrearHash(model.Clave),
                     dni = (long)model.Dni,
-                    fecha_nacimiento = model.FechaNacimiento,
+                    fecha_nacimiento = (DateTime)model.FechaNacimiento,
                     celular = model.Celular,
                     e_mail = model.Email,
                     pais_id = model.PaisId,
@@ -493,7 +403,7 @@ namespace Eterea_Parfums_Web.Controllers
             var dniStr = model.Dni.ToString();
             if (dniStr.Length != 8 && dniStr.Length != 11)
             {
-                ModelState.AddModelError("Dni", "El DNI/CUIT debe tener 8 o 11 dígitos.");
+                ModelState.AddModelError("Dni", "El DNI¡ debe tener 8  dígitos.");
                 CargarPaises();
                 return View(model);
             }
@@ -515,6 +425,11 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
                 CargarPaises();
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
                 return View(model);
             }
 

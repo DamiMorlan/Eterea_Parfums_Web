@@ -19,6 +19,7 @@
     <!--<hr class="separator">-->
     @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
+        @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="row">
             <div class="col-md-6">
@@ -67,7 +68,11 @@
                 <!-- Fecha Nacimiento -->
                 <div class="form-group">
                     <label for="FechaNacimiento">Fecha de Nacimiento:</label>
-                    @Html.TextBoxFor(m => m.FechaNacimiento, new { @class = "form-control", type = "date", required = "required" })
+                    @Html.TextBoxFor(m => m.FechaNacimiento, "{0:yyyy-MM-dd}", new
+                    {
+                        @class = "form-control",
+                        type = "date"
+                    })
                     @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
                 </div>
 

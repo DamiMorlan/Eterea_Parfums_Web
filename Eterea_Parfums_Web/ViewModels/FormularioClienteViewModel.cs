@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Eterea_Parfums_Web.Validations;
 using System.Web.Mvc;
 
 namespace Eterea_Parfums_Web.ViewModels
@@ -32,7 +33,8 @@ namespace Eterea_Parfums_Web.ViewModels
 
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.Date)]
-        public DateTime FechaNacimiento { get; set; }
+        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 120, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
+        public DateTime? FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El celular es obligatorio.")]
         [StringLength(20, ErrorMessage = "Máximo 20 caracteres.")]

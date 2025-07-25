@@ -57,7 +57,7 @@
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.FechaNacimiento)
-                    @Html.EditorFor(m => m.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.TextBoxFor(m => m.FechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                     @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
                 </div>
 
@@ -141,5 +141,5 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-    <script src="~/Scripts/UbicacionDinamica.js"></script>
+    
 }
