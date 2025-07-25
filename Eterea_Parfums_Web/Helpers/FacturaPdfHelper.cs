@@ -7,6 +7,8 @@ using System.IO;
 using System.Text;
 using System.Data.Entity;
 using System.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System.Security.Policy;
 
 
 namespace Eterea_Parfums_Web.Helpers
@@ -83,6 +85,13 @@ namespace Eterea_Parfums_Web.Helpers
             }
 
             html = html.Replace("@FILAS", filasHtml.ToString());
+
+            var request = System.Web.HttpContext.Current.Request;
+            var baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}/";
+            string urlLogo = baseUrl + "Imagen/Mostrar?nombre=LogoEtereaFactura.png";
+
+            string imgTag = $"<img src=\"{urlLogo}\" style=\"width:60px; height:60px;\" />";
+            html = html.Replace("@LOGO", imgTag);
 
             return html;
         }
@@ -162,6 +171,13 @@ namespace Eterea_Parfums_Web.Helpers
             }
 
             html = html.Replace("@FILAS", filasHtml.ToString());
+
+            var request = System.Web.HttpContext.Current.Request;
+            var baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}/";
+            string urlLogo = baseUrl + "Imagen/Mostrar?nombre=LogoEtereaFactura.png";
+
+            string imgTag = $"<img src=\"{urlLogo}\" style=\"width:60px; height:60px;\" />";
+            html = html.Replace("@LOGO", imgTag);
 
             return html;
 
