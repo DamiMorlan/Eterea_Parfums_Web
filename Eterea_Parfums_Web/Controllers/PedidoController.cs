@@ -506,7 +506,7 @@ namespace Eterea_Parfums_Web.Controllers
                     {
                         id = nuevoIdFactura,
                         fecha = DateTime.Now,
-                        sucursal_id = 1,
+                        sucursal_id = 0,
                         empleado_id = 1,
                         cliente_id = clienteId,
                         forma_de_pago = medio,
@@ -689,13 +689,13 @@ namespace Eterea_Parfums_Web.Controllers
             if (!string.IsNullOrEmpty(ultimo) && ultimo.Length > 1)
             {
                 // Ej.: “A00000123”  →  “00000123”
-                int.TryParse(ultimo.Substring(1), out correlativo);
+                int.TryParse(ultimo.Substring(4), out correlativo);
             }
 
             correlativo += 1;
 
-            // Devuelve “A00000124” ó “B00000001”
-            return $"{tipo}{correlativo:D8}";
+            // 0002 por el numero de venta de la web
+            return $"0002{correlativo:D8}";
         }
         
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
