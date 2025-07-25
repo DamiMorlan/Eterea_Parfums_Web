@@ -144,7 +144,7 @@
                                                                 data-descuento="@p.PrecioConDescuento"
                                                                 data-tiene-promo="@p.TienePromocion"
                                                                 data-leyenda="@p.LeyendaPromocion"
-                                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
+                                                                data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
                                                                 onclick="cambiarPresentacion(this, @perfume.Id)">
@@ -279,7 +279,7 @@
                                                                 data-descuento="@(p.PrecioConDescuento ?? 0)"
                                                                 data-tiene-promo="@(p.PrecioConDescuento.HasValue ? "True" : "False")"
                                                                 data-leyenda="@p.LeyendaPromocion"
-                                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
+                                                                data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
                                                                 data-ml="@p.Ml"
