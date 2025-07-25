@@ -18,35 +18,6 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Usuario)
-                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Dni)
-                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", type = "number" })
-                    @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Clave, "Nueva contraseña (opcional):")
-                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", placeholder = "Dejar en blanco si no desea cambiarla" })
-                    @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.FechaNacimiento)
-                    @Html.EditorFor(m => m.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                    @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
-                </div>
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.Nombre)
@@ -61,10 +32,43 @@
                 </div>
 
                 <div class="form-group">
+                    @Html.LabelFor(m => m.Usuario)
+                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Clave, "Nueva contraseña (opcional):")
+                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", placeholder = "Dejar en blanco si no desea cambiarla" })
+                    @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Dni)
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", type = "number" })
+                    @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FechaNacimiento)
+                    @Html.EditorFor(m => m.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
                     @Html.LabelFor(m => m.Celular)
                     @Html.TextBoxFor(m => m.Celular, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
                 </div>
+
+
+
             </div>
 
             <div class="col-md-6">
