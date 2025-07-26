@@ -1,5 +1,8 @@
-﻿@{
-    ViewBag.Title = "Error";
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "NotFound";
+    Response.StatusCode = 404;
 }
 
 <style>
@@ -21,7 +24,7 @@
         height: 100%;
         position: relative;
         overflow: hidden;
-
+     
     }
 
     .content-error .background-image {
@@ -46,8 +49,7 @@
     <div class="container text-center p-5  rounded  content-box">
         <h1 class="display-4 text-danger fw-bold">¡Vaya!</h1>
         <p class="lead text-secondary mb-4">
-            Algo salió mal de nuestro lado.<br />
-            Estamos trabajando para solucionarlo. Por favor, intentá nuevamente en unos instantes.
+            No se ha encontrado ninguna página.<br />Lo sentimos. Sigamos.
         </p>
 
         <a href="@Url.Action("Index", "Home")" class="btn btn-danger btn-lg">

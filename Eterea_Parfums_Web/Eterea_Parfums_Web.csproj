@@ -131,6 +131,7 @@
     <Compile Include="Controllers\CarritoController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HistorialController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImagenController.cs" />
@@ -353,6 +354,7 @@
     <Content Include="Views\Cliente\AgregarDireccion.cshtml" />
     <Content Include="Views\Cliente\SeleccionarDireccion.cshtml" />
     <Content Include="Views\Home\News.cshtml" />
+    <Content Include="Views\Shared\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

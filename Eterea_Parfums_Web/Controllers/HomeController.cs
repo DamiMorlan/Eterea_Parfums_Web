@@ -11,7 +11,10 @@ namespace Eterea_Parfums_Web.Controllers
     public class HomeController : Controller
     {
         private etereaEntities7 db = new etereaEntities7();
-
+        public ActionResult ProbarError500()
+        {
+            return new HttpStatusCodeResult(500, "Error 500 simulado");
+        }
         public ActionResult Index()
         {
             // 1. Obtener stock completo
