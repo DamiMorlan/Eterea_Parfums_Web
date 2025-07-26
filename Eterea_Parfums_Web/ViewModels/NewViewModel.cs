@@ -12,5 +12,6 @@ namespace Eterea_Parfums_Web.ViewModels
         public List<perfume> TipoDos { get; set; }
         public List<perfume> TipoTres { get; set; }
         public List<perfume> Recomendados { get; set; }
+        public List<perfume> Recomendados2 { get; set; }
     }
 }

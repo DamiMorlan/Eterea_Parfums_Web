@@ -272,31 +272,83 @@ namespace Eterea_Parfums_Web.Controllers
             var perfume_tipo_dos = perfumes.Where(p => p.tipo_de_perfume_id == 2).ToList();
             var perfume_tipo_tres = perfumes.Where(p => p.tipo_de_perfume_id == 3).ToList();
 
-
-
-            var perfumesMasVendidosIds = db.detalle_factura
-             .GroupBy(d => d.perfume_id)
-             .Select(g => new
-             {
-                 PerfumeId = g.Key,
-                 TotalCantidad = g.Sum(d => d.cantidad)
-              })
-                 .OrderByDescending(g => g.TotalCantidad)
-                 .Take(3)
-                 .Select(g => g.PerfumeId)
-                 .ToList();
-
-            var perfumesMasVendidos = db.perfume
-                .Where(p => perfumesMasVendidosIds.Contains(p.id))
+             var perfumesMasVendidosDeMujerIds = db.detalle_factura
+                .Where(d => d.perfume.genero.genero1 == "Mujer")
+                .GroupBy(d => d.perfume_id)
+                .Select(g => new
+                {
+                    PerfumeId = g.Key,
+                    TotalCantidad = g.Sum(d => d.cantidad)
+                })
+                .OrderByDescending(g => g.TotalCantidad)
+                .Take(3)
+                .Select(g => g.PerfumeId)
                 .ToList();
 
-            // Puedes usar un ViewModel para pasar estos datos a la vista
+            var perfumesMasVendidosParaMujer = db.perfume
+                .Where(p => perfumesMasVendidosDeMujerIds.Contains(p.id))
+                .ToList();
+
+            //Fitro de perfumes para hombre con notas frescas
+
+            // Lista de notas frescas e intensas
+            /*var notasFrescasEIntensas = new List<string>
+                {
+                    "Lavanda", "Pera", "Jengibre", "Salvia", "Mandarina", "Limonero", "Menta",
+                    "Bergamota", "Hierba verde", "Manzana verde", "Pomelo", "Durazno", "Maracuyá",
+                    "Lima", "Albahaca", "Cannabis", "Vodka", "Ginebra", "Pimienta", "Ron", "Anís", "Absenta", "Enebro de Virginia"
+                };
+
+            // IDs de perfumes con notas frescas/intensas
+            var perfumesConNotasFrescasIds = db.perfume
+                .Where(p => p.nota_con_tipo_de_nota.Any(np => notasFrescasEIntensas.Contains(np.nota.nombre)))
+                .Select(p => p.id)
+                .ToList();
+
+            // Perfumes más vendidos para hombres con tipo amaderado y notas frescas/intensas
+            var perfumesMasVendidosParaHombre = db.detalle_factura
+                .Where(d =>
+                    d.perfume.genero.genero1 == "Hombre" &&
+                    d.perfume.tipo_de_perfume.tipo_de_perfume1 == "Amaderado" ||
+                    perfumesConNotasFrescasIds.Contains(d.perfume_id)
+                )
+                .GroupBy(d => d.perfume)
+                .Select(g => new
+                {
+                    Perfume = g.Key,
+                    TotalCantidad = g.Sum(d => d.cantidad)
+                })
+                .OrderByDescending(g => g.TotalCantidad)
+                .Take(5)
+                .Select(g => g.Perfume)
+                .ToList();
+            */
+
+
+            var notasFrescasEIntensas = new List<string>
+                {
+                    "Lavanda", "Pera", "Jengibre", "Salvia", "Mandarina", "Limonero", "Menta",
+                    "Bergamota", "Hierba verde", "Manzana verde", "Pomelo", "Durazno", "Maracuyá",
+                    "Lima", "Albahaca", "Cannabis", "Vodka", "Ginebra", "Pimienta", "Ron", "Anís", "Absenta", "Enebro de Virginia"
+                };
+
+            var perfumesParaHombreConNotasFrescas = db.perfume
+            .Where(p =>
+                p.genero.genero1 == "Hombre" &&
+                (
+                    p.tipo_de_aroma.Any(a => a.nombre == "Amaderado") &&
+                    p.nota_con_tipo_de_nota.Any(np => notasFrescasEIntensas.Contains(np.nota.nombre))
+                )
+            )
+        .ToList();
+            // ViewModel con perfumes recomendados solo para hombres
             var viewModel = new NewViewModel
             {
                 TipoUno = perfume_tipo_uno,
                 TipoDos = perfume_tipo_dos,
                 TipoTres = perfume_tipo_tres,
-                Recomendados = perfumesMasVendidos
+                Recomendados = perfumesMasVendidosParaMujer,
+                Recomendados2 = perfumesParaHombreConNotasFrescas
             };
 
             return View(viewModel);
