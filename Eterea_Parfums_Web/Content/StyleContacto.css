@@ -27,7 +27,7 @@ body {
     text-align: center;
     font-size: 2.8rem;
     margin-bottom: 25px;
-    color: #973f5c; /* rosa profundo */
+    color: var(--rosa-profundo); /* color igual al filtro */ /* rosa profundo */
     font-weight: 700;
 }
 

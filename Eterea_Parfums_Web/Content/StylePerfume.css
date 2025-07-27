@@ -112,48 +112,6 @@ body {
         color: white;
     }
 
-/* ----- Precio con promoción ----- */
-.precio-original {
-    color: #888;
-    text-decoration: line-through;
-    margin-right: 8px;
-    font-size: 0.95rem;
-}
-
-.precio-descuento {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-/* ----- Leyenda de promoción ----- */
-.leyenda-promocion {
-    background-color: var(--rosa-medio);
-    color: white;
-    font-size: 0.85rem;
-    padding: 4px 10px;
-    border-radius: 12px;
-    display: inline-block;
-    margin-top: 6px;
-}
-
-.promo-placeholder {
-    min-height: 1.2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    display: block;
-    font-weight: 600;
-}
-
-    .promo-placeholder.sin-promocion {
-        margin-top:1.3rem;
-        margin-bottom: 1.3rem; /* más espacio debajo solo cuando no hay promo */
-    }
-
-    /* Cuando tiene promo → menos margen */
-    .promo-placeholder.con-promocion {
-        margin-top: 0.8rem;
-        margin-bottom: 0.8rem;
-    }
 
 /* ----- Estado de stock ----- */
 .text-danger.fw-bold {
@@ -344,7 +302,7 @@ aside .mb-3 {
 
 .linea-filtros {
     border: none;
-    border-top: 1px dashed ;
+    border-top: 1px dashed;
     margin: 20px 0;
 }
 
@@ -369,17 +327,17 @@ aside .mb-3 {
         border-radius: 10px;
     }
 
-    /* ---------- BOTONES DE FILTROS ---------- */
-    aside .btn-outline-danger,
-    aside .btn-outline-primary,
-    aside .btn-outline-secondary {
-        border-radius: 8px;
-        padding: 6px 10px;
-        font-size: 0.9rem;
-        width: 100%;
-        margin-top: 6px;
-        transition: all 0.3s ease;
-    }
+/* ---------- BOTONES DE FILTROS ---------- */
+aside .btn-outline-danger,
+aside .btn-outline-primary,
+aside .btn-outline-secondary {
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 6px;
+    transition: all 0.3s ease;
+}
 
     aside .btn-outline-danger:hover {
         background-color: #e74c3c;
@@ -440,7 +398,6 @@ aside .mb-3 {
 
     /* Menú desplegado */
     .titulo-perfumes .dropdown-menu {
-        
         border: 1px solid var(--rosa-profundo);
         border-radius: 12px;
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
@@ -448,7 +405,6 @@ aside .mb-3 {
 
     /* Opciones del menú */
     .titulo-perfumes .dropdown-item {
-        
         padding: 10px 16px;
         font-weight: 500;
         color: var(--moka);
@@ -468,13 +424,13 @@ input.no-outline:focus {
 }
 
 .btn-buscar {
-    background-color: var(--rosa-claro); 
+    background-color: var(--rosa-claro);
     color: white;
     border: none;
 }
 
     .btn-buscar:hover {
-        background-color: var(--rosa-profundo); 
+        background-color: var(--rosa-profundo);
         color: white;
     }
 
@@ -486,4 +442,146 @@ input.no-outline:focus {
 
 .mt-espaciado-footer {
     margin-top: 620px;
+}
+
+
+/* ----- Precio con promoción ----- */
+.precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* ----- Leyenda de promoción ----- */
+.leyenda-promocion {
+    font-size: 1rem;
+    background-color: var(--rosa-medio);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    min-width: 120px;
+    text-align: center;
+    display: inline-block;
+}
+
+.promo-placeholder {
+    min-height: 1.2rem; /* ajusta este valor según el alto que necesites */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
+}
+
+
+.promo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.promo-content {
+    flex: 1;
+    text-align: center;
+}
+
+.promo-display .precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.promo-display .precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.btn-promo-prev, .btn-promo-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1rem;
+    color: white;
+    background-color: var(--rosa-profundo);
+    border: none;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .btn-promo-prev:hover,
+    .btn-promo-next:hover {
+        transform: scale(1.1);
+        background-color: var(--rosa-medio);
+    }
+
+
+    .btn-promo-prev:focus,
+    .btn-promo-next:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .btn-promo-prev:active,
+    .btn-promo-next:active {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+.promo-container.promo-sin-promocion {
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+
+    .promo-container.promo-sin-promocion .leyenda-promocion {
+        display: inline-block;
+        font-size: 0.85rem;
+        color: #666;
+        background-color: #f5f5f5;
+        padding: 4px 8px;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 160px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+
+.filtros-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-toggle-filtros {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--rosa-profundo); /* o un color fijo como #e83e8c */
+    position: relative;
+    top: -15px; /* Subí un poco el ícono */
+}
+
+    .btn-toggle-filtros:focus {
+        outline: none;
+    }
+
+#form-filtros.oculto {
+    display: none;
 }
