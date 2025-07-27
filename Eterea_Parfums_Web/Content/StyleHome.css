@@ -479,7 +479,7 @@ h2 {
 }
 
 .promo-display .precio-descuento {
-    color: var(--rosa-profundo); /* O tu color personalizado */
+   
     font-size: 1.1rem;
     font-weight: bold;
 }
