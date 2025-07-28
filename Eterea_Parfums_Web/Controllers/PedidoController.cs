@@ -488,9 +488,7 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
-                        //DE 40% Y TIENE UN DESCUENTO DEL 10% TAMBIEN, SE APLICAN AMBOS POR ESO EL totalCalculado NO DA IGUAL QUE EL totalFinal
-                        //Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)
+                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)) 
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
@@ -695,7 +693,7 @@ namespace Eterea_Parfums_Web.Controllers
             correlativo += 1;
 
             // 0002 por el numero de venta de la web
-            return $"0002{correlativo:D8}";
+            return $"0001{correlativo:D8}";
         }
         
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
