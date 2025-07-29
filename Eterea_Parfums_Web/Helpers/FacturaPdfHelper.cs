@@ -28,6 +28,7 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
             html = html.Replace("@CLIENTE", clienteNombre);
             html = html.Replace("@CONDIVA", cliente.condicion_frente_al_iva);
+            html = html.Replace("@FORMAPAGO", factura.forma_de_pago);
             html = html.Replace("@DOCUMENTO", cliente.dni.ToString());
             string domicilio = $"{cliente.calle.nombre} {cliente.numeracion_calle}";
             string localidad = $"{cliente.localidad.nombre}";
@@ -110,6 +111,7 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
             html = html.Replace("@CLIENTE", clienteNombre);
             html = html.Replace("@CONDIVA", cliente.condicion_frente_al_iva);
+            html = html.Replace("@FORMAPAGO", factura.forma_de_pago);
             html = html.Replace("@DOCUMENTO", cliente.dni.ToString());
             string domicilio = $"{cliente.calle.nombre} {cliente.numeracion_calle}";
             string localidad = $"{cliente.localidad.nombre}";
