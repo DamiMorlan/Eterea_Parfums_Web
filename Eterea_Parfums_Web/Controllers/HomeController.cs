@@ -365,5 +365,13 @@ namespace Eterea_Parfums_Web.Controllers
             return View(viewModel);
         }
 
+
+        //Ruta para probar el Error 500
+        [HttpGet]
+        public ActionResult ProbarError500()
+        {
+            return new HttpStatusCodeResult(500, "Error 500 simulado");
+        }
+
     }
 }
