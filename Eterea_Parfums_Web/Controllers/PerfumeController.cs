@@ -467,7 +467,8 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 Perfume = perfume,
                 StockDisponibleParaWeb = stockPerfumeActual,
-                PerfumesRelacionados = perfumesRelacionados,                
+                PerfumesRelacionados = perfumesRelacionados,
+                perfumesIgualesEnPresentacioMl = perfumesIgualesConDistintaPresentacion
             };
 
             return View(viewModel);

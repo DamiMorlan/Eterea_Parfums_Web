@@ -147,26 +147,26 @@
                         $@precioFormateado
                     </h3>
 
+                    <hr />
 
                     <div class="box-perfume-volumen">
-                        <!-- Título de la sección de tamaños -->
-                        <p class="mt-2">
-                            Tamaño
-                        </p>
-                        @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
-                        {
-                            foreach (var p in Model.perfumesIgualesEnPresentacioMl)
+                        <div class="linea-tamanios">
+                            <p class="mt-2 mb-0"><strong>Tamaño:</strong></p>
+                            @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
                             {
-                                if (p.presentacion_ml != Model.Perfume.presentacion_ml)
+                                foreach (var p in Model.perfumesIgualesEnPresentacioMl)
                                 {
-                                    <a href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
-                                }
-                                else
-                                {
-                                    <a class="select" href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                                    if (p.presentacion_ml != Model.Perfume.presentacion_ml)
+                                    {
+                                        <a href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="select" href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                                    }
                                 }
                             }
-                        }
+                        </div>
                     </div>
 
                     <hr />

@@ -851,3 +851,44 @@ h2 {
     margin-right: 0.2rem;
 }
 
+.linea-tamanios {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Por si hay muchos tamaños */
+    gap: 0.5rem;
+}
+
+    .linea-tamanios p {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .linea-tamanios a {
+        padding: 0.3rem 0.6rem;
+        background-color: var(--rosa-suave);
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .linea-tamanios a:hover {
+            background-color: var(--rosa-profundo);
+            color: white;
+        }
+
+        .linea-tamanios a.select {
+            background-color: var(--rosa-profundo);
+            color: white;
+            font-weight: bold;
+        }
+
+/* Asegura que las imágenes principales mantengan proporciones y tamaño uniforme */
+.gallery-top .swiper-slide img {
+    max-height: 450px; /* o el alto que prefieras */
+    width: auto;
+    object-fit: contain; /* Ajusta la imagen sin recortarla */
+    margin: 0 auto; /* Centra horizontalmente */
+    display: block;
+}
