@@ -171,29 +171,30 @@
 
                     <hr />
 
-                    @if (@Model.StockDisponibleParaWeb == 1)
+                    @if (Model.StockDisponibleParaWeb != 0)
                     {
-                        <p class="mt-4 text-danger fw-bold">¡Último disponible!</p>
-                    }
+                        <div class="contenedor-stock-cantidad">
+                            <div class="selector-cantidad">
+                                <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
+                                <select id="cantidad-@Model.Perfume.id">
+                                    @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
 
-                    @if (@Model.StockDisponibleParaWeb != 0)
-                    {
-                        <div class="my-3">
-                            <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
-                            <select id="cantidad-@Model.Perfume.id">
-                                @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
-                                {
-                                    <option value="@i">@i</option>
-
-                                }
-                            </select>
+                            @if (Model.StockDisponibleParaWeb == 1)
+                            {
+                                <p class="stock-message ultimo mt-3 ms-3">¡Último disponible!</p>
+                            }
                         </div>
-
                     }
                     else
                     {
-                        <p class="mt-4 text-danger fw-bold">Sin stock</p>
+                        <p class="stock-message sin-stock">Sin stock</p>
                     }
+
 
                     <hr />
 

@@ -884,11 +884,69 @@ h2 {
             font-weight: bold;
         }
 
-/* Asegura que las imágenes principales mantengan proporciones y tamaño uniforme */
-.gallery-top .swiper-slide img {
-    max-height: 450px; /* o el alto que prefieras */
-    width: auto;
-    object-fit: contain; /* Ajusta la imagen sin recortarla */
-    margin: 0 auto; /* Centra horizontalmente */
-    display: block;
+/* Ajustar altura de la imagen principal */
+.swiper.gallery-top {
+    height: 400px; /* Ajustá según lo que necesites */
 }
+
+    .swiper.gallery-top .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+        .swiper.gallery-top .swiper-slide img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+/* Contenedor con flex para alinear cantidad y mensaje */
+.contenedor-stock-cantidad {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Reutilizamos clases anteriores */
+.stock-message {
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+}
+
+    .stock-message.ultimo {
+        color: #a94442;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
+    .stock-message.sin-stock {
+        margin-top: 1rem;
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
+.selector-cantidad label {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.selector-cantidad select {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s;
+}
+
+    .selector-cantidad select:focus {
+        border-color: var(--rosa-medio);
+        outline: none;
+    }
