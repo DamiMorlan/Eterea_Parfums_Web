@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Globalization;
 using System.Data.Entity;
 using Eterea_Parfums_Web.Helpers;
+using System.IO;
 
 
 namespace Eterea_Parfums_Web.Controllers
@@ -422,7 +423,10 @@ namespace Eterea_Parfums_Web.Controllers
                 try
                 {
                     /* 1) Cliente y carrito */
-                    var cliente = db.cliente.Find(clienteId);
+                    var cliente = db.cliente
+                                    .Include(c => c.calle)
+                                    .Include(c => c.localidad)
+                                    .FirstOrDefault(c => c.id == clienteId);
 
                     var carrito = db.carrito
                                     .Include(c => c.perfume)
@@ -484,9 +488,7 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2))  //VER ESTE IF, LAS PROMOCIONES SE ESTAN APLICANDO MAL, SI COMPRAS 2 PERFUMES CON UNA PROMO
-                        //DE 40% Y TIENE UN DESCUENTO DEL 10% TAMBIEN, SE APLICAN AMBOS POR ESO EL totalCalculado NO DA IGUAL QUE EL totalFinal
-                        //Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)
+                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)) 
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
@@ -502,11 +504,12 @@ namespace Eterea_Parfums_Web.Controllers
                     {
                         id = nuevoIdFactura,
                         fecha = DateTime.Now,
-                        sucursal_id = 1,
+                        sucursal_id = 0,
                         empleado_id = 1,
                         cliente_id = clienteId,
                         forma_de_pago = medio,
                         precio_total = totalCalculado,
+                        recargo_tarjeta = recargoTotal,
                         descuento = descuentoTotal,
                         numero_de_caja = 10,
                         tipo_de_consumidor = cliente.condicion_frente_al_iva,
@@ -580,7 +583,6 @@ namespace Eterea_Parfums_Web.Controllers
                         apellido_cliente = cliente.apellido,
                         dni = cliente.dni,
                         e_mail_cliente = cliente.e_mail,
-
                         domicilio_de_envio = domicilioEnvio,
                         estado = true,
                         codigo_despacho = null,
@@ -596,16 +598,39 @@ namespace Eterea_Parfums_Web.Controllers
                     db.carrito.RemoveRange(carrito);
                     db.SaveChanges();
 
-                    tx.Commit();
+                    string htmlFactura;
+
+                    if (tipoFactura == "A")
+                    {
+                       htmlFactura = FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente);
+                    }
+                    else
+                    {
+                       htmlFactura = FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
+                    }
+
+                    byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
+
+                    //Guardado del PDF en la ruta seleccionada
+                    string nombreArchivo = $"Factura_{numFactura}.pdf";
+                    string rutaRelativa = $"~/Facturas/{nombreArchivo}";
+                    string rutaDelPdfGenerado = Server.MapPath(rutaRelativa);
+                    Directory.CreateDirectory(Path.GetDirectoryName(rutaDelPdfGenerado));
+                    System.IO.File.WriteAllBytes(rutaDelPdfGenerado, pdfBytes);
+
                     Task.Run(() =>
                     {
                         CorreoHelper.EnviarCorreoConfirmacionPedido(
                             emailDestino: cliente.e_mail,
                             nombreCliente: cliente.nombre,
                             numeroFactura: numFactura,
-                            total: totalCalculado
+                            total: totalCalculado,
+                            rutaPdf: rutaDelPdfGenerado
+
                         );
                     });
+
+                    tx.Commit();
 
                     return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
 
@@ -613,11 +638,20 @@ namespace Eterea_Parfums_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                    tx.Rollback();
-                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta." + ex;
+                    try
+                    {
+                        tx.Rollback();
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        // Loguear el error del rollback sin interrumpir el flujo original
+                        System.Diagnostics.Debug.WriteLine("Error al hacer rollback: " + rollbackEx.Message);
+                    }
+                    System.Diagnostics.Debug.WriteLine("Error al procesar la venta: " + ex.Message);
+                    TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta ";
                     return RedirectToAction("Index", "Carrito");
-
                 }
+
             }
         }
 
@@ -653,13 +687,13 @@ namespace Eterea_Parfums_Web.Controllers
             if (!string.IsNullOrEmpty(ultimo) && ultimo.Length > 1)
             {
                 // Ej.: “A00000123”  →  “00000123”
-                int.TryParse(ultimo.Substring(1), out correlativo);
+                int.TryParse(ultimo.Substring(4), out correlativo);
             }
 
             correlativo += 1;
 
-            // Devuelve “A00000124” ó “B00000001”
-            return $"{tipo}{correlativo:D8}";
+            // 0002 por el numero de venta de la web
+            return $"0001{correlativo:D8}";
         }
         
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)

@@ -8,7 +8,7 @@ namespace Eterea_Parfums_Web.Helpers
 {
     public static class CorreoHelper
     {
-        public static void EnviarCorreoConfirmacionPedido(string emailDestino, string nombreCliente, string numeroFactura, double total)
+        public static void EnviarCorreoConfirmacionPedido(string emailDestino, string nombreCliente, string numeroFactura, double total, string rutaPdf)
         {
             string asunto = "Confirmación de tu compra - Etérea Parfums";
             string mensaje = $"Hola {nombreCliente},\n\n" +
@@ -25,6 +25,13 @@ namespace Eterea_Parfums_Web.Helpers
                 mail.Subject = asunto;
                 mail.Body = mensaje;
                 mail.IsBodyHtml = false;
+
+                if (!string.IsNullOrEmpty(rutaPdf) && File.Exists(rutaPdf))
+                {
+                    Attachment adjunto = new Attachment(rutaPdf);
+                    adjunto.Name = $"Factura_{numeroFactura}.pdf";
+                    mail.Attachments.Add(adjunto);
+                }
 
                 var smtp = new SmtpClient("smtp.gmail.com", 587)
                 {
@@ -51,6 +58,7 @@ namespace Eterea_Parfums_Web.Helpers
                 mail.Subject = asunto;
                 mail.Body = cuerpo;
                 mail.IsBodyHtml = false;
+
 
                 var smtp = new SmtpClient("smtp.gmail.com", 587)
                 {
