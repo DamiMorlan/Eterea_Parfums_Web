@@ -6,7 +6,7 @@
     <link href="~/Content/StyleRegistro.css" rel="stylesheet" type="text/css" />
 }
 
-@model Eterea_Parfums_Web.Models.cliente
+@model Eterea_Parfums_Web.ViewModels.FormularioClienteViewModel
 
 
 <div class="register-container">
@@ -16,129 +16,185 @@
     </div>
 
     <h2 id="title" class="text-center">@ViewBag.Title</h2>
-    <hr class="separator">
+    <!--<hr class="separator">-->
     @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="row">
             <div class="col-md-6">
+                <!-- Nombre -->
                 <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger" })
+                    <label for="Nombre">Nombre:</label>
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Apellido -->
                 <div class="form-group">
-                    <label for="apellido">Apellido:</label>
-                    @Html.TextBoxFor(m => m.apellido, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.apellido, "", new { @class = "text-danger" })
+                    <label for="Apellido">Apellido:</label>
+                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Usuario -->
                 <div class="form-group">
-                    <label for="usuario">Nombre de usuario:</label>
-                    @Html.TextBoxFor(m => m.usuario, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.usuario, "", new { @class = "text-danger" })
+                    <label for="Usuario">Nombre de usuario:</label>
+                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Clave -->
                 <div class="form-group">
-                    <label for="clave">Contraseña:</label>
-                    <input type="password" id="clave" name="clave" class="form-control" required />
+                    <label for="Clave">Contraseña:</label>
+                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Email -->
                 <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    @Html.TextBoxFor(m => m.e_mail, new { @class = "form-control", type = "email", required = "required" })
-                    @Html.ValidationMessageFor(m => m.e_mail, "", new { @class = "text-danger" })
-                    @Html.ValidationMessage("email")
+                    <label for="Email">Email:</label>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- DNI -->
                 <div class="form-group">
-                    <label for="dni">DNI:</label>
-                    @Html.TextBoxFor(m => m.dni, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.dni, "", new { @class = "text-danger" })
+                    <label for="Dni">DNI:</label>
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Fecha Nacimiento -->
                 <div class="form-group">
-                    <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-                    <input type="date" id="fechaNacimiento" name="fecha_nacimiento" class="form-control" required />
-                    @Html.ValidationMessage("fechaNacimiento")
+                    <label for="FechaNacimiento">Fecha de Nacimiento:</label>
+                    @Html.TextBoxFor(m => m.FechaNacimiento, "{0:yyyy-MM-dd}", new
+                    {
+                        @class = "form-control",
+                        type = "date"
+                    })
+                    @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Celular -->
                 <div class="form-group">
-                    <label for="celular">Celular:</label>
-                    @Html.TextBoxFor(m => m.celular, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.celular, "", new { @class = "text-danger" })
+                    <label for="Celular">Celular:</label>
+                    @Html.TextBoxFor(m => m.Celular, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="col-md-6">
+                <!-- País -->
                 <div class="form-group">
-                    <label for="pais">País:</label>
-                    <select id="pais" name="pais_id" class="form-control" required>
-                        <option value="">Seleccione un país</option>
-                        @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
-                        {
-                            <option value="@pais.Value">@pais.Text</option>
-                        }
-                    </select>
+                    <label for="PaisId">País:</label>
+                    @Html.DropDownListFor(
+                        m => m.PaisId,
+                        ViewBag.Paises as List<SelectListItem>,
+                        "Seleccione un país",
+                        new
+                             {
+                            @class = "form-control",
+                            id = "pais",
+                            data_selected = Model.PaisId
+                        })
+                    @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Provincia -->
                 <div class="form-group">
-                    <label for="provincia">Provincia:</label>
-                    <select id="provincia" name="provincia_id" class="form-control" required>
-                        <option value="">Seleccione una provincia</option>
-                    </select>
+                    <label for="ProvinciaId">Provincia:</label>
+                    @Html.DropDownListFor(
+                        m => m.ProvinciaId,
+                        new List<SelectListItem>(), // Se completa por JS
+                        "Seleccione una provincia",
+                        new
+                             {
+                            @class = "form-control",
+                            id = "provincia",
+                            data_selected = Model.ProvinciaId
+                        })
+                    @Html.ValidationMessageFor(m => m.ProvinciaId, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Localidad -->
                 <div class="form-group">
-                    <label for="localidad">Localidad:</label>
-                    <select id="localidad" name="localidad_id" class="form-control" required>
-                        <option value="">Seleccione una localidad</option>
-                    </select>
+                    <label for="LocalidadId">Localidad:</label>
+                    @Html.DropDownListFor(
+                        m => m.LocalidadId,
+                        new List<SelectListItem>(), // Se completa por JS
+                        "Seleccione una localidad",
+                        new
+                             {
+                            @class = "form-control",
+                            id = "localidad",
+                            data_selected = Model.LocalidadId
+                        })
+                    @Html.ValidationMessageFor(m => m.LocalidadId, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Calle -->
                 <div class="form-group">
-                    <label for="calle">Calle:</label>
-                    <select id="calle" name="calle_id" class="form-control" required>
-                        <option value="">Seleccione una calle</option>
-                    </select>
+                    <label for="CalleId">Calle:</label>
+                    @Html.DropDownListFor(
+                        m => m.CalleId,
+                        new List<SelectListItem>(), // Se completa por JS
+                        "Seleccione una calle",
+                        new
+                             {
+                            @class = "form-control",
+                            id = "calle",
+                            data_selected = Model.CalleId
+                        })
+                    @Html.ValidationMessageFor(m => m.CalleId, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Numeración -->
                 <div class="form-group">
-                    <label for="numeracion">Numeración:</label>
-                    @Html.TextBoxFor(m => m.numeracion_calle, new { @class = "form-control", required = "required" })
-                    @Html.ValidationMessageFor(m => m.numeracion_calle, "", new { @class = "text-danger" })
+                    <label for="NumeracionCalle">Numeración:</label>
+                    @Html.TextBoxFor(m => m.NumeracionCalle, new { @class = "form-control", required = "required" })
+                    @Html.ValidationMessageFor(m => m.NumeracionCalle, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Piso -->
                 <div class="form-group">
-                    <label for="piso">Piso:</label>
-                    @Html.TextBoxFor(m => m.piso, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.piso, "", new { @class = "text-danger" })
+                    <label for="Piso">Piso:</label>
+                    @Html.TextBoxFor(m => m.Piso, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Piso, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Departamento -->
                 <div class="form-group">
-                    <label for="departamento">Departamento:</label>
-                    @Html.TextBoxFor(m => m.departamento, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.departamento, "", new { @class = "text-danger" })
+                    <label for="Departamento">Departamento:</label>
+                    @Html.TextBoxFor(m => m.Departamento, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Departamento, "", new { @class = "text-danger" })
                 </div>
 
+                <!-- Código Postal -->
                 <div class="form-group">
-                    <label for="codigopostal">Código Postal:</label>
-                    @Html.TextBoxFor(m => m.codigo_postal, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.codigo_postal, "", new { @class = "text-danger" })
+                    <label for="CodigoPostal">Código Postal:</label>
+                    @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CodigoPostal, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="comentarios">Comentarios del domicilio:</label>
-                @Html.TextAreaFor(m => m.comentarios_domicilio, new { @class = "form-control", rows = 3, maxlength = 50 })
-                @Html.ValidationMessageFor(m => m.comentarios_domicilio, "", new { @class = "text-danger" })
+            <!-- Comentarios -->
+            <div class="form-group col-md-12">
+                <label for="ComentariosDomicilio">Comentarios del domicilio:</label>
+                @Html.TextAreaFor(m => m.ComentariosDomicilio, new { @class = "form-control", rows = 3, maxlength = 50 })
+                @Html.ValidationMessageFor(m => m.ComentariosDomicilio, "", new { @class = "text-danger" })
+            </div>
+
+            <hr class="separator" />
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn-register">Registrarse</button>
             </div>
         </div>
-
-        <hr class="separator">
-
-        <button type="submit" class="btn-login btn-centrado">Registrarse</button>
     }
 </div>
 
 <div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+}
