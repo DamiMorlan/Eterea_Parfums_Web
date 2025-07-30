@@ -32,25 +32,35 @@
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            @{
+                var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+                var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+            }
 
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        @Html.ActionLink("Perfumes", "Index", "Perfume", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Perfumes", "Index", "Perfume", null,
+                            new { @class = "nav-link " + (currentController == "Perfume" ? "active" : "") })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Promociones", "Index", "Promocion", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Promociones", "Index", "Promocion", null,
+                            new { @class = "nav-link " + (currentController == "Promocion" ? "active" : "") })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Blog", "Blog", "Home", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Blog", "Blog", "Home", null,
+                            new { @class = "nav-link " + (currentAction == "Blog" ? "active" : "") })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Nosotros", "About", "Home", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Nosotros", "About", "Home", null,
+                            new { @class = "nav-link " + (currentAction == "About" ? "active" : "") })
                     </li>
                     <li class="nav-item">
-                        @Html.ActionLink("Contacto", "Index", "Contact", null, new { @class = "nav-link" })
+                        @Html.ActionLink("Contacto", "Index", "Contact", null,
+                            new { @class = "nav-link " + (currentController == "Contact" ? "active" : "") })
                     </li>
                 </ul>
+
 
                 <ul class="navbar-nav">
                     @if (Session["usuarioLogueado"] != null)
