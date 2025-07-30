@@ -33,7 +33,11 @@
             <hr class="separator" />
 
             <button type="submit" class="btn-login">Iniciar sesión</button>
-            <div class="error-message">@ViewData["Error"]</div>
+
+            @if (!string.IsNullOrEmpty(ViewData["Error"] as string))
+            {
+                <div class="error-message">@ViewData["Error"]</div>
+            }
         </form>
 
         <hr class="separator" />
