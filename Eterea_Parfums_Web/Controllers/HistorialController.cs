@@ -92,7 +92,7 @@ namespace Eterea_Parfums_Web.Controllers
                     if (perfumeData == null) continue;
 
                     var marca = db.marca.FirstOrDefault(m => m.id == perfumeData.marca_id);
-                    var promocion = d.promocion_id != null
+                    var promocion = d.promocion_id != 0
                                     ? db.promocion.FirstOrDefault(promo => promo.id == d.promocion_id)
                                     : null;
 

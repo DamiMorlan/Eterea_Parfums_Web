@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Data.Entity;
 using Eterea_Parfums_Web.Helpers;
 using System.IO;
-
+using System.Diagnostics;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -282,10 +282,10 @@ namespace Eterea_Parfums_Web.Controllers
 
 
 
-        public ActionResult PagoExitoso(int numOrden, double totalFibal)
+        public ActionResult PagoExitoso(int numOrden, double totalFinal)
         {
             ViewBag.NumOrden = numOrden;
-            ViewBag.TotalFibal = totalFibal;
+            ViewBag.TotalFinal = totalFinal;
             return View();
         }
 
@@ -488,7 +488,7 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)) 
+                    if (Math.Abs(totalCalculado - totalFinal) > 0.01)
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
@@ -632,7 +632,7 @@ namespace Eterea_Parfums_Web.Controllers
 
                     tx.Commit();
 
-                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
+                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFinal = totalFinal });
 
 
                 }
