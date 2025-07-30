@@ -12,7 +12,8 @@ namespace Eterea_Parfums_Web
                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery.validate*",
+                        "~/Scripts/jquery.validate.unobtrusive.js"));
 
             // Utilice la versión de desarrollo de Modernizr para desarrollar y obtener información sobre los formularios.  De esta manera estará
             // para la producción, use la herramienta de compilación disponible en https://modernizr.com para seleccionar solo las pruebas que necesite.
@@ -28,8 +29,6 @@ namespace Eterea_Parfums_Web
             // Script para mostrar las provincias segun el pais seleccionado
             bundles.Add(new ScriptBundle("~/bundles/customScripts").Include(
             "~/Scripts/custom/Dropdown.js"));
-
-
         }
     }
 }
