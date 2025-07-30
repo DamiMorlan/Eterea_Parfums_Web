@@ -6,14 +6,15 @@
     --rosa-suave: rgb(250, 236, 239);
     --beige: #f5f5dc;
     --moka: #b89b82;
-    
+    --rosa-claro-contenedor: #fef6f8;
+    --flechas: rgb(209, 167, 180);
 }
 
 
 
 body {
+    background-color: var(--rosa-suave);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #fef6f8;
     color: #5a2a39;
 }
 
@@ -226,10 +227,9 @@ hr {
 }
 
 .box-perfume-volumen p {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #7a4b53;
-    font-family: 'Segoe UI', sans-serif;
+    margin-right: 10px;
+    font-weight: 500;
+    color: var(--rosa-profundo);
 }
 
 
@@ -408,3 +408,583 @@ select {
     display: block;
     font-weight: 600;
 }
+
+
+/* ✅ Carrusel de promociones full width */
+#myCarousel {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+}
+
+    /* ✅ Imagenes del carrusel: pantalla completa, más altura */
+    #myCarousel .carousel-inner img {
+        width: 100%;
+        height: 450px; /* o el alto que prefieras */
+        object-fit: cover;
+        display: block;
+    }
+
+/* ✅ Flechas del carrusel más grandes y con sombra */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 100% 100%;
+    width: 3rem;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+}
+
+/* Estilo para las flechas con Font Awesome */
+.flecha-carousel {
+    font-size: 3rem;
+    color: var(--flechas);
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .flecha-carousel:hover {
+        transform: scale(1.1);
+    }
+
+/* Estilo para las flechas promos banner */
+.flecha-carousel-banner {
+    font-size: 3rem;
+    color: white;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .flecha-carousel-banner:hover {
+        transform: scale(1.1);
+    }
+
+/* ----- Cards generales ----- */
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+    .card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        transform: translateY(-6px);
+    }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.custom-img {
+    height: 140px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.card-body {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+}
+
+/* ----- Botones personalizados ----- */
+.btn-eterea {
+    background-color: var(--rosa-profundo);
+    color: white;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-eterea:hover {
+        background-color: rgb(189, 147, 160);
+        transform: scale(1.02);
+        color: white;
+    }
+
+
+
+/* ----- Offcanvas (carrito lateral) ----- */
+#carrito-offcanvas {
+    position: fixed;
+    top: 20px;
+    right: -350px;
+    width: 350px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    padding: 20px;
+    z-index: 2000;
+    transition: right 0.5s ease-in-out;
+}
+
+    #carrito-offcanvas.show {
+        right: 20px;
+    }
+
+.offcanvas-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+    .offcanvas-contenido img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .offcanvas-contenido p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+h2 {
+    color: var(--rosa-profundo); /* color igual al filtro */
+    font-weight: bold;
+}
+
+
+
+/* ----- Carrusel y cards de perfumes más vendidos ----- */
+#carouselMasVendidos {
+    position: relative;
+}
+
+    #carouselMasVendidos .carousel-control-prev,
+    #carouselMasVendidos .carousel-control-next {
+        width: 3rem;
+        height: 3rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+    }
+
+    #carouselMasVendidos .carousel-control-prev {
+        left: -3rem; /* mueve hacia afuera */
+    }
+
+    #carouselMasVendidos .carousel-control-next {
+        right: -3rem; /* mueve hacia afuera */
+    }
+
+    #carouselMasVendidos .carousel-inner .row {
+        margin-left: 0;
+        margin-right: 0;
+        /* margen interno para que no pegue con las flechas */
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        z-index: 20; /* cards arriba de flechas */
+    }
+
+
+    #carouselMasVendidos .card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        min-height: 300px;
+    }
+
+        #carouselMasVendidos .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        #carouselMasVendidos .card img.custom-img {
+            height: 140px;
+            object-fit: cover;
+            margin-top: 20px;
+        }
+
+
+.container {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+#myCarousel,
+#carouselMarcas,
+#carouselPerfumesEnPromo,
+#carouselMasVendidos {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container-fluid.p-0 {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+
+.btn-tamanio {
+    background-color: var(--rosa-suave2);
+    border: 1px solid;
+    border-radius: 20px;
+    margin: 2px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-tamanio:hover {
+        background-color: var(--rosa-medio);
+        color: white;
+    }
+
+    .btn-tamanio.active {
+        background-color: var(--rosa-profundo);
+        color: white;
+        font-weight: bold;
+    }
+
+.selector-tamanios .btn-tamanio {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    min-width: 55px;
+    text-align: center;
+}
+
+    .selector-tamanios .btn-tamanio.active,
+    .selector-tamanios .btn-tamanio:hover {
+        background-color: var(--rosa-profundo);
+        color: white;
+    }
+
+/* ----- Precio con promoción ----- */
+.precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* ----- Leyenda de promoción ----- */
+.leyenda-promocion {
+    font-size: 1rem;
+    background-color: var(--rosa-medio);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    min-width: 120px;
+    text-align: center;
+    display: inline-block;
+}
+
+.promo-placeholder {
+    min-height: 1.2rem; /* ajusta este valor según el alto que necesites */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 600;
+}
+
+
+.promo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.promo-content {
+    flex: 1;
+    text-align: center;
+}
+
+.promo-display .precio-original {
+    color: #888;
+    text-decoration: line-through;
+    margin-right: 8px;
+    font-size: 0.95rem;
+}
+
+.promo-display .precio-descuento {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.btn-promo-prev,
+.btn-promo-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1rem;
+    color: white;
+    background-color: var(--rosa-profundo);
+    border: none;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+    .btn-promo-prev:hover,
+    .btn-promo-next:hover {
+        transform: scale(1.1);
+        background-color: var(--rosa-medio);
+    }
+
+
+    .btn-promo-prev:focus,
+    .btn-promo-next:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .btn-promo-prev:active,
+    .btn-promo-next:active {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+.promo-container.promo-sin-promocion {
+    padding: 12px 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+
+    .promo-container.promo-sin-promocion .leyenda-promocion {
+        display: inline-block;
+        font-size: 0.85rem;
+        color: #666;
+        background-color: #f5f5f5;
+        padding: 4px 8px;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 160px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+
+.bg-marcas {
+    background-color: var(--rosa-claro-contenedor);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 3.5rem; /* más espacio para flechas */
+    padding-right: 3.5rem;
+    position: relative;
+}
+
+.perfume-detalle-contenedor {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+    .perfume-detalle-contenedor {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .perfume-detalle-contenedor {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+.perfume-detalle-fondo {
+    background-color: var(--rosa-claro-contenedor); /* Rosa suave */
+    border-radius: 1rem; /* Esquinas redondeadas */
+    padding: 2rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Sombra leve */
+}
+
+.detalle-con-fondo {
+    background-color: var(--rosa-suave); /* o cualquier color personalizado */
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-left: 1rem;
+}
+
+.fondo-especificaciones {
+    background-color: var(--rosa-suave); /* o el color que prefieras */
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+.linea-tamanios {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Por si hay muchos tamaños */
+    gap: 0.5rem;
+}
+
+    .linea-tamanios p {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .linea-tamanios a {
+        padding: 0.3rem 0.6rem;
+        background-color: var(--rosa-suave);
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .linea-tamanios a:hover {
+            background-color: var(--rosa-profundo);
+            color: white;
+        }
+
+        .linea-tamanios a.select {
+            background-color: var(--rosa-profundo);
+            color: white;
+            font-weight: bold;
+        }
+
+/* Ajustar altura de la imagen principal */
+.swiper.gallery-top {
+    height: 400px; /* Ajustá según lo que necesites */
+}
+
+    .swiper.gallery-top .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+        .swiper.gallery-top .swiper-slide img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+/* Contenedor con flex para alinear cantidad y mensaje */
+.contenedor-stock-cantidad {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Reutilizamos clases anteriores */
+.stock-message {
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+}
+
+    .stock-message.ultimo {
+        color: #a94442;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
+    .stock-message.sin-stock {
+        margin-top: 1rem;
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
+.selector-cantidad label {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.selector-cantidad select {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s;
+}
+
+    .selector-cantidad select:focus {
+        border-color: var(--rosa-medio);
+        outline: none;
+    }
+
+
+/* datos abajo de las imagenes*/
+/* Contenedor general con fondo y bordes redondeados */
+.card-box-info {
+    background-color: var(--rosa-suave); /* Fondo suave */
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+    padding: 4.5rem 0.5rem;
+    margin: 1.5rem 0;
+}
+
+/* Espacio interno por caja */
+.box-info {
+    padding: 0 1rem;
+}
+
+    /* Íconos más estilizados */
+    .box-info i {
+        color: var(--rosa-profundo); /* O un color distintivo */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Títulos */
+    .box-info p {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+        color: #333;
+    }
+
+    /* Enlaces */
+    .box-info a {
+        font-size: 0.85rem;
+        color: var(--rosa-profundo);
+    }
+
+        .box-info a:hover {
+            text-decoration: underline;
+        }

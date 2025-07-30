@@ -325,7 +325,9 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Index");
 
             // Traer y procesar stock completo
-            var stock = db.stock.ToList();
+            // 1. Obtener stock completo
+            var stock = db.stock.Where(s => s.sucursal_id == 1).ToList();
+
             var stockDisponiblePorPerfume = stock
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(
@@ -360,6 +362,7 @@ namespace Eterea_Parfums_Web.Controllers
             // Perfumes relacionados base
             var perfumesRelacionadosQuery = db.perfume
                 .Where(p => p.id != perfume.id &&
+                            p.nombre != perfume.nombre && // Agregamos esta condición
                             p.activo &&
                             p.nota_con_tipo_de_nota.Any(n => notasComparar.Contains(n.nota_id)) &&
                             p.tipo_de_aroma.Any(a => aromasComparar.Contains(a.id)))
@@ -370,97 +373,95 @@ namespace Eterea_Parfums_Web.Controllers
                 .GroupBy(p => p.nombre)
                 .Select(g =>
                 {
-                    var presentacionesEnMemoria = db.perfume
-                     .Where(x => x.nombre == g.Key && x.activo)
-                     .ToList();
-                    var presentaciones = presentacionesEnMemoria
+                    var presentaciones = g
                         .Where(p => stockDisponiblePorPerfume.ContainsKey(p.id))
                         .Select(p =>
                         {
                             var promocionesActivas = p.promocion
-                                .Where(pr => pr.activo && pr.id != 1 &&
-                                             pr.fecha_inicio <= DateTime.Now &&
-                                             pr.fecha_fin >= DateTime.Now)
-                                .ToList();
+                            .Where(pr => pr.activo && pr.id != 1 &&
+                                         pr.fecha_inicio <= DateTime.Now &&
+                                         pr.fecha_fin >= DateTime.Now)
+                            .ToList();
 
-                            var promo10 = promocionesActivas.FirstOrDefault(pr => pr.descuento == 10);
-                            var promoPorCantidad = promocionesActivas.FirstOrDefault(pr => pr.descuento > 10);
+                            var listaPromos = new List<PromocionDetalleViewModel>();
 
-                            string leyendaPromo = null;
-                            double? precioDescuento = null;
-                            bool tienePromo = false;
-
-                            if (promoPorCantidad != null)
+                            foreach (var promo in promocionesActivas)
                             {
-                                tienePromo = true;
-                                if (promoPorCantidad.descuento * 2 == 100)
+                                string leyenda = null;
+                                double? precioConDescuento = null;
+
+                                if (promo.descuento * 2 == 100)
                                 {
-                                    leyendaPromo = "Promoción 2x1";
-                                    precioDescuento = Math.Round(p.precio_en_pesos * 0.5, 2);
+                                    leyenda = "Promoción <br> 2x1";
+                                    precioConDescuento = Math.Round(p.precio_en_pesos * 0.5, 2);
                                 }
-                                else
+                                else if (promo.descuento == 10)
                                 {
-                                    var descuento = promoPorCantidad.descuento;
+                                    leyenda = "Promoción <br> 10% OFF";
+                                    precioConDescuento = Math.Round(p.precio_en_pesos * 0.9, 2);
+                                }
+                                else if (promo.descuento > 10)
+                                {
+                                    var descuento = promo.descuento;
                                     var precio2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
-                                    precioDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
-                                    leyendaPromo = $"Promoción {descuento * 2}% en la segunda unidad";
+                                    precioConDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
+                                    leyenda = $"Promoción <br> {descuento * 2}% segunda unidad";
+                                }
+
+                                if (precioConDescuento.HasValue)
+                                {
+                                    listaPromos.Add(new PromocionDetalleViewModel
+                                    {
+                                        LeyendaPromocion = leyenda,
+                                        PrecioConDescuento = precioConDescuento,
+                                        PrecioOriginal = p.precio_en_pesos
+                                    });
                                 }
                             }
-                            else if (promo10 != null)
-                            {
-                                tienePromo = true;
-                                leyendaPromo = "Promoción 10% OFF";
-                                precioDescuento = Math.Round(p.precio_en_pesos * 0.9, 2);
-                            }
 
-                            return new PerfumeDto
+                            return new PerfumeRelacionadoDto
                             {
                                 Id = p.id,
                                 Ml = p.presentacion_ml,
                                 Precio = p.precio_en_pesos,
-                                TienePromocion = tienePromo,
-                                LeyendaPromocion = leyendaPromo,
-                                PrecioConDescuento = precioDescuento,
                                 StockDisponible = stockDisponiblePorPerfume[p.id],
                                 Imagen = p.imagen1,
                                 Marca = p.marca.nombre,
+                                Promociones = listaPromos,
+                                TienePromocion = listaPromos.Any(),// si querés mantenerlo
                                 NotasComunes = p.nota_con_tipo_de_nota
-                                    .Where(n => (n.tipo_de_nota_id == 2 || n.tipo_de_nota_id == 3) &&
-                                                notasComparar.Contains(n.nota_id))
-                                    .Select(n => n.nota_id)
-                                    .Distinct()
-                                    .Count(),
+                                     .Where(n => (n.tipo_de_nota_id == 2 || n.tipo_de_nota_id == 3) &&
+                                                 notasComparar.Contains(n.nota_id))
+                                     .Select(n => n.nota_id)
+                                     .Distinct()
+                                     .Count(),
                                 AromasComunes = p.tipo_de_aroma
-                                    .Where(a => aromasComparar.Contains(a.id))
-                                    .Select(a => a.id)
-                                    .Distinct()
-                                    .Count()
+                                     .Where(a => aromasComparar.Contains(a.id))
+                                     .Select(a => a.id)
+                                     .Distinct()
+                                     .Count()
                             };
                         })
                         .OrderBy(p => p.Ml)
                         .ToList();
 
-                    var principal = presentaciones.FirstOrDefault();
+                    var presentacionPrincipal = presentaciones.First(); // Por defecto la menor
 
-                    return new PerfumeRelacionadoDto
+                    return new PerfumeDto
                     {
-                        Id = principal.Id,
+                        Id = presentacionPrincipal.Id,
                         Nombre = g.Key,
-                        Imagen = principal?.Imagen,
-                        Marca = principal?.Marca,
-                        Precio = principal?.Precio ?? 0,
-                        Presentacion = principal?.Ml ?? 0,
-                        StockDisponibleParaWeb = principal?.StockDisponible ?? 0,
-                        TienePromocion = principal?.TienePromocion ?? false,
-                        LeyendaPromocion = principal?.LeyendaPromocion,
-                        PrecioConDescuento = principal?.PrecioConDescuento,
+                        Imagen = presentacionPrincipal.Imagen,
+                        Marca = presentacionPrincipal.Marca,
+                        Precio = presentacionPrincipal.Precio,
+
+                        TienePromocion = presentacionPrincipal.TienePromocion,
+
+                        Presentacion = presentacionPrincipal.Ml,
+                        StockDisponibleParaWeb = presentacionPrincipal.StockDisponible,
                         Presentaciones = presentaciones
                     };
                 })
-                .OrderByDescending(p => p.Presentaciones.FirstOrDefault()?.NotasComunes ?? 0)
-                .ThenByDescending(p => p.Presentaciones.FirstOrDefault()?.AromasComunes ?? 0)
-                .ThenBy(p => p.Presentacion)
-                .Take(10)
                 .ToList();
 
             // Armar ViewModel

@@ -16,294 +16,317 @@
 
 
 
-<div class="container my-5">
-    <nav aria-label="breadcrumb">
-        <div class="breadcrumb-custom">
-            <ul class="breadcrumb-nav">
-                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a></li>
-                <li><span>&gt;</span> <a href="@Url.Action("Index", "Perfume")">Perfumes</a></li>
-                <li>
-                    <span>&gt;</span>
-                    <a href="@Url.Action("Index", new { generosSeleccionados = Model.Perfume.genero.genero1 })">
-                        @Model.Perfume.genero.genero1
-                    </a>
-                </li>
-                <li><span>&gt;</span> <span>@Model.Perfume.nombre</span></li>
-            </ul>
-        </div>
-    </nav>
+<div class="container-fluid p-0">
 
-    <div class="row gap-0 mt-4">
-        <div class="col-sm-12 col-md-7 row text-center">
-            <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
-            <div class="col-md-4 col-lg-3 col-xl-3 d-none d-md-block">
-                <div class="swiper gallery-thumbs-vertical">
-                    <div class="swiper-wrapper bg-white mx-2">
-                        <div class="swiper-slide">
-                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+    <div class="perfume-detalle-contenedor">
+        <div class="perfume-detalle-fondo mt-4 mb-5">
 
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="row gap-0">
 
-            <!-- IMAGEN PRINCIPAL -->
-            <div class="col-md-8 col-lg-9 col-xl-9 col-12">
-                <div class="swiper gallery-top bg-white rounded shadow-sm">
-                    <div class="swiper-wrapper me-0">
-                        <div class="swiper-slide text-center me-0">
-                            <div class="swiper-zoom-container me-0">
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
-                            </div>
-                        </div>
-                        <div class="swiper-slide text-center me-0">
-                            <div class="swiper-zoom-container">
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-
-                <!-- MINIATURAS EN MODO MÓVIL (horizontal) -->
-                <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
-
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="">
-                <div class="row text-center px-2 py-3 card-box-info">
-                    <!-- Item 1 -->
-                    <div class="col-md-4 border-end box-info">
-                        <div>
-                            <i class="fas fa-credit-card fa-2x mb-2"></i>
-                            <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
-                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalPago">Ver más ></a>
-                        </div>
-                    </div>
-                    <!-- Item 2 -->
-                    <div class="col-md-4 border-end box-info">
-                        <div>
-                            <i class="fas fa-truck fa-2x mb-2"></i>
-                            <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
-                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalEnvio">Ver más ></a>
-                        </div>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="col-md-4 box-info">
-                        <div>
-                            <i class="fas fa-sync-alt fa-2x mb-2"></i>
-                            <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
-                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCambios">Ver más ></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-
-        <!-- Detalles del perfume -->
-        <section class="detalle mb-md-5 col-sm-12 col-md-5 ps-3 px-3 text-center text-md-start">
-            <!-- Encabezados de perfume -->
-            <h1 class="fs-5 text-uppercase text-muted mb-1">@Model.Perfume.marca.nombre</h1>
-
-            <h2 class="fs-2 mb-1 fw-semibold">
-                @Model.Perfume.nombre
-            </h2>
-            @{
-                var precio = Model.Perfume.precio_en_pesos;
-                var parteEntera = Math.Truncate(precio);
-                var precioFormateado = parteEntera.ToString("#,##0");
-            }
-            <h3 class="fs-3 fw-bold texte-grey mt-2">
-                $@precioFormateado
-            </h3>
-
-
-            <div class="box-perfume-volumen">
-                <!-- Título de la sección de tamaños -->
-                <p class="mt-2">
-                    Tamaño
-                </p>
-                @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
-                {
-                    foreach (var p in Model.perfumesIgualesEnPresentacioMl)
-                    {
-                        if (p.presentacion_ml != Model.Perfume.presentacion_ml)
-                        {
-                            <a href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
-                        }
-                        else
-                        {
-                            <a class="select" href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
-                        }
-                    }
-                }
-            </div>
-
-            <hr />
-
-            @if (@Model.StockDisponibleParaWeb == 1)
-            {
-                <p class="mt-4 text-danger fw-bold">¡Último disponible!</p>
-            }
-
-            @if (@Model.StockDisponibleParaWeb != 0)
-            {
-                <div class="my-3">
-                    <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
-                    <select id="cantidad-@Model.Perfume.id">
-                        @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
-                        {
-                            <option value="@i">@i</option>
-
-                        }
-                    </select>
-                </div>
-
-            }
-            else
-            {
-                <p class="mt-4 text-danger fw-bold">Sin stock</p>
-            }
-
-            <hr />
-
-            @if (@Model.StockDisponibleParaWeb == 0)
-            {
-                <button class="btn-eterea agregar-al-carrito" disabled data-id="@Model.Perfume.id">
-                    <i class="fas fa-cart-plus"></i> Agregar al carrito
-                </button>
-            }
-            else
-            {
-                <button class="mt-2 btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
-                    <i class="fas fa-cart-plus"></i> Agregar al carrito
-                </button>
-            }
-
-            <p class="envio mt-4">
-                <i class="fa fa-truck me-2"></i>
-                <span class="">Llega GRATIS en hasta 1 día hábil</span>
-            </p>
-            <!-- Separador personalizado -->
-            <hr class="d-md-none mt-4" />
-
-
-            @{
-                var promosActivas = Model.Perfume.promocion?
-                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
-                    .ToList();
-            }
-
-            @if (promosActivas != null && promosActivas.Any())
-            {
-                <div class="promo-box mt-2 py-3 rounded shadow-sm text-center text-md-start">
-                    <ul class="list-unstyled ms-4">
-                        @foreach (var promo in promosActivas)
-                        {
-                            <li class="promo-item">
-
-                                <p class="mt-2">
-                                    <i class="fas fa-tags me-2"></i>
-                                    <span class="promo-title">¡@promo.nombre!</span>
-                                </p>
-
-                                @promo.descripcion
+                <!-- 1 -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <div class="breadcrumb-custom">
+                        <ul class="breadcrumb-nav">
+                            <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a></li>
+                            <li><span>&gt;</span> <a href="@Url.Action("Index", "Perfume")">Perfumes</a></li>
+                            <li>
+                                <span>&gt;</span>
+                                <a href="@Url.Action("Index", new { generosSeleccionados = Model.Perfume.genero.genero1 })">
+                                    @Model.Perfume.genero.genero1
+                                </a>
                             </li>
-                        }
-
-                    </ul>
-                </div>
-                <!-- Separador personalizado -->
-                <hr class="d-md-none mt-4" />
-            }
-
-
-        </section>
-    </div>
-    <!--ESPECIFICACIONES  -->
-    <div class="mt-md-5">
-
-        <div class="w3-row">
-            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
-                <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
-            </a>
-            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
-                <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
-            </a>
-        </div>
-
-        <div id="detalle" class="w3-container box mt-5" style="display:block">
-            <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
-        </div>
-
-        <div id="especificaciones" class="w3-container mt-5 box" style="display:none">
-            <div class="d-flex w-50">
-                <p class="fw-bold mb-0">Familia Olfativa:&nbsp;</p>
-                @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
-                {
-                    <p class="mb-0">
-                        @string.Join(", ", Model.Perfume.tipo_de_aroma.Select(a => a.nombre))
-                    </p>
-                }
-                else
-                {
-                    <p class="mb-0">No hay tipos de aroma asociados.</p>
-                }
-            </div>
-
-            <div class="d-flex">
-                @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
-                {
-                    <div>
-                        @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
-                            .GroupBy(n => n.tipo_de_nota.nombre))
-                        {
-                            <p class="mb-0">
-                                <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
-                            </p>
-                        }
+                            <li><span>&gt;</span> <span>@Model.Perfume.nombre</span></li>
+                        </ul>
                     </div>
-                }
-                else
-                {
-                    <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
-                }
-            </div>
-            <div class="d-flex">
-                <p class="fw-bold mb-0">Tipo:</p>
-                <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
-            </div>
-            <div class="d-flex">
-                <p class="fw-bold mb-0">Genero:</p>
-                <p class="ms-1 mb-0">@Model.Perfume.genero.genero1</p>
-            </div>
-            <div class="d-flex">
-                <p class="fw-bold mb-0">Año de lanzamiento:</p>
-                <p class="ms-1 mb-0">@Model.Perfume.anio_de_lanzamiento</p>
+                </nav>
+
+                <!-- 2 -->
+                <div class="col-sm-12 col-md-7 row text-center">
+
+                    <!-- 2.1 -->
+                    <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 d-none d-md-block">
+                        <div class="swiper gallery-thumbs-vertical">
+                            <div class="swiper-wrapper bg-white mx-2">
+                                <div class="swiper-slide">
+                                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- 2.2 -->
+                    <!-- IMAGEN PRINCIPAL -->
+                    <div class="col-md-8 col-lg-9 col-xl-9 col-12">
+                        <div class="swiper gallery-top bg-white rounded shadow-sm">
+                            <div class="swiper-wrapper me-0">
+                                <div class="swiper-slide text-center me-0">
+                                    <div class="swiper-zoom-container me-0">
+                                        <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
+                                    </div>
+                                </div>
+                                <div class="swiper-slide text-center me-0">
+                                    <div class="swiper-zoom-container">
+                                        <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+
+                        <!-- MINIATURAS EN MODO MÓVIL (horizontal) -->
+                        <div class="swiper gallery-thumbs-horizontal d-md-none mt-3">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen1 + ".jpg" })" class="img-fluid" />
+
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = Model.Perfume.imagen2 + ".jpg" })" class="img-fluid" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- 2.3 -->
+                    <div class="mt-2">
+                        <div class="row text-center px-2 py-3 card-box-info">
+                            <!-- Item 1 -->
+                            <div class="col-md-4 border-end box-info">
+                                <div>
+                                    <i class="fas fa-credit-card fa-2x mb-2"></i>
+                                    <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalPago">Ver más ></a>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="col-md-4 border-end box-info">
+                                <div>
+                                    <i class="fas fa-truck fa-2x mb-2"></i>
+                                    <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalEnvio">Ver más ></a>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="col-md-4 box-info">
+                                <div>
+                                    <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                                    <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCambios">Ver más ></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Detalles del perfume -->
+                <section class="detalle detalle-con-fondo mb-md-2 col-sm-12 col-md-5 text-center text-md-start">
+                    <!-- Encabezados de perfume -->
+                    <h1 class="fs-5 text-uppercase text-muted mb-1">@Model.Perfume.marca.nombre</h1>
+
+                    <h2 class="fs-2 mb-1 fw-semibold">
+                        @Model.Perfume.nombre
+                    </h2>
+                    @{
+                        var precio = Model.Perfume.precio_en_pesos;
+                        var parteEntera = Math.Truncate(precio);
+                        var precioFormateado = parteEntera.ToString("#,##0");
+                    }
+                    <h3 class="fs-3 fw-bold texte-grey mt-2">
+                        $@precioFormateado
+                    </h3>
+
+                    <hr />
+
+                    <div class="box-perfume-volumen">
+                        <div class="linea-tamanios">
+                            <p class="mt-2 mb-0">Tamaño: </p>
+                            @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
+                            {
+                                foreach (var p in Model.perfumesIgualesEnPresentacioMl)
+                                {
+                                    if (p.presentacion_ml != Model.Perfume.presentacion_ml)
+                                    {
+                                        <a href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="select" href='@Url.Action("Details", "Perfume", new { id = @p.id })'>@p.presentacion_ml ML</a>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    @if (Model.StockDisponibleParaWeb != 0)
+                    {
+                        <div class="contenedor-stock-cantidad">
+                            <div class="selector-cantidad">
+                                <label for="cantidad-@Model.Perfume.id">Cantidad: </label>
+                                <select id="cantidad-@Model.Perfume.id">
+                                    @for (int i = 1; i <= Model.StockDisponibleParaWeb; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
+
+                            @if (Model.StockDisponibleParaWeb == 1)
+                            {
+                                <p class="stock-message ultimo mt-3 ms-3">¡Último disponible!</p>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="stock-message sin-stock">Sin stock</p>
+                    }
+
+
+                    <hr />
+
+                    @if (@Model.StockDisponibleParaWeb == 0)
+                    {
+                        <button class="btn-eterea agregar-al-carrito" disabled data-id="@Model.Perfume.id">
+                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="mt-2 btn-eterea agregar-al-carrito" data-id="@Model.Perfume.id">
+                            <i class="fas fa-cart-plus"></i> Agregar al carrito
+                        </button>
+                    }
+
+                    <p class="envio mt-4">
+                        <i class="fa fa-truck me-2"></i>
+                        <span class="">Llega GRATIS en hasta 1 día hábil</span>
+                    </p>
+                    <!-- Separador personalizado -->
+                    <hr class="d-md-none mt-4" />
+
+
+                    @{
+                        var promosActivas = Model.Perfume.promocion?
+                            .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                            .ToList();
+                    }
+
+                    @if (promosActivas != null && promosActivas.Any())
+                    {
+                        <div class="promo-box mt-2 py-3 rounded shadow-sm text-center text-md-start">
+                            <ul class="list-unstyled ms-4">
+                                @foreach (var promo in promosActivas)
+                                {
+                                    <li class="promo-item">
+
+                                        <p class="mt-2">
+                                            <i class="fas fa-tags me-2"></i>
+                                            <span class="promo-title">¡@promo.nombre!</span>
+                                        </p>
+
+                                        @promo.descripcion
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                        <!-- Separador personalizado -->
+                        <hr class="d-md-none mt-4" />
+                    }
+
+
+                </section>
+
+
+                <!-- 3 -->
+                <!--ESPECIFICACIONES  -->
+                <div class="mt-md-1 fondo-especificaciones">
+
+                    <div class="w3-row">
+                        <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
+                            <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
+                        </a>
+                        <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
+                            <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
+                        </a>
+                    </div>
+
+                    <div id="detalle" class="w3-container box mt-5" style="display:block">
+                        <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
+                    </div>
+
+                    <div id="especificaciones" class="w3-container mt-2 box" style="display:none">
+                        <div class="d-flex w-50">
+                            <p class="fw-bold mb-0">Familia Olfativa:&nbsp;</p>
+                            @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
+                            {
+                                <p class="mb-0">
+                                    @string.Join(", ", Model.Perfume.tipo_de_aroma.Select(a => a.nombre))
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="mb-0">No hay tipos de aroma asociados.</p>
+                            }
+                        </div>
+
+                        <div class="d-flex">
+                            @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
+                            {
+                                <div>
+                                    @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
+                                        .GroupBy(n => n.tipo_de_nota.nombre))
+                                    {
+                                        <p class="mb-0">
+                                            <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
+                                        </p>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
+                            }
+                        </div>
+                        <div class="d-flex">
+                            <p class="fw-bold mb-0">Tipo:</p>
+                            <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
+                        </div>
+                        <div class="d-flex">
+                            <p class="fw-bold mb-0">Genero:</p>
+                            <p class="ms-1 mb-0">@Model.Perfume.genero.genero1</p>
+                        </div>
+                        <div class="d-flex">
+                            <p class="fw-bold mb-0">Año de lanzamiento:</p>
+                            <p class="ms-1 mb-0">@Model.Perfume.anio_de_lanzamiento</p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>
 
 
+
+
+
+    <!-- 4 -->
     <!-- Modales -->
     <!-- Modal 1 -->
     <div class="modal fade" id="modalPago" tabindex="-1">
@@ -350,6 +373,7 @@
         </div>
     </div>
 
+    <!-- 5 -->
     <!-- Modal 2 -->
     <div class="modal fade" id="modalEnvio" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -389,6 +413,8 @@
             </div>
         </div>
     </div>
+
+    <!-- 6 -->
     <!-- Modal 3 -->
     <div class="modal fade" id="modalCambios" tabindex="-1" aria-labelledby="modalCambiosLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
@@ -450,120 +476,164 @@
         </div>
     </div>
 
+
+    <!-- 7 -->
     @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
     {
-        <div class="my-5">
-            <h5 class="h3 mb-4 text-center text-md-start">Perfumes relacionados</h5>
+        <div class="bg-marcas py-4 mb-4">
+            <h2 class="text-center mb-4 mt-1">Perfumes Similares</h2>
 
-            <div class="swiper my-product-slider">
-                <div class="swiper-wrapper">
+            <div id="carouselMasVendidos" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-inner">
+                    @{
+                        var itemsPorSlideVendidos = 4;
+                        var totalItemsVendidos = Model.PerfumesRelacionados.Count;
+                        var totalSlidesVendidos = (int)Math.Ceiling((double)totalItemsVendidos / itemsPorSlideVendidos);
 
-                    @foreach (var perfume in Model.PerfumesRelacionados)
-                    {
-                        <div class="swiper-slide">
-                            <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Marca">
-                              <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
-                                     class="card-img-top custom-img"
-                                     alt="@perfume.Marca"
-                                     id="imagen-@perfume.Id" />
+                        for (int i = 0; i < totalSlidesVendidos; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <div class="row justify-content-center">
+                                    @for (int j = 0; j < itemsPorSlideVendidos && (i * itemsPorSlideVendidos + j) < totalItemsVendidos; j++)
+                                    {
+                                        var index = i * itemsPorSlideVendidos + j;
+                                        var perfume = Model.PerfumesRelacionados[index];
+                                        var presentacionActiva = perfume.Presentaciones.FirstOrDefault(p => p.Ml == perfume.Presentacion) ?? perfume.Presentaciones.First();
+                                        var promos = presentacionActiva.Promociones ?? new List<Eterea_Parfums_Web.ViewModels.PromocionDetalleViewModel>();
+                                        var tieneVariasPromos = promos.Count > 1;
+                                        var primeraPromo = promos.FirstOrDefault();
+                                        var cardId = presentacionActiva.Id;
 
-                                <div class="card-body d-flex flex-column text-center">
-                                    <h5 class="card-title">@perfume.Nombre</h5>
-                                    <p class="card-text mb-3 marca-text" id="marca-@perfume.Id">@perfume.Marca</p>
+                                        <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4 d-flex">
+                                            <div class="card w-100 perfume-card" id="perfume-card-@cardId"
+                                                 data-nombre="@perfume.Nombre"
+                                                 data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                    <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+                                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
+                                                     class="card-img-top custom-img"
+                                                     alt="@perfume.Nombre"
+                                                     id="imagen-@cardId" />
 
-                                    <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
-                                        @foreach (var p in perfume.Presentaciones)
-                                        {
-                                            <button type="button"
-                                                    class="btn-tamanio btn btn-outline-secondary @(p.Ml == perfume.Presentacion ? "active" : "")"
-                                                    data-id="@perfume.Id"
-                                                    data-perfumeid="@p.Id"
-                                                    data-precio="@p.Precio"
-                                                    data-descuento="@p.PrecioConDescuento"
-                                                    data-tiene-promo="@p.TienePromocion"
-                                                    data-leyenda="@p.LeyendaPromocion"
-                                                    data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
-                                                    data-marca="@p.Marca"
-                                                    data-stock="@p.StockDisponible"
-                                                    onclick="cambiarPresentacion(this, @perfume.Id)">
-                                                @p.Ml ml
-                                            </button>
-                                        }
-                                    </div>
+                                                <div class="card-body d-flex flex-column text-center">
+                                                    <h5 class="card-title">@perfume.Nombre</h5>
+                                                    <p class="card-text mb-3 marca-text" id="marca-@cardId">@perfume.Marca</p>
 
-                                    <p class="card-text mt-3 mb-1">
-                                        <span class="precio-original" id="precio-original-@perfume.Id">
-                                            @(perfume.PrecioConDescuento.HasValue ? "$" + perfume.Precio.ToString("N0") : "")
-                                        </span>
-                                        <span class="precio-descuento" id="precio-descuento-@perfume.Id">
-                                            $@(perfume.PrecioConDescuento.HasValue ? perfume.PrecioConDescuento.Value.ToString("N0") : perfume.Precio.ToString("N0"))
-                                        </span>
-                                    </p>
+                                                    <p class="card-text mb-1"><strong>Tamaño:</strong></p>
+                                                    <div class="selector-tamanios mt-1 d-flex justify-content-center gap-2" data-id="@perfume.Id">
+                                                        @foreach (var p in perfume.Presentaciones)
+                                                        {
+                                                            <button type="button"
+                                                                    class="btn-tamanio btn btn-outline-secondary @(p.Ml == presentacionActiva.Ml ? "active" : "")"
+                                                                    data-id="@perfume.Id"
+                                                                    data-perfumeid="@p.Id"
+                                                                    data-precio="@p.Precio"
+                                                                    data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
+                                                                    data-tiene-promo="@(p.TienePromocion)"
+                                                                    data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
+                                                                    data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                                    data-marca="@p.Marca"
+                                                                    data-stock="@p.StockDisponible"
+                                                                    data-ml="@p.Ml"
+                                                                    data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(p.Promociones))'
+                                                                    onclick="cambiarPresentacion(this, @perfume.Id)">
+                                                                @p.Ml ml
+                                                            </button>
+                                                        }
+                                                    </div>
 
-                                    <div class="promo-placeholder">
-                                        <span class="leyenda-promocion" id="promo-leyenda-@perfume.Id">
-                                            @perfume.LeyendaPromocion
-                                        </span>
-                                    </div>
+                                                    <!-- Carousel Promociones -->
+                                                    <div class="promo-carousel mt-3" data-perfumeid="@cardId">
+                                                        <div class="promo-display">
+                                                            <span class="precio-original" id="precio-original-@cardId">
+                                                                @(primeraPromo != null ? "$" + primeraPromo.PrecioOriginal.ToString("N0") : "")
+                                                            </span>
+                                                            <span class="precio-descuento" id="precio-descuento-@cardId">
+                                                                $@(primeraPromo != null ? primeraPromo.PrecioConDescuento?.ToString("N0") : presentacionActiva.Precio.ToString("N0"))
+                                                            </span>
+                                                        </div>
 
-                                    <div class="espacio-stock mt-1" id="stock-@perfume.Id">
-                                        @if (perfume.StockDisponibleParaWeb == 0)
-                                        {
-                                            <p class="text-danger fw-bold">❌ Stock agotado</p>
-                                        }
-                                        else if (perfume.StockDisponibleParaWeb == 1)
-                                        {
-                                            <p class="text-danger fw-bold">¡Último disponible!</p>
-                                        }
-                                        else if (perfume.StockDisponibleParaWeb <= 10)
-                                        {
-                                            <p class="text-warning fw-bold">¡Stock limitado!</p>
-                                        }
-                                        else
-                                        {
-                                            <p class="text-success fw-bold">✔️ Stock disponible</p>
-                                        }
-                                    </div>
+                                                        <div class="promo-container mt-2 @(primeraPromo == null ? "promo-sin-promocion" : "")">
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-prev"
+                                                                    data-perfumeid="@cardId"
+                                                                    type="button"
+                                                                    style="display:@(tieneVariasPromos ? "inline-flex" : "none")">
+                                                                <i class="fas fa-chevron-left"></i>
+                                                            </button>
 
-                                    <div class="mt-auto d-flex flex-column">
-                                        <!-- Botón Ver detalle -->
-                                        <button class="btn-eterea mb-2 btn-ver-detalle"
-                                                data-baseid="@perfume.Id"
-                                                data-id="@perfume.Presentaciones.First().Id"
-                                                onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
+                                                            <span class="leyenda-promocion" id="promo-leyenda-@cardId">
+                                                                @Html.Raw(primeraPromo?.LeyendaPromocion ?? "")
+                                                            </span>
 
-                                        <!-- Botón Agregar al carrito (con control de stock) -->
-                                        @if (perfume.StockDisponibleParaWeb == 0)
-                                        {
-                                            <button class="btn-eterea agregar-al-carrito"
-                                                    disabled
-                                                    style="opacity: 0.6; cursor: not-allowed;">
-                                                <i class="fas fa-cart-plus"></i> Agotado
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn-eterea agregar-al-carrito"
-                                                    data-baseid="@perfume.Id"
-                                                    data-id="@perfume.Presentaciones.First().Id">
-                                                <i class="fas fa-cart-plus"></i> Agregar al carrito
-                                            </button>
-                                        }
-                                    </div>
+                                                            <button class="btn btn-sm btn-outline-primary btn-promo-next"
+                                                                    data-perfumeid="@cardId"
+                                                                    type="button"
+                                                                    style="display:@(tieneVariasPromos ? "inline-flex" : "none")">
+                                                                <i class="fas fa-chevron-right"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="espacio-stock mt-2" id="stock-@perfume.Id">
+                                                        @if (perfume.StockDisponibleParaWeb == 0)
+                                                        {
+                                                            <p class="text-danger fw-bold">❌ Stock agotado</p>
+                                                        }
+                                                        else if (perfume.StockDisponibleParaWeb == 1)
+                                                        {
+                                                            <p class="text-danger fw-bold">¡Último disponible!</p>
+                                                        }
+                                                        else if (perfume.StockDisponibleParaWeb <= 10)
+                                                        {
+                                                            <p class="text-warning fw-bold">¡Stock limitado!</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p class="text-success fw-bold">✔️ Stock disponible</p>
+                                                        }
+                                                    </div>
+
+                                                    <div class="mt-auto d-flex flex-column">
+                                                        <button class="btn-eterea mb-2 btn-ver-detalle"
+                                                                data-baseid="@perfume.Id"
+                                                                data-id="@presentacionActiva.Id"
+                                                                onclick="location.href='@Url.Action("Details", "Perfume", new { id = perfume.Id })'">
+                                                            <i class="fas fa-eye"></i> Ver
+                                                        </button>
+
+                                                        @if (presentacionActiva.StockDisponible == 0)
+                                                        {
+                                                            <button class="btn-eterea btn-agregar-carrito"
+                                                                    disabled
+                                                                    style="opacity: 0.6; cursor: not-allowed;">
+                                                                <i class="fas fa-cart-plus"></i> Agotado
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn-eterea btn-agregar-carrito"
+                                                                    data-baseid="@perfume.Id"
+                                                                    data-id="@presentacionActiva.Id">
+                                                                <i class="fas fa-cart-plus"></i> Agregar al carrito
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
-                        </div>
+                        }
                     }
                 </div>
 
-                <!-- Flechas y paginación -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-pagination"></div>
+                <!-- FLECHAS -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="prev">
+                    <span class="fa-solid fa-chevron-left flecha-carousel"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="next">
+                    <span class="fa-solid fa-chevron-right flecha-carousel"></span>
+                </button>
             </div>
         </div>
     }
@@ -650,96 +720,277 @@
 });
     </script>
     <script>
-        // Manejo del cambio de tamaño y actualización en cada card
-        document.querySelectorAll('.selector-tamanios').forEach(container => {
-            container.addEventListener('click', function (e) {
-                const btn = e.target.closest('.btn-tamanio');
-                if (!btn) return;
+     document.addEventListener("DOMContentLoaded", () => {
+         const promoIndices = {};
 
-                // Remover clase 'active' de los hermanos y activar el botón clickeado
-                container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+         function actualizarPromo(perfumeId, nuevoIndice, promociones, prefix) {
+             if (!promociones || promociones.length === 0) return;
 
-                // Obtener la card padre y actualizar datos visibles
-                const card = container.closest('.card');
-                const nuevoPrecio = btn.getAttribute('data-precio');
-                const nuevoDescuento = btn.getAttribute('data-descuento');
-                const nuevoMl = btn.getAttribute('data-ml');
-                const nuevoPerfumeId = btn.getAttribute('data-perfumeid');
-                const tienePromo = btn.getAttribute('data-tiene-promo') === 'True';
-                const leyenda = btn.getAttribute('data-leyenda');
-                const imagen = btn.getAttribute('data-imagen');
-                const stock = parseInt(btn.getAttribute('data-stock') || "0");
+             if (nuevoIndice < 0) nuevoIndice = promociones.length - 1;
+             if (nuevoIndice >= promociones.length) nuevoIndice = 0;
 
-                // Actualizar imagen
-                const imagenElem = card.querySelector('img.custom-img');
-                if (imagenElem) {
-                    imagenElem.src = imagen;
-                }
+             promoIndices[perfumeId] = nuevoIndice;
+             const promo = promociones[nuevoIndice];
+             const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+             if (!card) return;
 
-                // Actualizar precios
-                const precioOriginalElem = card.querySelector('.precio-original');
-                const precioDescuentoElem = card.querySelector('.precio-descuento');
-                if (precioOriginalElem && precioDescuentoElem) {
-                    if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                        precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                        precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                        precioOriginalElem.style.display = '';
-                    } else {
-                        precioOriginalElem.style.display = 'none';
-                        precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                    }
-                }
+             const precioOriginalElem = card.querySelector('.precio-original');
+             const precioDescuentoElem = card.querySelector('.precio-descuento');
+             const leyendaPromoEl = card.querySelector('.leyenda-promocion');
+             const btnPrev = card.querySelector(".btn-promo-prev");
+             const btnNext = card.querySelector(".btn-promo-next");
 
-                // Actualizar leyenda promoción
-                const leyendaElem = card.querySelector('.leyenda-promocion');
-                if (leyendaElem) {
-                    leyendaElem.textContent = tienePromo ? leyenda : '';
-                }
+             if (promociones.length > 1) {
+                 btnPrev.style.display = "inline-block";
+                 btnNext.style.display = "inline-block";
+             } else {
+                 btnPrev.style.display = "none";
+                 btnNext.style.display = "none";
+             }
 
-                // Actualizar mensaje de stock
-                const stockElem = card.querySelector('.espacio-stock');
-                if (stockElem) {
-                    if (stock === 0) {
-                        stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
-                    } else if (stock === 1) {
-                        stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
-                    } else if (stock <= 10) {
-                        stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
-                    } else {
-                        stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
-                    }
-                }
+             if (precioOriginalElem) {
+                 if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
+                     precioOriginalElem.style.display = '';
+                     precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                 } else {
+                     precioOriginalElem.style.display = 'none';
+                 }
+             }
 
-                // Actualizar botones Ver y Agregar al carrito
-                const btnAgregar = card.querySelector('.agregar-al-carrito');
-                if (btnAgregar) {
-                    btnAgregar.setAttribute('data-id', nuevoPerfumeId);
-                    if (stock === 0) {
-                        btnAgregar.setAttribute('disabled', 'disabled');
-                        btnAgregar.style.opacity = '0.6';
-                        btnAgregar.style.cursor = 'not-allowed';
-                        btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
-                    } else {
-                        btnAgregar.removeAttribute('disabled');
-                        btnAgregar.style.opacity = '';
-                        btnAgregar.style.cursor = '';
-                        btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
-                    }
-                }
+             if (precioDescuentoElem) {
+                 precioDescuentoElem.textContent = promo.PrecioConDescuento
+                     ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
+                     : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+             }
 
-                const btnDetalle = card.querySelector('.btn-ver-detalle');
-                if (btnDetalle) {
-                    btnDetalle.setAttribute('data-id', nuevoPerfumeId);
-                }
-            });
-        });
-        // Listener para botón Ver detalle
-        document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
-                window.location.href = `/Perfume/Details/${perfumeId}`;
-            });
-        });
+             if (leyendaPromoEl) {
+                 leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
+             }
+         }
+
+         // Flechas de promociones (unificadas para "promo-" y "top-")
+         document.querySelectorAll(".btn-promo-prev, .btn-promo-next").forEach(btn => {
+             btn.addEventListener("click", () => {
+                 const perfumeIdRaw = btn.dataset.perfumeid;
+                 let prefix = "";
+
+                 if (perfumeIdRaw.startsWith("promo-")) {
+                     prefix = "promo-";
+                 } else if (perfumeIdRaw.startsWith("top-")) {
+                     prefix = "top-";
+                 }
+
+                 const perfumeId = perfumeIdRaw.replace(prefix, "");
+                 const card = document.querySelector(`#${prefix}perfume-card-${perfumeId}`);
+                 if (!card) return;
+                 const promosJson = card.getAttribute('data-promos');
+                 if (!promosJson) return;
+
+                 const promociones = JSON.parse(promosJson);
+                 const currentIndex = promoIndices[perfumeId] ?? 0;
+                 const nextIndex = btn.classList.contains("btn-promo-next") ? currentIndex + 1 : currentIndex - 1;
+                 actualizarPromo(perfumeId, nextIndex, promociones, prefix);
+             });
+         });
+
+         // Cambio de presentación
+         document.querySelectorAll('.selector-tamanios').forEach(container => {
+             container.addEventListener('click', function (e) {
+                 const btn = e.target.closest('.btn-tamanio');
+                 if (!btn) return;
+
+                 container.querySelectorAll('.btn-tamanio').forEach(b => b.classList.remove('active'));
+                 btn.classList.add('active');
+
+                 const card = container.closest('.card');
+                 const nuevoPrecio = btn.dataset.precio;
+                 const nuevoDescuento = btn.dataset.descuento;
+                 const nuevoMl = btn.dataset.ml;
+                 const nuevoPerfumeIdRaw = btn.dataset.perfumeid;
+                 const nuevoPerfumeId = nuevoPerfumeIdRaw.replace("promo-", "").replace("top-", "");
+                 const tienePromo = btn.dataset.tienePromo === 'True';
+                 const leyenda = btn.dataset.leyenda;
+                 const imagen = btn.getAttribute('data-imagen');
+                 const stock = parseInt(btn.dataset.stock || "0");
+                 const promosJson = btn.dataset.promos;
+
+                 let prefix = "";
+                 if (card?.id?.startsWith("promo-")) {
+                     prefix = "promo-";
+                 } else if (card?.id?.startsWith("top-")) {
+                     prefix = "top-";
+                 }
+
+                 // Actualizar imagen
+                 const imagenElem = card.querySelector('img.custom-img');
+                 if (imagenElem) {
+                     imagenElem.src = imagen;
+                 }
+
+                 // Actualizar promociones del perfume
+                 if (card && btn.dataset.promos) {
+                     card.setAttribute('data-promos', btn.dataset.promos);
+                     promoIndices[nuevoPerfumeId] = 0;
+                 }
+
+                 // Precios
+                 const precioOriginalElem = card.querySelector('.precio-original');
+                 const precioDescuentoElem = card.querySelector('.precio-descuento');
+                 if (precioOriginalElem && precioDescuentoElem) {
+                     if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
+                         precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                         precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                         precioOriginalElem.style.display = '';
+                     } else {
+                         precioOriginalElem.style.display = 'none';
+                         precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                     }
+                 }
+
+                 // Leyenda
+                 const leyendaElem = card.querySelector('.leyenda-promocion');
+                 if (leyendaElem) {
+                     leyendaElem.innerHTML = tienePromo ? leyenda : '';
+                 }
+
+                 // Stock
+                 const stockElem = card.querySelector('.espacio-stock');
+                 if (stockElem) {
+                     if (stock === 0) {
+                         stockElem.innerHTML = `<p class="text-danger fw-bold">❌ Stock agotado</p>`;
+                     } else if (stock === 1) {
+                         stockElem.innerHTML = `<p class="text-danger fw-bold">¡Último disponible!</p>`;
+                     } else if (stock <= 10) {
+                         stockElem.innerHTML = `<p class="text-warning fw-bold">¡Stock limitado!</p>`;
+                     } else {
+                         stockElem.innerHTML = `<p class="text-success fw-bold">✔️ Stock disponible</p>`;
+                     }
+                 }
+
+                 // Botones
+                 const btnAgregar = card.querySelector('.btn-agregar-carrito');
+                 if (btnAgregar) {
+                     btnAgregar.setAttribute('data-id', nuevoPerfumeId);
+                     if (stock === 0) {
+                         btnAgregar.setAttribute('disabled', 'disabled');
+                         btnAgregar.style.opacity = '0.6';
+                         btnAgregar.style.cursor = 'not-allowed';
+                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agotado`;
+                     } else {
+                         btnAgregar.removeAttribute('disabled');
+                         btnAgregar.style.opacity = '';
+                         btnAgregar.style.cursor = '';
+                         btnAgregar.innerHTML = `<i class="fas fa-cart-plus"></i> Agregar al carrito`;
+                     }
+                 }
+
+                 const btnDetalle = card.querySelector('.btn-ver-detalle');
+                 if (btnDetalle) {
+                     btnDetalle.setAttribute('data-id', nuevoPerfumeId);
+                 }
+
+                 if (promosJson) {
+                     const promociones = JSON.parse(promosJson);
+                     actualizarPromo(nuevoPerfumeId, 0, promociones, prefix);
+
+                     const btnPrev = card.querySelector(".btn-promo-prev");
+                     const btnNext = card.querySelector(".btn-promo-next");
+
+                     if (btnPrev && btnNext) {
+                         if (promociones.length > 1) {
+                             btnPrev.style.display = "inline-block";
+                             btnNext.style.display = "inline-block";
+                         } else {
+                             btnPrev.style.display = "none";
+                             btnNext.style.display = "none";
+                         }
+                     }
+                 }
+             });
+         });
+
+         // Función para manejar el click en "Agregar al carrito"
+     document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+         btn.addEventListener('click', function () {
+             const perfumeId = btn.getAttribute('data-id'); // ID de la presentación seleccionada
+
+             fetch('@Url.Action("Agregar", "Carrito")', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                 },
+                 body: `perfumeId=${perfumeId}`
+             })
+             .then(res => res.json())
+             .then(data => {
+                 if (data.redirect) {
+                     window.location.href = data.redirect;
+                     return;
+                 }
+
+                 const contenedor = document.getElementById("info-perfume-agregado");
+
+                 if (data.error) {
+                     contenedor.innerHTML = `
+                         <p style="font-weight: bold; color: #c0392b; font-size: 1.1rem;">⚠️ Etérea Parfums</p>
+                         <p>${data.error}</p>
+                     `;
+                     document.getElementById("carrito-offcanvas").classList.add("show");
+                     setTimeout(() => {
+                         document.getElementById("carrito-offcanvas").classList.remove("show");
+                     }, 5000);
+                     return;
+                 }
+
+                 contenedor.innerHTML = `
+                     <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
+                     <p><strong>${data.nombre}</strong></p>
+                     <p>${data.tipo} - ${data.presentacion} ml</p>
+                     <p>Género: ${data.genero}</p>
+                     <p>Precio: ${
+                         data.precioDescuento
+                             ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                             : `<strong>$${data.precioOriginal}</strong>`
+                     }</p>
+                     ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
+                 `;
+
+                 document.getElementById("carrito-offcanvas").classList.add("show");
+                 setTimeout(() => {
+                     document.getElementById("carrito-offcanvas").classList.remove("show");
+                 }, 6000);
+             })
+             .catch(err => {
+                 console.error('Error en la solicitud:', err);
+                 alert("Hubo un error al intentar agregar el perfume al carrito.");
+             });
+         });
+     });
+
+         // Ver detalle
+         document.querySelectorAll('.btn-ver-detalle').forEach(btn => {
+             btn.addEventListener('click', function () {
+                 const perfumeId = btn.getAttribute('data-id');
+                 window.location.href = `/Perfume/Details/${perfumeId}`;
+             });
+         });
+
+         // ✅ Auto-avance de promociones
+         /*const autoPromoInterval = 4000; // 4 segundos
+
+         document.querySelectorAll('.promo-carousel').forEach(carousel => {
+             const perfumeIdRaw = carousel.dataset.perfumeid;
+             const btnNext = carousel.querySelector('.btn-promo-next');
+
+             // Solo si hay botón (es decir, hay varias promociones)
+             if (btnNext) {
+                 setInterval(() => {
+                     btnNext.click();
+                 }, autoPromoInterval);
+             }
+         });*/
+
+     });
+
     </script>
 }
