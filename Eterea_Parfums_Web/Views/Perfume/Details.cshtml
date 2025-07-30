@@ -19,7 +19,7 @@
 <div class="container-fluid p-0">
 
     <div class="perfume-detalle-contenedor">
-        <div class="perfume-detalle-fondo mt-4">
+        <div class="perfume-detalle-fondo mt-4 mb-5">
 
             <div class="row gap-0">
 
@@ -98,7 +98,7 @@
 
 
                     <!-- 2.3 -->
-                    <div class="">
+                    <div class="mt-2">
                         <div class="row text-center px-2 py-3 card-box-info">
                             <!-- Item 1 -->
                             <div class="col-md-4 border-end box-info">
@@ -151,7 +151,7 @@
 
                     <div class="box-perfume-volumen">
                         <div class="linea-tamanios">
-                            <p class="mt-2 mb-0"><strong>Tamaño:</strong></p>
+                            <p class="mt-2 mb-0">Tamaño: </p>
                             @if (Model.perfumesIgualesEnPresentacioMl != null && Model.perfumesIgualesEnPresentacioMl.Any())
                             {
                                 foreach (var p in Model.perfumesIgualesEnPresentacioMl)
@@ -480,7 +480,7 @@
             <!-- 7 -->
             @if (Model.PerfumesRelacionados != null && Model.PerfumesRelacionados.Any())
             {
-                <div class="bg-marcas py-4 mb-4 mt-5">
+                <div class="bg-marcas py-4 mb-4">
                     <h2 class="text-center mb-4 mt-1">Perfumes Similares</h2>
 
                     <div id="carouselMasVendidos" class="carousel slide" data-bs-ride="false">

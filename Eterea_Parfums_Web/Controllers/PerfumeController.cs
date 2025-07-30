@@ -325,7 +325,9 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Index");
 
             // Traer y procesar stock completo
-            var stock = db.stock.ToList();
+            // 1. Obtener stock completo
+            var stock = db.stock.Where(s => s.sucursal_id == 1).ToList();
+       
             var stockDisponiblePorPerfume = stock
                 .GroupBy(s => s.perfume_id)
                 .ToDictionary(

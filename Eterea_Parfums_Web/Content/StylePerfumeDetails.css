@@ -227,10 +227,9 @@ hr {
 }
 
 .box-perfume-volumen p {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #7a4b53;
-    font-family: 'Segoe UI', sans-serif;
+    margin-right: 10px;
+    font-weight: 500;
+    color: var(--rosa-profundo);
 }
 
 
@@ -950,3 +949,42 @@ h2 {
         border-color: var(--rosa-medio);
         outline: none;
     }
+
+
+/* datos abajo de las imagenes*/
+/* Contenedor general con fondo y bordes redondeados */
+.card-box-info {
+    background-color: var(--rosa-suave); /* Fondo suave */
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+    padding: 4.5rem 0.5rem;
+    margin: 1.5rem 0;
+}
+
+/* Espacio interno por caja */
+.box-info {
+    padding: 0 1rem;
+}
+
+    /* Íconos más estilizados */
+    .box-info i {
+        color: var(--rosa-profundo); /* O un color distintivo */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Títulos */
+    .box-info p {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+        color: #333;
+    }
+
+    /* Enlaces */
+    .box-info a {
+        font-size: 0.85rem;
+        color: var(--rosa-profundo);
+    }
+
+        .box-info a:hover {
+            text-decoration: underline;
+        }
