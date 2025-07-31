@@ -92,12 +92,7 @@
                         m => m.PaisId,
                         ViewBag.Paises as List<SelectListItem>,
                         "Seleccione un país",
-                        new
-                             {
-                            @class = "form-control",
-                            id = "pais",
-                            data_selected = Model.PaisId
-                        })
+                        new { @class = "form-control", id = "pais" })
                     @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
 

@@ -138,7 +138,7 @@ namespace Eterea_Parfums_Web.Controllers
                     fecha_nacimiento = (DateTime)model.FechaNacimiento,
                     celular = model.Celular,
                     e_mail = model.Email,
-                    pais_id = model.PaisId,
+                    pais_id = (int)model.PaisId,
                     provincia_id = model.ProvinciaId,
                     localidad_id = model.LocalidadId,
                     calle_id = model.CalleId,

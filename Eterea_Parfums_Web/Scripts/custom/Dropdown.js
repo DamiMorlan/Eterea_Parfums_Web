@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         paisSelect.addEventListener("change", function () {
             var paisId = this.value;
-
             provinciaSelect.innerHTML = '<option value="">Seleccione una provincia</option>';
             localidadSelect.innerHTML = '<option value="">Seleccione una localidad</option>';
             calleSelect.innerHTML = '<option value="">Seleccione una calle</option>';
