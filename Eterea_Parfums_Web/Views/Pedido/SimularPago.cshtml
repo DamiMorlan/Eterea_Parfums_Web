@@ -147,13 +147,13 @@ $(function(){
         $hdTotal  = $('#hdTotal');
 
   /* ======== helpers ============ */
-  const fmt = n=>Number(n).toLocaleString('es-AR');
+  const fmt = n => n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const actResumen = _=>{
       const total = totalBase + recargo;
       $txtTotal.text(`$ ${fmt(total)}`);
       $txtInter.text(`$ ${fmt(recargo)}`);
       $filaInt.toggle(recargo>0);
-      $hdTotal.val(total);
+      $hdTotal.val(total.toString().replace('.', ','));
   };
   const calcRecargo = _=>{
       recargo = cuotasMC[cuotas]*totalBase;
@@ -223,4 +223,5 @@ $(function(){
   actResumen(); validar();
 });
     </script>
+
 }

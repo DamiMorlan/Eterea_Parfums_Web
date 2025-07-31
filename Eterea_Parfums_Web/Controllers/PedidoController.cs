@@ -282,10 +282,10 @@ namespace Eterea_Parfums_Web.Controllers
 
 
 
-        public ActionResult PagoExitoso(int numOrden, double totalFibal)
+        public ActionResult PagoExitoso(int numOrden, double totalFinal)
         {
             ViewBag.NumOrden = numOrden;
-            ViewBag.TotalFibal = totalFibal;
+            ViewBag.TotalFinal = totalFinal;
             return View();
         }
 
@@ -488,7 +488,7 @@ namespace Eterea_Parfums_Web.Controllers
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
 
-                    if (Math.Round(totalCalculado, 2) != Math.Round(totalFinal, 2)) 
+                    if (Math.Abs(totalCalculado - totalFinal) > 0.01)
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
@@ -602,11 +602,11 @@ namespace Eterea_Parfums_Web.Controllers
 
                     if (tipoFactura == "A")
                     {
-                       htmlFactura = FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente);
+                        htmlFactura = FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente);
                     }
                     else
                     {
-                       htmlFactura = FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
+                        htmlFactura = FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
                     }
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
@@ -632,7 +632,7 @@ namespace Eterea_Parfums_Web.Controllers
 
                     tx.Commit();
 
-                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFibal = totalFinal });
+                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFinal = totalFinal });
 
 
                 }
@@ -654,6 +654,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             }
         }
+
 
         /* ---- helper temporal interno ----------------------------------- */
         private sealed class DetalleTmp
