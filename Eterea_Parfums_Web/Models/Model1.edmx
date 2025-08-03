@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="etereaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="etereaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="aroma_del_perfume">
           <Key>
             <PropertyRef Name="perfume_id" />
@@ -64,6 +64,8 @@
           <Property Name="comentarios_domicilio" Type="varchar" MaxLength="60" />
           <Property Name="activo" Type="bit" Nullable="false" />
           <Property Name="rol" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="token_recuperacion" Type="varchar" MaxLength="100" />
+          <Property Name="token_expiracion" Type="datetime" />
         </EntityType>
         <EntityType Name="detalle_factura">
           <Key>
@@ -298,7 +300,7 @@
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="tipo_de_perfume" Type="varchar" MaxLength="15" Nullable="false" />
         </EntityType>
-        <Association Name="FK__aroma_del__tipo___29221CFB">
+        <Association Name="FK__aroma_del__tipo___6A30C649">
           <End Role="tipo_de_aroma" Type="Self.tipo_de_aroma" Multiplicity="1" />
           <End Role="aroma_del_perfume" Type="Self.aroma_del_perfume" Multiplicity="*" />
           <ReferentialConstraint>
@@ -829,7 +831,7 @@
           <EntitySet Name="tipo_de_aroma" EntityType="Self.tipo_de_aroma" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_nota" EntityType="Self.tipo_de_nota" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tipo_de_perfume" EntityType="Self.tipo_de_perfume" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__aroma_del__tipo___29221CFB" Association="Self.FK__aroma_del__tipo___29221CFB">
+          <AssociationSet Name="FK__aroma_del__tipo___6A30C649" Association="Self.FK__aroma_del__tipo___6A30C649">
             <End Role="tipo_de_aroma" EntitySet="tipo_de_aroma" />
             <End Role="aroma_del_perfume" EntitySet="aroma_del_perfume" />
           </AssociationSet>
@@ -994,8 +996,7 @@
             <End Role="stock" EntitySet="stock" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="etereaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1063,6 +1064,8 @@
           <NavigationProperty Name="pais" Relationship="Self.FK__cliente__pais_id__5BE2A6F2" FromRole="cliente" ToRole="pais" />
           <NavigationProperty Name="provincia" Relationship="Self.FK__cliente__provinc__5CD6CB2B" FromRole="cliente" ToRole="provincia" />
           <NavigationProperty Name="factura" Relationship="Self.FK__factura__cliente__656C112C" FromRole="cliente" ToRole="factura" />
+          <Property Name="token_recuperacion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="token_expiracion" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="detalle_factura">
           <Key>
@@ -1995,6 +1998,8 @@
           <EntitySetMapping Name="cliente">
             <EntityTypeMapping TypeName="etereaModel.cliente">
               <MappingFragment StoreEntitySet="cliente">
+                <ScalarProperty Name="token_expiracion" ColumnName="token_expiracion" />
+                <ScalarProperty Name="token_recuperacion" ColumnName="token_recuperacion" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="usuario" ColumnName="usuario" />
                 <ScalarProperty Name="clave" ColumnName="clave" />

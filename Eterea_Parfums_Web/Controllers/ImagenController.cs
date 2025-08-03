@@ -11,16 +11,16 @@ namespace Eterea_Parfums_Web.Controllers
     {
 
         /*Adri*/
-        private string rutaBase = @"C:\Users\intersan\Desktop\TESIS_New\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+        //private string rutaBase = @"C:\Users\intersan\Desktop\TESIS_New\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
 
         /*Dami*/
-        private string rutaBase = @"C:\Users\damim\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+        //private string rutaBase = @"C:\Users\damim\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
 
         /*Maxi*/
         //private string rutaBase = @"C:\Users\Maxi\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
 
         /*Jose Luis*/
-        //private string rutaBase = @"C:\Users\josel\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
+        private string rutaBase = @"C:\Users\josel\source\repos\Eterea_Parfums_Desktop\Eterea_Parfums_Desktop\Resources";
 
         public ActionResult Mostrar(string nombre)
         {

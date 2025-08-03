@@ -498,5 +498,77 @@ namespace Eterea_Parfums_Web.Controllers
             return RedirectToAction("Index", "Home"); // Redirige a la pantalla principal
         }
 
+
+        [HttpGet]
+        public ActionResult OlvidarPassword() {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult OlvidarPassword(OlvidarPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var cliente = db.cliente.FirstOrDefault(c => c.e_mail == model.Email && c.activo);
+            if (cliente == null)
+            {
+                // No revelar si el email existe por seguridad
+                ViewBag.Mensaje = "Si el correo está registrado, recibirás un enlace.";
+                return View();
+            }
+
+            // Generar y guardar token con expiración
+            string token = Guid.NewGuid().ToString();
+            cliente.token_recuperacion = token;
+            //Tiempo de vida del link
+            cliente.token_expiracion = DateTime.Now.AddHours(1);
+            db.SaveChanges();
+
+            // Se construye enlace con token
+            string link = Url.Action("ResetearPassword", "Cliente", new { token }, protocol: Request.Url.Scheme);
+
+            // Enviar correo
+            CorreoHelper.EnviarCorreoGenerico(
+                model.Email,
+                "Recuperar contraseña",
+                $"Hacé clic en el siguiente enlace para restablecer tu contraseña:\n\n{link}\n\nEste enlace expirará en 1 hora."
+            );
+
+            ViewBag.Mensaje = "Te enviamos un enlace para restablecer tu contraseña.";
+            return View();
+        }
+
+
+        [HttpGet]
+        public ActionResult ResetearPassword(string token)
+        {
+            var cliente = db.cliente.FirstOrDefault(c => c.token_recuperacion == token && c.token_expiracion > DateTime.Now);
+            if (cliente == null)
+                return HttpNotFound();
+
+            return View(new ResetearPasswordViewModel { Token = token });
+        }
+
+        [HttpPost]
+        public ActionResult ResetearPassword(ResetearPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var cliente = db.cliente.FirstOrDefault(c => c.token_recuperacion == model.Token && c.token_expiracion > DateTime.Now);
+            if (cliente == null)
+                return HttpNotFound();
+
+            cliente.clave = PasswordHelper.CrearHash(model.NuevaPassword);
+            cliente.token_recuperacion = null;
+            cliente.token_expiracion = null;
+            db.SaveChanges();
+
+            return RedirectToAction("Login");
+        }
+
+
+
     }
 }

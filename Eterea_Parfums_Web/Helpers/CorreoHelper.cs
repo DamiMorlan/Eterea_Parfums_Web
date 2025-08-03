@@ -43,7 +43,6 @@ namespace Eterea_Parfums_Web.Helpers
             }
             catch (Exception ex)
             {
-                // Log error (no uses MessageBox en web)
                 System.Diagnostics.Debug.WriteLine("Error al enviar correo: " + ex.Message);
             }
         }
