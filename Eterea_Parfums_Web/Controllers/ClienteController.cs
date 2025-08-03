@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Eterea_Parfums_Web.Helpers;
+using System.Diagnostics;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -29,6 +30,13 @@ namespace Eterea_Parfums_Web.Controllers
 
             if (cliente != null && PasswordHelper.VerificarPassword(clave, cliente.clave))
             {
+
+                if (usuario == clave)
+                { 
+                    TempData["clienteId"] = cliente.id;
+                    return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
+                }
+
                 Session["clienteId"] = cliente.id;               // 👈 ID
                 Session["usuarioLogueado"] = cliente.usuario;    // 👈 o guardar cliente directamente si lo usás más
                 Session["clienteNombre"] = cliente.nombre;
@@ -219,15 +227,33 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Perfil()
+        public ActionResult Perfil(bool? primerLogin)
         {
-            if (Session["clienteId"] == null)
-                return RedirectToAction("Login", "Cliente");
 
-            int clienteId = (int)Session["clienteId"];
+            int clienteId;
+
+            if (primerLogin == true)
+            {
+                // Obtengo el cliente desde TempData
+                if (TempData["clienteId"] == null)
+                    return RedirectToAction("Login");
+
+                clienteId = (int)TempData["clienteId"];
+                TempData.Keep("clienteId"); 
+            }
+            else
+            {
+                // Login normal con sesión
+                if (Session["clienteId"] == null)
+                    return RedirectToAction("Login");
+
+                clienteId = (int)Session["clienteId"];
+            }
+
             var cliente = db.cliente.Find(clienteId);
             if (cliente == null)
                 return RedirectToAction("Login", "Cliente");
+
 
             var model = new FormularioPerfilViewModel
             {
@@ -248,7 +274,6 @@ namespace Eterea_Parfums_Web.Controllers
                 CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
                 ComentariosDomicilio = cliente.comentarios_domicilio
             };
-
             CargarPaises();
             return View(model);
         }
@@ -386,15 +411,31 @@ namespace Eterea_Parfums_Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Perfil(FormularioPerfilViewModel model)
+        public ActionResult Perfil(FormularioPerfilViewModel model, bool? primerLogin)
         {
             if (!ModelState.IsValid)
             {
+                TempData.Keep("clienteId");
                 CargarPaises();
                 return View(model);
             }
 
-            int clienteId = (int)Session["clienteId"];
+            int clienteId;
+
+            if (primerLogin == true && TempData["clienteId"] != null)
+            {
+                clienteId = (int)TempData["clienteId"];
+                TempData.Keep("clienteId");
+            }
+            else if (Session["clienteId"] != null)
+            {
+                clienteId = (int)Session["clienteId"];
+            }
+            else
+            {
+                return RedirectToAction("Login", "Cliente");
+            }
+
             var clienteExistente = db.cliente.Find(clienteId);
             if (clienteExistente == null)
                 return RedirectToAction("Login", "Cliente");
@@ -403,6 +444,7 @@ namespace Eterea_Parfums_Web.Controllers
             var dniStr = model.Dni.ToString();
             if (dniStr.Length != 8 && dniStr.Length != 11)
             {
+                TempData.Keep("clienteId");
                 ModelState.AddModelError("Dni", "El DNI¡ debe tener 8  dígitos.");
                 CargarPaises();
                 return View(model);
@@ -411,25 +453,23 @@ namespace Eterea_Parfums_Web.Controllers
             // Usuario, DNI, email únicos si cambiaron
             if (db.cliente.Any(c => c.usuario == model.Usuario && c.id != clienteId))
             {
+                TempData.Keep("clienteId");
                 ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso.");
                 CargarPaises();
                 return View(model);
             }
             if (db.cliente.Any(c => c.dni == model.Dni && c.id != clienteId))
             {
+                TempData.Keep("clienteId");
                 ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI.");
                 CargarPaises();
                 return View(model);
             }
             if (db.cliente.Any(c => c.e_mail == model.Email && c.id != clienteId))
             {
+                TempData.Keep("clienteId");
                 ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
                 CargarPaises();
-                return View(model);
-            }
-
-            if (!ModelState.IsValid)
-            {
                 return View(model);
             }
 
@@ -455,8 +495,14 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 clienteExistente.clave = PasswordHelper.CrearHash(model.Clave);
             }
-
+            TempData["Mensaje"] = "Perfil editado correctamente: " + clienteExistente.usuario;
             db.SaveChanges();
+    
+            if (primerLogin == true)
+            {
+                TempData.Clear(); // Limpia cualquier dato temporal por seguridad
+                return RedirectToAction("Login", "Cliente");
+            }
             Session["usuarioLogueado"] = clienteExistente;
 
             return RedirectToAction("Index", "Home");

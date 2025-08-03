@@ -9,7 +9,10 @@
 
 <div class="login-wrapper">
     <div class="login-container">
-
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert alert-success">@TempData["Mensaje"]</div>
+        }
         <!-- Logo -->
         <div class="logo-eterea-container text-center mb-4">
             <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "LogoEterea.png" })" alt="Logo Eterea Parfums" class="logo-eterea" />

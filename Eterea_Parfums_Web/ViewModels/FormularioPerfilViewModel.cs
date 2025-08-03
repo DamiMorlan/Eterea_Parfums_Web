@@ -35,7 +35,7 @@
         [Display(Name = "Fecha de Nacimiento:")]
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.Date)]
-        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 120, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
+        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 250, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
         public DateTime FechaNacimiento { get; set; }
 
         [Display(Name = "Celular")]
@@ -80,13 +80,13 @@
         [Display(Name = "Piso:")]
         [Required(ErrorMessage = "Debe ingresar un número de piso")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
-        [RegularExpression(@"^(?!0$)[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números mayor que 0")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Piso { get; set; }
 
         [Display(Name = "Departamento:")]
         [Required(ErrorMessage = "Debe ingresar un número de departamento")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
-        [RegularExpression(@"^(?!0$)[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Departamento { get; set; }
 
         [Display(Name = "Código Postal:")]

@@ -33,7 +33,7 @@ namespace Eterea_Parfums_Web.ViewModels
 
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.Date)]
-        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 120, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
+        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 250, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
         public DateTime? FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El celular es obligatorio.")]
@@ -70,14 +70,13 @@ namespace Eterea_Parfums_Web.ViewModels
 
         [Required(ErrorMessage = "Debe ingresar un número de piso")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
-        [RegularExpression(@"^(?!0$)[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números mayor que 0")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Piso { get; set; }
 
         [Required(ErrorMessage = "Debe ingresar un número de departamento")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
-        [RegularExpression(@"^(?!0$)[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Departamento { get; set; }
-
 
         [Required(ErrorMessage = "El código postal es obligatorio")]
         [Range(1000, 9999, ErrorMessage = "El código postal debe tener 4 dígitos.")]
