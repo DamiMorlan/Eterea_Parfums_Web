@@ -42,6 +42,8 @@ namespace Eterea_Parfums_Web.Models
         public string comentarios_domicilio { get; set; }
         public bool activo { get; set; }
         public string rol { get; set; }
+        public string token_recuperacion { get; set; }
+        public Nullable<System.DateTime> token_expiracion { get; set; }
     
         public virtual calle calle { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

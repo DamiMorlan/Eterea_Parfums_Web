@@ -250,6 +250,7 @@
     <Compile Include="ViewModels\HistorialViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\MarcaViewModel.cs" />
+    <Compile Include="ViewModels\OlvidarPasswordViewModel.cs" />
     <Compile Include="ViewModels\PedidoItemVM.cs" />
     <Compile Include="ViewModels\PerfumeDetailsViewModel.cs" />
     <Compile Include="ViewModels\ItemCarritoViewModel.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="ViewModels\PerfumeViewModel.cs" />
     <Compile Include="ViewModels\ProductoPagoViewModel.cs" />
     <Compile Include="ViewModels\PromocionViewModel.cs" />
+    <Compile Include="ViewModels\ResetearPasswordViewModel.cs" />
     <Compile Include="ViewModels\SimularPagoViewModel.cs" />
     <Compile Include="ViewModels\VistaPreviaPedidoViewModel.cs" />
   </ItemGroup>
@@ -284,6 +286,7 @@
     <Content Include="Content\StyleContacto.css" />
     <Content Include="Content\StyleHistorial.css" />
     <Content Include="Content\StyleHome.css" />
+    <Content Include="Content\StyleOlvidarPassword.css" />
     <Content Include="Content\StylePagoExitoso.css" />
     <Content Include="Content\StyleLogin.css" />
     <Content Include="Content\StylePerfil.css" />
@@ -371,6 +374,8 @@
     <Content Include="Views\Cliente\SeleccionarDireccion.cshtml" />
     <Content Include="Views\Home\Blog.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
+    <Content Include="Views\Cliente\OlvidarPassword.cshtml" />
+    <Content Include="Views\Cliente\ResetearPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
