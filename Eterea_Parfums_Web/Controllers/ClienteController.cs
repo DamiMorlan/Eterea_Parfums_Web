@@ -111,6 +111,7 @@ namespace Eterea_Parfums_Web.Controllers
             using (var db = new etereaEntities7())
             {
                 ViewBag.Paises = db.pais
+                    .Where(p => p.id != 1) // 👈 excluye el id 1
                     .Select(p => new SelectListItem
                     {
                         Value = p.id.ToString(),
@@ -118,6 +119,8 @@ namespace Eterea_Parfums_Web.Controllers
                     }).ToList();
             }
         }
+
+
 
         // POST: Cliente/Registrar
         [HttpPost]
