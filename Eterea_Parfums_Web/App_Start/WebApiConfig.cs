@@ -9,13 +9,7 @@ public static class WebApiConfig
 {
     public static void Register(HttpConfiguration config)
     {
-        // (Opcional) CORS
-        // config.EnableCors();
-
-        // Ruteo por atributos
-        config.MapHttpAttributeRoutes();
-
-        // Ruta por defecto: /api/{controller}/{id}
+        config.MapHttpAttributeRoutes(); // necesario para [RoutePrefix]/[Route]
         config.Routes.MapHttpRoute(
             name: "DefaultApi",
             routeTemplate: "api/{controller}/{id}",
