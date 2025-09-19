@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Factura Eterea Parfums</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 20px;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .border th, .border td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        .titulo {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-empresa {
+            font-size: 14px;
+        }
+
+        .cuadro-letra {
+            border: 2px solid black;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 30px;
+            margin: auto;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <table border="1" cellpadding="10" cellspacing="0" width="100%">
+        <tr>
+            <td>
+                <!-- Encabezado -->
+                <table style="width: 100%; margin-bottom: 20px; border: 1px solid black">
+                    <tr>
+                        <td style="width: 12%;"></td>
+                        <!-- Columna izquierda -->
+                        <td style="width: 33%; padding-top: 10px; padding-bottom: 20px; ">
+                            <div class="titulo">Eterea Parfums</div>
+                            <div class="info-empresa">Dirección: Av. Corrientes 1234</div>
+                            <div class="info-empresa">Buenos Aires, Argentina</div>
+                            <div class="info-empresa">Teléfono: 1234-5678</div>
+                            <div class="info-empresa">Web: www.etereaparfums.com.ar</div>
+
+                        </td>
+
+                        <!-- Columna central con la "B" en un cuadro -->
+                        <td style="width: 10%; text-align: center;">
+                            <table style="border: 1px solid black; width: 20px; height: 20px;">
+                                <tr>
+                                    <td style="text-align: center; font-size: 20px; font-weight: bold; padding-top: 5px;">
+                                        A
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <!-- Columna derecha con CUIT y datos de factura -->
+                        <td style="width: 15%; text-align: right;"></td>
+                        <td style="width: 25%; text-align: right;">
+                            <table style="border: 1px solid black; width: 100%;">
+                                <tr><td style="text-align: center; line-height: 5px; height: 5px;">Cuit: 30-12345678-9</td></tr>
+                                <tr><td style="text-align: center; line-height: 5px; height: 5px;">Factura</td></tr>
+                                <tr><td style="text-align: center; line-height: 5px; height: 5px;">Nro: @NUMEROFACTURA</td></tr>
+                                <tr><td style="text-align: center; line-height: 5px; height: 5px;">Fecha: @FECHA</td></tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Datos cliente -->
+                <table class="border" style="margin-bottom: 20px;">
+                    <tr>
+                        <td style="width: 20%;">Cliente:</td>
+                        <td colspan="3" style="width: 80%;">@CLIENTE</td>
+                    </tr>
+                    <tr>
+                        <td>Condicion IVA:</td>
+                        <td style="width: 40%;">@CONDIVA</td>
+                        <td style="width: 20%;">Forma de Pago:</td>
+                        <td>@FORMAPAGO</td>
+                    </tr>
+                    <tr>
+                        <td>DNI/CUIT:</td>
+                        <td colspan="3">@DOCUMENTO</td>
+                    </tr>
+                    <tr>
+                        <td>Domicilio:</td>
+                        <td style="width: 40%;">@DOMICILIO</td>
+                        <td style="width: 20%;">Localidad:</td>
+                        <td>@LOCALIDAD</td>
+                    </tr>
+                </table>
+
+                <!-- Detalle factura -->
+                <table class="border" style="margin-bottom: 30px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Descripción</th>
+                            <th style="width: 12%;">Precio Unitario</th>
+                            <th style="width: 13%;">Cantidad</th>
+                            <th style="width: 15%;">Descuento Total</th>
+                            <th style="width: 20%;">Subtotal</th>
+                            <th style="width: 20%;">Subtotal con iva</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @FILAS
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" style="border: 0px solid white;"></td>
+                            <td style="text-align: right;"><strong>Importe Neto Gravado:</strong></td>
+                            <td style="text-align: right;"> @IMPORTE</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border:0px solid white;"></td>
+                            <td style="text-align: right;"><strong>IVA 21%:</strong></td>
+                            <td style="text-align: right;"> @IVA</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border:0px solid white;"></td>
+                            <td style="text-align: right;"><strong>Bonificación:</strong></td>
+                            <td style="text-align: right;"> @DESCUENTO</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border:0px solid white;"></td>
+                            <td style="text-align: right;"><strong>Recargo Tarjeta:</strong></td>
+                            <td style="text-align: right;">@RECARGO</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border: 0px solid white;"></td>
+                            <td style="text-align: right;"><strong>Importe Total:</strong></td>
+                            <td style="text-align: right;"> @TOTAL</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+    <table>
+        <tr>
+            <td style="text-align: center; font-size: 12px;">
+                La presente factura es válida como comprobante para responsables inscriptos.
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
