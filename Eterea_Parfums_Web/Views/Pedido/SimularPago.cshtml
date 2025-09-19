@@ -31,7 +31,7 @@
                 <!-- Mastercard crédito -->
                 <label class="mp-item">
                     <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
-                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "mastercard.svg" })" class="mp-card" alt="MasterCard" />
+                   <img src="@Url.Content("~/Imagenes/mastercard.svg")"  class="mp-card" alt="MasterCard" />
                     <div class="flex-grow-1">
                         <div>Mastercard **** 0604</div>
                         <small class="text-muted">Crédito</small>
@@ -42,7 +42,7 @@
                 <!-- Visa débito -->
                 <label class="mp-item">
                     <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
-                    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "visa.svg" })" class="mp-card" alt="Visa" />
+                   <img src="@Url.Content("~/Imagenes/visa.svg")"  class="mp-card" alt="Visa" />
                     <div class="flex-grow-1">
                         <div>Visa Débito **** 4321</div>
                         <small class="text-muted">Débito</small>

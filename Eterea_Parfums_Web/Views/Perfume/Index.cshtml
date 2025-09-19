@@ -288,7 +288,7 @@
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
                                                                
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen + ".jpg" })"
+                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" 
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
