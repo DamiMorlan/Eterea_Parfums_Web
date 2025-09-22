@@ -154,7 +154,7 @@
                     <div class="detalle-perfume-card" style="cursor:pointer;" onclick="this.closest('form').submit();">
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="@Url.Action("Mostrar", "Imagen", new { nombre = perfume.Imagen1 + ".jpg" })" class="img-fluid" />
+                               <img src="@Url.Content("~/Imagenes/" + perfume.Imagen1 + ".jpg")"  class="img-fluid" />
                             </div>
                             <div class="col-md-8">
                                 <h5>@perfume.Nombre</h5>

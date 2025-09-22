@@ -37,7 +37,7 @@
             {
                 <div class="resumen-producto">
                     <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
-                        <img src="@Url.Action("Mostrar", "Imagen", new { nombre = item.Imagen + ".jpg" })"
+                       <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" 
                              alt="@item.Nombre"
                              class="img-fluid rounded"
                              style="max-height: 80px; object-fit: contain;" />

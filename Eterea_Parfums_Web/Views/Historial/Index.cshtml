@@ -69,7 +69,7 @@
 else
 {
 <div class="no-historial-container">
-    <img src="@Url.Action("Mostrar", "Imagen", new { nombre = "carro-vacio.png" })" alt="Carro vacío" />
+    <img src="@Url.Content("~/Imagenes/carro-vacio.png")"  alt="Carro vacío" />
     <h3>No se encontraron compras en tu historial.</h3>
     <p>Parece que todavía no has realizado ninguna compra. ¡Explora nuestros perfumes y encuentra tu favorito!</p>
     <a href="@Url.Action("Index", "Perfume")" class="btn btn-primary">Ir a Perfumes</a>
