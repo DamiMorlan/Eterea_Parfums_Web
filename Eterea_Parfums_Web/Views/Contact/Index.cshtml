@@ -10,7 +10,7 @@
     <div class="contact-section">
         <!-- Logo -->
         <div class="logo-eterea-container text-center mb-4">
-            <img src="@Url.Content("~/Imagenes/LogoEterea.png")"  alt="Logo Eterea Parfums" class="logo-eterea" />
+            <img src="@Url.Content("~/Imagenes/LogoEterea.png")" alt="Logo Eterea Parfums" class="logo-eterea" />
         </div>
 
         <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
@@ -42,6 +42,28 @@
                 </li>
             </ul>
 
+            <div class="container text-center">
+                <p class="titulo-contacto h5 pt-1">Nuestras Sucursales</p>
+                <select id="mapSelector" class="form-select w-50 mx-auto mb-3">
+                    
+                    <option value="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3285.6040267226626!2d-58.457547660051624!3d-34.56357987308124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5d3d7ab5c21%3A0x6c3333c1625131b0!2sAv.%20Cabildo%201901%2C%20C1428%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1758483977280!5m2!1ses!2sar">
+                        Sucursal Cabildo
+                    </option>
+                    <option value="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1641.7208353346477!2d-58.43736586107718!3d-34.618277385898224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca46ca0af75b%3A0x1c68deac5c2cde7!2sAv.%20Rivadavia%204990%2C%20C1424%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1758584258869!5m2!1ses!2sar">
+                        Sucursal Caballito
+                    </option>
+
+                </select>
+                <iframe id="mapFrame"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3285.6040267226626!2d-58.457547660051624!3d-34.56357987308124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5d3d7ab5c21%3A0x6c3333c1625131b0!2sAv.%20Cabildo%201901%2C%20C1428%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1758483977280!5m2!1ses!2sar"
+                        width="1024"
+                        height="450"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-rederrer-when-downgrade">
+                </iframe>
+            </div>
+
             <h3 class="mt-4 titulo-contacto">Síguenos</h3>
             <p>Conéctate con nosotros para conocer novedades y promociones:</p>
             <div class="social-icons">
@@ -71,21 +93,27 @@
                 </div>
             }
 
-        <form action="@Url.Action("EnviarContacto", "Contact")" method="post">
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required
-                       value="@Request.Form["nombre"]" />
-            </div>
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" id="email" name="email" required
-                       value="@Request.Form["email"]" />
-            </div>
-            <div class="form-group">
-                <label for="mensaje">Mensaje:</label>
-                <textarea id="mensaje" name="mensaje" required>@Request.Form["mensaje"]</textarea>
-            </div>
-            <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
-        </form>
+            <form action="@Url.Action("EnviarContacto", "Contact")" method="post">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required
+                           value="@Request.Form["nombre"]" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required
+                           value="@Request.Form["email"]" />
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje:</label>
+                    <textarea id="mensaje" name="mensaje" required>@Request.Form["mensaje"]</textarea>
+                </div>
+                <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Mensaje</button>
+            </form>
         </div>
+        <script>const selector = document.getElementById("mapSelector");
+            const iframe = document.getElementById("mapFrame");
+
+            selector.addEventListener("change", function () {
+                iframe.src = this.value;
+            });</script>
