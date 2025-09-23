@@ -4,10 +4,10 @@
 
 @section Styles {
     <link href="~/Content/StyleRegistro.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 }
 
 @model Eterea_Parfums_Web.ViewModels.FormularioClienteViewModel
-
 
 <div class="register-container">
     <!-- Logo -->
@@ -16,67 +16,57 @@
     </div>
 
     <h2 id="title" class="text-center">@ViewBag.Title</h2>
-    <!--<hr class="separator">-->
+
     @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <div class="row">
             <div class="col-md-6">
-                <!-- Nombre -->
+                <!-- Campos personales -->
                 <div class="form-group">
                     <label for="Nombre">Nombre:</label>
                     @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Apellido -->
                 <div class="form-group">
                     <label for="Apellido">Apellido:</label>
                     @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Usuario -->
                 <div class="form-group">
                     <label for="Usuario">Nombre de usuario:</label>
                     @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Clave -->
                 <div class="form-group">
                     <label for="Clave">Contraseña:</label>
                     @Html.PasswordFor(m => m.Clave, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Email -->
                 <div class="form-group">
                     <label for="Email">Email:</label>
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required" })
                     @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- DNI -->
                 <div class="form-group">
                     <label for="Dni">DNI:</label>
                     @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Fecha Nacimiento -->
                 <div class="form-group">
                     <label for="FechaNacimiento">Fecha de Nacimiento:</label>
-                    @Html.TextBoxFor(m => m.FechaNacimiento, "{0:yyyy-MM-dd}", new
-                    {
-                        @class = "form-control",
-                        type = "date"
-                    })
+                    @Html.TextBoxFor(m => m.FechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                     @Html.ValidationMessageFor(m => m.FechaNacimiento, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Celular -->
                 <div class="form-group">
                     <label for="Celular">Celular:</label>
                     @Html.TextBoxFor(m => m.Celular, new { @class = "form-control", required = "required" })
@@ -85,87 +75,65 @@
             </div>
 
             <div class="col-md-6">
-                <!-- País -->
+                <!-- Ubicación -->
                 <div class="form-group">
                     <label for="PaisId">País:</label>
                     @Html.DropDownListFor(
                         m => m.PaisId,
                         ViewBag.Paises as List<SelectListItem>,
                         "Seleccione un país",
-                        new { @class = "form-control", id = "pais" })
+                        new { @class = "form-control select2", id = "pais" })
                     @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Provincia -->
                 <div class="form-group">
                     <label for="ProvinciaId">Provincia:</label>
                     @Html.DropDownListFor(
                         m => m.ProvinciaId,
-                        new List<SelectListItem>(), // Se completa por JS
+                        new List<SelectListItem>(), // se llena por JS
                         "Seleccione una provincia",
-                        new
-                             {
-                            @class = "form-control",
-                            id = "provincia",
-                            data_selected = Model.ProvinciaId
-                        })
+                        new { @class = "form-control select2", id = "provincia" })
                     @Html.ValidationMessageFor(m => m.ProvinciaId, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Localidad -->
                 <div class="form-group">
                     <label for="LocalidadId">Localidad:</label>
                     @Html.DropDownListFor(
                         m => m.LocalidadId,
-                        new List<SelectListItem>(), // Se completa por JS
+                        new List<SelectListItem>(),
                         "Seleccione una localidad",
-                        new
-                             {
-                            @class = "form-control",
-                            id = "localidad",
-                            data_selected = Model.LocalidadId
-                        })
+                        new { @class = "form-control select2", id = "localidad" })
                     @Html.ValidationMessageFor(m => m.LocalidadId, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Calle -->
                 <div class="form-group">
                     <label for="CalleId">Calle:</label>
                     @Html.DropDownListFor(
                         m => m.CalleId,
-                        new List<SelectListItem>(), // Se completa por JS
+                        new List<SelectListItem>(),
                         "Seleccione una calle",
-                        new
-                             {
-                            @class = "form-control",
-                            id = "calle",
-                            data_selected = Model.CalleId
-                        })
+                        new { @class = "form-control select2", id = "calle" })
                     @Html.ValidationMessageFor(m => m.CalleId, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Numeración -->
                 <div class="form-group">
                     <label for="NumeracionCalle">Numeración:</label>
                     @Html.TextBoxFor(m => m.NumeracionCalle, new { @class = "form-control", required = "required" })
                     @Html.ValidationMessageFor(m => m.NumeracionCalle, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Piso -->
                 <div class="form-group">
                     <label for="Piso">Piso:</label>
                     @Html.TextBoxFor(m => m.Piso, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Piso, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Departamento -->
                 <div class="form-group">
                     <label for="Departamento">Departamento:</label>
                     @Html.TextBoxFor(m => m.Departamento, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Departamento, "", new { @class = "text-danger" })
                 </div>
 
-                <!-- Código Postal -->
                 <div class="form-group">
                     <label for="CodigoPostal">Código Postal:</label>
                     @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "form-control" })
@@ -173,7 +141,6 @@
                 </div>
             </div>
 
-            <!-- Comentarios -->
             <div class="form-group col-md-12">
                 <label for="ComentariosDomicilio">Comentarios del domicilio:</label>
                 @Html.TextAreaFor(m => m.ComentariosDomicilio, new { @class = "form-control", rows = 3, maxlength = 50 })
@@ -188,8 +155,99 @@
     }
 </div>
 
-<div style="margin-bottom: 50px;"></div> <!-- Espacio debajo del contenedor -->
+<div style="margin-bottom: 50px;"></div>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+    // Inicializar Select2
+    $('.select2').select2({
+        width: '100%',
+        placeholder: "Seleccione una opción",
+        allowClear: true,
+        containerCssClass: "mi-select2",        // clase personalizada para el contenedor
+        dropdownCssClass: "mi-select2-dropdown" // clase personalizada para el dropdown
+    });
+
+    // Inicialmente deshabilitar los dependientes
+    $('#provincia, #localidad, #calle').prop('disabled', true);
+
+    // Función genérica para llenar selects dinámicos
+    function cargarSelect(url, parametro, selectDestino) {
+        $.getJSON(url, parametro, function (data) {
+            var $select = $(selectDestino);
+            $select.empty().append('<option></option>'); // placeholder
+            $.each(data, function (i, item) {
+                $select.append(new Option(item.nombre, item.id, false, false));
+            });
+            $select.prop('disabled', false).trigger('change');
+        });
+    }
+
+    // Cambio de país → provincias
+    $('#pais').change(function () {
+        var paisId = $(this).val();
+
+        // Limpiar y deshabilitar dependientes
+        $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
+        $('#localidad').val(null).trigger('change').prop('disabled', true);
+        $('#calle').val(null).trigger('change').prop('disabled', true);
+
+        if (paisId) cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
+    });
+
+    // Cambio de provincia → localidades
+    $('#provincia').change(function () {
+        var provinciaId = $(this).val();
+
+        // Limpiar y deshabilitar dependientes
+        $('#localidad').val(null).trigger('change').prop('disabled', !provinciaId);
+        $('#calle').val(null).trigger('change').prop('disabled', true);
+
+        if (provinciaId) cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
+    });
+
+    // Cambio de localidad → calles
+    $('#localidad').change(function () {
+        var localidadId = $(this).val();
+
+        // Limpiar y deshabilitar calle
+        $('#calle').val(null).trigger('change').prop('disabled', !localidadId);
+
+        if (localidadId) cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
+    });
+
+    // Precargar valores si estamos editando
+    var paisSelected = '@Model.PaisId';
+    var provinciaSelected = '@Model.ProvinciaId';
+    var localidadSelected = '@Model.LocalidadId';
+    var calleSelected = '@Model.CalleId';
+
+    if (paisSelected) {
+        $('#pais').val(paisSelected).trigger('change');
+
+        if (provinciaSelected) {
+            setTimeout(function () {
+                $('#provincia').val(provinciaSelected).trigger('change');
+            }, 300);
+        }
+        if (localidadSelected) {
+            setTimeout(function () {
+                $('#localidad').val(localidadSelected).trigger('change');
+            }, 600);
+        }
+        if (calleSelected) {
+            setTimeout(function () {
+                $('#calle').val(calleSelected).trigger('change');
+            }, 900);
+        }
+    }
+});
+
+
+    </script>
 }
