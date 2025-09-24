@@ -9,12 +9,11 @@ using System.Web.Http;
 [RoutePrefix("api/imagenes")]
 public class ImagesController : ApiController
 {
-    private static string MapUploadsPath()
-        => HostingEnvironment.MapPath("~/Uploads"); // no depende de HttpContext
+    private static string MapImagesPath() => HostingEnvironment.MapPath("~/imagenes");
 
-    private static string EnsureUploadsPath()
+    private static string EnsureImagesPath()
     {
-        var p = MapUploadsPath();
+        var p = MapImagesPath();
         Directory.CreateDirectory(p);
         return p;
     }
@@ -25,65 +24,103 @@ public class ImagesController : ApiController
     {
         var req = HttpContext.Current?.Request;
         if (req == null || req.Files.Count == 0)
-            return BadRequest("Archivo requerido (multipart/form-data con 'file').");
+            return BadRequest("Archivo requerido (multipart/form-data con key 'file').");
 
         var file = req.Files[0];
 
-        // Validaciones básicas
-        var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        // Validaciones
+        var ext = (Path.GetExtension(file.FileName) ?? "").ToLowerInvariant();
         if (ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".webp")
             return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
 
-        // Renombrar para evitar colisiones
-        var safeName = Guid.NewGuid().ToString("N") + ext;
-        var uploads = EnsureUploadsPath();
-        var fullPath = Path.Combine(uploads, safeName);
+        // Nombre de archivo deseado (si lo envían) o el original
+        var desiredName = req.Form["fileName"];
+        string safeBaseName;
+
+        if (!string.IsNullOrWhiteSpace(desiredName))
+        {
+            // limpiar y asegurar extensión
+            var dn = Path.GetFileNameWithoutExtension(desiredName);
+            safeBaseName = SanitizeFileName(dn);
+            // si vino sin extensión, usamos la del archivo
+            if (Path.GetExtension(desiredName).Equals("", StringComparison.Ordinal))
+                ext = ext; // ya está
+            else
+                ext = Path.GetExtension(desiredName).ToLowerInvariant();
+        }
+        else
+        {
+            var originalName = Path.GetFileNameWithoutExtension(file.FileName);
+            safeBaseName = SanitizeFileName(originalName);
+        }
+
+        var imagesDir = EnsureImagesPath();
+
+        // Evitar colisión: sufijos -1, -2…
+        string finalName = GetNonCollidingName(imagesDir, safeBaseName, ext);
+        string fullPath = Path.Combine(imagesDir, finalName);
 
         file.SaveAs(fullPath);
 
-        // URL pública directa (estático) o vía API:
+        // URL pública directa (IIS sirve estáticos)
         var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-        var publicUrl = $"{baseUrl}/Uploads/{safeName}";
-        var apiUrl = $"{baseUrl}/api/imagenes/{safeName}";
+        var publicUrl = $"{baseUrl}/imagenes/{finalName}";
 
-        return Ok(new { fileName = safeName, url = publicUrl, api = apiUrl });
+        var info = new FileInfo(fullPath);
+        return Ok(new
+        {
+            fileName = finalName,
+            url = publicUrl,
+            relativePath = $"/imagenes/{finalName}",
+            size = info.Length
+        });
     }
 
-    // GET /api/imagenes/{nombre}
+    // Helpers
+    private static string SanitizeFileName(string name)
+    {
+        foreach (var c in Path.GetInvalidFileNameChars())
+            name = name.Replace(c, '-');
+        // opcional: bajar a minúsculas y recortar
+        return (name ?? "img").Trim().ToLowerInvariant();
+    }
+
+    private static string GetNonCollidingName(string dir, string baseName, string ext)
+    {
+        string candidate = baseName + ext;
+        int i = 1;
+        while (File.Exists(Path.Combine(dir, candidate)))
+        {
+            candidate = $"{baseName}-{i}{ext}";
+            i++;
+        }
+        return candidate;
+    }
+
+    // (Opcional) GET /api/imagenes/{name} — si preferís servir por API
     [HttpGet, Route("{name}")]
     public HttpResponseMessage Get(string name)
     {
-        var fileName = Path.GetFileName(name); // evita traversal
-        var fullPath = Path.Combine(MapUploadsPath(), fileName);
-
+        var fileName = Path.GetFileName(name);
+        var fullPath = Path.Combine(MapImagesPath(), fileName);
         if (!File.Exists(fullPath))
             return Request.CreateResponse(HttpStatusCode.NotFound);
 
         var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var resp = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StreamContent(stream)
-        };
+        var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
         resp.Content.Headers.ContentType =
             new System.Net.Http.Headers.MediaTypeHeaderValue(MimeMapping.GetMimeMapping(fileName));
-        // Cache básico (1 día)
-        resp.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue
-        {
-            Public = true,
-            MaxAge = TimeSpan.FromDays(1)
-        };
+        resp.Headers.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { Public = true, MaxAge = TimeSpan.FromDays(1) };
         return resp;
     }
 
-    // DELETE /api/imagenes/{nombre}
+    // (Opcional) DELETE /api/imagenes/{name}
     [HttpDelete, Route("{name}")]
     public IHttpActionResult Delete(string name)
     {
         var fileName = Path.GetFileName(name);
-        var fullPath = Path.Combine(MapUploadsPath(), fileName);
-
+        var fullPath = Path.Combine(MapImagesPath(), fileName);
         if (!File.Exists(fullPath)) return NotFound();
-
         File.Delete(fullPath);
         return StatusCode(HttpStatusCode.NoContent);
     }
