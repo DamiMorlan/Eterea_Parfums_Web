@@ -33,7 +33,7 @@
             {
                 var promo = Model.Promociones[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Url.Content("~/Imagenes/" + promo.banner + ".jpg")"
+                    <img src="@Url.Content("~/imagenes/" + promo.banner + ".jpg")"
                      class="d-block w-100" alt="@promo.nombre" />
                 </div>
             }
@@ -138,7 +138,7 @@
                                              data-nombre="@perfume.Nombre"
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                            <img src="@Url.Content("~/imagenes/" + perfume.Imagen + ".jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="@($"{prefix}imagen-{cardId}")" />
@@ -160,7 +160,7 @@
                                                                 data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
                                                                 data-tiene-promo="@(p.TienePromocion)"
                                                                 data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
-                                                                data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
                                                                 data-ml="@p.Ml"
@@ -303,7 +303,7 @@
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
                                            
-                                                  <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                                                  <img src="@Url.Content("~/imagenes/" + perfume.Imagen + ".jpg")"
                                                      
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
@@ -326,7 +326,7 @@
                                                                 data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
                                                                 data-tiene-promo="@(p.TienePromocion)"
                                                                 data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
-                                                                data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                                data-imagen="@Url.Content("~/Imagenes/" + p.Imagen + ".jpg")"
                                                                 data-marca="@p.Marca"
                                                                 data-stock="@p.StockDisponible"
                                                                 data-ml="@p.Ml"
@@ -452,6 +452,10 @@
     <!-- Java Script -->
     @section Scripts {
         <script>
+            const formatARS = (v) =>
+                ('$' + Number(v).toLocaleString('es-AR', { minimumFractionDigits: 0 }))
+                    .replace(/\u00A0/g, '');
+
             document.addEventListener("DOMContentLoaded", () => {
                 const promoIndices = {};
 
@@ -483,16 +487,14 @@
                     if (precioOriginalElem) {
                         if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
                             precioOriginalElem.style.display = '';
-                            precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                            precioOriginalElem.textContent = formatARS(promo.PrecioOriginal);
                         } else {
                             precioOriginalElem.style.display = 'none';
                         }
                     }
 
                     if (precioDescuentoElem) {
-                        precioDescuentoElem.textContent = promo.PrecioConDescuento
-                            ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
-                            : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                        precioDescuentoElem.textContent = formatARS(promo.PrecioConDescuento ?? promo.PrecioOriginal);
                     }
 
                     if (leyendaPromoEl) {
@@ -570,12 +572,12 @@
                         const precioDescuentoElem = card.querySelector('.precio-descuento');
                         if (precioOriginalElem && precioDescuentoElem) {
                             if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                                precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                                precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioOriginalElem.textContent = formatARS(nuevoPrecio);
+                                precioDescuentoElem.textContent = formatARS(nuevoDescuento);
                                 precioOriginalElem.style.display = '';
                             } else {
                                 precioOriginalElem.style.display = 'none';
-                                precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioDescuentoElem.textContent = formatARS(nuevoPrecio);
                             }
                         }
 
@@ -681,8 +683,8 @@
                             <p>Género: ${data.genero}</p>
                             <p>Precio: ${
                                 data.precioDescuento
-                                    ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                                    : `<strong>$${data.precioOriginal}</strong>`
+                                ? `<del>${formatARS(data.precioOriginal)}</del> <strong>${formatARS(data.precioDescuento)}</strong>`
+                                : `<strong>${formatARS(data.precioOriginal)}</strong>`
                             }</p>
                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                         `;
