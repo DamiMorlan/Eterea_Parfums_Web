@@ -70,14 +70,14 @@
 
                 <div class="d-flex justify-content-between">
                     <span>Productos</span>
-                    <span>$ @Model.Monto.ToString("N0")</span>
+                    <span>$ @Model.Monto.ToString("N2")</span>
                 </div>
 
                 <hr />
 
                 <div class="d-flex justify-content-between fw-bold fs-5">
                     <span>Pagás</span>
-                    <span>$ @Model.Monto.ToString("N0")</span>
+                    <span>$ @Model.Monto.ToString("N2")</span>
                 </div>
 
                 <form action="@Url.Action("ConfirmarPago","Pedido")" method="post" class="mt-4">
