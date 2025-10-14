@@ -84,28 +84,40 @@ public class ImagenApiController : ApiController
 
         var file = req.Files[0];
 
-        // Aceptamos newName o fileName (compatibilidad con cliente)
+        // Aceptar newName o fileName
         var desiredFromForm = req.Form["newName"];
         if (string.IsNullOrWhiteSpace(desiredFromForm))
             desiredFromForm = req.Form["fileName"];
 
-        var desiredName = SafeFileName(desiredFromForm);
+        // Extensión real del archivo subido
+        var extFromUpload = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        if (!IsAllowedExt(extFromUpload))
+            return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
+
         string finalName;
 
-        if (!string.IsNullOrWhiteSpace(desiredName))
+        if (!string.IsNullOrWhiteSpace(desiredFromForm))
         {
-            if (!IsAllowedExt(desiredName))
-                return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
+            var safeDesired = SafeFileName(desiredFromForm);               // sin path traversal
+            var desiredExt = Path.GetExtension(safeDesired)?.ToLowerInvariant();
 
-            finalName = desiredName;
+            // Si el nombre llega sin extensión, usar la del archivo subido
+            if (string.IsNullOrWhiteSpace(desiredExt))
+            {
+                finalName = safeDesired + extFromUpload;
+            }
+            else
+            {
+                if (!IsAllowedExt(desiredExt))
+                    return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
+
+                finalName = safeDesired; // ya trae extensión válida
+            }
         }
         else
         {
-            var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!IsAllowedExt(ext))
-                return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
-
-            finalName = Guid.NewGuid().ToString("N") + ext;
+            // Sin nombre => generar GUID + ext
+            finalName = Guid.NewGuid().ToString("N") + extFromUpload;
         }
 
         var images = EnsureImagesPath();
@@ -113,7 +125,7 @@ public class ImagenApiController : ApiController
 
         try
         {
-            if (File.Exists(fullPath)) File.Delete(fullPath); // sobreescribe si existía
+            if (File.Exists(fullPath)) File.Delete(fullPath); // overwrite
             file.SaveAs(fullPath);
 
             return Ok(new
@@ -128,7 +140,6 @@ public class ImagenApiController : ApiController
             return InternalServerError(ex);
         }
     }
-
     // ===================================================
     // POST /api/imagenes/replace
     // multipart/form-data:
@@ -148,20 +159,35 @@ public class ImagenApiController : ApiController
             return BadRequest("Archivo requerido (multipart/form-data con 'file').");
 
         var file = req.Files[0];
-        var oldName = SafeFileName(req.Form["oldName"]);
+        var oldName = SafeFileName(req.Form["oldName"]); // puede venir vacío
         var newName = SafeFileName(req.Form["newName"]); // opcional
 
+        var extFromUpload = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        if (!IsAllowedExt(extFromUpload))
+            return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
+
         string finalName;
+
         if (!string.IsNullOrWhiteSpace(newName))
         {
-            if (!IsAllowedExt(newName)) return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
-            finalName = newName;
+            var desiredExt = Path.GetExtension(newName)?.ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(desiredExt))
+            {
+                // si no trae extensión, agregamos la del archivo
+                finalName = newName + extFromUpload;
+            }
+            else
+            {
+                if (!IsAllowedExt(desiredExt))
+                    return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
+
+                finalName = newName;
+            }
         }
         else
         {
-            var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!IsAllowedExt(ext)) return BadRequest("Extensión no permitida (.jpg/.jpeg/.png/.webp).");
-            finalName = Guid.NewGuid().ToString("N") + ext;
+            // sin newName => generar GUID
+            finalName = Guid.NewGuid().ToString("N") + extFromUpload;
         }
 
         var images = EnsureImagesPath();
@@ -172,13 +198,12 @@ public class ImagenApiController : ApiController
             if (File.Exists(newFullPath)) File.Delete(newFullPath);
             file.SaveAs(newFullPath);
 
+            // borrar viejo si corresponde (y si es distinto)
             if (!string.IsNullOrWhiteSpace(oldName))
             {
                 var oldFullPath = Path.Combine(images, oldName);
                 if (!oldName.Equals(finalName, StringComparison.OrdinalIgnoreCase) && File.Exists(oldFullPath))
-                {
                     File.Delete(oldFullPath);
-                }
             }
 
             return Ok(new
