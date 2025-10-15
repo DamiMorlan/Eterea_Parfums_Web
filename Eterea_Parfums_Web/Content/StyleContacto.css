@@ -200,3 +200,44 @@ button[type="submit"] {
     padding-bottom: 6px;
     margin-bottom: 15px;
 }
+
+/* Contenedor flexible del mapa */
+.map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* opcional, para no hacerlo gigante en pantallas grandes */
+    margin: 0 auto;
+    padding-bottom: 56.25%; /* proporción 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+    /* Mapa responsivo con zoom */
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        touch-action: pan-x pan-y; /* permite desplazamiento táctil */
+    }
+
+/* Ajustes adicionales por dispositivo */
+@media (max-width: 768px) {
+    .map-container {
+        padding-bottom: 75%; /* proporción más alta en celulares */
+    }
+
+    #mapSelector {
+        width: 80% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-container {
+        padding-bottom: 100%; /* cuadrado en pantallas muy pequeñas */
+    }
+}
