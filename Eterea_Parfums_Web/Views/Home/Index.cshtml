@@ -7,6 +7,7 @@
 @section Styles {
     <link href="~/Content/StyleHome.css" rel="stylesheet" type="text/css" />
 }
+
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">@TempData["Mensaje"]</div>
@@ -34,7 +35,7 @@
                 var promo = Model.Promociones[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
                     <img src="@Url.Content("~/Imagenes/" + promo.banner + ".jpg")"
-                     class="d-block w-100" alt="@promo.nombre" />
+                         class="d-block w-100" alt="@promo.nombre" />
                 </div>
             }
         </div>
@@ -59,32 +60,11 @@
         <div id="carouselMarcas" class="carousel slide" data-bs-ride="false">
             <div class="carousel-inner">
                 @{
-                    var itemsPorSlide = 4;
                     int totalItems = Model.Marcas.Count;
-                    int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
-                    for (int i = 0; i < totalSlides; i++)
-                    {
-                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <div class="row justify-content-center">
-                                @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
-                                {
-                                    var marca = Model.Marcas[i * itemsPorSlide + j];
-                                    <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4">
-                                        <div class="card text-center mb-3 border-0 shadow-sm rounded">
-                                            <div class="card-body">
-                                                <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
-                                                   class="card-title text-decoration-none"
-                                                   style="font-family: 'Georgia', serif; color: inherit;">
-                                                    @marca.Nombre
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
                 }
+                <div class="carousel-inner" id="carouselMarcasInner">
+                    <!-- Los slides se generarán por JS -->
+                </div>
             </div>
 
             <!-- FLECHA IZQUIERDA -->
@@ -302,9 +282,8 @@
                                              data-nombre="@perfume.Nombre"
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                           
-                                                  <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
-                                                     
+
+                                            <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="@($"{prefix}imagen-{cardId}")" />
@@ -724,7 +703,67 @@
 
             });
 
+
+
+            //marcar responsibas
+            document.addEventListener("DOMContentLoaded", () => {
+
+                const marcas = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Marcas));
+                const carouselInner = document.getElementById("carouselMarcasInner");
+
+                function generarSlides() {
+                    carouselInner.innerHTML = ""; // Limpiar slides
+                    let itemsPorSlide = 4; // Desktop por defecto
+
+                    const ancho = window.innerWidth;
+
+                    if (ancho < 576) { // Celular
+                        itemsPorSlide = 1;
+                    } else if (ancho < 992) { // Tablet
+                        itemsPorSlide = 2;
+                    } else { // Desktop
+                        itemsPorSlide = 4;
+                    }
+
+                    const totalSlides = Math.ceil(marcas.length / itemsPorSlide);
+
+                    for (let i = 0; i < totalSlides; i++) {
+                        const slideDiv = document.createElement("div");
+                        slideDiv.className = "carousel-item" + (i === 0 ? " active" : "");
+
+                        const rowDiv = document.createElement("div");
+                        rowDiv.className = "row justify-content-center";
+
+                        for (let j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < marcas.length; j++) {
+                            const marca = marcas[i * itemsPorSlide + j];
+
+                            const colDiv = document.createElement("div");
+                            colDiv.className = "col-12 col-sm-6 col-lg-3 mb-4"; // Ajuste responsive
+                            colDiv.innerHTML = `
+                                <div class="card text-center mb-3 border-0 shadow-sm rounded">
+                                    <div class="card-body">
+                                        <a href="/Perfume/Index?marcasSeleccionadas=${marca.Nombre}"
+                                           class="card-title text-decoration-none"
+                                           style="font-family: 'Georgia', serif; color: inherit;">
+                                           ${marca.Nombre}
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            rowDiv.appendChild(colDiv);
+                        }
+
+                        slideDiv.appendChild(rowDiv);
+                        carouselInner.appendChild(slideDiv);
+                    }
+                }
+
+                generarSlides();
+                window.addEventListener("resize", generarSlides);
+
+            });
         </script>
+
     }
 
 
