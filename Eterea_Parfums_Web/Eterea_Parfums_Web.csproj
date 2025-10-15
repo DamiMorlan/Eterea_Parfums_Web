@@ -772,6 +772,7 @@
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Cliente\OlvidarPassword.cshtml" />
     <Content Include="Views\Cliente\ResetearPassword.cshtml" />
+    <Content Include="Views\Home\PreguntasFrecuentes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -60,6 +60,11 @@
                         @Html.ActionLink("Contacto", "Index", "Contact", null,
                             new { @class = "nav-link " + (currentController == "Contact" ? "active" : "") })
                     </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("PreguntasFrecuentes", "PreguntasFrecuentes", "Home", null,
+                                    new { @class = "nav-link " + (currentAction == "PreguntasFrecuentes" ? "active" : "") })
+                    </li>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav">
