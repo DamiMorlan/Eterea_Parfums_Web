@@ -78,13 +78,13 @@
         public int? NumeracionCalle { get; set; }
 
         [Display(Name = "Piso:")]
-        [Required(ErrorMessage = "Debe ingresar un número de piso")]
+        //[Required(ErrorMessage = "Debe ingresar un número de piso")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Piso { get; set; }
 
         [Display(Name = "Departamento:")]
-        [Required(ErrorMessage = "Debe ingresar un número de departamento")]
+        //[Required(ErrorMessage = "Debe ingresar un número de departamento")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Departamento { get; set; }

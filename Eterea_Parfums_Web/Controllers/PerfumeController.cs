@@ -199,9 +199,9 @@ namespace Eterea_Parfums_Web.Controllers
                                 else if (promo.descuento > 10)
                                 {
                                     var descuento = promo.descuento;
-                                    var precio2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
+                                    var precio2daUnidad = p.precio_en_pesos * (1 - (descuento * 2 / 100.0));
                                     precioConDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
-                                    leyenda = $"Promoción <br> {descuento * 2}% segunda unidad";
+                                    leyenda = $"Promoción <br> {descuento * 2}% segunda unidad";                               
                                 }
 
                                 if (precioConDescuento.HasValue)
@@ -403,7 +403,7 @@ namespace Eterea_Parfums_Web.Controllers
                                 else if (promo.descuento > 10)
                                 {
                                     var descuento = promo.descuento;
-                                    var precio2daUnidad = p.precio_en_pesos * (1 - (descuento / 100.0));
+                                    var precio2daUnidad = p.precio_en_pesos * (1 - (descuento * 2 / 100.0));
                                     precioConDescuento = Math.Round((p.precio_en_pesos + precio2daUnidad) / 2, 2);
                                     leyenda = $"Promoción <br> {descuento * 2}% segunda unidad";
                                 }

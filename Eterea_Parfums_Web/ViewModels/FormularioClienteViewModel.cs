@@ -68,12 +68,12 @@ namespace Eterea_Parfums_Web.ViewModels
         [Range(1, 99999, ErrorMessage = "Ingrese un número de hasta 5 dígitos.")]
         public int? NumeracionCalle { get; set; }
 
-        [Required(ErrorMessage = "Debe ingresar un número de piso")]
+        //[Required(ErrorMessage = "Debe ingresar un número de piso")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Piso { get; set; }
 
-        [Required(ErrorMessage = "Debe ingresar un número de departamento")]
+        //[Required(ErrorMessage = "Debe ingresar un número de departamento")]
         [StringLength(5, ErrorMessage = "Máximo 5 caracteres.")]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "Solo letras y números")]
         public string Departamento { get; set; }
