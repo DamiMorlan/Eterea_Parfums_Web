@@ -5,6 +5,36 @@
 @section Styles {
     <link href="~/Content/StyleRegistro.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        /* --- Adaptar Select2 al estilo .form-control rosa --- */
+        .select2-container--default .select2-selection--single {
+            height: 45px !important;
+            border: 1px solid #d9b8c1 !important;
+            border-radius: 8px !important;
+            padding: 6px 10px !important;
+            font-size: 1em !important;
+            box-shadow: none !important;
+            transition: border-color 0.3s;
+        }
+
+            .select2-container--default .select2-selection--single:focus,
+            .select2-container--default.select2-container--open .select2-selection--single {
+                border-color: #a0435c !important;
+            }
+
+        .select2-container--default .select2-selection__arrow {
+            height: 43px !important;
+            right: 10px;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            padding-left: 2px !important;
+        }
+    </style>
 }
 
 @model Eterea_Parfums_Web.ViewModels.FormularioClienteViewModel
@@ -85,6 +115,7 @@
                         new { @class = "form-control select2", id = "pais" })
                     @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
+
 
                 <div class="form-group">
                     <label for="ProvinciaId">Provincia:</label>
