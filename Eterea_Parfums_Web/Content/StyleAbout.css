@@ -161,8 +161,10 @@ body {
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #f8f9fa; /* o el fondo que uses normalmente */
-    color: #333;
+    /*
+    background-color: #f9f1f3; /* o el fondo que uses normalmente 
+    color: #aa667a;
+    */
     box-shadow: none;
     border-color: transparent;
 }
