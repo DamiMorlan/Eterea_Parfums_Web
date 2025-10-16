@@ -6,6 +6,36 @@
 
 @section Styles {
     <link href="~/Content/StyleRegistro.css" rel="stylesheet" type="text/css" />
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        /* --- Adaptar Select2 al estilo .form-control rosa --- */
+        .select2-container--default .select2-selection--single {
+            height: 45px !important;
+            border: 1px solid #d9b8c1 !important;
+            border-radius: 8px !important;
+            padding: 6px 10px !important;
+            font-size: 1em !important;
+            box-shadow: none !important;
+            transition: border-color 0.3s;
+        }
+
+            .select2-container--default .select2-selection--single:focus,
+            .select2-container--default.select2-container--open .select2-selection--single {
+                border-color: #a0435c !important;
+            }
+
+        .select2-container--default .select2-selection__arrow {
+            height: 43px !important;
+            right: 10px;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            padding-left: 2px !important;
+        }
+    </style>
 }
 
 <div class="register-container">
@@ -14,21 +44,18 @@
     @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger mb‑3" })
- 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
         <div class="row">
             <div class="col-md-6">
-
                 <div class="form-group">
                     @Html.LabelFor(m => m.Nombre)
                     @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                     @if (string.Equals(Request.QueryString["primerLogin"], "true", StringComparison.OrdinalIgnoreCase))
-
                     {
                         <input type="hidden" name="primerLogin" value="true" />
                     }
-
                 </div>
 
                 <div class="form-group">
@@ -72,37 +99,34 @@
                     @Html.TextBoxFor(m => m.Celular, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
                 </div>
-
-
-
             </div>
 
             <div class="col-md-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.PaisId)
                     @Html.DropDownListFor(m => m.PaisId, ViewBag.Paises as List<SelectListItem>,
-                        "Seleccione un país", new { @class = "form-control", id = "pais", data_selected = Model.PaisId })
+                        "Seleccione un país", new { @class = "form-control select2", id = "pais", data_selected = Model.PaisId })
                     @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.ProvinciaId)
                     @Html.DropDownListFor(m => m.ProvinciaId, new List<SelectListItem>(),
-                        "Seleccione una provincia", new { @class = "form-control", id = "provincia", data_selected = Model.ProvinciaId })
+                        "Seleccione una provincia", new { @class = "form-control select2", id = "provincia", data_selected = Model.ProvinciaId })
                     @Html.ValidationMessageFor(m => m.ProvinciaId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.LocalidadId)
                     @Html.DropDownListFor(m => m.LocalidadId, new List<SelectListItem>(),
-                        "Seleccione una localidad", new { @class = "form-control", id = "localidad", data_selected = Model.LocalidadId })
+                        "Seleccione una localidad", new { @class = "form-control select2", id = "localidad", data_selected = Model.LocalidadId })
                     @Html.ValidationMessageFor(m => m.LocalidadId, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.CalleId)
                     @Html.DropDownListFor(m => m.CalleId, new List<SelectListItem>(),
-                        "Seleccione una calle", new { @class = "form-control", id = "calle", data_selected = Model.CalleId })
+                        "Seleccione una calle", new { @class = "form-control select2", id = "calle", data_selected = Model.CalleId })
                     @Html.ValidationMessageFor(m => m.CalleId, "", new { @class = "text-danger" })
                 </div>
 
@@ -147,5 +171,107 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-    
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+    $(document).ready(function () {
+        // Inicializar Select2 con personalización
+        $(".select2").select2({
+            width: '100%',
+            placeholder: "Seleccione una opción",
+            allowClear: true,
+            language: {
+                noResults: () => "No hay resultados",
+                searching: () => "Buscando..."
+            },
+            containerCssClass: "mi-select2",
+            dropdownCssClass: "mi-select2-dropdown"
+        });
+
+        // Inicialmente deshabilitar los select dependientes
+        $('#provincia, #localidad, #calle').prop('disabled', true);
+
+        // Función genérica para cargar select dinámicamente
+        function cargarSelect(url, parametro, selectDestino) {
+            $.getJSON(url, parametro, function (data) {
+                const $select = $(selectDestino);
+                $select.empty().append('<option></option>'); // Placeholder vacío
+                $.each(data, function (i, item) {
+                    $select.append(new Option(item.nombre, item.id, false, false));
+                });
+                $select.prop('disabled', false).trigger('change');
+            });
+        }
+
+        // Cambio de país → cargar provincias
+        $('#pais').on('change', function () {
+            const paisId = $(this).val();
+
+            // Limpiar y deshabilitar dependientes
+            $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
+            $('#localidad').val(null).trigger('change').prop('disabled', true);
+            $('#calle').val(null).trigger('change').prop('disabled', true);
+
+            // Cargar provincias si hay país seleccionado
+            if (paisId) {
+                cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
+            }
+        });
+
+        // Cambio de provincia → cargar localidades
+        $('#provincia').on('change', function () {
+            const provinciaId = $(this).val();
+
+            // Limpiar y deshabilitar dependientes
+            $('#localidad').val(null).trigger('change').prop('disabled', !provinciaId);
+            $('#calle').val(null).trigger('change').prop('disabled', true);
+
+            // Cargar localidades si hay provincia
+            if (provinciaId) {
+                cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
+            }
+        });
+
+        // Cambio de localidad → cargar calles
+        $('#localidad').on('change', function () {
+            const localidadId = $(this).val();
+
+            // Limpiar y deshabilitar calle
+            $('#calle').val(null).trigger('change').prop('disabled', !localidadId);
+
+            // Cargar calles si hay localidad
+            if (localidadId) {
+                cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
+            }
+        });
+
+        // Precargar valores si estamos editando el perfil
+        const paisSelected = '@Model.PaisId';
+        const provinciaSelected = '@Model.ProvinciaId';
+        const localidadSelected = '@Model.LocalidadId';
+        const calleSelected = '@Model.CalleId';
+
+        if (paisSelected) {
+            $('#pais').val(paisSelected).trigger('change');
+
+            if (provinciaSelected) {
+                setTimeout(function () {
+                    $('#provincia').val(provinciaSelected).trigger('change');
+                }, 300);
+            }
+
+            if (localidadSelected) {
+                setTimeout(function () {
+                    $('#localidad').val(localidadSelected).trigger('change');
+                }, 600);
+            }
+
+            if (calleSelected) {
+                setTimeout(function () {
+                    $('#calle').val(calleSelected).trigger('change');
+                }, 900);
+            }
+        }
+    });
+    </script>
 }

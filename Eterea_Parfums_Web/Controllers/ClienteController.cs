@@ -498,7 +498,8 @@ namespace Eterea_Parfums_Web.Controllers
             {
                 clienteExistente.clave = PasswordHelper.CrearHash(model.Clave);
             }
-            TempData["Mensaje"] = "Perfil editado correctamente: " + clienteExistente.usuario;
+            
+            TempData["Mensaje"] = "Perfil fue editado correctamente";
             db.SaveChanges();
     
             if (primerLogin == true)
@@ -508,7 +509,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
             Session["usuarioLogueado"] = clienteExistente;
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("VerPerfil", "Cliente");
         }
 
 

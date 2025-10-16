@@ -6,6 +6,11 @@
     <link href="~/Content/StyleVerPerfil.css" rel="stylesheet" type="text/css" />
 }
 
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+
 @model Eterea_Parfums_Web.Models.cliente
 
 <div class="register-container">
