@@ -28,5 +28,7 @@ namespace Eterea_Parfums_Web.ViewModels
         // ✅ Nuevas propiedades para cálculos en VistaPrevia
         public double TotalSinDescuento { get; set; }
         public double DescuentoAplicado { get; set; }
+
+
     }
 }
