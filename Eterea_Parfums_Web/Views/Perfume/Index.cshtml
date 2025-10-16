@@ -2,7 +2,7 @@
 
 @{
     // Base absoluta/relativa hacia tu API de imágenes
-    var API_IMG = Url.Content("~/api/imagenes/");
+    var API_IMG = Url.Content("~/imagenes/");
 }
 
 
@@ -294,7 +294,7 @@
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
+                               <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
@@ -316,7 +316,7 @@
                                                     data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
                                                     data-tiene-promo="@(p.TienePromocion)"
                                                     data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
-                                                    data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                    data-imagen="@($"{API_IMG}{p.Imagen}.jpg")"
                                                     data-marca="@p.Marca"
                                                     data-stock="@p.StockDisponible"
                                                     data-ml="@p.Ml"
@@ -482,6 +482,9 @@
 <!-- Java Script -->
 @section Scripts {
     <script>
+
+        const API_IMG = '@API_IMG';
+
         document.addEventListener("DOMContentLoaded", () => {
             const promoIndices = {};
 
@@ -705,7 +708,7 @@
                      }
 
                      contenedor.innerHTML = `
-                       <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
+                       <img src="${API_IMG}${data.imagen}.jpg" alt="${data.nombre}" />
                          <p><strong>${data.nombre}</strong></p>
                          <p>${data.tipo} - ${data.presentacion} ml</p>
                          <p>Género: ${data.genero}</p>
