@@ -3,6 +3,12 @@
 
 
 @{
+    // Base absoluta/relativa hacia tu API de imágenes
+    var API_IMG = Url.Content("~/imagenes/");
+}
+
+
+@{
     ViewBag.Title = "Details";
 }
 
@@ -49,10 +55,10 @@
                         <div class="swiper gallery-thumbs-vertical">
                             <div class="swiper-wrapper bg-white mx-2">
                                 <div class="swiper-slide">
-                                    <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")"  class="img-fluid" />
+                                    <img src="@($"{API_IMG}{Model.Perfume.imagen1}.jpg")" class="img-fluid" />
                                 </div>
                                 <div class="swiper-slide">
-                                   <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                                    <img src="@($"{API_IMG}{Model.Perfume.imagen2}.jpg")" class="img-fluid" />
 
                                 </div>
                             </div>
@@ -67,12 +73,12 @@
                             <div class="swiper-wrapper me-0">
                                 <div class="swiper-slide text-center me-0">
                                     <div class="swiper-zoom-container me-0">
-                                        <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen1 + ".jpg")" class="img-fluid" />
+                                        <img src="@($"{API_IMG}{Model.Perfume.imagen1}.jpg")" class="img-fluid" />
                                     </div>
                                 </div>
                                 <div class="swiper-slide text-center me-0">
                                     <div class="swiper-zoom-container">
-                                        <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                                        <img src="@($"{API_IMG}{Model.Perfume.imagen2}.jpg")" class="img-fluid" />
 
                                     </div>
                                 </div>
@@ -89,7 +95,7 @@
 
                                 </div>
                                 <div class="swiper-slide">
-                                   <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
+                                    <img src="@Url.Content("~/Imagenes/" + Model.Perfume.imagen2 + ".jpg")" class="img-fluid" />
 
                                 </div>
                             </div>
@@ -509,7 +515,7 @@
                                                  data-nombre="@perfume.Nombre"
                                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" 
+                                               <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                                      class="card-img-top custom-img"
                                                      alt="@perfume.Nombre"
                                                      id="imagen-@cardId" />
@@ -530,7 +536,7 @@
                                                                     data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
                                                                     data-tiene-promo="@(p.TienePromocion)"
                                                                     data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
-                                                                    data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                                    data-imagen="@($"{API_IMG}{p.Imagen}.jpg")"
                                                                     data-marca="@p.Marca"
                                                                     data-stock="@p.StockDisponible"
                                                                     data-ml="@p.Ml"
@@ -654,8 +660,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="~/Scripts/custom/Perfume.details.js"></script>
     <script>
+
+        const API_IMG = '@API_IMG';
+
         document.querySelectorAll('.agregar-al-carrito').forEach(btn => {
-    btn.addEventListener('click', function () {
+        btn.addEventListener('click', function () {
 
         const perfumeId = btn.getAttribute('data-id');
         const selectCantidad = document.querySelector(`#cantidad-${perfumeId}`);
@@ -693,7 +702,7 @@
 
                 const contenedor = document.getElementById("info-perfume-agregado");
                 contenedor.innerHTML = `
-                    <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
+                   <img src="${API_IMG}${data.imagen}.jpg" alt="${data.nombre}" />
                     <p><strong>${data.nombre}</strong></p>
                     <p>${data.tipo} - ${data.presentacion} ml</p>
                     <p>Género: ${data.genero}</p>

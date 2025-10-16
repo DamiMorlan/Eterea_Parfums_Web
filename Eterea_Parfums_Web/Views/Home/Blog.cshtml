@@ -1,6 +1,10 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.BlogViewModel
 
 @{
+    var API_IMG = Url.Content("~/imagenes/");
+}
+
+@{
     ViewBag.Title = "News";
 }
 
@@ -147,7 +151,8 @@
                 <div class="card border-0 p-4">
                     <div class="">
                         <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@Url.Content("~/Imagenes/Blog-Tipos-Perfume.jpg")" class="img-fluid" />
+                        <img src="@($"{API_IMG}Blog-Tipos-Perfume.jpg")" class="img-fluid" />
+
                     </div>
                     <div class="card-body">
                         <p>¿Estás por comprar un perfume y no sabés qué significa “Eau de Parfum” o “Eau de Toilette”? No estás solo: es una de las dudas más comunes al momento de elegir una fragancia. Y la buena noticia es que entender esta diferencia puede ayudarte a elegir un perfume que realmente se adapte a vos.</p>
@@ -268,7 +273,7 @@
                 <div class="card border-0 p-4">
                     <div class="">
                         <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@Url.Content("~/Imagenes/Blog-Perfume-Mujer.jpg")"  class="img-fluid" />
+                        <img src="@($"{API_IMG}Blog-Perfume-Mujer.jpg")" class="img-fluid" />
                     </div>
                     <p>En Eterea Parfums seguimos de cerca lo que nuestras clientas buscan, eligen y recomiendan. Por eso, armamos este ranking de perfumes femeninos, ideal si estás buscando una fragancia que ya conquistó a muchas otras mujeres en Argentina.</p>
 
@@ -309,7 +314,7 @@
                 <div class="card border-0 p-4">
                     <div class="">
                         <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@Url.Content("~/Imagenes/Blog-Perfume-Hombre.jpg")" class="img-fluid" />
+                        <img src="@($"{API_IMG}Blog-Perfume-Hombre.jpg")" class="img-fluid" />
                     </div>
                     <p>¿Buscando un perfume masculino que realmente destaque? En esta guía vas a encontrar fragancias elegidas por su presencia, duración y sofisticación. Ideales tanto para regalar como para quienes quieren sumar un nuevo aroma potente y elegante a su rutina.</p>
                     <p>Desde aromas amaderados hasta notas frescas e intensas, estos perfumes masculinos están diseñados para dejar huella en cada paso. Y lo mejor: todos están disponibles en Eterea Parfums con envío seguro.</p>
