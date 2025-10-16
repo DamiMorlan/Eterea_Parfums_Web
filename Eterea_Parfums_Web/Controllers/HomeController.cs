@@ -365,6 +365,13 @@ namespace Eterea_Parfums_Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult PreguntasFrecuentes()
+        {
+            ViewBag.Message = "Your FAQ page.";
+
+            return View();
+        }
+
 
         //Ruta para probar el Error 500
         [HttpGet]
