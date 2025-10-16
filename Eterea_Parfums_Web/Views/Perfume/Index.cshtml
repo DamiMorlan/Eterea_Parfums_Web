@@ -1,5 +1,11 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.PerfumeViewModel
 
+@{
+    // Base absoluta/relativa hacia tu API de imágenes
+    var API_IMG = Url.Content("~/api/imagenes/");
+}
+
+
 @functions {
     string ConstruirUrlConParametros(int pagina)
     {
@@ -287,8 +293,8 @@
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
-                                                               
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" 
+
+                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
