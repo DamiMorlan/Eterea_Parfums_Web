@@ -7,14 +7,27 @@ namespace Eterea_Parfums_Web.Helpers
 {
     public static class CarritoHelper
     {
+        // ==========================
+        // Helpers de precisión
+        // ==========================
+        private static decimal ToDec(double v) => (decimal)v;
+
+        // Trunca a 2 decimales SIN redondear
+        private static decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
+
+        // Versión para exponer como double (tu VM usa double)
+        private static double Trunc2D(decimal v) => (double)Trunc2(v);
+
         /// <summary>
-        /// Construye el ItemCarritoViewModel aplicando todas las reglas de promos.
+        /// Construye el ItemCarritoViewModel aplicando todas las reglas de promos,
+        /// usando decimal para el cálculo y truncando al exponer.
         /// </summary>
         public static ItemCarritoViewModel BuildItemViewModel(carrito item, int stockDisponible)
         {
             var perfume = item.perfume;
             int cantidad = item.cantidad;
 
+            // Traer promos activas y vigentes (excepto id 1)
             var promociones = perfume.promocion
                 .Where(pr => pr.id != 1 &&
                              pr.activo &&
@@ -28,42 +41,56 @@ namespace Eterea_Parfums_Web.Helpers
                 .OrderByDescending(pr => pr.descuento)
                 .FirstOrDefault();
 
-            double precioOriginal = perfume.precio_en_pesos;
-            double totalSinDescuento = precioOriginal * cantidad;
-            double totalConDescuento = totalSinDescuento;
-            double descuentoAplicado = 0;
+            // Precio unitario como decimal para cálculo exacto
+            decimal p = ToDec(perfume.precio_en_pesos);
 
-            // Cálculo de descuentos
+            // Subtotal crudo
+            decimal subtotalRaw = p * cantidad;
+
+            // Descuento
+            decimal descuentoRaw = 0m;
+
             if (promo10 != null && promoPorCantidad == null)
             {
-                descuentoAplicado = totalSinDescuento * 0.10;
-                totalConDescuento = totalSinDescuento - descuentoAplicado;
+                // Solo 10%
+                descuentoRaw = subtotalRaw * 0.10m;
             }
             else if (promo10 == null && promoPorCantidad != null)
             {
+                // Solo promo por cantidad (por pares). En DB: 35 => 35% de (2*p)
                 int pares = cantidad / 2;
-                int resto = cantidad % 2;
-
-                double descuentoPorPar = (2 * precioOriginal) * (promoPorCantidad.descuento / 100.0);
-
-                descuentoAplicado = pares * descuentoPorPar;
-                totalConDescuento = totalSinDescuento - descuentoAplicado;
+                decimal descuentoPorPar = (2m * p) * (ToDec(promoPorCantidad.descuento) / 100m);
+                descuentoRaw = pares * descuentoPorPar;
             }
             else if (promo10 != null && promoPorCantidad != null)
             {
+                // Ambas promos: pares con promo de cantidad + 10% al remanente (si queda 1)
                 int pares = cantidad / 2;
                 int resto = cantidad % 2;
 
-                double descuentoPorPar = (2 * precioOriginal) * (promoPorCantidad.descuento / 100.0);
-                double descuentoResto = resto * precioOriginal * 0.10;
+                decimal descuentoPorPar = (2m * p) * (ToDec(promoPorCantidad.descuento) / 100m);
+                decimal descuentoResto = (resto == 1) ? (0.10m * p) : 0m;
 
-                descuentoAplicado = (pares * descuentoPorPar) + descuentoResto;
-                totalConDescuento = totalSinDescuento - descuentoAplicado;
+                descuentoRaw = (pares * descuentoPorPar) + descuentoResto;
             }
+            // Si no hay promos, descuentoRaw = 0
 
-            // Usamos el helper unificado para la leyenda
+            // Total con descuento (sin redondear)
+            decimal totalRaw = subtotalRaw - descuentoRaw;
+
+            // Precio por unidad "promedio" si hay cantidad > 0
+            decimal precioConDescUnitarioRaw = (cantidad > 0) ? (totalRaw / cantidad) : p;
+
+            // Leyenda (dejo tu lógica original)
             string leyendaPromo = ObtenerLeyendaPromoSegunCantidad(item, stockDisponible);
 
+            // Mostrar precio tachado:
+            // - True cuando hay 10% y NO hay promo por cantidad aplicada (o cantidad < 2)
+            bool mostrarPrecioTachado =
+                (promo10 != null) &&
+                (promoPorCantidad == null || cantidad < 2);
+
+            // Construir VM (todo truncado a 2 decimales, sin redondeo)
             return new ItemCarritoViewModel
             {
                 PerfumeId = perfume.id,
@@ -72,17 +99,22 @@ namespace Eterea_Parfums_Web.Helpers
                 Presentacion = perfume.presentacion_ml,
                 Genero = perfume.genero?.genero1 ?? "",
                 Imagen = perfume.imagen1,
-                PrecioOriginal = precioOriginal,
-                PrecioConDescuento = Math.Round(
-                    cantidad > 0 ? totalConDescuento / cantidad : precioOriginal, 2),
+
+                // Dejo el precio original como viene (double). Si querés, podés truncarlo así:
+                // PrecioOriginal = Trunc2D(p),
+                PrecioOriginal = perfume.precio_en_pesos,
+
+                PrecioConDescuento = Trunc2D(precioConDescUnitarioRaw),
                 Cantidad = cantidad,
-                Total = Math.Round(totalConDescuento, 2),
+
+                Total = Trunc2D(totalRaw),
                 TienePromo = (promo10 != null || promoPorCantidad != null),
                 LeyendaPromo = leyendaPromo,
                 StockDisponibleParaVentaWeb = stockDisponible,
-                MostrarPrecioTachado = promo10 != null && (promoPorCantidad == null || cantidad < 2),
-                TotalSinDescuento = Math.Round(totalSinDescuento, 2),
-                DescuentoAplicado = Math.Round(descuentoAplicado, 2)
+                MostrarPrecioTachado = mostrarPrecioTachado,
+
+                TotalSinDescuento = Trunc2D(subtotalRaw),
+                DescuentoAplicado = Trunc2D(descuentoRaw)
             };
         }
 
@@ -91,7 +123,6 @@ namespace Eterea_Parfums_Web.Helpers
             var perfume = item.perfume;
             int cantidad = item.cantidad;
 
-            // ✅ Nueva validación al principio
             if (stockDisponible < 2)
                 return "";
 
@@ -151,9 +182,5 @@ namespace Eterea_Parfums_Web.Helpers
 
             return "";
         }
-
-
-
-
     }
 }

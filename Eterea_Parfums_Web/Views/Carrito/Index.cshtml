@@ -4,6 +4,14 @@
     var API_IMG = Url.Content("~/imagenes/");
 }
 
+@functions {
+    // Trunca a 2 decimales SIN redondear (usa decimal para evitar errores binarios de double)
+    decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
+
+    // Helper para cuando tenés double:
+    decimal Trunc2D(double v) => Trunc2((decimal)v);
+}
+
 
 @if (TempData["ErrorPago"] != null)
 {
@@ -42,7 +50,7 @@
                     <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
 
 
-                       <img src="@($"{API_IMG}{item.Imagen}.jpg")"
+                        <img src="@($"{API_IMG}{item.Imagen}.jpg")"
                              alt="@item.Nombre"
                              class="img-perfume" />
 
@@ -101,46 +109,52 @@
             </div>
         }
 
-        <div class="resumen-carrito">
-            @{
-                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
-                var total = Model.Sum(m => m.Total);
-                var descuento = subtotal - total;
-            }
+<div class="resumen-carrito">
+    @{
+        // Pase todo a decimal durante el cálculo
+        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+        decimal descuentoRaw = subtotalRaw - totalRaw;
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
-            </div>
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
-            </div>
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor" id="total">$@total.ToString("N2")</span>
-            </div>
+        // Truncar a 2 decimales SIN redondear para mostrar
+        var subtotal = Trunc2(subtotalRaw);
+        var total = Trunc2(totalRaw);
+        var descuento = Trunc2(descuentoRaw);
+    }
 
-            @if (total >= 50000)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
-            else
-            {
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                </p>
-            }
+    <div class="fila-resumen">
+        <span class="etiqueta">Subtotal (sin descuento):</span>
+        <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
+    </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Descuentos aplicados:</span>
+        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
+    </div>
+    <div class="fila-resumen total">
+        <span class="etiqueta">Total a pagar:</span>
+        <span class="valor" id="total">$@total.ToString("N2")</span>
+    </div>
 
-            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-            {
-                <div class="contenedor-boton-finalizar text-center mt-3">
-                    <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
-                </div>
-            }
+    @if (total >= 50000)
+    {
+        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+    }
+    else
+    {
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+        </p>
+    }
 
-
+    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+    {
+        <div class="contenedor-boton-finalizar text-center mt-3">
+            <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
         </div>
+    }
+
+
+</div>
 
     }
     else
@@ -268,19 +282,13 @@
             });
         }
 
-        // Parse seguro (acepta $ , . , ,)
-        function toNumberAR(x) {
-            if (typeof x === 'number') return x;
-            return Number(String(x).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
-        }
-
-        // ✅ Trunca a 2 decimales SIN redondear
-        function trunc2(n) {
-            const v = toNumberAR(n);
-            return Math.trunc(v * 100) / 100;
-        }
+      
 
         // Formateador ARS (no redondea porque ya le pasamos truncado)
+
+
+
+
         const fmtAR = new Intl.NumberFormat('es-AR', {
             style: 'currency',
             currency: 'ARS',
@@ -288,24 +296,30 @@
             maximumFractionDigits: 2
         });
 
+        function desdeCentavos(cents) {
+            return (Number(cents) || 0) / 100;
+        }
+
         function pintarTotales(data) {
-            const sub = trunc2(data.subtotal);
-            const des = trunc2(data.descuento);
-            const tot = trunc2(data.total);
+            // ⚠️ Usa SIEMPRE los campos *_cents que devuelve el controller
+            const sub = desdeCentavos(data.subtotal_cents);
+            const des = desdeCentavos(data.descuento_cents);
+            const tot = desdeCentavos(data.total_cents);
 
             const elSub = document.getElementById("subtotal");
             const elDes = document.getElementById("descuento");
             const elTot = document.getElementById("total");
 
             if (elSub) elSub.textContent = fmtAR.format(sub);
-            if (elDes) elDes.textContent = '-' + fmtAR.format(des); // si 'des' ya viene negativo, quitá el '-'
+            if (elDes) elDes.textContent = '-' + fmtAR.format(des);
             if (elTot) elTot.textContent = fmtAR.format(tot);
 
-            // Envío gratis
+            // Envío gratis (usa total_cents para evitar errores)
             const contResumen = document.querySelector('.resumen-carrito');
             if (!contResumen) return;
             let aviso = contResumen.querySelector('.envio-gratis');
-            if (tot >= 50000) {
+
+            if (data.total_cents >= 70000 * 100) { // $70.000 en centavos
                 if (!aviso) {
                     aviso = document.createElement('div');
                     aviso.className = 'envio-gratis';
