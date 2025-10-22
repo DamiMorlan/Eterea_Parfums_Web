@@ -353,9 +353,6 @@
     <Content Include="Imagenes\212 Vip Men - 5386 - envase.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Imagenes\212-heroes-fy-5646-envase.jpg" />
-    <Content Include="Imagenes\212-heroes-fy-8139-envase-y-caja.jpg" />
-    <Content Include="Imagenes\212-nyc-edt-3736-envase-y-caja.jpg" />
     <Content Include="Imagenes\212-nyc-edt-4170-envase.jpg" />
     <Content Include="Imagenes\212-vip-2153-envase.jpg" />
     <Content Include="Imagenes\212-vip-4098-envase-y-caja.jpg" />
