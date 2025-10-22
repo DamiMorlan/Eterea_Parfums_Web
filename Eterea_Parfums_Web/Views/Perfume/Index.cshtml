@@ -505,6 +505,7 @@
                 const btnPrev = card.querySelector(".btn-promo-prev");
                 const btnNext = card.querySelector(".btn-promo-next");
 
+                // mostrar/ocultar flechas
                 if (promociones.length > 1) {
                     btnPrev.style.display = "inline-block";
                     btnNext.style.display = "inline-block";
@@ -522,14 +523,22 @@
                     }
                 }
 
+                // precios
                 if (precioDescuentoElem) {
                     precioDescuentoElem.textContent = promo.PrecioConDescuento
                         ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
                         : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
                 }
 
+                // leyenda
                 if (leyendaPromoEl) {
                     leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
+                }
+
+                // ⬅️ NUEVO: asegurar modo "con promo"
+                const promoContainer = card.querySelector('.promo-container');
+                if (promoContainer) {
+                    promoContainer.classList.remove('promo-sin-promocion');
                 }
             }
 
@@ -616,6 +625,16 @@
                     const leyendaElem = card.querySelector('.leyenda-promocion');
                     if (leyendaElem) {
                         leyendaElem.innerHTML = tienePromo ? leyenda : '';
+                    }
+
+                    // ⬅️ NUEVO: alternar clase del contenedor según tenga promo o no
+                    const promoContainer = card.querySelector('.promo-container');
+                    if (promoContainer) {
+                        if (tienePromo) {
+                            promoContainer.classList.remove('promo-sin-promocion');
+                        } else {
+                            promoContainer.classList.add('promo-sin-promocion');
+                        }
                     }
 
                     // Stock
