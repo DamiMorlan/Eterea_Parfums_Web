@@ -90,31 +90,26 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public JsonResult ActualizarCantidad(int perfumeId, int cantidad)
         {
-            /* ── 0) Seguridad ─────────────────────────────────────────────── */
             if (Session["clienteId"] == null)
                 return Json(new { redirect = Url.Action("Login", "Cliente") });
 
             int clienteId = (int)Session["clienteId"];
 
-            /* ── 1) Item actual ───────────────────────────────────────────── */
             var item = db.carrito
                 .Include(c => c.perfume)
                 .Include(c => c.perfume.promocion)
                 .Include(c => c.perfume.stock)
-                .FirstOrDefault(c => c.cliente_id == clienteId &&
-                                     c.perfume_id == perfumeId);
+                .FirstOrDefault(c => c.cliente_id == clienteId && c.perfume_id == perfumeId);
 
             if (item == null)
                 return Json(new { success = false, error = "Item no encontrado" });
 
-            /* ── 2) Stock neto (–5 por sucursal) ──────────────────────────── */
             int stockDisponible = db.stock
-              .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
-              .ToList()
-              .Select(s => Math.Max(0, s.cantidad - 5))
-              .FirstOrDefault();
+                .Where(s => s.perfume_id == perfumeId && s.sucursal_id == 1)
+                .ToList()
+                .Select(s => Math.Max(0, s.cantidad - 5))
+                .FirstOrDefault();
 
-            /* ── 3) Eliminar o ajustar cantidad ───────────────────────────── */
             bool eliminado;
             if (cantidad == 0)
             {
@@ -129,7 +124,7 @@ namespace Eterea_Parfums_Web.Controllers
 
             db.SaveChanges();
 
-            /* ── 4) Recalcular todo el carrito con el helper ──────────────── */
+            // Recalcular carrito
             var carrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
                 .Include(c => c.perfume)
@@ -137,58 +132,80 @@ namespace Eterea_Parfums_Web.Controllers
                 .Include(c => c.perfume.stock)
                 .ToList();
 
-            var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
+            // Subtotal y total en DECIMAL (sin redondeos)
+            decimal subtotalDec = 0m;
+            decimal totalDec = 0m;
 
-            var stockDict = db.stock
-              .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
-              .ToDictionary(
-                  s => s.perfume_id,
-                  s => Math.Max(0, s.cantidad - 5)
-              );
+            foreach (var c in carrito)
+            {
+                decimal p = ToDec(c.perfume.precio_en_pesos);
+                int cant = c.cantidad;
 
-            var vms = carrito.Select(c =>
-                   CarritoHelper.BuildItemViewModel(
-                        c,
-                        stockDict.ContainsKey(c.perfume_id)
-                            ? stockDict[c.perfume_id]
-                            : 0))
-                .ToList();
+                subtotalDec += p * cant;
 
-            double subtotal = vms.Sum(vm => vm.PrecioOriginal * vm.Cantidad);
-            double total = vms.Sum(vm => vm.Total);
-            double descuento = subtotal - total;
+                var promos = c.perfume.promocion
+                    .Where(pr => pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now)
+                    .ToList();
 
-            /* ── 5) HTML de la fila (si sigue existiendo) ─────────────────── */
-            double totalPerfume = 0;
+                bool tiene10 = promos.Any(pr => pr.descuento == 10);
+                var promoCant = promos.Where(pr => pr.descuento > 10).OrderByDescending(pr => pr.descuento).FirstOrDefault();
+
+                if (promoCant != null && cant >= 2)
+                {
+                    int pares = cant / 2;
+                    int resto = cant % 2;
+
+                    decimal descPar = (2m * p) * ((decimal)promoCant.descuento / 100m);
+                    decimal descResto = (resto == 1 && tiene10) ? 0.10m * p : 0m;
+
+                    decimal descTotal = pares * descPar + descResto;
+                    totalDec += (p * cant) - descTotal;
+                }
+                else if (tiene10)
+                {
+                    totalDec += (p * cant * 0.90m);
+                }
+                else
+                {
+                    totalDec += (p * cant);
+                }
+            }
+
+            decimal descuentoDec = subtotalDec - totalDec;
+
+            // Preparar fila HTML si no fue eliminado
             string filaHtml = "";
-
             if (!eliminado)
             {
-                var vmFila = vms.First(vm => vm.PerfumeId == perfumeId);
-                totalPerfume = vmFila.Total;
+                // stock por perfume para el helper
+                var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
+                var stockDict = db.stock
+                  .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
+                  .ToList()
+                  .GroupBy(s => s.perfume_id)
+                  .ToDictionary(g => g.Key, g => g.Sum(s => Math.Max(0, s.cantidad - 5)));
+
+                var vmFila = CarritoHelper.BuildItemViewModel(
+                    carrito.First(c => c.perfume_id == perfumeId),
+                    stockDict.ContainsKey(perfumeId) ? stockDict[perfumeId] : 0
+                );
+
                 filaHtml = RenderPartialViewToString("_FilaCarrito", vmFila);
             }
 
-            /* ── 6) Respuesta JSON ────────────────────────────────────────── */
+            // DEVOLVER EN CENTAVOS (enteros), sin strings formateadas
             return Json(new
             {
                 success = true,
                 eliminado,
                 perfumeId,
-                filaHtml,                           // "" si fue eliminado
+                filaHtml,
 
-                /* importes puros para <input hidden> */
-                subtotalSinFormato = subtotal,
-                totalSinFormato = total,
-                descuentoSinFormato = descuento,
+                subtotal_cents = ToCents(subtotalDec),
+                descuento_cents = ToCents(descuentoDec),
+                total_cents = ToCents(totalDec),
 
-                /* importes formateados para los <span> */
-                subtotal = subtotal.ToString("N0"),
-                total = total.ToString("N0"),
-                descuento = descuento.ToString("N0"),
-
-                envioGratis = total >= 70_000,
-                perfumeTotal = totalPerfume.ToString("N0")
+                envioGratis = totalDec >= 50000m
             });
         }
 
@@ -467,49 +484,62 @@ namespace Eterea_Parfums_Web.Controllers
                 db.SaveChanges();
             }
 
-            // Calcular totales actualizados
             var carrito = db.carrito
                 .Where(c => c.cliente_id == clienteId)
                 .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)
                 .ToList();
 
-            double subtotal = carrito.Sum(c => c.perfume.precio_en_pesos * c.cantidad);
-            double total = 0;
+            decimal subtotalDec = 0m;
+            decimal totalDec = 0m;
 
             foreach (var c in carrito)
             {
+                decimal p = ToDec(c.perfume.precio_en_pesos);
+                int cant = c.cantidad;
+
+                subtotalDec += p * cant;
+
                 var promos = c.perfume.promocion
-                    .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                    .Where(pr => pr.id != 1 && pr.activo && pr.fecha_inicio <= DateTime.Now && pr.fecha_fin >= DateTime.Now)
                     .ToList();
 
-                var promo10 = promos.FirstOrDefault(p => p.descuento == 10);
-                var promoCantidad = promos.FirstOrDefault(p => p.descuento > 10);
+                bool tiene10 = promos.Any(pr => pr.descuento == 10);
+                var promoCant = promos.Where(pr => pr.descuento > 10).OrderByDescending(pr => pr.descuento).FirstOrDefault();
 
-                if (promoCantidad != null && c.cantidad >= 2)
+                if (promoCant != null && cant >= 2)
                 {
-                    int pares = (c.cantidad / 2) * 2;
-                    int impares = c.cantidad % 2;
-                    double pct = (100 - promoCantidad.descuento) / 100.0;
-                    total += (pares * c.perfume.precio_en_pesos * pct) + (impares * c.perfume.precio_en_pesos);
+                    int pares = cant / 2;
+                    int resto = cant % 2;
+
+                    decimal descPar = (2m * p) * ((decimal)promoCant.descuento / 100m);
+                    decimal descResto = (resto == 1 && tiene10) ? 0.10m * p : 0m;
+
+                    decimal descTotal = pares * descPar + descResto;
+                    totalDec += (p * cant) - descTotal;
                 }
-                else if (promo10 != null)
+                else if (tiene10)
                 {
-                    total += c.perfume.precio_en_pesos * c.cantidad * 0.9;
+                    totalDec += (p * cant * 0.90m);
                 }
                 else
                 {
-                    total += c.perfume.precio_en_pesos * c.cantidad;
+                    totalDec += (p * cant);
                 }
             }
+
+            decimal descuentoDec = subtotalDec - totalDec;
 
             return Json(new
             {
                 success = true,
                 perfumeId,
-                subtotal = subtotal.ToString("N0"),
-                total = total.ToString("N0"),
-                descuento = (subtotal - total).ToString("N0"),
-                envioGratis = total >= 70000
+
+                subtotal_cents = ToCents(subtotalDec),
+                total_cents = ToCents(totalDec),
+                descuento_cents = ToCents(descuentoDec),
+
+                envioGratis = totalDec >= 70000m
             });
         }
 
@@ -711,25 +741,30 @@ namespace Eterea_Parfums_Web.Controllers
 
 
             // 4) Calculá totales con la lista resumida
-            double subtotal = itemsVm.Sum(i => i.PrecioOriginal * i.Cantidad);
-            double total = itemsVm.Sum(i => i.Total);
-            double descuento = subtotal - total;
-            bool envioGratis = total >= 70000;
+            decimal subtotal = itemsVm.Sum(i => ToDec(i.PrecioOriginal) * i.Cantidad);
+            decimal total = itemsVm.Sum(i => ToDec(i.Total));
+            decimal descuento = subtotal - total;
 
             var vistaPreviaVm = new VistaPreviaPedidoViewModel
             {
                 Items = itemsVm,
-                Subtotal = subtotal,
-                Descuento = descuento,
-                Total = total,
-                EnvioGratis = envioGratis
+                Subtotal = (double)Trunc2(subtotal),
+                Descuento = (double)Trunc2(descuento),
+                Total = (double)Trunc2(total),
+                EnvioGratis = total >= 70000m
             };
 
             return View(vistaPreviaVm);
         }
 
 
+        private static decimal ToDec(double v) => (decimal)v;
 
+        // TRUNCA a 2 decimales (para cuando necesites mostrar en el servidor)
+        private static decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
+
+        // Convierte un decimal a centavos TRUNCANDO (sin redondeo)
+        private static long ToCents(decimal v) => (long)decimal.Truncate(v * 100m);
 
 
     }

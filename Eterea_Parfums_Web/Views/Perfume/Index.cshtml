@@ -1,5 +1,11 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.PerfumeViewModel
 
+@{
+    // Base absoluta/relativa hacia tu API de imágenes
+    var API_IMG = Url.Content("~/imagenes/");
+}
+
+
 @functions {
     string ConstruirUrlConParametros(int pagina)
     {
@@ -287,8 +293,8 @@
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
-                                                               
-                                <img src="@Url.Content("~/Imagenes/" + perfume.Imagen + ".jpg")" 
+
+                               <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                      class="card-img-top custom-img"
                                      alt="@perfume.Nombre"
                                      id="imagen-@perfume.Id" />
@@ -310,7 +316,7 @@
                                                     data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento ?? (double?)null)"
                                                     data-tiene-promo="@(p.TienePromocion)"
                                                     data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
-                                                    data-imagen="@Url.Action("Mostrar", "Imagen", new { nombre = p.Imagen + ".jpg" })"
+                                                    data-imagen="@($"{API_IMG}{p.Imagen}.jpg")"
                                                     data-marca="@p.Marca"
                                                     data-stock="@p.StockDisponible"
                                                     data-ml="@p.Ml"
@@ -476,6 +482,9 @@
 <!-- Java Script -->
 @section Scripts {
     <script>
+
+        const API_IMG = '@API_IMG';
+
         document.addEventListener("DOMContentLoaded", () => {
             const promoIndices = {};
 
@@ -496,6 +505,7 @@
                 const btnPrev = card.querySelector(".btn-promo-prev");
                 const btnNext = card.querySelector(".btn-promo-next");
 
+                // mostrar/ocultar flechas
                 if (promociones.length > 1) {
                     btnPrev.style.display = "inline-block";
                     btnNext.style.display = "inline-block";
@@ -513,14 +523,22 @@
                     }
                 }
 
+                // precios
                 if (precioDescuentoElem) {
                     precioDescuentoElem.textContent = promo.PrecioConDescuento
                         ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
                         : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
                 }
 
+                // leyenda
                 if (leyendaPromoEl) {
                     leyendaPromoEl.innerHTML = promo.LeyendaPromocion || '';
+                }
+
+                // ⬅️ NUEVO: asegurar modo "con promo"
+                const promoContainer = card.querySelector('.promo-container');
+                if (promoContainer) {
+                    promoContainer.classList.remove('promo-sin-promocion');
                 }
             }
 
@@ -607,6 +625,16 @@
                     const leyendaElem = card.querySelector('.leyenda-promocion');
                     if (leyendaElem) {
                         leyendaElem.innerHTML = tienePromo ? leyenda : '';
+                    }
+
+                    // ⬅️ NUEVO: alternar clase del contenedor según tenga promo o no
+                    const promoContainer = card.querySelector('.promo-container');
+                    if (promoContainer) {
+                        if (tienePromo) {
+                            promoContainer.classList.remove('promo-sin-promocion');
+                        } else {
+                            promoContainer.classList.add('promo-sin-promocion');
+                        }
                     }
 
                     // Stock
@@ -699,7 +727,7 @@
                      }
 
                      contenedor.innerHTML = `
-                       <img src="/Imagen/Mostrar?nombre=${data.imagen}.jpg" alt="${data.nombre}" />
+                       <img src="${API_IMG}${data.imagen}.jpg" alt="${data.nombre}" />
                          <p><strong>${data.nombre}</strong></p>
                          <p>${data.tipo} - ${data.presentacion} ml</p>
                          <p>Género: ${data.genero}</p>

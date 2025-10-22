@@ -1,9 +1,18 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel
 
+@{
+    var API_IMG = Url.Content("~/imagenes/");
+}
+
+@functions {
+    // Trunca a 2 decimales sin redondear
+    decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
+}
+
 <div class="fila-producto" id="perfume-@Model.PerfumeId">
     <div class="contenedor-producto">
         <a href="@Url.Action("Details", "Perfume", new { id = Model.PerfumeId })">
-            <img src="@Url.Content("~/Imagenes/" + Model.Imagen + ".jpg")"
+            <img src="@($"{API_IMG}{Model.Imagen}.jpg")"
                  alt="@Model.Nombre"
                  class="img-perfume" />
         </a>
@@ -22,17 +31,17 @@
             @if (Model.MostrarPrecioTachado && Model.PrecioConDescuento.HasValue && Model.PrecioConDescuento.Value < Model.PrecioOriginal)
             {
                 <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                    $@Model.PrecioOriginal.ToString("N2")
+                    $@Trunc2((decimal)Model.PrecioOriginal).ToString("N2")
                 </p>
                 <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                    $@Model.PrecioConDescuento.Value.ToString("N2")
+                    $@Trunc2((decimal)Model.PrecioConDescuento.Value).ToString("N2")
                 </p>
             }
             else
             {
-                <p class="precio-descuento" style="color: black;">
-                    $@Model.PrecioOriginal.ToString("N2")
-                </p>
+        <p class="precio-descuento" style="color: black;">
+            $@Trunc2((decimal)Model.PrecioOriginal).ToString("N2")
+        </p>
             }
 
 
@@ -54,7 +63,7 @@
 
 
             <p id="total-perfume-@Model.PerfumeId" class="total-perfume" style="margin-top: 10px;">
-                Total: $@Model.Total.ToString("N0")
+                Total: $@Trunc2((decimal)Model.Total).ToString("N2")
             </p>
 
         </div>

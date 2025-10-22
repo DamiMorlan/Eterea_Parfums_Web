@@ -1,5 +1,17 @@
 ﻿@model List<Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel>
 
+@{
+    var API_IMG = Url.Content("~/imagenes/");
+}
+
+@functions {
+    // Trunca a 2 decimales SIN redondear (usa decimal para evitar errores binarios de double)
+    decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
+
+    // Helper para cuando tenés double:
+    decimal Trunc2D(double v) => Trunc2((decimal)v);
+}
+
 
 @if (TempData["ErrorPago"] != null)
 {
@@ -37,8 +49,8 @@
                 <div class="contenedor-producto">
                     <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
 
-                       
-                        <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")"
+
+                        <img src="@($"{API_IMG}{item.Imagen}.jpg")"
                              alt="@item.Nombre"
                              class="img-perfume" />
 
@@ -97,46 +109,52 @@
             </div>
         }
 
-        <div class="resumen-carrito">
-            @{
-                var subtotal = Model.Sum(m => m.PrecioOriginal * m.Cantidad);
-                var total = Model.Sum(m => m.Total);
-                var descuento = subtotal - total;
-            }
+<div class="resumen-carrito">
+    @{
+        // Pase todo a decimal durante el cálculo
+        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+        decimal descuentoRaw = subtotalRaw - totalRaw;
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
-            </div>
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
-            </div>
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor" id="total">$@total.ToString("N2")</span>
-            </div>
+        // Truncar a 2 decimales SIN redondear para mostrar
+        var subtotal = Trunc2(subtotalRaw);
+        var total = Trunc2(totalRaw);
+        var descuento = Trunc2(descuentoRaw);
+    }
 
-            @if (total >= 50000)
-            {
-                <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
-            }
-            else
-            {
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                </p>
-            }
+    <div class="fila-resumen">
+        <span class="etiqueta">Subtotal (sin descuento):</span>
+        <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
+    </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Descuentos aplicados:</span>
+        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
+    </div>
+    <div class="fila-resumen total">
+        <span class="etiqueta">Total a pagar:</span>
+        <span class="valor" id="total">$@total.ToString("N2")</span>
+    </div>
 
-            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-            {
-                <div class="contenedor-boton-finalizar text-center mt-3">
-                    <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
-                </div>
-            }
+    @if (total >= 50000)
+    {
+        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+    }
+    else
+    {
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+        </p>
+    }
 
-
+    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+    {
+        <div class="contenedor-boton-finalizar text-center mt-3">
+            <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
         </div>
+    }
+
+
+</div>
 
     }
     else
@@ -172,59 +190,49 @@
                 if (!response.ok) throw new Error("Error de red");
                 return response.json();
             })
-            .then(data => {
-                if (data.success) {
+                .then(data => {
+                    if (data.success) {
+                        // ✅ Pintar totales SIEMPRE (aunque se elimine)
+                        pintarTotales(data);
 
-                    // ✅ Si se eliminó el ítem (cantidad = 0)
-                    if (data.eliminado === true || cantidad === "0") {
-                        const fila = document.getElementById(`perfume-${perfumeId}`);
-                        if (fila) {
-                            fila.classList.add("fade-out");
-                            setTimeout(() => {
-                                fila.remove();
+                        // ✅ Si se eliminó el ítem (cantidad = 0)
+                        if (data.eliminado === true || cantidad === "0") {
+                            const fila = document.getElementById(`perfume-${perfumeId}`);
+                            if (fila) {
+                                fila.classList.add("fade-out");
+                                setTimeout(() => {
+                                    fila.remove();
 
-                                // ✅ Restaurar opacidad
-                                resumen.style.opacity = "1";
+                                    // Restaurar opacidad
+                                    resumen.style.opacity = "1";
 
-                                // Si ya no hay perfumes, mostrar mensaje de carrito vacío
-                                if (document.querySelectorAll('.fila-producto').length === 0) {
-                                    document.querySelector('.carrito-container').innerHTML = `
-                                        <div style="text-align: center; padding: 50px;">
-                                            <div style="font-size: 100px;">🛒</div>
-                                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                                        </div>`;
-                                }
-                            }, 500);
+                                    // Si ya no hay perfumes, mostrar mensaje de carrito vacío
+                                    if (document.querySelectorAll('.fila-producto').length === 0) {
+                                        document.querySelector('.carrito-container').innerHTML = `
+                            <div style="text-align: center; padding: 50px;">
+                                <div style="font-size: 100px;">🛒</div>
+                                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                            </div>`;
+                                    }
+                                }, 500);
+                            }
+                        } else {
+                            // ✅ Reemplazo de fila cuando NO se elimina
+                            const fila = document.getElementById(`perfume-${data.perfumeId}`);
+                            if (fila && data.filaHtml) {
+                                const nuevoDiv = document.createElement("div");
+                                nuevoDiv.innerHTML = data.filaHtml;
+                                const nuevaFila = nuevoDiv.firstElementChild;
+                                fila.replaceWith(nuevaFila);
+                            }
+                            resumen.style.opacity = "1";
                         }
-                        return;
+                    } else {
+                        console.warn("Respuesta sin éxito:", data);
+                        alert("No se pudo actualizar el carrito.");
+                        resumen.style.opacity = "1";
                     }
-
-                    // ✅ Actualizar totales del resumen
-                    document.getElementById("subtotal").textContent = `$${data.subtotal}`;
-                    document.getElementById("descuento").textContent = `-$${data.descuento}`;
-                    document.getElementById("total").textContent = `$${data.total}`;
-
-                    // ✅ Reemplazar la fila del perfume con el nuevo HTML
-                    const fila = document.getElementById(`perfume-${data.perfumeId}`);
-                    if (fila && data.filaHtml) {
-                        const nuevoDiv = document.createElement("div");
-                        nuevoDiv.innerHTML = data.filaHtml;
-                        const nuevaFila = nuevoDiv.firstElementChild;
-                        fila.replaceWith(nuevaFila);
-                    }
-
-                } else {
-                    console.warn("Respuesta sin éxito:", data);
-                    alert("No se pudo actualizar el carrito.");
-                }
-
-                resumen.style.opacity = "1";
-            })
-            .catch((err) => {
-                resumen.style.opacity = "1";
-                console.error("Error al actualizar el carrito:", err);
-                alert("Ocurrió un error al actualizar el carrito.");
-            });
+                });
         }
 
         function eliminarPerfume(perfumeId) {
@@ -241,7 +249,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    const fila = document.getElementById(`perfume-${perfumeId}`);
+                    pintarTotales(data);
                     if (fila) {
                         fila.classList.add("fade-out");
                         setTimeout(() => {
@@ -260,9 +268,8 @@
                         }, 500);
                     }
 
-                    document.getElementById("subtotal").textContent = `$${data.subtotal}`;
-                    document.getElementById("descuento").textContent = `-$${data.descuento}`;
-                    document.getElementById("total").textContent = `$${data.total}`;
+                    pintarTotales(data);
+
                 } else {
                     alert("No se pudo eliminar el producto.");
                     resumen.style.opacity = "1";
@@ -273,6 +280,55 @@
                 resumen.style.opacity = "1";
                 alert("Ocurrió un error al eliminar el perfume.");
             });
+        }
+
+      
+
+        // Formateador ARS (no redondea porque ya le pasamos truncado)
+
+
+
+
+        const fmtAR = new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        function desdeCentavos(cents) {
+            return (Number(cents) || 0) / 100;
+        }
+
+        function pintarTotales(data) {
+            // ⚠️ Usa SIEMPRE los campos *_cents que devuelve el controller
+            const sub = desdeCentavos(data.subtotal_cents);
+            const des = desdeCentavos(data.descuento_cents);
+            const tot = desdeCentavos(data.total_cents);
+
+            const elSub = document.getElementById("subtotal");
+            const elDes = document.getElementById("descuento");
+            const elTot = document.getElementById("total");
+
+            if (elSub) elSub.textContent = fmtAR.format(sub);
+            if (elDes) elDes.textContent = '-' + fmtAR.format(des);
+            if (elTot) elTot.textContent = fmtAR.format(tot);
+
+            // Envío gratis (usa total_cents para evitar errores)
+            const contResumen = document.querySelector('.resumen-carrito');
+            if (!contResumen) return;
+            let aviso = contResumen.querySelector('.envio-gratis');
+
+            if (data.total_cents >= 70000 * 100) { // $70.000 en centavos
+                if (!aviso) {
+                    aviso = document.createElement('div');
+                    aviso.className = 'envio-gratis';
+                    aviso.textContent = '¡Felicidades! Tu envío es gratis';
+                    contResumen.appendChild(aviso);
+                }
+            } else {
+                if (aviso) aviso.remove();
+            }
         }
 
     </script>
