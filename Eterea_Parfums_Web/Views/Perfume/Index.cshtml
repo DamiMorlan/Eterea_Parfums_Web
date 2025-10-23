@@ -6,6 +6,8 @@
 }
 
 
+
+
 @functions {
     string ConstruirUrlConParametros(int pagina)
     {
@@ -483,6 +485,9 @@
 @section Scripts {
     <script>
 
+        // Muestra $ + miles con separador es-AR y SIN decimales (redondeando)
+        const formatARS0 = (n) => '$' + Math.round(Number(n || 0)).toLocaleString('es-AR');
+
         const API_IMG = '@API_IMG';
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -517,7 +522,7 @@
                 if (precioOriginalElem) {
                     if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
                         precioOriginalElem.style.display = '';
-                        precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                        precioOriginalElem.textContent = formatARS0(promo.PrecioOriginal);
                     } else {
                         precioOriginalElem.style.display = 'none';
                     }
@@ -526,8 +531,8 @@
                 // precios
                 if (precioDescuentoElem) {
                     precioDescuentoElem.textContent = promo.PrecioConDescuento
-                        ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
-                        : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                        ? formatARS0(promo.PrecioConDescuento)
+                        : formatARS0(promo.PrecioOriginal);
                 }
 
                 // leyenda
@@ -611,13 +616,16 @@
                     const precioOriginalElem = card.querySelector('.precio-original');
                     const precioDescuentoElem = card.querySelector('.precio-descuento');
                     if (precioOriginalElem && precioDescuentoElem) {
+                        const precioNum = Number(nuevoPrecio);
+                        const descNum = Number(nuevoDescuento);
+
                         if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                            precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                            precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                            precioOriginalElem.textContent = formatARS0(precioNum);
+                            precioDescuentoElem.textContent = formatARS0(descNum);
                             precioOriginalElem.style.display = '';
                         } else {
                             precioOriginalElem.style.display = 'none';
-                            precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                            precioDescuentoElem.textContent = formatARS0(precioNum);
                         }
                     }
 
@@ -726,15 +734,18 @@
                          return;
                      }
 
+                     const precioOriginalFmt = formatARS0(data.precioOriginal);
+                     const precioDescuentoFmt = data.precioDescuento ? formatARS0(data.precioDescuento) : null;
+
                      contenedor.innerHTML = `
                        <img src="${API_IMG}${data.imagen}.jpg" alt="${data.nombre}" />
                          <p><strong>${data.nombre}</strong></p>
                          <p>${data.tipo} - ${data.presentacion} ml</p>
                          <p>Género: ${data.genero}</p>
                          <p>Precio: ${
-                             data.precioDescuento
-                                 ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                                 : `<strong>$${data.precioOriginal}</strong>`
+                             precioDescuentoFmt
+                                 ? `<del>${precioOriginalFmt}</del> <strong>${precioDescuentoFmt}</strong>`
+                                 : `<strong>${precioOriginalFmt}</strong>`
                          }</p>
                          ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                      `;
