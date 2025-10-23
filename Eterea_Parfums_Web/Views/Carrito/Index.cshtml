@@ -235,54 +235,61 @@
                 });
         }
 
-        function eliminarPerfume(perfumeId) {
-            const resumen = document.querySelector('.resumen-carrito');
-            resumen.style.opacity = "0.5";
+       function eliminarPerfume(perfumeId) {
+    const resumen = document.querySelector('.resumen-carrito');
+    const fila = document.getElementById(`perfume-${perfumeId}`);  // ✅ definir la fila
+    if (resumen) resumen.style.opacity = "0.5";
 
-            fetch('@Url.Action("EliminarPerfume", "Carrito")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `perfumeId=${perfumeId}`
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    pintarTotales(data);
-                    if (fila) {
-                        fila.classList.add("fade-out");
-                        setTimeout(() => {
-                            fila.remove();
-
-                            resumen.style.opacity = "1";
-
-                            // Si no hay más productos, mostrar mensaje de carrito vacío
-                            if (document.querySelectorAll('.fila-producto').length === 0) {
-                                document.querySelector('.carrito-container').innerHTML = `
-                                    <div style="text-align: center; padding: 50px;">
-                                        <div style="font-size: 100px;">🛒</div>
-                                        <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                                    </div>`;
-                            }
-                        }, 500);
-                    }
-
-                    pintarTotales(data);
-
-                } else {
-                    alert("No se pudo eliminar el producto.");
-                    resumen.style.opacity = "1";
-                }
-            })
-            .catch(err => {
-                console.error("Error al eliminar:", err);
-                resumen.style.opacity = "1";
-                alert("Ocurrió un error al eliminar el perfume.");
-            });
+    fetch('@Url.Action("EliminarPerfume", "Carrito")', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+            // Si tu acción usa [ValidateAntiForgeryToken], descomenta la línea de abajo
+            // 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
+        body: `perfumeId=${encodeURIComponent(perfumeId)}`
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Error de red');
+        return res.json();
+    })
+    .then(data => {
+        if (!data || data.success !== true) {
+            throw new Error(data && data.message ? data.message : 'No se pudo eliminar el producto.');
         }
 
-      
+        // ✅ Actualizar totales UNA sola vez
+        pintarTotales(data);
+
+        // ✅ Animación + quitar fila
+        if (fila) {
+            fila.classList.add('fade-out');
+            setTimeout(() => {
+                fila.remove();
+
+                // Si ya no quedan productos, mostrar “carrito vacío”
+                if (document.querySelectorAll('.fila-producto').length === 0) {
+                    document.querySelector('.carrito-container').innerHTML = `
+                        <div style="text-align: center; padding: 50px;">
+                            <div style="font-size: 100px;">🛒</div>
+                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                        </div>`;
+                }
+
+                if (resumen) resumen.style.opacity = "1";
+            }, 400);
+        } else {
+            // Si por algún motivo no encontramos la fila, al menos restauramos la UI
+            if (resumen) resumen.style.opacity = "1";
+        }
+    })
+    .catch(err => {
+        console.error('Error al eliminar:', err);
+        if (resumen) resumen.style.opacity = "1";
+        alert('Ocurrió un error al eliminar el perfume.');
+    });
+}
+
 
         // Formateador ARS (no redondea porque ya le pasamos truncado)
 

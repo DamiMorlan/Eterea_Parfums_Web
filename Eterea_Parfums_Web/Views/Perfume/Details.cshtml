@@ -224,6 +224,64 @@
                     <!-- Separador personalizado -->
                     <hr class="d-md-none mt-4" />
 
+                    @using System.Globalization
+
+                    @functions{
+                        // Redondeo a 2 decimales (comercial)
+                        decimal R2(decimal v) => Math.Round(v, 2, MidpointRounding.AwayFromZero);
+
+                        // Formato ARS: sin decimales si es entero; con 2 si tiene centavos
+                        string ARSFlex(decimal v)
+                        {
+                            var c = new CultureInfo("es-AR");
+                            v = R2(v);
+                            if (v == Math.Truncate(v)) return v.ToString("#,##0", c);
+                            return v.ToString("#,##0.00", c);
+                        }
+
+                        bool TryToDecimal(object v, out decimal res)
+                        {
+                            res = 0m;
+                            if (v == null) return false;
+                            try
+                            {
+                                if (v is decimal dec) { res = dec; return true; }
+                                if (v is int i) { res = i; return true; }
+                                if (v is long l) { res = l; return true; }
+                                if (v is short s) { res = s; return true; }
+                                if (v is byte b) { res = b; return true; }
+                                if (v is double db) { res = (decimal)db; return true; }
+                                if (v is float fl) { res = (decimal)fl; return true; }
+                                return decimal.TryParse(v.ToString(), out res);
+                            }
+                            catch { return false; }
+                        }
+
+                        int ObtenerPorcentaje(dynamic promo)
+                        {
+                            try
+                            {
+                                object val;
+                                val = promo?.descuento; if (TryToDecimal(val, out var d1) && d1 > 0) return (int)Math.Round(d1, 0);
+                                val = promo?.porcentaje; if (TryToDecimal(val, out var d2) && d2 > 0) return (int)Math.Round(d2, 0);
+                                val = promo?.porc_segunda_unidad; if (TryToDecimal(val, out var d3) && d3 > 0) return (int)Math.Round(d3, 0);
+                            }
+                            catch { }
+                            return 0;
+                        }
+
+                        // Regla: ==10 → 1 unidad; >10 → segunda unidad
+                        bool EsSegundaPorValor(int porcentaje) => porcentaje > 10;
+
+                        // Precio unitario con % general
+                        decimal PrecioLlevandoUno(decimal precioLista, int porcentaje)
+                            => R2(precioLista * (100 - porcentaje) / 100m);
+
+                        // Total por 2 cuando la 2ª tiene % de descuento (CORREGIDO: sin "*2")
+                        // total = P + P*(1 - %/100)
+                        decimal TotalLlevandoDos(decimal precioLista, int porcentajeSegunda)
+                            => R2(precioLista + (precioLista * (100 - porcentajeSegunda*2) / 100m));
+                    }
 
                     @{
                         var promosActivas = Model.Perfume.promocion?
@@ -232,6 +290,7 @@
                     }
 
                     @if (promosActivas != null && promosActivas.Any())
+
                     {
                         <div class="promo-box mt-2 py-3 rounded shadow-sm text-center text-md-start">
                             <ul class="list-unstyled ms-4">
@@ -245,6 +304,29 @@
                                         </p>
 
                                         @promo.descripcion
+
+                                        @{
+                                            decimal precioBase = Convert.ToDecimal(Model.Perfume.precio_en_pesos);
+                                            int porc = ObtenerPorcentaje(promo);
+
+                                            if (porc > 0)
+                                            {
+                                                if (EsSegundaPorValor(porc))
+                                                {
+                                                    var total2 = TotalLlevandoDos(precioBase, porc);
+                                                    <div class="text-primary fw-semibold mt-1">
+                                                        Llevando 2 iguales pagás $ @ARSFlex(total2)
+                                                    </div>
+                                                }
+                                                else // porc == 10
+                                                {
+                                                    var paga1 = PrecioLlevandoUno(precioBase, porc);
+                                                    <div class="text-success fw-semibold mt-1">
+                                                        Llevando 1 pagás $ @ARSFlex(paga1)
+                                                    </div>
+                                                }
+                                            }
+                                        }
                                     </li>
                                 }
 
@@ -253,6 +335,8 @@
                         <!-- Separador personalizado -->
                         <hr class="d-md-none mt-4" />
                     }
+
+
 
 
                 </section>
