@@ -1,5 +1,14 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.HomeViewModel
 
+@functions {
+    string PrecioFmt(double valor)
+    {
+        var ci = new System.Globalization.CultureInfo("es-AR");
+        bool hasCents = Math.Abs(valor - Math.Truncate(valor)) > 0.000001;
+        return valor.ToString(hasCents ? "N2" : "N0", ci);
+    }
+}
+
 @{
     // Base absoluta/relativa hacia tu API de imágenes
     var API_IMG = Url.Content("~/imagenes/");
@@ -38,7 +47,7 @@
             {
                 var promo = Model.Promociones[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                  <img src="@($"{API_IMG}{promo.banner}.jpg")"
+                    <img src="@($"{API_IMG}{promo.banner}.jpg")"
                          class="d-block w-100" alt="@promo.nombre" />
                 </div>
             }
@@ -143,7 +152,7 @@
                                              data-nombre="@perfume.Nombre"
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                           <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
+                                            <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="@($"{prefix}imagen-{cardId}")" />
@@ -180,10 +189,12 @@
                                                 <div class="promo-carousel mt-3" data-perfumeid="@($"{prefix}{cardId}")">
                                                     <div class="promo-display">
                                                         <span class="precio-original" id="@($"{prefix}precio-original-{cardId}")">
-                                                            @(primeraPromo != null ? "$" + primeraPromo.PrecioOriginal.ToString("N0") : "")
+                                                            @(primeraPromo != null ? "$" + PrecioFmt(primeraPromo.PrecioOriginal) : "")
                                                         </span>
                                                         <span class="precio-descuento" id="@($"{prefix}precio-descuento-{cardId}")">
-                                                            $@(primeraPromo != null ? primeraPromo.PrecioConDescuento?.ToString("N0") : presentacionActiva.Precio.ToString("N0"))
+                                                            $@(primeraPromo != null
+                                                             ? PrecioFmt(primeraPromo.PrecioConDescuento ?? primeraPromo.PrecioOriginal)
+                                                             : PrecioFmt(presentacionActiva.Precio))
                                                         </span>
                                                     </div>
 
@@ -308,7 +319,7 @@
                                              data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
 
-                                           <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
+                                            <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                                  class="card-img-top custom-img"
                                                  alt="@perfume.Nombre"
                                                  id="@($"{prefix}imagen-{cardId}")" />
@@ -457,6 +468,16 @@
     @section Scripts {
         <script>
 
+            function formatPrecioAr(n) {
+                const v = Number(n);
+                if (Number.isNaN(v)) return n;
+                const hasCents = Math.round((v % 1) * 100) !== 0; // true si tiene centavos
+                return v.toLocaleString('es-AR', {
+                    minimumFractionDigits: hasCents ? 2 : 0,
+                    maximumFractionDigits: hasCents ? 2 : 0
+                });
+            }
+
             // Exponer la base de la API al JS
             const API_IMG = '@API_IMG';
 
@@ -491,7 +512,7 @@
                     if (precioOriginalElem) {
                         if (promo.PrecioOriginal && promo.PrecioOriginal !== promo.PrecioConDescuento) {
                             precioOriginalElem.style.display = '';
-                            precioOriginalElem.textContent = `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                            precioOriginalElem.textContent = `$${formatPrecioAr(promo.PrecioOriginal)}`;
                         } else {
                             precioOriginalElem.style.display = 'none';
                         }
@@ -499,8 +520,8 @@
 
                     if (precioDescuentoElem) {
                         precioDescuentoElem.textContent = promo.PrecioConDescuento
-                            ? `$${Number(promo.PrecioConDescuento).toLocaleString('es-AR')}`
-                            : `$${Number(promo.PrecioOriginal).toLocaleString('es-AR')}`;
+                            ? `$${formatPrecioAr(promo.PrecioConDescuento)}`
+                            : `$${formatPrecioAr(promo.PrecioOriginal)}`;
                     }
 
                     if (leyendaPromoEl) {
@@ -578,12 +599,12 @@
                         const precioDescuentoElem = card.querySelector('.precio-descuento');
                         if (precioOriginalElem && precioDescuentoElem) {
                             if (tienePromo && nuevoDescuento && nuevoDescuento !== nuevoPrecio) {
-                                precioOriginalElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
-                                precioDescuentoElem.textContent = parseFloat(nuevoDescuento).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioOriginalElem.textContent = `$${formatPrecioAr(nuevoPrecio)}`;
+                                precioDescuentoElem.textContent = `$${formatPrecioAr(nuevoDescuento)}`;
                                 precioOriginalElem.style.display = '';
                             } else {
                                 precioOriginalElem.style.display = 'none';
-                                precioDescuentoElem.textContent = parseFloat(nuevoPrecio).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 });
+                                precioDescuentoElem.textContent = `$${formatPrecioAr(nuevoPrecio)}`;
                             }
                         }
 
@@ -689,8 +710,8 @@
                             <p>Género: ${data.genero}</p>
                             <p>Precio: ${
                                 data.precioDescuento
-                                    ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
-                                    : `<strong>$${data.precioOriginal}</strong>`
+                            ? `<del>$${formatPrecioAr(data.precioOriginal)}</del> <strong>$${formatPrecioAr(data.precioDescuento)}</strong>`
+                            : `<strong>$${formatPrecioAr(data.precioOriginal)}</strong>`
                             }</p>
                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                         `;
