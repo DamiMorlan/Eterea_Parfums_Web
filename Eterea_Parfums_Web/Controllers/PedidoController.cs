@@ -391,34 +391,60 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult SimularPago(string monto)
         {
-            double total = double.Parse(monto, CultureInfo.InvariantCulture);
+            System.Diagnostics.Debug.WriteLine($"[SimularPago] raw query monto='{monto}'");
 
-            var rand = new Random();
-            double saldo = rand.Next(50_000, 300_001);
+            // 1) Parse del monto (Invariant primero)
+            decimal m;
+            if (!decimal.TryParse(monto, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
+                decimal.TryParse(monto, NumberStyles.Any, CultureInfo.GetCultureInfo("es-AR"), out m);
 
-            var model = new SimularPagoViewModel
+            // 2) Saldo random por sesión (100.000 a 800.000)
+            if (Session["SaldoCuentaDemo"] == null)
             {
-                Monto = total,
-                SaldoCuenta = saldo,
-                Usuario = Session["nombreUsuario"]?.ToString() ?? "Invitado"
+                // Semilla estable por sesión para no cambiar en cada refresh
+                var seed = unchecked(Environment.TickCount + (Session.SessionID?.GetHashCode() ?? 0));
+                var rnd = new Random(seed);
+                // Next(min, maxExclusive) → usamos 800001 para incluir 800000
+                var saldo = rnd.Next(100000, 800001);
+                Session["SaldoCuentaDemo"] = (double)saldo;
+            }
+            double saldoCuenta = (double)Session["SaldoCuentaDemo"];
+
+            var vm = new SimularPagoViewModel
+            {
+                Monto = (double)m,
+                SaldoCuenta = saldoCuenta
             };
-            return View(model);
+
+            System.Diagnostics.Debug.WriteLine($"[SimularPago] parsed m={m} | saldo={saldoCuenta}");
+            return View(vm);
         }
 
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ConfirmarPago(string medio, int cuotas, double totalFinal)
+        public ActionResult ConfirmarPago(string medio, int cuotas, string totalFinal)
         {
             if (Session["clienteId"] == null)
                 return RedirectToAction("Login", "Cliente");
 
             int clienteId = (int)Session["clienteId"];
 
+            // Parse robusto del total final recibido del form (hdTotal), que viene en INVARIANT (punto)
+            decimal totalFinalDec;
+            if (!decimal.TryParse(totalFinal, NumberStyles.Any, CultureInfo.InvariantCulture, out totalFinalDec))
+            {
+                // fallback es-AR por las dudas
+                if (!decimal.TryParse(totalFinal, NumberStyles.Any, CultureInfo.GetCultureInfo("es-AR"), out totalFinalDec))
+                {
+                    TempData["ErrorPago"] = "No se pudo interpretar el total a pagar.";
+                    return RedirectToAction("Index", "Carrito");
+                }
+            }
+
             using (var db = new etereaEntities7())
             using (var tx = db.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
-
             {
                 try
                 {
@@ -437,17 +463,16 @@ namespace Eterea_Parfums_Web.Controllers
                     if (!carrito.Any())
                         throw new InvalidOperationException("El carrito está vacío");
 
-                    /* 2) Para cada ítem calculo promos y descuento */
-                    var detallesTmp = new List<DetalleTmp>();   // buffer local
-                    double descuentoTotal = 0;
+                    /* 2) Promos y descuentos (quedan en double, pero al final casteamos a decimal para cuentas finas) */
+                    var detallesTmp = new List<DetalleTmp>();
+                    double descuentoTotalDouble = 0;
 
                     foreach (var item in carrito)
                     {
                         var promosVigentes = item.perfume.promocion
-                         .Where(p => p.activo && p.fecha_inicio <= DateTime.Today && p.fecha_fin >= DateTime.Today)
-                         .ToList();
+                            .Where(p => p.activo && p.fecha_inicio <= DateTime.Today && p.fecha_fin >= DateTime.Today)
+                            .ToList();
 
-                        // Clasificamos por tipo de promo
                         var promoDiez = promosVigentes.FirstOrDefault(p => p.descuento == 10);
                         var promoMayor = promosVigentes.FirstOrDefault(p => p.descuento > 10);
 
@@ -457,23 +482,21 @@ namespace Eterea_Parfums_Web.Controllers
                         int? p1 = null;
                         int? p2 = null;
 
-                        // Aplicamos promo mayor a 10% por cada par
                         if (promoMayor != null && cantidad >= 2)
                         {
                             int pares = cantidad / 2;
                             descItem += pares * (promoMayor.descuento / 100.0) * precioUnitario * 2;
                             p2 = promoMayor.id;
-                            cantidad -= pares * 2; // Reducimos lo que queda por aplicar
+                            cantidad -= pares * 2;
                         }
 
-                        // Aplicamos promo del 10% por unidad restante
                         if (promoDiez != null && cantidad > 0)
                         {
                             descItem += cantidad * (promoDiez.descuento / 100.0) * precioUnitario;
                             p1 = promoDiez.id;
                         }
 
-                        descuentoTotal += descItem;
+                        descuentoTotalDouble += descItem;
 
                         detallesTmp.Add(new DetalleTmp
                         {
@@ -483,12 +506,19 @@ namespace Eterea_Parfums_Web.Controllers
                         });
                     }
 
-                    /* 3) Cálculos finales */
-                    double subtotalOriginal = carrito.Sum(i => i.perfume.precio_en_pesos * i.cantidad);
-                    double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
-                    double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+                    /* 3) Cálculos finales en DECIMAL */
+                    decimal subtotalOriginal = carrito
+                        .Select(i => (decimal)i.perfume.precio_en_pesos * i.cantidad)
+                        .Sum();
 
-                    if (Math.Abs(totalCalculado - totalFinal) > 0.01)
+                    decimal descuentoTotal = (decimal)descuentoTotalDouble;
+                    decimal recargoTotal = (decimal)GetRecargo(medio, cuotas,
+                                                (double)subtotalOriginal, (double)descuentoTotal);
+
+                    decimal totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+
+                    // Comparación en DECIMAL
+                    if (Math.Abs(totalCalculado - totalFinalDec) > 0.01m)
                         throw new InvalidOperationException("Los totales no coinciden");
 
                     /* 4) Tipo y numeración de factura */
@@ -496,8 +526,8 @@ namespace Eterea_Parfums_Web.Controllers
                     string numFactura = GenerarNumeroFactura(db, tipoFactura);
 
                     int nuevoIdFactura = db.factura.Any()
-                     ? db.factura.Max(f => f.id) + 1   // último + 1
-                     : 1;                              // tabla vacía → 1
+                        ? db.factura.Max(f => f.id) + 1
+                        : 1;
 
                     /* 5) FACTURA */
                     var fac = new factura
@@ -508,9 +538,9 @@ namespace Eterea_Parfums_Web.Controllers
                         empleado_id = 1,
                         cliente_id = clienteId,
                         forma_de_pago = medio,
-                        precio_total = totalCalculado,
-                        recargo_tarjeta = recargoTotal,
-                        descuento = descuentoTotal,
+                        precio_total = (double)totalCalculado, // si la columna es float/double en BD
+                        recargo_tarjeta = (double)recargoTotal,
+                        descuento = (double)descuentoTotal,
                         numero_de_caja = 10,
                         tipo_de_consumidor = cliente.condicion_frente_al_iva,
                         origen = "web",
@@ -519,60 +549,53 @@ namespace Eterea_Parfums_Web.Controllers
                         tipo_de_factura = tipoFactura
                     };
                     db.factura.Add(fac);
-                    db.SaveChanges();   // fac.id listo
-                    System.Diagnostics.Debug.WriteLine($"Factura creada: {fac.id}");
+                    db.SaveChanges();
 
                     /* 6) DETALLE_FACTURA */
                     foreach (var d in detallesTmp)
                     {
                         int cantidadRestante = d.CarritoItem.cantidad;
 
-                        // Trae una tabla con los datos del stock donde el id del perfume sea igual al perfume del carrito
-                        var stock = db.stock
-                        .FirstOrDefault(s => s.perfume_id == d.CarritoItem.perfume_id
-                                          && s.cantidad > 5
-                                          && s.sucursal_id == 1);
-
+                        var stock = db.stock.FirstOrDefault(s =>
+                            s.perfume_id == d.CarritoItem.perfume_id &&
+                            s.cantidad > 5 &&
+                            s.sucursal_id == 1);
 
                         if (stock != null)
                         {
-                            int stockDisponibleWeb = stock.cantidad - 5; // solo lo que excede el mínimo
+                            int stockDisponibleWeb = stock.cantidad - 5;
                             if (stockDisponibleWeb >= cantidadRestante)
                             {
                                 stock.cantidad -= cantidadRestante;
                             }
-                            else // Si aún queda cantidad comprada sin descontar del stock, hace un roll back
+                            else
                             {
                                 throw new InvalidOperationException($"Stock insuficiente para el perfume ID {d.CarritoItem.perfume_id}");
                             }
                         }
 
-
-                        // Si promocion_id NO es nullable en BD, reemplazá null con 0 o un valor dummy
                         db.detalle_factura.Add(new detalle_factura
                         {
                             factura_id = fac.id,
                             perfume_id = d.CarritoItem.perfume_id,
                             cantidad = d.CarritoItem.cantidad,
                             precio_unitario = d.CarritoItem.perfume.precio_en_pesos,
-                            promocion_id = d.Promo1Id ?? 1,      //  1 si no hay promo1
+                            promocion_id = d.Promo1Id ?? 1,
                             promocion2_id = d.Promo2Id
                         });
                     }
                     db.SaveChanges();
 
                     int nuevoIdOrden = db.orden.Any()
-                     ? db.orden.Max(o => o.numero_de_orden) + 1
-                     : 1;
+                        ? db.orden.Max(o => o.numero_de_orden) + 1
+                        : 1;
 
                     string domicilioEnvio = Session["NuevoDomicilioEntrega"]?.ToString();
-
                     if (string.IsNullOrWhiteSpace(domicilioEnvio))
                     {
                         TempData["ErrorPago"] = "No se pudo determinar el domicilio de envío. Por favor, seleccioná o cargá uno.";
                         return RedirectToAction("PagoFallido", "Pedido");
                     }
-
 
                     /* 7) ORDEN */
                     db.orden.Add(new orden
@@ -588,30 +611,19 @@ namespace Eterea_Parfums_Web.Controllers
                         codigo_despacho = null,
                         fecha_creacion = DateTime.Now
                     });
-                    var ordenAgregada = db.orden.Local.Last();
-                    Console.WriteLine($"Orden→  Factura:{ordenAgregada.factura_id}, Cliente:{ordenAgregada.nombre_cliente}, DNI:{ordenAgregada.dni}, Email:{ordenAgregada.e_mail_cliente}, Envío:{ordenAgregada.domicilio_de_envio}, Estado:{(ordenAgregada.estado ? "Activa" : "Inactiva")}, Fecha:{ordenAgregada.fecha_creacion:dd/MM/yyyy HH:mm:ss}");
-
-
                     db.SaveChanges();
 
                     /* 8) Limpiar carrito y commit */
                     db.carrito.RemoveRange(carrito);
                     db.SaveChanges();
 
-                    string htmlFactura;
-
-                    if (tipoFactura == "A")
-                    {
-                        htmlFactura = FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente);
-                    }
-                    else
-                    {
-                        htmlFactura = FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
-                    }
+                    // Generación PDF + correo (tal cual lo tenías)...
+                    string htmlFactura = (tipoFactura == "A")
+                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente)
+                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 
-                    //Guardado del PDF en la ruta seleccionada
                     string nombreArchivo = $"Factura_{numFactura}.pdf";
                     string rutaRelativa = $"~/Facturas/{nombreArchivo}";
                     string rutaDelPdfGenerado = Server.MapPath(rutaRelativa);
@@ -624,34 +636,26 @@ namespace Eterea_Parfums_Web.Controllers
                             emailDestino: cliente.e_mail,
                             nombreCliente: cliente.nombre,
                             numeroFactura: numFactura,
-                            total: totalCalculado,
+                            total: (double)totalCalculado,
                             rutaPdf: rutaDelPdfGenerado
-
                         );
                     });
 
                     tx.Commit();
 
-                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFinal = totalFinal });
-
-
+                    return RedirectToAction("PagoExitoso", "Pedido", new
+                    {
+                        numOrden = nuevoIdOrden,
+                        totalFinal = totalFinalDec.ToString(CultureInfo.InvariantCulture)
+                    });
                 }
                 catch (Exception ex)
                 {
-                    try
-                    {
-                        tx.Rollback();
-                    }
-                    catch (Exception rollbackEx)
-                    {
-                        // Loguear el error del rollback sin interrumpir el flujo original
-                        System.Diagnostics.Debug.WriteLine("Error al hacer rollback: " + rollbackEx.Message);
-                    }
+                    try { tx.Rollback(); } catch { }
                     System.Diagnostics.Debug.WriteLine("Error al procesar la venta: " + ex.Message);
                     TempData["ErrorPago"] = "Ocurrió un problema al procesar la venta ";
                     return RedirectToAction("Index", "Carrito");
                 }
-
             }
         }
 

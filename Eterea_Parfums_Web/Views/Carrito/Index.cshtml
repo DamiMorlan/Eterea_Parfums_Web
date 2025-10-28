@@ -101,7 +101,9 @@
                     </div>
                 </div>
                 <div class="contenedor-eliminar">
-                    <button onclick="eliminarPerfume(@item.PerfumeId)" style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                    <button type="button"
+                            onclick="eliminarPerfume(@item.PerfumeId); return false;"
+                            style="background:none; border:none; cursor:pointer;" title="Eliminar">
                         🗑️
                     </button>
 
