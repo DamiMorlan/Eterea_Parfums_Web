@@ -52,7 +52,7 @@
                         @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
                     </div>
                     <div class="text-end w-25">
-                        $@item.TotalSinDescuento.ToString("N2")
+                        $@item.TotalSinDescuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                     </div>
                 </div>
             }
@@ -64,20 +64,21 @@
                 <div class="fila-resumen">
                     <span class="etiqueta">Subtotal (sin descuento):</span>
                     <span class="valor">
-                        $@($"{Model.Subtotal:N2}")
+                        $@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                    </span>
                     </span>
                 </div>
 
                 <div class="fila-resumen">
                     <span class="etiqueta">Descuentos aplicados:</span>
                     <span class="valor descuento">
-                        -$@($"{Model.Descuento:N2}")
+                        -$@Model.Descuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                     </span>
                 </div>
 
                 <div class="fila-resumen total">
                     <span class="etiqueta">Total a pagar:</span>
-                    <span class="valor">$@($"{Model.Total:N2}")</span>
+                    <span class="valor">$@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
                 </div>
 
                 @if (Model.EnvioGratis)
@@ -108,7 +109,7 @@
                     <a href="@Url.Action("SimularPago",
                              "Pedido",
                              new { monto = Model.Total.ToString(
-                                       System.Globalization.CultureInfo.InvariantCulture) })"
+                                      "0.00", System.Globalization.CultureInfo.InvariantCulture) })"
                        class="btn btn-success btn-lg mx-auto mt-3 w-auto">
                         <!-- sin d-block -->
                         Ir a Pagar

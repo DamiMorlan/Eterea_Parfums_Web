@@ -68,8 +68,8 @@
                 <h6 class="fw-bold mb-3">Detalles del pago</h6>
 
                 <div class="d-flex justify-content-between">
-                    <span>Productos</span>
-                    <span>$ @Model.Monto.ToString("N2")</span>
+                    <span>Subtotal productos</span>
+                    <span>$ @string.Format(new CultureInfo("es-AR"), "{0:0.00}", Model.Monto)</span>
                 </div>
 
                 <div class="d-flex justify-content-between" id="filaInteres" style="display:none;">
@@ -80,7 +80,7 @@
                 <hr />
                 <div class="d-flex justify-content-between fw-bold fs-5">
                     <span>Pagás</span>
-                    <span id="txtTotal">$ @Model.Monto.ToString("N2")</span>
+                    <span id="txtTotal">$ @string.Format(new CultureInfo("es-AR"), "{0:0.00}", Model.Monto)</span>
                 </div>
 
                 <!-- BOTÓN -->
@@ -128,11 +128,18 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        const fmtUS = n => Number(n).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            useGrouping: false
+        });
+
 $(function(){
 
   /* ======== constantes ======== */
-  const totalBase = +("@Model.Monto".replace(',','.'));
-  const saldo     = +("@Model.SaldoCuenta".replace(',','.'));
+  const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+  const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
   const cuotasMC  = {1:0, 3:0.10, 6:0.15, 9:0.18, 12:0.20};
 
   /* ======== estado / refs ====== */
@@ -150,10 +157,10 @@ $(function(){
   const fmt = n => n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const actResumen = _=>{
       const total = totalBase + recargo;
-      $txtTotal.text(`$ ${fmt(total)}`);
-      $txtInter.text(`$ ${fmt(recargo)}`);
+      $txtTotal.text(`$ ${fmtUS(total)}`);
+      $txtInter.text(`$ ${fmtUS(recargo)}`);
       $filaInt.toggle(recargo>0);
-      $hdTotal.val(total.toString().replace('.', ','));
+      $hdTotal.val(fmtUS(total));
   };
   const calcRecargo = _=>{
       recargo = cuotasMC[cuotas]*totalBase;

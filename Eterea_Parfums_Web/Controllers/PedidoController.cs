@@ -391,18 +391,33 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult SimularPago(string monto)
         {
-            double total = double.Parse(monto, CultureInfo.InvariantCulture);
+            System.Diagnostics.Debug.WriteLine($"[SimularPago] raw query monto='{monto}'");
 
-            var rand = new Random();
-            double saldo = rand.Next(50_000, 300_001);
+            // 1) Parse del monto (Invariant primero)
+            decimal m;
+            if (!decimal.TryParse(monto, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
+                decimal.TryParse(monto, NumberStyles.Any, CultureInfo.GetCultureInfo("es-AR"), out m);
 
-            var model = new SimularPagoViewModel
+            // 2) Saldo random por sesión (100.000 a 800.000)
+            if (Session["SaldoCuentaDemo"] == null)
             {
-                Monto = total,
-                SaldoCuenta = saldo,
-                Usuario = Session["nombreUsuario"]?.ToString() ?? "Invitado"
+                // Semilla estable por sesión para no cambiar en cada refresh
+                var seed = unchecked(Environment.TickCount + (Session.SessionID?.GetHashCode() ?? 0));
+                var rnd = new Random(seed);
+                // Next(min, maxExclusive) → usamos 800001 para incluir 800000
+                var saldo = rnd.Next(100000, 800001);
+                Session["SaldoCuentaDemo"] = (double)saldo;
+            }
+            double saldoCuenta = (double)Session["SaldoCuentaDemo"];
+
+            var vm = new SimularPagoViewModel
+            {
+                Monto = (double)m,
+                SaldoCuenta = saldoCuenta
             };
-            return View(model);
+
+            System.Diagnostics.Debug.WriteLine($"[SimularPago] parsed m={m} | saldo={saldoCuenta}");
+            return View(vm);
         }
 
 
@@ -415,6 +430,13 @@ namespace Eterea_Parfums_Web.Controllers
                 return RedirectToAction("Login", "Cliente");
 
             int clienteId = (int)Session["clienteId"];
+
+            // 🔹 Re-leer el hidden "totalFinal" y parsear robusto
+            var raw = Request.Form["totalFinal"];
+            var esAR = System.Globalization.CultureInfo.GetCultureInfo("es-AR");
+            decimal totalFinalDec;
+            if (!decimal.TryParse(raw, System.Globalization.NumberStyles.Any, esAR, out totalFinalDec))
+                decimal.TryParse(raw, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out totalFinalDec);
 
             using (var db = new etereaEntities7())
             using (var tx = db.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
@@ -487,6 +509,13 @@ namespace Eterea_Parfums_Web.Controllers
                     double subtotalOriginal = carrito.Sum(i => i.perfume.precio_en_pesos * i.cantidad);
                     double recargoTotal = GetRecargo(medio, cuotas, subtotalOriginal, descuentoTotal);
                     double totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+
+                    // ✅ Comparación en decimal
+                    decimal totalCalculadoDec = (decimal)totalCalculado;
+                    if (Math.Abs(totalCalculadoDec - totalFinalDec) > 0.01m)
+                        throw new InvalidOperationException("Los totales no coinciden");
+
+                   
 
                     if (Math.Abs(totalCalculado - totalFinal) > 0.01)
                         throw new InvalidOperationException("Los totales no coinciden");
@@ -632,7 +661,11 @@ namespace Eterea_Parfums_Web.Controllers
 
                     tx.Commit();
 
-                    return RedirectToAction("PagoExitoso", "Pedido", new { numOrden = nuevoIdOrden, totalFinal = totalFinal });
+                    return RedirectToAction("PagoExitoso", "Pedido", new
+                    {
+                        numOrden = nuevoIdOrden,
+                        totalFinal = totalFinalDec.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    });
 
 
                 }
