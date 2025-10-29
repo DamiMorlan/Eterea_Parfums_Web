@@ -1,32 +1,105 @@
-﻿.simulador-mp {
+﻿/* === Fondo general (mismo tono que el resto del sitio) === */
+body {
+    background-color: #f9e6ec; /* rosado claro */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
 }
 
+/* === Contenedor principal === */
+.simulador-mp {
+    margin-top: 40px;
+    margin-bottom: 80px; /* espacio antes del footer */
+}
+
+    /* === Tarjetas (bloques blancos) === */
+    .simulador-mp .bg-white {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+/* === Ítems de medios de pago === */
 .mp-item {
     display: flex;
     align-items: center;
     gap: .75rem;
     padding: .9rem 1rem;
     border: 1px solid #ececec;
-    border-radius: .5rem;
+    border-radius: .75rem;
     margin-bottom: .75rem;
     cursor: pointer;
-    transition: background .15s;
+    transition: background .15s, border-color .15s;
 }
 
     .mp-item:hover {
         background: #f8f9fa;
+        border-color: #f0c4d2; /* borde rosado suave */
     }
 
+/* === Íconos y logos === */
 .mp-logo {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+    color: #d1a7b4; /* rosado principal */
 }
 
 .mp-card {
-    width: 32px;
+    width: 34px;
 }
 
 .bi-chevron-right {
     color: #adb5bd;
     margin-left: auto;
 }
+
+/* === Título principal === */
+.simulador-mp h4 {
+    color: #880e4f;
+    font-weight: bold;
+}
+
+/* === Botón principal === */
+.btn-primary {
+    background-color: #d1a7b4;
+    border-color: #d1a7b4;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+    .btn-primary:hover {
+        background-color: #c48a9e;
+        border-color: #c48a9e;
+        transform: scale(1.03);
+    }
+
+/* === Botón Confirmar en el modal === */
+.btn-success {
+    background-color: #a8617a;
+    border-color: #a8617a;
+}
+
+    .btn-success:hover {
+        background-color: #944f68;
+        border-color: #944f68;
+    }
+
+/* === Espaciado en el modal === */
+.modal-content {
+    border-radius: 10px;
+}
+
+/* === Texto del resumen de pago === */
+#txtTotal {
+    color: #880e4f;
+    font-weight: bold;
+}
+
+/* === Enlace volver al sitio === */
+.simulador-mp a {
+    color: #d1a7b4;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+    .simulador-mp a:hover {
+        color: #880e4f;
+        text-decoration: underline;
+    }

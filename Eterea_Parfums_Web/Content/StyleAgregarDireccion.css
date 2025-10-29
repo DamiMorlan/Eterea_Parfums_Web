@@ -1,0 +1,99 @@
+﻿/* Fondo general */
+body {
+    background-color: #faecef; /* Rosa suave, igual que VistaPreviaPedido */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Contenedor principal */
+.container {
+    background-color: transparent;
+    margin-bottom: 30px; /* Deja espacio antes del footer */
+}
+
+/* Card principal */
+.card {
+    background-color: #fff;
+    border-radius: 20px;
+    border: 1px solid #f3c5d0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Título */
+    .card h4 {
+        color: #c25b7c;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+/* Labels */
+label {
+    color: #a74967;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+/* Campos de texto */
+.form-control {
+    border: 1px solid #f3c5d0;
+    border-radius: 10px;
+    padding: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .form-control:focus {
+        border-color: #c25b7c;
+        box-shadow: 0 0 5px rgba(194, 91, 124, 0.3);
+    }
+
+/* Mensajes de validación */
+.text-danger {
+    font-size: 0.9rem;
+}
+
+/* Botón Guardar */
+.btn-success {
+    background-color: #e8a2b8;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+    .btn-success:hover {
+        background-color: #c25b7c;
+    }
+
+/* Botón Cancelar */
+.btn-secondary {
+    background-color: #f5d7de;
+    border: none;
+    border-radius: 10px;
+    color: #7a4b5b;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .btn-secondary:hover {
+        background-color: #c25b7c;
+        color: #fff;
+    }
+
+/* Adaptabilidad móvil */
+@media (max-width: 768px) {
+    .card {
+        padding: 20px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
