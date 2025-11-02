@@ -323,6 +323,7 @@
     <Content Include="Content\StylePerfil.css" />
     <Content Include="Content\StylePerfume.css" />
     <Content Include="Content\StylePerfumeDetails.css" />
+    <Content Include="Content\StylePreguntasFrecuentes.css" />
     <Content Include="Content\StylePromocion.css" />
     <Content Include="Content\StyleLayout.css" />
     <Content Include="Content\StyleRegistro.css" />
