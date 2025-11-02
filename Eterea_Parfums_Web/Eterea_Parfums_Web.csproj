@@ -312,6 +312,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\StyleAbout.css" />
+    <Content Include="Content\StyleBlog.css" />
     <Content Include="Content\StyleCarrito.css" />
     <Content Include="Content\StyleContacto.css" />
     <Content Include="Content\StyleHistorial.css" />

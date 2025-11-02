@@ -12,121 +12,12 @@
     ViewBag.Title = "News";
 }
 
+@section Styles {
+    <link href="~/Content/StyleBlog.css" rel="stylesheet" type="text/css" />
+}
+
 <!-- Google Fonts para estilo periodístico -->
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Merriweather&display=swap" rel="stylesheet">
-
-<style>
-    :root {
-        --rosa-claro: rgb(235, 199, 206);
-        --rosa-medio: rgb(228, 137, 164);
-        --rosa-fondo: rgb(249, 230, 225);
-        --rosa-profundo: rgb(209, 167, 180);
-        --rosa-suave: rgb(250, 236, 239);
-        --beige: #f5f5dc;
-        --moka: #b89b82;
-    }
-
-    body {
-        background-color: var(--rosa-suave);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-
-    .card-title,
-    .card-text,
-    .contenido-noticia p {
-        font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
-        color: #5a2a39;
-        line-height: 1.6;
-    }
-
-    .card-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .contenido-noticia p {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .contenido-noticia ul {
-        font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
-        color: #973f5c;
-    }
-
-    .info-section {
-        background-color: var(--rosa-claro);
-        padding: 2rem 2rem;
-        border-radius: 12px;
-        margin: 20px 60px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-        .info-section .div, h2 {
-            color: #973f5c;
-        }
-
-    .card,
-    .card-body,
-    .menu-hamburguesa {
-        background-color: var(--rosa-suave);
-    }
-
-    .menu-hamburguesa {
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        margin-bottom: 40px;
-        max-width: 800px;
-    }
-
-    .btn-card {
-        background-color: var(--rosa-profundo);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px;
-        font-size: 1rem;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        .btn-card:hover {
-            background-color: rgb(189, 147, 160);
-            transform: scale(1.02);
-            color: white;
-        }
-
-    /* Animación del contenido */
-    .contenido-noticia {
-        transition: all 0.5s ease;
-        opacity: 0;
-        max-height: 0;
-    }
-
-        .contenido-noticia.mostrar {
-            opacity: 1;
-            max-height: 100%;
-        }
-
-        /* Títulos de listas */
-        .contenido-noticia ul li strong {
-            font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
-            color: #973f5c;
-        }
-
-    /* Enlaces generales */
-    a {
-        color: var(--rosa-medio);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-        a:hover {
-            color: var(--rosa-profundo);
-            text-decoration: underline;
-        }
-</style>
 
 
 <div class="info-section">
