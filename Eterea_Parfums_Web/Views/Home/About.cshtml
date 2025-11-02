@@ -8,58 +8,92 @@
 
 
 <div class="container-fluid">
-    <div class="about-section">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 about-section">
 
-        <!-- Logo -->
-        <div class="logo-eterea-container text-center mb-4">
-            <img src="@Url.Content("~/Imagenes/LogoEterea.png")"  alt="Logo Eterea Parfums" class="logo-eterea img-fluid" />
-        </div>
+            <!-- Logo -->
+            <div class="logo-eterea-container text-center mb-4">
+                <img src="@Url.Content("~/Imagenes/LogoEterea.png")" alt="Logo Eterea Parfums" class="logo-eterea img-fluid" />
+            </div>
 
-        <!-- Título principal -->
-        <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
+            <!-- Título principal -->
+            <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
 
-        <!-- Introducción -->
-        <section class="text-center mb-5">
-            <p class="intro-text">
-                Bienvenidos a <strong>Eterea Parfums</strong>, una experiencia sensorial donde el arte de la perfumería cobra vida. Nos dedicamos a ofrecer fragancias exclusivas y de alta calidad, cuidadosamente seleccionadas para reflejar tu personalidad, estilo y esencia.
-            </p>
-            <p>
-                En <strong>Eterea Parfums</strong>, creemos que un perfume es mucho más que una fragancia: es una expresión de identidad, un recuerdo inolvidable, un sello personal. Nuestro objetivo es ayudarte a encontrar esa fragancia perfecta que te acompañe todos los días o en momentos especiales.
-            </p>
-        </section>
+            <!-- Introducción -->
+            <section class="text-center mb-5">
+                <p class="intro-text">
+                    Bienvenidos a <strong>Eterea Parfums</strong>, una experiencia sensorial donde el arte de la perfumería cobra vida. Nos dedicamos a ofrecer fragancias exclusivas y de alta calidad, cuidadosamente seleccionadas para reflejar tu personalidad, estilo y esencia.
+                </p>
+                <p>
+                    En <strong>Eterea Parfums</strong>, creemos que un perfume es mucho más que una fragancia: es una expresión de identidad, un recuerdo inolvidable, un sello personal. Nuestro objetivo es ayudarte a encontrar esa fragancia perfecta que te acompañe todos los días o en momentos especiales.
+                </p>
+            </section>
 
-        <!-- Por qué elegirnos -->
-        <section class="contact-box mb-5">
-            <h3 class="section-subtitle mb-3">¿Por qué elegirnos?</h3>
-            <ul class="benefits-list">
-                <li><i class="fas fa-spray-can-sparkles me-2"></i><strong>Amplia variedad:</strong> Fragancias femeninas, masculinas y unisex, de reconocidas marcas internacionales y locales.</li>
-                <li><i class="fas fa-percent me-2"></i><strong>Precios accesibles:</strong> Ofertas especiales, promociones y beneficios exclusivos para nuestros clientes frecuentes.</li>
-                <li><i class="fas fa-truck-fast me-2"></i><strong>Envíos a todo el país:</strong> Rápidos, seguros y con seguimiento en todo momento.</li>
-                <li><i class="fas fa-heart me-2"></i><strong>Atención personalizada:</strong> Te asesoramos según tus preferencias aromáticas y necesidades.</li>
-                <li><i class="fas fa-star me-2"></i><strong>Calidad garantizada:</strong> Productos 100% originales y certificados.</li>
-            </ul>
-        </section>
+            <!-- Por qué elegirnos -->
+            <section class="contact-box mb-5">
+                <h3 class="section-subtitle mb-3">¿Por qué elegirnos?</h3>
+                <ul class="benefits-list">
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-spray-can-sparkles me-2"></i><strong>Amplia variedad:</strong></span>
+                        <span class="benefit-desc">Fragancias femeninas, masculinas y unisex, de reconocidas marcas internacionales y locales.</span>
+                    </li>
 
-        <!-- Comunidad -->
-        <section class="contact-box mb-5">
-            <h3 class="section-subtitle mb-3">Una comunidad que inspira</h3>
-            <p>
-                Más que una tienda, somos una comunidad apasionada por las esencias. Compartimos contigo lanzamientos, reseñas, tips de uso y cuidados para tus perfumes favoritos.
-            </p>
-            <ul class="community-list">
-                <li><i class="fas fa-bottle-droplet me-2"></i><strong>Lanzamientos exclusivos:</strong> Sé el primero en descubrir nuevas colecciones.</li>
-                <li><i class="fas fa-hand-holding-heart me-2"></i><strong>Eventos sensoriales:</strong> Participá en sorteos, workshops y experiencias olfativas.</li>
-                <li><i class="fas fa-comments me-2"></i><strong>Reseñas y consejos:</strong> Escuchamos tu opinión y compartimos recomendaciones útiles.</li>
-            </ul>
-        </section>
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-percent me-2"></i><strong>Precios accesibles:</strong></span>
+                        <span class="benefit-desc">Ofertas especiales, promociones y beneficios exclusivos para nuestros clientes frecuentes.</span>
+                    </li>
 
-        <!-- Despedida -->
-        <section class="contact-box text-center mb-5">
-            <p>
-                En <strong>Eterea Parfums</strong>, queremos acompañarte en cada paso con una fragancia que hable por vos. Explorá nuestro catálogo, descubrí nuevas notas y dejate llevar por el mundo de los perfumes.
-            </p>
-            <p class="team-signature mt-4">– El equipo de Eterea Parfums -</p>
-        </section>
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-truck-fast me-2"></i><strong>Envíos a todo el país:</strong></span>
+                        <span class="benefit-desc">Rápidos, seguros y con seguimiento en todo momento.</span>
+                    </li>
 
-    </div>
-</div>
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-heart me-2"></i><strong>Atención personalizada:</strong></span>
+                        <span class="benefit-desc">Te asesoramos según tus preferencias aromáticas y necesidades.</span>
+                    </li>
+
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-star me-2"></i><strong>Calidad garantizada:</strong></span>
+                        <span class="benefit-desc">Productos 100% originales y certificados.</span>
+                    </li>
+
+                </ul>
+            </section>
+
+            <!-- Comunidad -->
+            <section class="contact-box mb-5">
+                <h3 class="section-subtitle mb-3">Una comunidad que inspira</h3>
+                <p>
+                    Más que una tienda, somos una comunidad apasionada por las esencias. Compartimos contigo lanzamientos, reseñas, tips de uso y cuidados para tus perfumes favoritos.
+                </p>
+                <ul class="community-list">
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-bottle-droplet me-2"></i><strong>Lanzamientos exclusivos:</strong></span>
+                        <span class="benefit-desc">Sé el primero en descubrir nuevas colecciones.</span>
+                    </li>
+
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-hand-holding-heart me-2"></i><strong>Eventos sensoriales:</strong></span>
+                        <span class="benefit-desc">Participá en sorteos, workshops y experiencias olfativas.</span>
+                    </li>
+
+                    <li class="benefit-item">
+                        <span class="benefit-title"><i class="fas fa-comments me-2"></i><strong>Reseñas y consejos:</strong></span>
+                        <span class="benefit-desc">Escuchamos tu opinión y compartimos recomendaciones útiles.</span>
+                    </li>
+
+                </ul>
+            </section>
+
+            <!-- Despedida -->
+            <section class="contact-box text-center mb-5">
+                <p>
+                    En <strong>Eterea Parfums</strong>, queremos acompañarte en cada paso con una fragancia que hable por vos. Explorá nuestro catálogo, descubrí nuevas notas y dejate llevar por el mundo de los perfumes.
+                </p>
+                <p class="team-signature mt-4">– El equipo de Eterea Parfums -</p>
+            </section>
+
+        </div> <!-- /.col -->
+    </div> <!-- /.row -->
+</div> <!-- /.container-fluid -->

@@ -227,6 +227,9 @@ button[type="submit"] {
 
 /* Ajustes adicionales por dispositivo */
 @media (max-width: 768px) {
+    .contact-section {
+        padding: 12px !important;
+    }
     .map-container {
         padding-bottom: 75%; /* proporción más alta en celulares */
     }
@@ -235,7 +238,7 @@ button[type="submit"] {
         width: 80% !important;
     }
     .contact-box {
-        padding: 10px 5px 5px 5px !important;
+        padding: 15px 8px 8px 8px !important;
     }
 }
 
