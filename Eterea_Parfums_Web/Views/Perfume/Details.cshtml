@@ -47,7 +47,7 @@
                 </nav>
 
                 <!-- 2 -->
-                <div class="col-sm-12 col-md-7 row text-center">
+                <div class="col-sm-12 col-md-7 g-0  row text-center">
 
                     <!-- 2.1 -->
                     <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
@@ -107,7 +107,7 @@
                     <div class="mt-2">
                         <div class="row text-center px-2 py-3 card-box-info">
                             <!-- Item 1 -->
-                            <div class="col-md-4 border-end box-info">
+                            <div class="col-md-4 py-1 border-end box-info">
                                 <div>
                                     <i class="fas fa-credit-card fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                             <!-- Item 2 -->
-                            <div class="col-md-4 border-end box-info">
+                            <div class="col-md-4 py-1  border-end box-info">
                                 <div>
                                     <i class="fas fa-truck fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
@@ -124,7 +124,7 @@
                             </div>
 
                             <!-- Item 3 -->
-                            <div class="col-md-4 box-info">
+                            <div class="col-md-4 py-1  box-info">
                                 <div>
                                     <i class="fas fa-sync-alt fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
@@ -137,7 +137,7 @@
                 </div>
 
                 <!-- Detalles del perfume -->
-                <section class="detalle detalle-con-fondo mb-md-2 col-sm-12 col-md-5 text-center text-md-start">
+                <section class="detalle detalle-con-fondo ms-0 mb-md-2 col-sm-12 col-md-5 text-center text-md-start">
                     <!-- Encabezados de perfume -->
                     <h1 class="fs-5 text-uppercase text-muted mb-1">@Model.Perfume.marca.nombre</h1>
 
@@ -293,7 +293,7 @@
 
                     {
                         <div class="promo-box mt-2 py-3 rounded shadow-sm text-center text-md-start">
-                            <ul class="list-unstyled ms-4">
+                            <ul class="list-unstyled ms-md-4 ">
                                 @foreach (var promo in promosActivas)
                                 {
                                     <li class="promo-item">
@@ -344,7 +344,7 @@
 
                 <!-- 3 -->
                 <!--ESPECIFICACIONES  -->
-                <div class="mt-md-1 fondo-especificaciones">
+                <div class="mt-2 fondo-especificaciones">
 
                     <div class="w3-row">
                         <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">

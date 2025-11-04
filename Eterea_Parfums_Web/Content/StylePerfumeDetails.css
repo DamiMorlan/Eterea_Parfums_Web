@@ -988,3 +988,19 @@ h2 {
         .box-info a:hover {
             text-decoration: underline;
         }
+
+
+   @media (max-width: 600px) {
+    .breadcrumb-nav {
+        display: block;
+    }
+
+    .linea-tamanios{
+        justify-content: center;
+    }
+
+    #detalle {
+        height: 380px;
+        overflow: scroll;
+    }
+}
