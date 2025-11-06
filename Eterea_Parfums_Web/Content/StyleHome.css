@@ -17,8 +17,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ---- Carousel Responsive ---- */
-.carousel-inner img {
+/* ---- Carousel de Banners ---- */
+.carousel-banners .banner-img {
     width: 100%;
     height: auto;
     object-fit: cover;
@@ -27,27 +27,27 @@ body {
 }
 
     /* Efecto leve al pasar el mouse */
-    .carousel-inner img:hover {
+    .carousel-banners .banner-img:hover {
         transform: scale(1.02);
     }
 
 /* Ajustes para pantallas medianas */
 @media (max-width: 992px) {
-    .carousel-inner img {
+    .carousel-banners .banner-img {
         max-height: 360px;
     }
 }
 
 /* Ajustes para tablets */
 @media (max-width: 768px) {
-    .carousel-inner img {
+    .carousel-banners .banner-img {
         max-height: 280px;
     }
 }
 
 /* Ajustes para móviles */
 @media (max-width: 576px) {
-    .carousel-inner img {
+    .carousel-banners .banner-img {
         max-height: 200px;
     }
 }

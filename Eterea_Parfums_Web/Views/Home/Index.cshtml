@@ -30,18 +30,17 @@
 
     <!-- Carousel de Imágenes Fijas -->
     @{
-        // Lista de imágenes del carrusel (pueden ser .jpg o .png en ~/Imagenes/Banners/)
+        // Lista de imágenes del carrusel (pueden ser .jpg o .png en ~/Imagenes/)
         var banners = new List<string>
 {
         "banner1.jpg",
         "banner2.jpg",
         "banner3.jpg",
         "banner4.jpg"
-        };
-
+    };
     }
 
-    <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div id="myCarousel" class="carousel slide carousel-banners mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
             @for (int i = 0; i < banners.Count; i++)
             {
@@ -60,7 +59,7 @@
             {
                 <div class="carousel-item @(i == 0 ? "active" : "")">
                     <img src="@Url.Content("~/Imagenes/" + banners[i])"
-                         class="d-block w-100"
+                         class="d-block w-100 banner-img"
                          alt="Banner @(i + 1)" />
                 </div>
             }
