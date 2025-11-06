@@ -541,3 +541,10 @@ h2 {
         text-align: center;
         margin: 0 auto;
     }
+
+
+@media (max-width: 768px) { /* dispositivos móviles */
+    .bg-marcas {
+        padding: 15px 8px 8px 8px !important;
+    }
+}

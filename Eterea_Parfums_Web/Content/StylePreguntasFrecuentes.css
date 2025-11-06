@@ -1,4 +1,4 @@
-Ôªø:root {
+:root {
     --rosa-claro: rgb(235, 199, 206);
     --rosa-medio: rgb(228, 137, 164);
     --rosa-fondo: rgb(249, 230, 225);
@@ -103,7 +103,7 @@ body {
         cursor: pointer;
     }
 
-/* Animaci√≥n de entrada */
+/* AnimaciÛn de entrada */
 @keyframes fadeInLogo {
     from {
         opacity: 0;
@@ -116,7 +116,7 @@ body {
     }
 }
 
-/* Animaci√≥n de flotaci√≥n suave */
+/* AnimaciÛn de flotaciÛn suave */
 @keyframes floatLogo {
     0%, 100% {
         transform: translateY(0);
@@ -125,8 +125,6 @@ body {
     50% {
         transform: translateY(-8px);
     }
-
-
 }
 
 .faq-section h3 {
@@ -181,20 +179,20 @@ body {
 .benefit-item {
     display: flex;
     align-items: center;
-    flex-wrap: nowrap; /* todo en una l√≠nea */
+    flex-wrap: nowrap; /* todo en una lÌnea */
     margin-bottom: 10px;
 }
 
     .benefit-item i {
-        margin-right: 5px; /* separaci√≥n m√≠nima del icono */
+        margin-right: 5px; /* separaciÛn mÌnima del icono */
     }
 
 .benefit-title {
-    margin-right: 5px; /* separaci√≥n m√≠nima del t√≠tulo de la descripci√≥n */
+    margin-right: 5px; /* separaciÛn mÌnima del tÌtulo de la descripciÛn */
 }
 
 .benefit-desc {
-    display: inline; /* aparece junto al t√≠tulo */
+    display: inline; /* aparece junto al tÌtulo */
 }
 
 
@@ -202,6 +200,7 @@ body {
 @media (max-width: 768px) {
     .about-section {
         padding: 12px !important;
+        margin: 15px 8px 8px 8px !important;
     }
 
     .contact-box .section-subtitle {
@@ -217,32 +216,3 @@ body {
     }
 }
 
-    @media (max-width: 1280px) {
-
-        .contact-box .section-subtitle {
-            text-align: center !important;
-        }
-
-        .contact-box p {
-            text-align: center !important;
-        }
-
-        .benefit-item {
-            display: flex; /* necesario */
-            flex-direction: column;
-            align-items: center; /* ahora s√≠ centra */
-            text-align: center; /* para el texto dentro de los spans */
-        }
-
-        .benefit-title,
-        .benefit-desc {
-            display: block; /* cada uno ocupa su l√≠nea */
-            margin-right: 0;
-            width: 100%; /* para ocupar todo el ancho del li */
-            text-align: center; /* centra el contenido dentro del span */
-        }
-
-        .benefit-item i {
-            margin-bottom: 5px; /* espacio entre icono y t√≠tulo */
-        }
-    }
