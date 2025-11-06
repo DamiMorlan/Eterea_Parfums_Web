@@ -251,26 +251,41 @@
         const localidadSelected = '@Model.LocalidadId';
         const calleSelected = '@Model.CalleId';
 
+        // Función con promesas para cargar datos encadenados
+        function cargarSelectConPromesa(url, parametro, selectDestino) {
+            return $.getJSON(url, parametro, function (data) {
+                const $select = $(selectDestino);
+                $select.empty().append('<option></option>');
+                $.each(data, function (i, item) {
+                    $select.append(new Option(item.nombre, item.id, false, false));
+                });
+                $select.prop('disabled', false).trigger('change.select2');
+            });
+        }
+
+        // Encadenar precarga
         if (paisSelected) {
-            $('#pais').val(paisSelected).trigger('change');
+            $('#pais').val(paisSelected).trigger('change.select2');
 
-            if (provinciaSelected) {
-                setTimeout(function () {
-                    $('#provincia').val(provinciaSelected).trigger('change');
-                }, 300);
-            }
-
-            if (localidadSelected) {
-                setTimeout(function () {
-                    $('#localidad').val(localidadSelected).trigger('change');
-                }, 600);
-            }
-
-            if (calleSelected) {
-                setTimeout(function () {
-                    $('#calle').val(calleSelected).trigger('change');
-                }, 900);
-            }
+            cargarSelectConPromesa('/Cliente/ObtenerProvincias', { paisId: paisSelected }, '#provincia')
+                .then(() => {
+                    if (provinciaSelected) {
+                        $('#provincia').val(provinciaSelected).trigger('change.select2');
+                        return cargarSelectConPromesa('/Cliente/ObtenerLocalidades', { provinciaId: provinciaSelected }, '#localidad');
+                    }
+                })
+                .then(() => {
+                    if (localidadSelected) {
+                        $('#localidad').val(localidadSelected).trigger('change.select2');
+                        return cargarSelectConPromesa('/Cliente/ObtenerCalles', { localidadId: localidadSelected }, '#calle');
+                    }
+                })
+                .then(() => {
+                    if (calleSelected) {
+                        $('#calle').val(calleSelected).trigger('change.select2');
+                    }
+                })
+                .catch(err => console.error("Error al cargar selects:", err));
         }
     });
     </script>
