@@ -27,7 +27,7 @@
     <div class="perfume-detalle-contenedor">
         <div class="perfume-detalle-fondo mt-4 mb-5">
 
-            <div class="row gap-0">
+            <div class="row">
 
                 <!-- 1 -->
                 <nav aria-label="breadcrumb" class="mb-4">
@@ -47,7 +47,7 @@
                 </nav>
 
                 <!-- 2 -->
-                <div class="col-sm-12 col-md-7 g-0  row text-center">
+                <div class="col-sm-12 col-md-7 text-center">
 
                     <!-- 2.1 -->
                     <!-- MINIATURAS EN MODO DESKTOP (vertical) -->
@@ -104,10 +104,10 @@
 
 
                     <!-- 2.3 -->
-                    <div class="mt-2">
+                    <div class="mt-2 d-sm-none d-none d-sm-block d-md-block">
                         <div class="row text-center px-2 py-3 card-box-info">
                             <!-- Item 1 -->
-                            <div class="col-md-4 py-1 border-end box-info">
+                            <div class="col-md-4 py-1 box-info box-border-info">
                                 <div>
                                     <i class="fas fa-credit-card fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                             <!-- Item 2 -->
-                            <div class="col-md-4 py-1  border-end box-info">
+                            <div class="col-md-4 py-1 box-info box-border-info">
                                 <div>
                                     <i class="fas fa-truck fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
@@ -124,7 +124,7 @@
                             </div>
 
                             <!-- Item 3 -->
-                            <div class="col-md-4 py-1  box-info">
+                            <div class="col-md-4 py-1 box-info">
                                 <div>
                                     <i class="fas fa-sync-alt fa-2x mb-2"></i>
                                     <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
@@ -280,7 +280,7 @@
                         // Total por 2 cuando la 2ª tiene % de descuento (CORREGIDO: sin "*2")
                         // total = P + P*(1 - %/100)
                         decimal TotalLlevandoDos(decimal precioLista, int porcentajeSegunda)
-                            => R2(precioLista + (precioLista * (100 - porcentajeSegunda*2) / 100m));
+                            => R2(precioLista + (precioLista * (100 - porcentajeSegunda * 2) / 100m));
                     }
 
                     @{
@@ -340,80 +340,108 @@
 
 
                 </section>
-
-
-                <!-- 3 -->
-                <!--ESPECIFICACIONES  -->
-                <div class="mt-2 fondo-especificaciones">
-
-                    <div class="w3-row">
-                        <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
-                            <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
-                        </a>
-                        <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
-                            <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
-                        </a>
-                    </div>
-
-                    <div id="detalle" class="w3-container box mt-5" style="display:block">
-                        <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
-                    </div>
-
-                    <div id="especificaciones" class="w3-container mt-2 box" style="display:none">
-                        <div class="d-flex w-50">
-                            <p class="fw-bold mb-0">Familia Olfativa:&nbsp;</p>
-                            @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
-                            {
-                                <p class="mb-0">
-                                    @string.Join(", ", Model.Perfume.tipo_de_aroma.Select(a => a.nombre))
-                                </p>
-                            }
-                            else
-                            {
-                                <p class="mb-0">No hay tipos de aroma asociados.</p>
-                            }
+                <!--Modo 320px-->
+                <div class="mt-2">
+                    <div class="row text-center px-2 py-3 card-box-info d-sm-none  d-sm-none d-md-none">
+                        <!-- Item 1 -->
+                        <div class="col-md-4 py-1 box-info box-border-info">
+                            <div>
+                                <i class="fas fa-credit-card fa-2x mb-2"></i>
+                                <p class="fw-semibold text-uppercase">Cuotas & Formas de Pago</p>
+                                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalPago">Ver más ></a>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="col-md-4 py-1 box-info box-border-info">
+                            <div>
+                                <i class="fas fa-truck fa-2x mb-2"></i>
+                                <p class="fw-semibold text-uppercase">Tiempo & Costo de Envío</p>
+                                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalEnvio">Ver más ></a>
+                            </div>
                         </div>
 
-                        <div class="d-flex">
-                            @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
-                            {
-                                <div>
-                                    @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
-                                        .GroupBy(n => n.tipo_de_nota.nombre))
-                                    {
-                                        <p class="mb-0">
-                                            <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
-                                        </p>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
-                            }
-                        </div>
-                        <div class="d-flex">
-                            <p class="fw-bold mb-0">Tipo:</p>
-                            <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
-                        </div>
-                        <div class="d-flex">
-                            <p class="fw-bold mb-0">Genero:</p>
-                            <p class="ms-1 mb-0">@Model.Perfume.genero.genero1</p>
-                        </div>
-                        <div class="d-flex">
-                            <p class="fw-bold mb-0">Año de lanzamiento:</p>
-                            <p class="ms-1 mb-0">@Model.Perfume.anio_de_lanzamiento</p>
+                        <!-- Item 3 -->
+                        <div class="col-md-4 py-1 box-info">
+                            <div>
+                                <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                                <p class="fw-semibold text-uppercase">Cambios & Devoluciones</p>
+                                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCambios">Ver más ></a>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- 3 -->
+                    <!--ESPECIFICACIONES  -->
+                    <div class="mt-2 fondo-especificaciones">
+
+                        <div class="w3-row">
+                            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'detalle');">
+                                <div class="w3-quarter w3-center tablink w3-border-pale-amber w3-bottombar w3-padding">DETALLES DEL PRODUCTO</div>
+                            </a>
+                            <a href="javascript:void(0)" onclick="openBoxDetalle(event, 'especificaciones');">
+                                <div class="w3-quarter w3-center tablink w3-padding">ESPECIFICACIONES</div>
+                            </a>
+                        </div>
+
+                        <div id="detalle" class="w3-container box mt-5" style="display:block">
+                            <p class="text-center text-md-start">@Model.Perfume.descripcion</p>
+                        </div>
+
+                        <div id="especificaciones" class="w3-container mt-2 box" style="display:none">
+                            <div class="d-flex w-50">
+                                <p class="fw-bold mb-0">Familia Olfativa:&nbsp;</p>
+                                @if (Model.Perfume.tipo_de_aroma != null && Model.Perfume.tipo_de_aroma.Any())
+                                {
+                                    <p class="mb-0">
+                                        @string.Join(", ", Model.Perfume.tipo_de_aroma.Select(a => a.nombre))
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="mb-0">No hay tipos de aroma asociados.</p>
+                                }
+                            </div>
+
+                            <div class="d-flex">
+                                @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
+                                {
+                                    <div>
+                                        @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
+                                            .GroupBy(n => n.tipo_de_nota.nombre))
+                                        {
+                                            <p class="mb-0">
+                                                <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
+                                            </p>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
+                                }
+                            </div>
+                            <div class="d-flex">
+                                <p class="fw-bold mb-0">Tipo:</p>
+                                <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="fw-bold mb-0">Genero:</p>
+                                <p class="ms-1 mb-0">@Model.Perfume.genero.genero1</p>
+                            </div>
+                            <div class="d-flex">
+                                <p class="fw-bold mb-0">Año de lanzamiento:</p>
+                                <p class="ms-1 mb-0">@Model.Perfume.anio_de_lanzamiento</p>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
-
-
             </div>
-        </div>
     </div>
 
-
-
+    
+    </div>
 
 
     <!-- 4 -->
@@ -599,7 +627,7 @@
                                                  data-nombre="@perfume.Nombre"
                                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
-                                               <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
+                                                <img src="@($"{API_IMG}{perfume.Imagen}.jpg")"
                                                      class="card-img-top custom-img"
                                                      alt="@perfume.Nombre"
                                                      id="imagen-@cardId" />
