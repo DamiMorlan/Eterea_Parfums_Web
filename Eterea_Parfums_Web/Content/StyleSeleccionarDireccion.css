@@ -1,33 +1,100 @@
-﻿.contenedor-titulo {
-    position: relative;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+﻿/* === Estilos coherentes con VistaPreviaPedido (Etérea Parfums) === */
+/* Flecha de volver */
+body {
+    background-color: #faecef; /* mismo fondo rosa suave que VistaPreviaPedido */
 }
 
 .volver-carrito {
-    position: absolute;
-    left: 0;
-    font-size: 1.5rem;
+    display: inline-block;
     background-color: #ffe6f0; /* rosado claro */
     color: rgb(209, 167, 180); /* rosado oscuro */
+    font-size: 1.5rem;
     padding: 6px 12px;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s;
-    z-index: 1;
+    transition: background-color 0.3s, color 0.3s;
+    position: absolute;
+    left: 0;
 }
 
-    .volver-carrito:hover {
-        background-color: #f8bbd0;
-        color: #880e4f;
-        text-decoration: none;
+.volver-carrito:hover {
+    background-color: #f8bbd0;
+    color: #880e4f;
+    text-decoration: none;
+}
+
+/* Título central */
+.titulo-central {
+    font-weight: bold;
+    color: #880e4f;
+    font-size: 1.8rem;
+}
+
+/* Alertas */
+.alert-info {
+    background-color: #fff0f5;
+    border: 1px solid #f8bbd0;
+    color: #880e4f;
+}
+
+.alert-warning {
+    background-color: #fff8f9;
+    border: 1px solid #f1cfd9;
+    color: #880e4f;
+}
+
+/* Tarjetas de direcciones */
+.card {
+    border: 1px solid #f1cfd9;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-.titulo-central {
-    width: 100%;
-    text-align: center;
-    margin: 0;
+    .card pre {
+        font-family: inherit;
+        white-space: pre-line;
+        color: #444;
+        margin-bottom: 0;
+    }
+
+/* Botones */
+.btn-primary {
+    background-color: #d1a7b4;
+    border-color: #d1a7b4;
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .btn-primary:hover {
+        background-color: #c58a9a;
+        border-color: #c58a9a;
+        transform: translateY(-1px);
+    }
+
+.btn-success {
+    background-color: #b86c8b;
+    border-color: #b86c8b;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .btn-success:hover {
+        background-color: #a85a7d;
+        border-color: #a85a7d;
+        transform: translateY(-1px);
+    }
+
+.text-center.mt-4 a.btn {
+    padding: 10px 25px;
 }
