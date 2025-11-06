@@ -374,6 +374,10 @@
     <Content Include="Imagenes\banner-promo-dia-de-la-madre-con-carolina-herrera.jpg" />
     <Content Include="Imagenes\banner-promo-navidad-con-hugo.jpg" />
     <Content Include="Imagenes\banner-promo-prueba.jpg" />
+    <Content Include="Imagenes\banner1.jpg" />
+    <Content Include="Imagenes\banner2.jpg" />
+    <Content Include="Imagenes\banner3.jpg" />
+    <Content Include="Imagenes\banner4.jpg" />
     <Content Include="Imagenes\Blog-Perfume-Hombre.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
