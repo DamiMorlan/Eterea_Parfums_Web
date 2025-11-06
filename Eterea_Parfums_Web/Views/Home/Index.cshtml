@@ -25,12 +25,25 @@
 {
     <div class="alert alert-success">@TempData["Mensaje"]</div>
 }
+
 <div class="container-fluid p-0">
 
-    <!-- Carousel Imagenes Promociones -->
+    <!-- Carousel de Imágenes Fijas -->
+    @{
+        // Lista de imágenes del carrusel (pueden ser .jpg o .png en ~/Imagenes/Banners/)
+        var banners = new List<string>
+{
+        "banner1.jpg",
+        "banner2.jpg",
+        "banner3.jpg",
+        "banner4.jpg"
+        };
+
+    }
+
     <div id="myCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            @for (int i = 0; i < Model.Promociones.Count; i++)
+            @for (int i = 0; i < banners.Count; i++)
             {
                 <button type="button"
                         data-bs-target="#myCarousel"
@@ -42,13 +55,13 @@
             }
         </div>
 
-        <div class="carousel-inner  overflow-hidden shadow">
-            @for (int i = 0; i < Model.Promociones.Count; i++)
+        <div class="carousel-inner overflow-hidden shadow">
+            @for (int i = 0; i < banners.Count; i++)
             {
-                var promo = Model.Promociones[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@($"{API_IMG}{promo.banner}.jpg")"
-                         class="d-block w-100" alt="@promo.nombre" />
+                    <img src="@Url.Content("~/Imagenes/" + banners[i])"
+                         class="d-block w-100"
+                         alt="Banner @(i + 1)" />
                 </div>
             }
         </div>
@@ -63,6 +76,7 @@
             <span class="fa-solid fa-chevron-right flecha-carousel-banner"></span>
         </button>
     </div>
+
 
 
     <!-- Carousel Marcas Perfumes -->
