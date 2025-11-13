@@ -44,11 +44,11 @@
                         @Html.ActionLink("Perfumes", "Index", "Perfume", null,
                             new { @class = "nav-link " + (currentController == "Perfume" ? "active" : "") })
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-sm-none d-md-block">
                         @Html.ActionLink("Promociones", "Index", "Promocion", null,
                             new { @class = "nav-link " + (currentController == "Promocion" ? "active" : "") })
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-sm-none d-md-none d-xl-block">
                         @Html.ActionLink("Blog", "Blog", "Home", null,
                             new { @class = "nav-link " + (currentAction == "Blog" ? "active" : "") })
                     </li>
@@ -60,11 +60,11 @@
                         @Html.ActionLink("Contacto", "Index", "Contact", null,
                             new { @class = "nav-link " + (currentController == "Contact" ? "active" : "") })
                     </li>
-                    <li class="nav-item">
-                        @Html.ActionLink("PreguntasFrecuentes", "PreguntasFrecuentes", "Home", null,
+                    <li class="nav-item d-sm-none d-md-block">
+                        @Html.ActionLink("Preguntas Frecuentes", "PreguntasFrecuentes", "Home", null,
                                     new { @class = "nav-link " + (currentAction == "PreguntasFrecuentes" ? "active" : "") })
                     </li>
-                    </li>
+                
                 </ul>
 
                 <ul class="navbar-nav">
@@ -150,15 +150,22 @@
 
                 <!-- Columna derecha: redes sociales -->
                 <div class="col-md-4 text-md-end text-center">
-                    <h5 class="mb-2">Síguenos</h5>
+                    <div class="d-none d-sm-block d-md-block d-xl-none">
+                        <h5 class="mt-2">Mas sobre nosotros</h5>
+                        <div class="d-flex flex-column card-subtitle">
+                            <a href="@Url.Action("Index", "Promocion")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Promociones</a>
+                            <a href="@Url.Action("Blog", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Blog</a>
+                            <a href="@Url.Action("PreguntasFrecuentes", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Preguntas Frecuentes</a>
+                        </div>
+                    </div>
+                    <h5 class="mt-2">Síguenos</h5>
                     <div class="social-icons">
                         <a href="https://www.facebook.com/profile.php?id=61582916420613" target="_blank" class="me-3" aria-label="Facebook"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="https://www.instagram.com/etereaparfums2024/" target="_blank" class="me-3" aria-label="Instagram" ><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="https://www.instagram.com/etereaparfums2024/" target="_blank" class="me-3" aria-label="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
                         <a href="https://x.com/EtereaParfums39" target="_blank" class="me-3" aria-label="X (antes Twitter)"><i class="fab fa-x-twitter fa-lg"></i></a>
                         <a href="https://wa.me/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp fa-lg"></i></a>
                     </div>
                 </div>
-
             </div>
         </div>
     </footer>
