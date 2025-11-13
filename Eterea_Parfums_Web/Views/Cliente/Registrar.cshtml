@@ -75,7 +75,26 @@
 
                 <div class="form-group">
                     <label for="Clave">Contraseña:</label>
-                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", required = "required" })
+
+                    <div class="input-group">
+                        @Html.PasswordFor(m => m.Clave, new
+                        {
+                            @class = "form-control password-input",
+                            required = "required",
+                            pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
+                            title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial."
+                        })
+                        <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <span id="password-error" class="text-danger d-none">
+                        La contraseña debe tener al menos <strong>8 caracteres</strong>, incluir al menos una <strong>mayúscula</strong>,
+                        una <strong>minúscula</strong>, un <strong>número</strong> y un <strong>carácter especial</strong>
+                        (<code>!, ¡, ", #, $, %, &, /, (, ), =, ?, ¿</code>).
+                    </span>
+
                     @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
                 </div>
 
@@ -194,91 +213,151 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
     // Inicializar Select2
-    $('.select2').select2({
-        width: '100%',
-        placeholder: "Seleccione una opción",
-        allowClear: true,
-        containerCssClass: "mi-select2",        // clase personalizada para el contenedor
-        dropdownCssClass: "mi-select2-dropdown" // clase personalizada para el dropdown
-    });
-
-    // Inicialmente deshabilitar los dependientes
-    $('#provincia, #localidad, #calle').prop('disabled', true);
-
-    // Función genérica para llenar selects dinámicos
-    function cargarSelect(url, parametro, selectDestino) {
-        $.getJSON(url, parametro, function (data) {
-            var $select = $(selectDestino);
-            $select.empty().append('<option></option>'); // placeholder
-            $.each(data, function (i, item) {
-                $select.append(new Option(item.nombre, item.id, false, false));
-            });
-            $select.prop('disabled', false).trigger('change');
+        $('.select2').select2({
+            width: '100%',
+            placeholder: "Seleccione una opción",
+            allowClear: true,
+            containerCssClass: "mi-select2",        // clase personalizada para el contenedor
+            dropdownCssClass: "mi-select2-dropdown" // clase personalizada para el dropdown
         });
-    }
 
-    // Cambio de país → provincias
-    $('#pais').change(function () {
-        var paisId = $(this).val();
+        // Inicialmente deshabilitar los dependientes
+        $('#provincia, #localidad, #calle').prop('disabled', true);
 
-        // Limpiar y deshabilitar dependientes
-        $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
-        $('#localidad').val(null).trigger('change').prop('disabled', true);
-        $('#calle').val(null).trigger('change').prop('disabled', true);
-
-        if (paisId) cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
-    });
-
-    // Cambio de provincia → localidades
-    $('#provincia').change(function () {
-        var provinciaId = $(this).val();
-
-        // Limpiar y deshabilitar dependientes
-        $('#localidad').val(null).trigger('change').prop('disabled', !provinciaId);
-        $('#calle').val(null).trigger('change').prop('disabled', true);
-
-        if (provinciaId) cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
-    });
-
-    // Cambio de localidad → calles
-    $('#localidad').change(function () {
-        var localidadId = $(this).val();
-
-        // Limpiar y deshabilitar calle
-        $('#calle').val(null).trigger('change').prop('disabled', !localidadId);
-
-        if (localidadId) cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
-    });
-
-    // Precargar valores si estamos editando
-    var paisSelected = '@Model.PaisId';
-    var provinciaSelected = '@Model.ProvinciaId';
-    var localidadSelected = '@Model.LocalidadId';
-    var calleSelected = '@Model.CalleId';
-
-    if (paisSelected) {
-        $('#pais').val(paisSelected).trigger('change');
-
-        if (provinciaSelected) {
-            setTimeout(function () {
-                $('#provincia').val(provinciaSelected).trigger('change');
-            }, 300);
+        // Función genérica para llenar selects dinámicos
+        function cargarSelect(url, parametro, selectDestino) {
+            $.getJSON(url, parametro, function (data) {
+                var $select = $(selectDestino);
+                $select.empty().append('<option></option>'); // placeholder
+                $.each(data, function (i, item) {
+                    $select.append(new Option(item.nombre, item.id, false, false));
+                });
+                $select.prop('disabled', false).trigger('change');
+            });
         }
-        if (localidadSelected) {
-            setTimeout(function () {
-                $('#localidad').val(localidadSelected).trigger('change');
-            }, 600);
+
+        // Cambio de país → provincias
+        $('#pais').change(function () {
+            var paisId = $(this).val();
+
+            // Limpiar y deshabilitar dependientes
+            $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
+            $('#localidad').val(null).trigger('change').prop('disabled', true);
+            $('#calle').val(null).trigger('change').prop('disabled', true);
+
+            if (paisId) cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
+        });
+
+        // Cambio de provincia → localidades
+        $('#provincia').change(function () {
+            var provinciaId = $(this).val();
+
+            // Limpiar y deshabilitar dependientes
+            $('#localidad').val(null).trigger('change').prop('disabled', !provinciaId);
+            $('#calle').val(null).trigger('change').prop('disabled', true);
+
+            if (provinciaId) cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
+        });
+
+        // Cambio de localidad → calles
+        $('#localidad').change(function () {
+            var localidadId = $(this).val();
+
+            // Limpiar y deshabilitar calle
+            $('#calle').val(null).trigger('change').prop('disabled', !localidadId);
+
+            if (localidadId) cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
+        });
+
+        // Precargar valores si estamos editando
+        var paisSelected = '@Model.PaisId';
+        var provinciaSelected = '@Model.ProvinciaId';
+        var localidadSelected = '@Model.LocalidadId';
+        var calleSelected = '@Model.CalleId';
+
+        if (paisSelected) {
+            $('#pais').val(paisSelected).trigger('change');
+
+            if (provinciaSelected) {
+                setTimeout(function () {
+                    $('#provincia').val(provinciaSelected).trigger('change');
+                }, 300);
+            }
+            if (localidadSelected) {
+                setTimeout(function () {
+                    $('#localidad').val(localidadSelected).trigger('change');
+                }, 600);
+            }
+            if (calleSelected) {
+                setTimeout(function () {
+                    $('#calle').val(calleSelected).trigger('change');
+                }, 900);
+            }
         }
-        if (calleSelected) {
-            setTimeout(function () {
-                $('#calle').val(calleSelected).trigger('change');
-            }, 900);
-        }
-    }
-});
+
+        $(document).ready(function () {
+            const passwordInput = $('input[name="Clave"]');
+            passwordInput.on('input', function () {
+                const value = $(this).val();
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$/;
+
+                if (regex.test(value)) {
+                    $(this).css('border-color', '#28a745'); // verde
+                } else {
+                    $(this).css('border-color', '#dc3545'); // rojo
+                }
+            });
+        });
+
+
+        // Mostrar/ocultar contraseña
+        $(document).on('click', '.toggle-password', function () {
+            const passwordInput = $(this).siblings('.password-input');
+            const icon = $(this).find('i');
+
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
+        // Validación dinámica y al enviar formulario
+        $(document).ready(function () {
+            const passwordInput = $('.password-input');
+            const passwordError = $('#password-error');
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$/;
+
+            // Mostrar mensaje si no cumple mientras escribe
+            passwordInput.on('input', function () {
+                const value = $(this).val();
+                if (!regex.test(value)) {
+                    passwordError.removeClass('d-none');
+                    passwordInput.css('border-color', '#dc3545'); // rojo
+                } else {
+                    passwordError.addClass('d-none');
+                    passwordInput.css('border-color', '#28a745'); // verde
+                }
+            });
+
+            // Evitar enviar el formulario si no cumple
+            $('form.register-form').on('submit', function (e) {
+                const value = passwordInput.val();
+                if (!regex.test(value)) {
+                    e.preventDefault();
+                    passwordError.removeClass('d-none');
+                    passwordInput.css('border-color', '#dc3545');
+                }
+            });
+        });
+
+    });
 
 
     </script>
+
 }

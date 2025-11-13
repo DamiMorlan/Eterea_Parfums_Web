@@ -71,10 +71,33 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Clave, "Nueva contraseña (opcional):")
-                    @Html.PasswordFor(m => m.Clave, new { @class = "form-control", placeholder = "Dejar en blanco si no desea cambiarla" })
+                    <label for="Clave">Nueva contraseña (opcional):</label>
+
+                    <div class="input-group">
+                        @Html.PasswordFor(m => m.Clave, new
+                        {
+                            @class = "form-control password-input",
+                            @id = "password",
+                            placeholder = "Dejar en blanco si no desea cambiarla",
+                            pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
+                            title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial."
+                        })
+                        <button type="button" class="btn toggle-password" tabindex="-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <span id="password-error" class="text-danger d-none">
+                        La contraseña debe tener al menos <strong>8 caracteres</strong>, incluir al menos una <strong>mayúscula</strong>,
+                        una <strong>minúscula</strong>, un <strong>número</strong> y un <strong>carácter especial</strong>
+                        (<code>!, ¡, ", #, $, %, &, /, (, ), =, ?, ¿</code>).
+                    </span>
+
                     @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
                 </div>
+
+
+
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.Email)
@@ -175,7 +198,7 @@
 
     <script>
     $(document).ready(function () {
-        // Inicializar Select2 con personalización
+        // Inicializar Select2
         $(".select2").select2({
             width: '100%',
             placeholder: "Seleccione una opción",
@@ -188,14 +211,13 @@
             dropdownCssClass: "mi-select2-dropdown"
         });
 
-        // Inicialmente deshabilitar los select dependientes
+        // --- Lógica de los selects encadenados ---
         $('#provincia, #localidad, #calle').prop('disabled', true);
 
-        // Función genérica para cargar select dinámicamente
         function cargarSelect(url, parametro, selectDestino) {
             $.getJSON(url, parametro, function (data) {
                 const $select = $(selectDestino);
-                $select.empty().append('<option></option>'); // Placeholder vacío
+                $select.empty().append('<option></option>');
                 $.each(data, function (i, item) {
                     $select.append(new Option(item.nombre, item.id, false, false));
                 });
@@ -203,55 +225,30 @@
             });
         }
 
-        // Cambio de país → cargar provincias
         $('#pais').on('change', function () {
             const paisId = $(this).val();
-
-            // Limpiar y deshabilitar dependientes
-            $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
-            $('#localidad').val(null).trigger('change').prop('disabled', true);
-            $('#calle').val(null).trigger('change').prop('disabled', true);
-
-            // Cargar provincias si hay país seleccionado
-            if (paisId) {
-                cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
-            }
+            $('#provincia, #localidad, #calle').val(null).trigger('change').prop('disabled', true);
+            if (paisId) cargarSelect('/Cliente/ObtenerProvincias', { paisId: paisId }, '#provincia');
         });
 
-        // Cambio de provincia → cargar localidades
         $('#provincia').on('change', function () {
             const provinciaId = $(this).val();
-
-            // Limpiar y deshabilitar dependientes
-            $('#localidad').val(null).trigger('change').prop('disabled', !provinciaId);
-            $('#calle').val(null).trigger('change').prop('disabled', true);
-
-            // Cargar localidades si hay provincia
-            if (provinciaId) {
-                cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
-            }
+            $('#localidad, #calle').val(null).trigger('change').prop('disabled', true);
+            if (provinciaId) cargarSelect('/Cliente/ObtenerLocalidades', { provinciaId: provinciaId }, '#localidad');
         });
 
-        // Cambio de localidad → cargar calles
         $('#localidad').on('change', function () {
             const localidadId = $(this).val();
-
-            // Limpiar y deshabilitar calle
-            $('#calle').val(null).trigger('change').prop('disabled', !localidadId);
-
-            // Cargar calles si hay localidad
-            if (localidadId) {
-                cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
-            }
+            $('#calle').val(null).trigger('change').prop('disabled', true);
+            if (localidadId) cargarSelect('/Cliente/ObtenerCalles', { localidadId: localidadId }, '#calle');
         });
 
-        // Precargar valores si estamos editando el perfil
+        // --- Precarga de selects ---
         const paisSelected = '@Model.PaisId';
         const provinciaSelected = '@Model.ProvinciaId';
         const localidadSelected = '@Model.LocalidadId';
         const calleSelected = '@Model.CalleId';
 
-        // Función con promesas para cargar datos encadenados
         function cargarSelectConPromesa(url, parametro, selectDestino) {
             return $.getJSON(url, parametro, function (data) {
                 const $select = $(selectDestino);
@@ -263,10 +260,8 @@
             });
         }
 
-        // Encadenar precarga
         if (paisSelected) {
             $('#pais').val(paisSelected).trigger('change.select2');
-
             cargarSelectConPromesa('/Cliente/ObtenerProvincias', { paisId: paisSelected }, '#provincia')
                 .then(() => {
                     if (provinciaSelected) {
@@ -284,9 +279,48 @@
                     if (calleSelected) {
                         $('#calle').val(calleSelected).trigger('change.select2');
                     }
-                })
-                .catch(err => console.error("Error al cargar selects:", err));
+                });
         }
+
+        // --- Mostrar/Ocultar contraseña ---
+        const passwordInput = document.querySelector("#password");
+        const passwordError = document.querySelector("#password-error");
+        const togglePassword = document.querySelector(".toggle-password i");
+
+        // Validar mientras escribe (solo si escribe algo)
+        passwordInput.addEventListener("input", function () {
+            const value = this.value.trim();
+
+            // Misma expresión que el pattern del input
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡"#$%&\/()=?¿]).{8,}$/;
+
+            if (value.length > 0 && !regex.test(value)) {
+                passwordError.classList.remove("d-none");
+            } else {
+                passwordError.classList.add("d-none");
+            }
+        });
+
+        // Mostrar/Ocultar contraseña
+        $(".toggle-password").on("click", function () {
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+            togglePassword.classList.toggle("fa-eye");
+            togglePassword.classList.toggle("fa-eye-slash");
+        });
+
+        // Validar al enviar el formulario
+        $(".register-form").on("submit", function (e) {
+            const value = passwordInput.value.trim();
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡"#$%&\/()=?¿]).{8,}$/;
+
+            if (value.length > 0 && !regex.test(value)) {
+                e.preventDefault();
+                passwordError.classList.remove("d-none");
+                passwordInput.focus();
+            }
+        });
     });
+
     </script>
 }
