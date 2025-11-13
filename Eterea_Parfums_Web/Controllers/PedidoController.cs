@@ -619,8 +619,8 @@ namespace Eterea_Parfums_Web.Controllers
 
                     // Generación PDF + correo (tal cual lo tenías)...
                     string htmlFactura = (tipoFactura == "A")
-                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente)
-                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente);
+                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente,cuotas)
+                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente,cuotas);
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 
