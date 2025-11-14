@@ -51,11 +51,14 @@ html, body {
         .footer .social-icons a:hover {
             color: #f1f1f1;
         }
-/* Navbar personalizado */
-.custom-footer {
-    background-color: rgb(209, 167, 180);
-    width: 100%;
-}
+   .links-mas-sobre-nosotros{
+        font-size: .95rem
+    }
+    /* Navbar personalizado */
+    .custom-footer {
+        background-color: rgb(209, 167, 180);
+        width: 100%;
+    }
 
     .custom-footer > .container {
         padding-left: 3rem !important;

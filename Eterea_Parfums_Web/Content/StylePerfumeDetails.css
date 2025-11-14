@@ -988,3 +988,33 @@ h2 {
         .box-info a:hover {
             text-decoration: underline;
         }
+
+.box-border-info {
+    border-right: solid 1px #ccc
+}
+
+
+    @media (max-width: 600px) {
+        .breadcrumb-nav {
+        /*display: block;*/
+        display:none;
+    }
+
+    .linea-tamanios{
+        justify-content: center;
+    }
+
+    #detalle {
+        height: 380px;
+        overflow: scroll;
+    }
+        .box-border-info {
+            border-right: none;
+        }
+        .swiper.gallery-top {
+            height: 250px !important;
+        }
+        .contenedor-stock-cantidad{
+            justify-content:center;
+        }
+}
