@@ -44,7 +44,7 @@
                         @Html.ActionLink("Perfumes", "Index", "Perfume", null,
                             new { @class = "nav-link " + (currentController == "Perfume" ? "active" : "") })
                     </li>
-                    <li class="nav-item d-sm-none d-md-block">
+                    <li class="nav-item">
                         @Html.ActionLink("Promociones", "Index", "Promocion", null,
                             new { @class = "nav-link " + (currentController == "Promocion" ? "active" : "") })
                     </li>
@@ -52,15 +52,15 @@
                         @Html.ActionLink("Blog", "Blog", "Home", null,
                             new { @class = "nav-link " + (currentAction == "Blog" ? "active" : "") })
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-sm-none d-md-none d-xl-block">
                         @Html.ActionLink("Nosotros", "About", "Home", null,
                             new { @class = "nav-link " + (currentAction == "About" ? "active" : "") })
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-sm-none d-md-none d-xl-block">
                         @Html.ActionLink("Contacto", "Index", "Contact", null,
                             new { @class = "nav-link " + (currentController == "Contact" ? "active" : "") })
                     </li>
-                    <li class="nav-item d-sm-none d-md-block">
+                    <li class="nav-item d-sm-none d-md-none d-xl-block">
                         @Html.ActionLink("Preguntas Frecuentes", "PreguntasFrecuentes", "Home", null,
                                     new { @class = "nav-link " + (currentAction == "PreguntasFrecuentes" ? "active" : "") })
                     </li>
@@ -153,9 +153,11 @@
                     <div class="d-none d-sm-block d-md-block d-xl-none">
                         <h5 class="mt-2">Mas sobre nosotros</h5>
                         <div class="d-flex flex-column card-subtitle">
-                            <a href="@Url.Action("Index", "Promocion")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Promociones</a>
-                            <a href="@Url.Action("Blog", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Blog</a>
+                            <a href="@Url.Action("Index", "Contact")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Contacto</a>
+                            <a href="@Url.Action("About", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Nosotros</a>
                             <a href="@Url.Action("PreguntasFrecuentes", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Preguntas Frecuentes</a>
+                            <a href="@Url.Action("Blog", "Home")" class="links-mas-sobre-nosotros me-0 text-light text-decoration-none">Blog</a>
+
                         </div>
                     </div>
                     <h5 class="mt-2">Síguenos</h5>
