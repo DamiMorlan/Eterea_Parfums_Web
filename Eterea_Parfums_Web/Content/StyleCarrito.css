@@ -245,3 +245,16 @@ select {
     font-size: 1rem;
     margin-top: 10px;
 }
+
+@media (max-width: 458px) {
+    .contenedor-eliminar {
+        display: none !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .contenedor-producto {
+        padding: 0.5rem;
+        text-align: center;
+    }
+}

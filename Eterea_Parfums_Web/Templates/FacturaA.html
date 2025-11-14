@@ -41,6 +41,33 @@
             margin: auto;
             font-weight: bold;
         }
+
+        /* Alineación/nowrap para números e importes */
+        .num, .money, th.num, th.money {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .cant {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Encabezado rosado de la grilla */
+        .th-pink {
+            background: #F6DDE6;
+        }
+
+        /* Centrar todos los encabezados de la grilla */
+        thead th {
+            text-align: center !important;
+            vertical-align: middle;
+        }
+
+        /* Forzar 1 solo renglón (no cortar) */
+        .th-nowrap {
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -50,13 +77,13 @@
                 <!-- Encabezado -->
                 <table style="width: 100%; margin-bottom: 20px; border: 1px solid black">
                     <tr>
-                        <td style="width: 12%;">@LOGO</td>
+                        <td style="width: 12%;"></td>
                         <!-- Columna izquierda -->
                         <td style="width: 33%; padding-top: 10px; padding-bottom: 20px; ">
                             <div class="titulo">Eterea Parfums</div>
-                            <div class="info-empresa">Direcci�n: Av. Corrientes 1234</div>
+                            <div class="info-empresa">Dirección: Av. Corrientes 1234</div>
                             <div class="info-empresa">Buenos Aires, Argentina</div>
-                            <div class="info-empresa">Tel�fono: 1234-5678</div>
+                            <div class="info-empresa">Teléfono: 1234-5678</div>
                             <div class="info-empresa">Web: www.etereaparfums.com.ar</div>
 
                         </td>
@@ -88,38 +115,47 @@
 
                 <!-- Datos cliente -->
                 <table class="border" style="margin-bottom: 20px;">
+                    <!-- 1° Cliente -->
                     <tr>
-                        <td style="width: 20%;">Cliente:</td>
-                        <td colspan="3" style="width: 80%;">@CLIENTE</td>
+                        <td style="width: 20%; background: #F6DDE6; font-weight: bold;">Cliente:</td>
+                        <td colspan="3" style="width:80%;">@CLIENTE</td>
                     </tr>
+
+                    <!-- 2° Documento -->
                     <tr>
-                        <td>Condicion IVA:</td>
-                        <td style="width: 40%;">@CONDIVA</td>
-                        <td style="width: 20%;">Forma de Pago:</td>
-                        <td>@FORMAPAGO</td>
-                    </tr>
-                    <tr>
-                        <td>DNI/CUIT:</td>
+                        <td style="background: #F6DDE6; font-weight: bold;">Documento:</td>
                         <td colspan="3">@DOCUMENTO</td>
                     </tr>
+
+                    <!-- 3° Domicilio + Localidad -->
                     <tr>
-                        <td>Domicilio:</td>
-                        <td style="width: 40%;">@DOMICILIO</td>
-                        <td style="width: 20%;">Localidad:</td>
+                        <td style="background: #F6DDE6; font-weight: bold;">Domicilio:</td>
+                        <td style="width:40%;">@DOMICILIO</td>
+                        <td style="width: 20%; background: #F6DDE6; font-weight: bold;">Localidad:</td>
                         <td>@LOCALIDAD</td>
                     </tr>
+
+                    <!-- 4° Condición IVA -->
+                    <tr>
+                        <td style="background: #F6DDE6; font-weight: bold;">Condición IVA:</td>
+                        <td colspan="3">@CONDIVA</td>
+                    </tr>
+
+                    <!-- 5° Forma de Pago (+ Cuota inline si corresponde) -->
+                    @ROW_FORMA_PAGO
+
                 </table>
 
                 <!-- Detalle factura -->
                 <table class="border" style="margin-bottom: 30px;">
                     <thead>
                         <tr>
-                            <th style="width: 20%;">Descripci�n</th>
-                            <th style="width: 12%;">Precio Unitario</th>
-                            <th style="width: 13%;">Cantidad</th>
-                            <th style="width: 15%;">Descuento Total</th>
-                            <th style="width: 20%;">Subtotal</th>
-                            <th style="width: 20%;">Subtotal con iva</th>
+                            <th class="th-pink th-nowrap">Cant</th>
+                            <th class="th-pink th-nowrap">Descripción</th>
+                            <th class="th-pink">Precio<br />Unitario</th>
+                            <th class="th-pink">Descuento<br />Promo</th>
+                            <th class="th-pink th-nowrap">Subtotal</th>
+                            <th class="th-pink">Subtotal<br />c/IVA</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,29 +163,29 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4" style="border: 0px solid white;"></td>
-                            <td style="text-align: right;"><strong>Importe Neto Gravado:</strong></td>
-                            <td style="text-align: right;"> @IMPORTE</td>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background:#DCDCDC;"><strong>Importe Neto Gravado:</strong></td>
+                            <td class="money" style="background:#DCDCDC;">@IMPORTE</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="border:0px solid white;"></td>
-                            <td style="text-align: right;"><strong>IVA 21%:</strong></td>
-                            <td style="text-align: right;"> @IVA</td>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #e4e4e4;"><strong>IVA 21%:</strong></td>
+                            <td class="money" style="background: #e4e4e4;">@IVA</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="border:0px solid white;"></td>
-                            <td style="text-align: right;"><strong>Bonificacion:</strong></td>
-                            <td style="text-align: right;"> @DESCUENTO</td>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background:#DCDCDC;"><strong>Bonificación:</strong></td>
+                            <td class="money" style="background:#DCDCDC;">@DESCUENTO</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="border:0px solid white;"></td>
-                            <td style="text-align: right;"><strong>Recargo Tarjeta:</strong></td>
-                            <td style="text-align: right;">@RECARGO</td>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #e4e4e4;"><strong>Recargo Tarjeta:</strong></td>
+                            <td class="money" style="background: #e4e4e4;">@RECARGO</td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="border: 0px solid white;"></td>
-                            <td style="text-align: right;"><strong>Importe Total:</strong></td>
-                            <td style="text-align: right;"> @TOTAL</td>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #F6DDE6;"><strong>Total:</strong></td>
+                            <td class="money" style="background: #FFFFFF;">@TOTAL</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -161,7 +197,7 @@
     <table>
         <tr>
             <td style="text-align: center; font-size: 12px;">
-                La presente factura es v�lida como comprobante para responsables inscriptos.
+                La presente factura es válida como comprobante para responsables inscriptos.
             </td>
         </tr>
     </table>

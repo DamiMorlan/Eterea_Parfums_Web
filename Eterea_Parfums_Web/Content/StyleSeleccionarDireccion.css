@@ -98,3 +98,28 @@ body {
 .text-center.mt-4 a.btn {
     padding: 10px 25px;
 }
+
+@media (max-width: 772px) {
+    .volver-carrito {
+        display: none !important;
+    }
+}
+
+@media (max-width: 454px) {
+    .card .d-flex {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .card .me-3 {
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
+
+    .card form {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

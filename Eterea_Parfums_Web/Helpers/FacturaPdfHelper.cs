@@ -15,7 +15,7 @@ namespace Eterea_Parfums_Web.Helpers
 {
     public static class FacturaHelper
     {
-        public static string GenerarHtmlFacturaB(etereaEntities7 db, factura factura, cliente cliente)
+        public static string GenerarHtmlFacturaB(etereaEntities7 db, factura factura, cliente cliente, int cuotas)
         {
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaB.html");
             string html = File.ReadAllText(templatePath);
@@ -34,6 +34,33 @@ namespace Eterea_Parfums_Web.Helpers
             string localidad = $"{cliente.localidad.nombre}";
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
+
+            // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            var forma = factura.forma_de_pago ?? "";
+            string cuotasSel = cuotas.ToString();
+            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            string rowFormaPago;
+            if (esTarjeta)
+            {
+                rowFormaPago = @"
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+                </tr>";
+            }
+            else
+            {
+                rowFormaPago = @"
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                </tr>";
+            }
+            html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
+
             html = html.Replace("@IMPORTE", importe.ToString("0.00"));
             html = html.Replace("@DESCUENTO", factura.descuento.ToString("0.00"));
             html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
@@ -97,7 +124,7 @@ namespace Eterea_Parfums_Web.Helpers
             return html;
         }
 
-        public static string GenerarHtmlFacturaA(etereaEntities7 db, factura factura, cliente cliente)
+        public static string GenerarHtmlFacturaA(etereaEntities7 db, factura factura, cliente cliente, int cuotas)
         {
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaA.html");
             string html = File.ReadAllText(templatePath);
@@ -117,6 +144,33 @@ namespace Eterea_Parfums_Web.Helpers
             string localidad = $"{cliente.localidad.nombre}";
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
+
+            // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            var forma = factura.forma_de_pago ?? "";
+            string cuotasSel = cuotas.ToString();
+            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            string rowFormaPago;
+            if (esTarjeta)
+            {
+                rowFormaPago = @"
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+                </tr>";
+            }
+            else
+            {
+                rowFormaPago = @"
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                </tr>";
+            }
+            html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
+
             html = html.Replace("@IMPORTE", importeSinIva.ToString("0.00"));
             html = html.Replace("@IVA", iva.ToString("0.00"));
             html = html.Replace("@DESCUENTO", factura.descuento.ToString("0.00"));
