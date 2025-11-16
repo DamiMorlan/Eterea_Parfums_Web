@@ -16,13 +16,14 @@ namespace Eterea_Parfums_Web.Controllers
     {
 
         private etereaEntities7 db = new etereaEntities7();
+        
         // GET: Cliente/Login
+        [HttpGet]
         public ActionResult Login()
         {
             return View();
         }
 
-        // POST: Cliente/Login
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
@@ -30,19 +31,26 @@ namespace Eterea_Parfums_Web.Controllers
 
             if (cliente != null && PasswordHelper.VerificarPassword(clave, cliente.clave))
             {
-
-                if (usuario == clave)
-                { 
-                    TempData["clienteId"] = cliente.id;
-                    return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
-                }
-
-                Session["clienteId"] = cliente.id;               // 👈 ID
-                Session["usuarioLogueado"] = cliente.usuario;    // 👈 o guardar cliente directamente si lo usás más
+                // --- Iniciar sesión SIEMPRE primero ---
+                Session["clienteId"] = cliente.id;
+                Session["usuarioLogueado"] = cliente.usuario;
                 Session["clienteNombre"] = cliente.nombre;
 
+                // --- Validar si la contraseña NO cumple con los requisitos ---
+                string patronSeguridad = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$";
+                bool cumpleRequisitos = System.Text.RegularExpressions.Regex.IsMatch(clave, patronSeguridad);
 
-                return RedirectToAction("Index", "Home"); // o "Perfume" si preferís
+                if (!cumpleRequisitos)
+                {
+                    TempData["AvisoPasswordInsegura"] =
+                        "Tu contraseña no cumple con los requisitos actuales. Por favor, actualízala.";
+
+                    // Redirige a PERFIL como usuario logueado
+                    return RedirectToAction("Perfil", "Cliente", new { fuerzaCambio = true });
+                }
+
+                // --- Si cumple con los requisitos, login normal ---
+                return RedirectToAction("Index", "Home");
             }
 
             ViewData["Error"] = "Usuario o contraseña incorrectos.";

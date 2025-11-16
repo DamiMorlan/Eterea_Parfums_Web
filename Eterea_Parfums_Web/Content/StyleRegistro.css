@@ -132,3 +132,33 @@ body {
         transform: translateY(-8px);
     }
 }
+
+/* --- Campo de contraseña con ojo dentro del input --- */
+.input-group .form-control.password-input {
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    height: 45px;
+}
+
+.input-group .btn.toggle-password {
+    border: 1px solid #d9b8c1;
+    border-left: none;
+    background-color: #fff;
+    border-radius: 0 8px 8px 0;
+    color: #a0435c;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .input-group .btn.toggle-password:hover {
+        background-color: #f5e7eb;
+        color: #7a2f47;
+    }
+
+#password-error {
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}

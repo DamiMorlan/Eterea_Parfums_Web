@@ -585,3 +585,45 @@ input.no-outline:focus {
 #form-filtros.oculto {
     display: none;
 }
+
+/* ==========================
+   RESPONSIVE FILTROS - MOBILE
+   ========================== */
+@media (max-width: 768px) {
+
+    /* El panel deja de ser sticky */
+    aside.col-md-2 {
+        position: relative;
+        top: 0;
+        width: 100%;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    /* Listas de checkbox más compactas */
+    .filtro-checkbox-list {
+        max-height: 120px;
+        padding: 10px;
+    }
+
+    /* Acomodar los títulos */
+    aside h5 {
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    /* Botones ocupan toda la fila */
+    aside .btn-filtro-aplicar,
+    aside .btn-filtro-limpiar {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* que no se corran los checkboxes */
+    .form-check-label {
+        padding-left: 26px;
+        font-size: 0.95rem;
+    }
+}
+

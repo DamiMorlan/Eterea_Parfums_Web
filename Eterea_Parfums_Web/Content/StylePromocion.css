@@ -9,6 +9,9 @@
     --gris-oscuro: #333;
 }
 
+/* =============================
+             BODY
+   ============================= */
 body {
     background-color: var(--rosa-suave);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,20 +19,31 @@ body {
     padding: 0;
 }
 
-h2 {
-    color: #973f5c;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 10;
+/* =============================
+           CONTENEDOR
+   ============================= */
+.promo-section {
+    background-color: white;
+    padding: 2rem 2rem;
+    border-radius: 12px;
+    margin: 90px 60px 20px 60px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
-.text-center.my-4 {
-    margin-top: 5rem;
+
+/* =============================
+         TÍTULO RESPONSIVE
+   ============================= */
+.section-title {
+    text-align: center;
+    font-size: clamp(2.2rem, 4vw, 2.8rem);
+    margin-bottom: 25px;
+    color: var(--rosa-profundo);
+    font-weight: 700;
 }
+
+/* =============================
+          CARDS PROMO
+   ============================= */
 
 .box-promo {
     display: flex;
@@ -38,43 +52,37 @@ h2 {
     padding: 0 1rem;
 }
 
-.titulo-promociones {
-    color: #973f5c; /* o #b46e84 si querés más contraste */
-    font-size: 2.2rem;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 5rem;
-    margin-bottom: 1rem;
-    position: relative;
-    z-index: 10;
-}
-
+/* Card */
 .promo-item {
     position: relative;
     width: 100%;
     max-width: 940px;
-    height: 300px; /* Altura fija para uniformidad */
-    border: none;
-    border-radius: 14px;
+    height: 320px;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    transition: transform .35s ease, box-shadow .35s ease;
+    display: flex;
+    align-items: center;
 }
 
     .promo-item:hover {
-        transform: scale(1.01);
+        transform: scale(1.02);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
     }
 
+/* Img */
 .promo-bg-img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Asegura que se recorte bien y mantenga proporciones */
+    object-fit: cover;
     z-index: 0;
 }
 
+/* Overlay */
 .gradient-overlay {
     position: absolute;
     top: 0;
@@ -82,9 +90,10 @@ h2 {
     width: 100%;
     height: 100%;
     z-index: 1;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.2));
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.15));
 }
 
+/* Contenido */
 .item-body {
     position: relative;
     z-index: 2;
@@ -97,34 +106,138 @@ h2 {
 }
 
 .item-title {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
     color: var(--blanco);
-    margin-bottom: 0.5rem;
-    text-shadow: 1px 1px 2px #000;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
 }
 
 .item-body p {
-    font-size: 1rem;
-    margin-bottom: 0.4rem;
-    text-shadow: 1px 1px 2px #000;
+    font-size: 1.05rem;
+    margin-bottom: .45rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
+/* Botón */
 .promo-item .btn {
     align-self: flex-start;
     background-color: var(--blanco);
     border: 2px solid var(--rosa-profundo);
     color: var(--rosa-profundo);
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    border-radius: 8px;
-    margin-top: 1rem;
-    transition: all 0.3s ease;
+    font-weight: 700;
+    padding: .6rem 1.4rem;
+    border-radius: 10px;
+    transition: all .3s ease;
     text-transform: uppercase;
 }
 
     .promo-item .btn:hover {
         background-color: var(--rosa-profundo);
         color: var(--blanco);
-        transform: scale(1.05);
+        transform: scale(1.08);
     }
+
+/* =============================
+        LOGO ANIMADO
+   ============================= */
+.logo-eterea-container {
+    animation: fadeInLogo 1.5s ease-in-out;
+}
+
+.logo-eterea {
+    max-height: 200px;
+    width: auto;
+    border-radius: 100px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease;
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+    .logo-eterea:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+/* Animación de entrada */
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación flotante */
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* =============================
+         RESPONSIVE
+   ============================= */
+
+/* Tablets */
+@media (max-width: 992px) {
+    .promo-item {
+        height: 300px;
+    }
+
+    .item-body {
+        width: 60%;
+        padding: 1.8rem;
+    }
+}
+
+/* Celulares */
+@media (max-width: 768px) {
+
+    .promo-item {
+        flex-direction: column;
+        height: auto;
+        text-align: center;
+        padding-bottom: 1.5rem;
+    }
+
+    .gradient-overlay {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.15));
+    }
+
+    .item-body {
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .item-title {
+        font-size: 1.6rem;
+    }
+
+    .item-body p {
+        font-size: .95rem;
+    }
+
+    .promo-item .btn {
+        align-self: center;
+        font-size: .9rem;
+    }
+}
+
+/* Teléfonos pequeños */
+@media (max-width: 480px) {
+    .item-title {
+        font-size: 1.4rem;
+    }
+
+    .promo-item {
+        border-radius: 12px;
+    }
+}

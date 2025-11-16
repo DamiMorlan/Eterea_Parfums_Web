@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --rosa-claro: rgb(235, 199, 206);
     --rosa-medio: rgb(228, 137, 164);
     --rosa-fondo: rgb(249, 230, 225);
@@ -13,10 +13,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-
-.card-title,
-.card-text,
-.contenido-noticia p {
+.card-title, .card-text, .contenido-noticia p {
     font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
     color: #5a2a39;
     line-height: 1.6;
@@ -49,9 +46,7 @@ body {
         color: #973f5c;
     }
 
-.card,
-.card-body,
-.menu-hamburguesa {
+.card, .card-body, .menu-hamburguesa {
     background-color: var(--rosa-suave);
 }
 
@@ -62,6 +57,8 @@ body {
     margin-bottom: 40px;
     max-width: 800px;
 }
+
+
 
 .btn-card {
     background-color: var(--rosa-profundo);
@@ -78,8 +75,8 @@ body {
         transform: scale(1.02);
         color: white;
     }
+/* Animación del contenido */
 
-/* Animaci�n del contenido */
 .contenido-noticia {
     transition: all 0.5s ease;
     opacity: 0;
@@ -90,14 +87,14 @@ body {
         opacity: 1;
         max-height: 100%;
     }
+    /* Títulos de listas */
 
-    /* T�tulos de listas */
     .contenido-noticia ul li strong {
         font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
         color: #973f5c;
     }
-
 /* Enlaces generales */
+
 a {
     color: var(--rosa-medio);
     text-decoration: none;
@@ -111,8 +108,130 @@ a {
 
 @media (max-width: 768px) {
     .info-section {
-        margin: 15px 8px 8px 8px !important; 
+        margin: 15px 8px 8px 8px !important;
         padding-left: 8px !important; /* opcional: un poco de espacio interno */
         padding-right: 8px !important;
     }
+}
+/* ================================ CONTENEDOR PRINCIPAL UNIFICADO ================================ */
+
+.contact-section {
+    background-color: white;
+    padding: 2rem 2rem;
+    border-radius: 12px;
+    margin: 20px 60px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+/* ================================ LOGO (MISMO DE CONTACTO) ================================ */
+
+.logo-eterea-container {
+    animation: fadeInLogo 1.5s ease-in-out;
+}
+
+.logo-eterea {
+    max-height: 200px;
+    width: auto;
+    border-radius: 100px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s ease;
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+    .logo-eterea:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+/* Animaciones */
+
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatLogo {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+/* ================================ TÍTULO UNIFICADO + RESPONSIVE ================================ */
+
+.section-title {
+    text-align: center;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    margin-bottom: 25px;
+    color: var(--rosa-profundo);
+    font-weight: 700;
+}
+
+/* =============================
+   UNIFICAR TAMAÑO DE LAS CARDS
+   ============================= */
+
+/* Contenedor general de cada card */
+.menu-hamburguesa {
+    width: 100%;
+    max-width: 800px;
+    min-height: 220px; /* 🔥 Ajustá esta altura si querés más o menos */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    background-color: var(--rosa-suave);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+    /* La card interna mantiene altura uniforme */
+    .menu-hamburguesa .card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Body centrado verticalmente */
+    .menu-hamburguesa .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* centra contenido */
+    }
+
+    /* El título no agranda la card */
+    .menu-hamburguesa .card-title {
+        min-height: 3.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Botón siempre pegado abajo del card */
+    .menu-hamburguesa .btn-card {
+        margin-top: auto;
+    }
+
+/* =============================
+   RESPONSIVE - MÓVILES
+   ============================= */
+@media (max-width: 576px) {
+    .menu-hamburguesa {
+        min-height: 180px; /* más chica en móvil */
+        padding: 20px;
+    }
+
+        .menu-hamburguesa .card-title {
+            min-height: 2.4rem;
+            font-size: 1.2rem;
+        }
 }

@@ -6,33 +6,37 @@
     <link href="~/Content/StyleLogin.css" rel="stylesheet" type="text/css" />
 }
 
-
 <div class="login-wrapper">
     <div class="login-container">
         @if (TempData["Mensaje"] != null)
         {
             <div class="alert alert-success">@TempData["Mensaje"]</div>
         }
+
         <!-- Logo -->
         <div class="logo-eterea-container text-center mb-4">
-            <img src="@Url.Content("~/Imagenes/LogoEterea.png")"  alt="Logo Eterea Parfums" class="logo-eterea img-fluid" />
+            <img src="@Url.Content("~/Imagenes/LogoEterea.png")" alt="Logo Eterea Parfums" class="logo-eterea img-fluid" />
         </div>
 
         <h2>@ViewBag.Title</h2>
         <hr class="separator" />
 
-        <form id="login-form" method="post" action="/Cliente/Login">
+        <form id="login-form" method="post" action="/Cliente/Login" class="login-form">
 
             <div class="form-group">
                 <label for="usuario">Usuario:</label>
-                <input type="text" id="usuario" name="usuario" required />
+                <input type="text" id="usuario" name="usuario" class="form-control" required />
             </div>
 
             <div class="form-group">
                 <label for="clave">Contraseña:</label>
-                <input type="password" id="clave" name="clave" required />
+                <div class="input-group">
+                    <input type="password" id="clave" name="clave" class="form-control password-input" required />
+                    <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
             </div>
-
 
             <hr class="separator" />
 
@@ -50,7 +54,7 @@
             ¿No tienes una cuenta? <a href="/Cliente/Registrar">Regístrate</a>!
         </div>
         <div class="register-message">
-            ¿Olvidaste tu contraseña? <a href="/Cliente/OlvidarPassword">Recuperalo</a>!
+            ¿Olvidaste tu contraseña? <a href="/Cliente/OlvidarPassword">Recupérala</a>!
         </div>
     </div>
 </div>
@@ -60,4 +64,22 @@
     <div class="alert alert-warning text-center mt-3">
         @TempData["ErrorLogin"]
     </div>
+}
+
+@section Scripts {
+    <script>
+        // Mostrar/ocultar contraseña
+        $(document).on('click', '.toggle-password', function () {
+            const passwordInput = $(this).siblings('.password-input');
+            const icon = $(this).find('i');
+
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+    </script>
 }

@@ -13,7 +13,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Contenedor que centra todo en pantalla, sin superponerse al navbar/footer */
+/* Contenedor general centrado */
 .login-wrapper {
     min-height: calc(100vh - 160px); /* Ajuste para navbar + footer */
     display: flex;
@@ -22,6 +22,7 @@ body {
     padding: 30px 15px;
 }
 
+/* Caja principal del login */
 .login-container {
     max-width: 400px;
     width: 100%;
@@ -39,6 +40,7 @@ body {
         margin-bottom: 10px;
     }
 
+/* Línea separadora */
 .separator {
     border: none;
     height: 2px;
@@ -46,6 +48,7 @@ body {
     margin: 15px 0;
 }
 
+/* Campos del formulario */
 .form-group {
     margin-bottom: 20px;
 }
@@ -71,6 +74,44 @@ body {
             outline: none;
         }
 
+/* Asegura que el input y el botón tengan la misma altura */
+.input-group {
+    display: flex;
+    align-items: stretch;
+}
+
+    .input-group .form-control {
+        flex: 1;
+        height: 45px; /* Altura uniforme */
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+    }
+
+    .input-group .btn {
+        height: 45px; /* Misma altura que el input */
+        border: 1px solid #d9b8c1;
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        background-color: #fff;
+        color: #a0435c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .input-group .btn:hover {
+            background-color: var(--rosa-claro);
+            color: #5a2a39;
+        }
+
+.btn-outline-secondary i {
+    font-size: 1.1rem;
+}
+
+/* Botón de inicio de sesión */
 .btn-login {
     width: 100%;
     padding: 12px;
@@ -88,6 +129,7 @@ body {
         background-color: #a0435c;
     }
 
+/* Mensaje de error */
 .error-message {
     color: #a94442;
     background-color: #f2dede;
@@ -98,6 +140,8 @@ body {
     text-align: center;
     font-weight: bold;
 }
+
+/* Enlaces de registro y recuperación */
 .register-message {
     text-align: center;
     margin-top: 15px;
@@ -114,6 +158,7 @@ body {
             text-decoration: underline;
         }
 
+/* Logo */
 .logo-eterea-container {
     animation: fadeInLogo 1.5s ease-in-out;
 }
@@ -132,7 +177,7 @@ body {
         cursor: pointer;
     }
 
-/* Animación de entrada */
+/* Animaciones */
 @keyframes fadeInLogo {
     from {
         opacity: 0;
@@ -145,7 +190,6 @@ body {
     }
 }
 
-/* Animación de flotación suave */
 @keyframes floatLogo {
     0%, 100% {
         transform: translateY(0);
