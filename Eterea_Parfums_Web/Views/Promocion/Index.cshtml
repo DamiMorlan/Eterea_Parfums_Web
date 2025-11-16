@@ -4,73 +4,62 @@
     ViewBag.Title = "Promociones";
 }
 
-
 @section Styles {
     <link href="~/Content/StylePromocion.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="container">
-    <h2 class="titulo-promociones">Nuestras Promociones</h2>
-    
-        <div class="d-flex flex-column align-content-center box-promo">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var p in Model)
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 promo-section">
+
+            <!-- Logo -->
+            <div class="logo-eterea-container text-center mb-4">
+                <img src="@Url.Content("~/Imagenes/LogoEterea.png")"
+                     alt="Logo Eterea Parfums"
+                     class="logo-eterea" />
+            </div>
+
+            <!-- Título -->
+            <h2 class="section-title text-center mb-5">@ViewBag.Title</h2>
+
+            <!-- Lista de promociones -->
+            <div class="d-flex flex-column align-content-center w-100">
+                @if (Model != null && Model.Any())
                 {
-                    if (p.id % 2 == 0 && p.id != 1)
+                    foreach (var p in Model)
                     {
                         <div class="box-promo d-flex justify-content-center">
-                            <div class="promo-item d-flex justify-content-end">
-                             <img src="@Url.Content("~/Imagenes/" + p.banner + ".jpg")"
-                                  alt="Promo" class="promo-bg-img" />
+                            <div class="promo-item d-flex @(p.id % 2 == 0 && p.id != 1 ? "justify-content-end" : "")">
 
-                                <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->
-                                <div class="item-body">
-                                    <h5 class="item-title">@p.nombre</h5>
-                                    <p class="fw-semibold my-2">
-                                        @p.descripcion
-                                    </p>
-                                    <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
-
-                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })" class="btn btn-light mt-2">
-                                        Ver perfumes
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="box-promo d-flex justify-content-center">
-                            <div class="promo-item d-flex">
                                 <img src="@Url.Content("~/Imagenes/" + p.banner + ".jpg")"
                                      alt="Promo"
                                      class="promo-bg-img" />
-                                <div class="gradient-overlay"></div> <!-- Degradado encima de imagen -->
+
+                                <div class="gradient-overlay"></div>
+
                                 <div class="item-body">
                                     <h5 class="item-title">@p.nombre</h5>
+
                                     <p class="fw-semibold my-2">
                                         @p.descripcion
                                     </p>
-                                    <p><small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small></p>
 
-                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })" class="btn btn-light mt-2">
-                                        Ver perfumes 
+                                    <p>
+                                        <small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small>
+                                    </p>
 
-
-
+                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })"
+                                       class="btn btn-light mt-2">
+                                        Ver perfumes
                                     </a>
                                 </div>
+
                             </div>
                         </div>
                     }
                 }
-            }
-
-
+            </div>
 
         </div>
     </div>
 </div>
-
-

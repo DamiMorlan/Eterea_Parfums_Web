@@ -41,6 +41,14 @@
 <div class="register-container">
     <h2 class="text-center">@ViewBag.Title</h2>
 
+    @if (TempData["AvisoPasswordInsegura"] != null)
+    {
+        <div class="alert alert-warning text-center mt-3 mb-3">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            @TempData["AvisoPasswordInsegura"]
+        </div>
+    }
+
     @using (Html.BeginForm("Perfil", "Cliente", FormMethod.Post, new { @class = "register-form" }))
     {
         @Html.AntiForgeryToken()
