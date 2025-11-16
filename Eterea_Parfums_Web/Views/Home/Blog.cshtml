@@ -2,13 +2,6 @@
 
 @{
     var API_IMG = Url.Content("~/imagenes/");
-}
-
-@{
-    ViewBag.Title = "News";
-}
-
-@{
     ViewBag.Title = "News";
 }
 
@@ -16,252 +9,250 @@
     <link href="~/Content/StyleBlog.css" rel="stylesheet" type="text/css" />
 }
 
-<!-- Google Fonts para estilo periodístico -->
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Merriweather&display=swap" rel="stylesheet">
 
+<!-- ==================== CONTENEDOR PRINCIPAL ==================== -->
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 contact-section">
 
-<div class="info-section">
-    <div class="d-flex align-items-center my-5">
-        <div class="flex-grow-1 border-top border-2"></div>
-        <h2 class="px-3 mb-0 fw-bold text-center">BLOG</h2>
-        <div class="flex-grow-1 border-top border-2"></div>
-    </div>
-
-    <section class="container my-5  d-flex flex-column align-items-center">
-
-        <!-- Card 1 -->
-        <div class="menu-hamburguesa mb-5">
-            <div class="card border-0">
-                <div class="card-body text-center">
-                    <h5 class="card-title">¿Cuál es la diferencia entre Eau de Parfum, Eau de Toilette y Eau de Cologne?</h5>
-                    <p class="card-text">¿Perfume, toilette o colonia? Descubrí en esta guía rápida cuál es la diferencia entre Eau de Parfum, Eau de Toilette y Eau de Cologne, y cómo elegir la</p>
-                    <button class="btn-card toggle-btn" data-target="contenido-noticia-1">Leer Más</button>
-                </div>
+            <!-- Logo -->
+            <div class="logo-eterea-container text-center mb-4">
+                <img src="@Url.Content("~/Imagenes/LogoEterea.png")" alt="Logo Eterea Parfums" class="logo-eterea" />
             </div>
-            <div id="contenido-noticia-1" class="contenido-noticia d-none mt-3">
-                <div class="card border-0 p-4">
-                    <div class="">
-                        <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@($"{API_IMG}Blog-Tipos-Perfume.jpg")" class="img-fluid" />
 
+            <!-- TÍTULO UNIFICADO -->
+            <h2 class="section-title">BLOG</h2>
+
+            <section class="container d-flex flex-column align-items-center">
+
+                <!-- CARD 1 -->
+                <div class="menu-hamburguesa mb-5">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">¿Cuál es la diferencia entre Eau de Parfum, Eau de Toilette y Eau de Cologne?</h5>
+                            <p class="card-text">¿Perfume, toilette o colonia?... </p>
+                            <button class="btn-card toggle-btn" data-target="contenido-noticia-1">Leer Más</button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p>¿Estás por comprar un perfume y no sabés qué significa “Eau de Parfum” o “Eau de Toilette”? No estás solo: es una de las dudas más comunes al momento de elegir una fragancia. Y la buena noticia es que entender esta diferencia puede ayudarte a elegir un perfume que realmente se adapte a vos.</p>
-                        <p>En esta guía rápida te explicamos en qué se diferencian estas versiones, cuál dura más, y cuál te conviene según tu estilo y tu rutina.</p>
+                    <div id="contenido-noticia-1" class="contenido-noticia d-none mt-3">
+                        <div class="card border-0 p-4">
 
-                        <p>La frase “Eau de…” viene del francés y se traduce como “agua de…”. Lo que indica es la concentración de esencias aromáticas en la fórmula del perfume. Cuanto más concentrado está, más intenso y duradero será el aroma.</p>
+                            <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
 
-                        <p>Veamos cada uno en detalle 👇</p>
+                            <img src="@($"{API_IMG}Blog-Tipos-Perfume.jpg")" class="img-fluid mb-3" />
 
-                        <ul>
-                            <li><strong>Eau de Parfum</strong></li>
-                        </ul>
-                        <p>
-                            El Eau de Parfum es una de las versiones más concentradas que podés encontrar en el mercado. Tiene entre un 15% y un 20% de esencias aromáticas, lo que significa que su fragancia puede durar de 6 a 8 horas, e incluso más, dependiendo del tipo de piel y del clima.
+                            <div class="card-body">
+                                <p>¿Estás por comprar un perfume y no sabés qué significa “Eau de Parfum” o “Eau de Toilette”? No estás solo: es una de las dudas más comunes al momento de elegir una fragancia. Y la buena noticia es que entender esta diferencia puede ayudarte a elegir un perfume que realmente se adapte a vos.</p>
+                                <p>En esta guía rápida te explicamos en qué se diferencian estas versiones, cuál dura más, y cuál te conviene según tu estilo y tu rutina.</p>
 
-                            Es perfecto para quienes buscan un perfume con presencia, que los acompañe durante todo el día o en ocasiones especiales como eventos, salidas nocturnas o citas importantes.
-                        </p>
-                        <p>
-                            En Eterea Parfums podés encontrar:
-                            @{
-                                var total1 = Model.TipoUno.Count;
-                                for (int i = 0; i < total1; i++)
-                                {
-                                    var perfume = Model.TipoUno[i];
-                                    <strong>
-                                        <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
-                                    </strong>
+                                <p>La frase “Eau de…” viene del francés y se traduce como “agua de…”. Lo que indica es la concentración de esencias aromáticas en la fórmula del perfume. Cuanto más concentrado está, más intenso y duradero será el aroma.</p>
 
-                                    if (i < total1 - 2)
-                                    {
-                                        @:,
-                                    }
-                                    else if (i == total1 - 2)
-                                    {
-                                        @: y
-                                    }
-                                }
-                            }
+                                <p>Veamos cada uno en detalle 👇</p>
 
-                        </p>
-
-                        <ul>
-                            <li><strong>Eau de Toilette</strong></li>
-                        </ul>
-                        <p>
-                            El Eau de Toilette tiene una concentración más moderada, que suele estar entre el 5% y el 15%. Esto lo convierte en una opción perfecta para el uso diario, especialmente si te gustan los aromas más frescos, suaves y menos invasivos. Su duración ronda entre las 4 y 6 horas, por lo que es ideal para ir al trabajo o a la facultad.
-                        </p>
-                        <p>
-                            En Eterea Parfums podés encontrar:
-                            @{
-                                var total2 = Model.TipoDos.Count;
-                                for (int i = 0; i < total2; i++)
-                                {
-                                    var perfume = Model.TipoDos[i];
-                                    <strong>
-                                        <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
-                                    </strong>
-
-                                    if (i < total2 - 2)
-                                    {
-                                        @:,
-                                    }
-                                    else if (i == total2 - 2)
-                                    {
-                                        @: y
-                                    }
-                                }
-                            }
-                        </p>
-
-                        <ul>
-                            <li><strong>Eau de Cologne</strong></li>
-                        </ul>
-                        <p>
-                            Por último, el Eau de Cologne tiene una concentración aún más baja, entre el 2% y el 5%. Esto se traduce en fragancias mucho más suaves y volátiles, que suelen durar entre 2 y 4 horas.
-                        </p>
-                        <p>
-                            En Eterea Parfums podés encontrar:
-                            @{
-                                var total3 = Model.TipoTres.Count;
-                                for (int i = 0; i < total3; i++)
-                                {
-                                    var perfume = Model.TipoDos[i];
-                                    <strong>
-                                        <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
-                                    </strong>
-
-                                    if (i < total3 - 2)
-                                    {
-                                        @:,
-                                    }
-                                    else if (i == total3 - 2)
-                                    {
-                                        @: y
-                                    }
-                                }
-                            }
-                        </p>
-
-                        <p>
-                            En Etera Parfums tenemos una amplia variedad de perfumes. Podés elegir tu fragancia ideal desde la comodidad de tu casa, con envío rápido a todo el país.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="menu-hamburguesa mb-5">
-            <div class="card border-0">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Nuestros perfumes elegidos para mujer en 2025</h5>
-                    <p class="card-text">Desde clásicos frescos hasta fragancias de lujo, te contamos cuáles son los perfumes femeninos recomendados del año. Conocé opciones como Nuestros perfumes elegidos para mujer 2025.</p>
-                    <button class="btn-card toggle-btn" data-target="contenido-noticia-2">Leer más</button>
-                </div>
-            </div>
-            <div id="contenido-noticia-2" class="contenido-noticia d-none mt-3">
-                <div class="card border-0 p-4">
-                    <div class="">
-                        <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@($"{API_IMG}Blog-Perfume-Mujer.jpg")" class="img-fluid" />
-                    </div>
-                    <p>En Eterea Parfums seguimos de cerca lo que nuestras clientas buscan, eligen y recomiendan. Por eso, armamos este ranking de perfumes femeninos, ideal si estás buscando una fragancia que ya conquistó a muchas otras mujeres en Argentina.</p>
-
-                    <ul>
-                        @foreach (var perfume in Model.Recomendados)
-                        {
-                            <li>
+                                <ul>
+                                    <li><strong>Eau de Parfum</strong></li>
+                                </ul>
                                 <p>
-                                    <strong>
-                                        @perfume.nombre – @perfume.tipo_de_perfume.tipo_de_perfume1 -
+                                    El Eau de Parfum es una de las versiones más concentradas que podés encontrar en el mercado. Tiene entre un 15% y un 20% de esencias aromáticas, lo que significa que su fragancia puede durar de 6 a 8 horas, e incluso más, dependiendo del tipo de piel y del clima.
 
-                                        @perfume.presentacion_ml ml
-                                    </strong><br />
-                                    @perfume.descripcion
-                                    <br />
-                                    <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">➡️ Ver producto</a>
+                                    Es perfecto para quienes buscan un perfume con presencia, que los acompañe durante todo el día o en ocasiones especiales como eventos, salidas nocturnas o citas importantes.
                                 </p>
-                            </li>
-                        }
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="menu-hamburguesa mb-5">
-            <div class="card border-0">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Perfumes para hombres: opciones irresistibles para regalar o usar</h5>
-                    <p class="card-text">
-                        Elegí el perfume ideal para regalar o usar según tu estilo: desde opciones frescas y accesibles hasta fragancias sofisticadas. Una selección con
-                        Perfumes para hombres: opciones irresistibles para regalar o usar.
-                    </p>
-                    <button class="btn-card toggle-btn" data-target="contenido-noticia-3">Leer más</button>
-                </div>
-            </div>
-            <div id="contenido-noticia-3" class="contenido-noticia d-none mt-3">
-                <div class="card border-0 p-4">
-                    <div class="">
-                        <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
-                        <img src="@($"{API_IMG}Blog-Perfume-Hombre.jpg")" class="img-fluid" />
-                    </div>
-                    <p>¿Buscando un perfume masculino que realmente destaque? En esta guía vas a encontrar fragancias elegidas por su presencia, duración y sofisticación. Ideales tanto para regalar como para quienes quieren sumar un nuevo aroma potente y elegante a su rutina.</p>
-                    <p>Desde aromas amaderados hasta notas frescas e intensas, estos perfumes masculinos están diseñados para dejar huella en cada paso. Y lo mejor: todos están disponibles en Eterea Parfums con envío seguro.</p>
-                    <ul>
-                        @foreach (var perfume in Model.Recomendados2)
-                        {
-                            <li>
                                 <p>
-                                    <strong>
-                                        @perfume.nombre – @perfume.tipo_de_perfume.tipo_de_perfume1 -
+                                    En Eterea Parfums podés encontrar:
+                                    @{
+                                        var total1 = Model.TipoUno.Count;
+                                        for (int i = 0; i < total1; i++)
+                                        {
+                                            var perfume = Model.TipoUno[i];
+                                            <strong>
+                                                <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
+                                            </strong>
 
-                                        @perfume.presentacion_ml ml
-                                    </strong><br />
-                                    @perfume.descripcion
-                                    <br />
-                                    <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">➡️ Ver producto</a>
+                                            if (i < total1 - 2)
+                                            {
+                                                @:,
+                                            }
+                                            else if (i == total1 - 2)
+                                            {
+                                                @: y
+                                            }
+                                        }
+                                    }
+
                                 </p>
-                            </li>
-                        }
-                    </ul>
+
+                                <ul>
+                                    <li><strong>Eau de Toilette</strong></li>
+                                </ul>
+                                <p>
+                                    El Eau de Toilette tiene una concentración más moderada, que suele estar entre el 5% y el 15%. Esto lo convierte en una opción perfecta para el uso diario, especialmente si te gustan los aromas más frescos, suaves y menos invasivos. Su duración ronda entre las 4 y 6 horas, por lo que es ideal para ir al trabajo o a la facultad.
+                                </p>
+                                <p>
+                                    En Eterea Parfums podés encontrar:
+                                    @{
+                                        var total2 = Model.TipoDos.Count;
+                                        for (int i = 0; i < total2; i++)
+                                        {
+                                            var perfume = Model.TipoDos[i];
+                                            <strong>
+                                                <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
+                                            </strong>
+
+                                            if (i < total2 - 2)
+                                            {
+                                                @:,
+                                            }
+                                            else if (i == total2 - 2)
+                                            {
+                                                @: y
+                                            }
+                                        }
+                                    }
+                                </p>
+
+                                <ul>
+                                    <li><strong>Eau de Cologne</strong></li>
+                                </ul>
+                                <p>
+                                    Por último, el Eau de Cologne tiene una concentración aún más baja, entre el 2% y el 5%. Esto se traduce en fragancias mucho más suaves y volátiles, que suelen durar entre 2 y 4 horas.
+                                </p>
+                                <p>
+                                    En Eterea Parfums podés encontrar:
+                                    @{
+                                        var total3 = Model.TipoTres.Count;
+                                        for (int i = 0; i < total3; i++)
+                                        {
+                                            var perfume = Model.TipoDos[i];
+                                            <strong>
+                                                <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">@perfume.nombre</a>
+                                            </strong>
+
+                                            if (i < total3 - 2)
+                                            {
+                                                @:,
+                                            }
+                                            else if (i == total3 - 2)
+                                            {
+                                                @: y
+                                            }
+                                        }
+                                    }
+                                </p>
+
+                                <p>
+                                    En Etera Parfums tenemos una amplia variedad de perfumes. Podés elegir tu fragancia ideal desde la comodidad de tu casa, con envío rápido a todo el país.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- CARD 2 -->
+                <div class="menu-hamburguesa mb-5">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Nuestros perfumes elegidos para mujer en 2025</h5>
+                            <p class="card-text">Desde clásicos frescos...</p>
+                            <button class="btn-card toggle-btn" data-target="contenido-noticia-2">Leer más</button>
+                        </div>
+                    </div>
+
+                    <div id="contenido-noticia-2" class="contenido-noticia d-none mt-3">
+                        <div class="card border-0 p-4">
+
+                            <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
+
+                            <img src="@($"{API_IMG}Blog-Perfume-Mujer.jpg")" class="img-fluid mb-3" />
+
+                            <p>En Eterea Parfums seguimos de cerca lo que nuestras clientas buscan, eligen y recomiendan. Por eso, armamos este ranking de perfumes femeninos, ideal si estás buscando una fragancia que ya conquistó a muchas otras mujeres en Argentina.</p>
+
+                            <ul>
+                                @foreach (var perfume in Model.Recomendados)
+                                {
+                                    <li>
+                                        <p>
+                                            <strong>
+                                                @perfume.nombre – @perfume.tipo_de_perfume.tipo_de_perfume1 -
+
+                                                @perfume.presentacion_ml ml
+                                            </strong><br />
+                                            @perfume.descripcion
+                                            <br />
+                                            <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">➡️ Ver producto</a>
+                                        </p>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="menu-hamburguesa mb-5">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Perfumes para hombres: opciones irresistibles</h5>
+                            <p class="card-text">Elegí el perfume ideal...</p>
+                            <button class="btn-card toggle-btn" data-target="contenido-noticia-3">Leer más</button>
+                        </div>
+                    </div>
+
+                    <div id="contenido-noticia-3" class="contenido-noticia d-none mt-3">
+                        <div class="card border-0 p-4">
+
+                            <p class="card-text"><small>Publicado el 23/06/2025 por Eterea Parfums</small></p>
+
+                            <img src="@($"{API_IMG}Blog-Perfume-Hombre.jpg")" class="img-fluid mb-3" />
+
+                            <p>¿Buscando un perfume masculino que realmente destaque? En esta guía vas a encontrar fragancias elegidas por su presencia, duración y sofisticación. Ideales tanto para regalar como para quienes quieren sumar un nuevo aroma potente y elegante a su rutina.</p>
+                            <p>Desde aromas amaderados hasta notas frescas e intensas, estos perfumes masculinos están diseñados para dejar huella en cada paso. Y lo mejor: todos están disponibles en Eterea Parfums con envío seguro.</p>
+                            <ul>
+                                @foreach (var perfume in Model.Recomendados2)
+                                {
+                                    <li>
+                                        <p>
+                                            <strong>
+                                                @perfume.nombre – @perfume.tipo_de_perfume.tipo_de_perfume1 -
+
+                                                @perfume.presentacion_ml ml
+                                            </strong><br />
+                                            @perfume.descripcion
+                                            <br />
+                                            <a href="@Url.Action("Details", "Perfume", new { id = perfume.id })">➡️ Ver producto</a>
+                                        </p>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
         </div>
-    </section>
-    <div class="d-flex align-items-center my-5">
-        <div class="flex-grow-1 border-top border-2"></div>
-    </div>
+    </div> <!-- /.row -->
 </div>
-<!-- Script toggle y scroll -->
+
+
+<!-- Toggle Script -->
 <script>
     document.querySelectorAll('.toggle-btn').forEach(button => {
         button.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const target = document.getElementById(targetId);
-
+            const target = document.getElementById(this.dataset.target);
             const isVisible = target.classList.contains('mostrar');
 
             if (!isVisible) {
                 target.classList.remove('d-none');
                 target.classList.add('mostrar');
                 this.textContent = 'Ocultar';
-
-                // Desplazamiento suave hasta el contenido
-                setTimeout(() => {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
+                setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             } else {
                 target.classList.remove('mostrar');
                 this.textContent = 'Leer Más';
-
-                // Esperar a que termine la animación antes de ocultar del todo
-                setTimeout(() => {
-                    target.classList.add('d-none');
-                }, 500);
+                setTimeout(() => target.classList.add('d-none'), 500);
             }
         });
     });
 </script>
-
