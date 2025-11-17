@@ -49,10 +49,18 @@
 
 <div class="mt-4 px-3 px-md-3">
     <div class="row">
+
+        <!-- TÍTULO SIEMPRE PRIMERO -->
+        <div class="col-12">
+            <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
+                <h2 class="mb-3 mb-md-0">Perfumes</h2>
+            </div>
+        </div>
+
         <!-- Filtros -->
         <aside class="col-12 col-md-2 mb-4">
 
-            <details id="detalles-filtros" class="d-md mb-3" open>
+            <details id="detalles-filtros" class="d-md" open>
                 <summary style="display:none"></summary> <!-- Ocultamos el <summary> visualmente -->
 
                 <div class="filtros-header">
@@ -187,7 +195,7 @@
                         </button>
                     </div>
 
-                    <div class="mb-3">
+                    <div>
                         <label class="form-label d-block">Con promoción</label>
                         <div class="filtro-checkbox-list form-check">
                             <input class="form-check-input"
@@ -204,9 +212,7 @@
         </aside>
 
         <section class="col-md-10">
-            <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
-                <h2 class="mb-3 mb-md-0">Perfumes</h2>
-            </div>
+
 
 
             <div class="titulo-perfumes d-flex justify-content-between align-items-center flex-wrap px-3 py-3 mb-4">
@@ -301,7 +307,7 @@
                         var tieneVariasPromos = promos.Count > 1;
                         var primeraPromo = promos.FirstOrDefault();
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex">
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-5 mb-4 d-flex">
                             <div class="card w-100 perfume-card" id="perfume-card-@perfume.Id" data-nombre="@perfume.Nombre"
                                  data-promos='@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(promos))'>
 
@@ -324,7 +330,7 @@
                                                     data-id="@perfume.Id"
                                                     data-perfumeid="@p.Id"
                                                     data-precio="@p.Precio.ToString(CultureInfo.InvariantCulture)"
-                                                   data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento?.ToString(CultureInfo.InvariantCulture) ?? "")"
+                                                    data-descuento="@(p.Promociones.FirstOrDefault()?.PrecioConDescuento?.ToString(CultureInfo.InvariantCulture) ?? "")"
                                                     data-tiene-promo="@(p.TienePromocion)"
                                                     data-leyenda="@(p.Promociones.FirstOrDefault()?.LeyendaPromocion ?? "")"
                                                     data-imagen="@($"{API_IMG}{p.Imagen}.jpg")"
