@@ -1,0 +1,207 @@
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+}
+
+body {
+    background: var(--rosa-suave);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.small-heading {
+    font-size: 1.5rem;
+}
+
+.detalle-perfume-card {
+    background-color: #fff;
+    border: 1.5px solid var(--rosa-claro);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .detalle-perfume-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .detalle-perfume-card h5 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--rosa-profundo);
+        margin-bottom: 12px;
+    }
+
+    .detalle-perfume-card p {
+        color: #444;
+        margin: 4px 0;
+        font-size: 15px;
+    }
+
+    .detalle-perfume-card img {
+        max-width: 100%;
+        max-height: 180px;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+
+    .detalle-perfume-card .btn-primary {
+        background-color: var(--rosa-medio);
+        border: none;
+        color: #fff;
+    }
+
+        .detalle-perfume-card .btn-primary:hover {
+            background-color: var(--rosa-profundo);
+        }
+
+
+/* Botones */
+.btn-primary {
+    background-color: var(--rosa-medio);
+    border: none;
+    color: #fff;
+}
+
+    .btn-primary:hover {
+        background-color: var(--rosa-profundo);
+    }
+
+.btn-secondary {
+    background-color: var(--rosa-medio);
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+    .btn-secondary:hover {
+        background-color: var(--rosa-profundo);
+    }
+
+.text-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.text-center {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+/* =============================
+   NUEVO CONTENEDOR PRINCIPAL
+   ============================= */
+.factura-detalle-container {
+    /* efecto suave al pasar */
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    max-width: 95%; /* Antes 900px */
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+    .factura-detalle-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* =============================
+   NUEVO TÍTULO PRINCIPAL
+   ============================= */
+    .factura-detalle-container h2 {
+        text-align: center;
+        font-size: clamp(1.7rem, 3vw, 2.5rem);
+        font-weight: 700;
+        color: var(--rosa-profundo);
+        margin-bottom: 5px;
+    }
+
+    /* subtítulo (fecha) */
+    .factura-detalle-container h3 {
+        text-align: center;
+        color: var(--moka);
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+    }
+
+/* Separador moderno */
+.separator {
+    border: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--rosa-medio), transparent);
+    margin: 20px auto 30px auto;
+    width: 95%;
+    border-radius: 100px;
+}
+
+/* =============================
+   RESPONSIVE
+   ============================= */
+@media (max-width: 768px) {
+    .factura-detalle-container {
+        padding: 25px;
+        border-radius: 16px;
+    }
+
+        .factura-detalle-container h2 {
+            font-size: 1.9rem;
+        }
+
+        .factura-detalle-container h3 {
+            font-size: 1.15rem;
+        }
+
+    .separator {
+        width: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .factura-detalle-container {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+        .factura-detalle-container h2 {
+            font-size: 1.6rem;
+        }
+
+        .factura-detalle-container h3 {
+            font-size: 1.05rem;
+        }
+}
+
+.factura-detalle-container h2,
+.factura-detalle-container h3 {
+    color: var(--rosa-profundo);
+}
+
+.factura-total {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: var(--rosa-profundo);
+    text-align: right;
+}
