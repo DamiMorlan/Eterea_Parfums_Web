@@ -5,11 +5,14 @@ using System.Web;
 using System.Web.Mvc;
 using Eterea_Parfums_Web.Models;
 using Eterea_Parfums_Web.ViewModels;
+using Eterea_Parfums_Web.Filters;
 
 namespace Eterea_Parfums_Web.Controllers
 {
+    [ForzarPerfilCompleto]
     public class HomeController : Controller
     {
+
         private etereaEntities7 db = new etereaEntities7();
 
         public ActionResult Index()

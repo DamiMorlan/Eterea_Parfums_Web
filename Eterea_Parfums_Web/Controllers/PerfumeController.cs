@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Eterea_Parfums_Web.Filters;
 
 namespace Eterea_Parfums_Web.Controllers
 {
+    [ForzarPerfilCompleto]
     public class PerfumeController : Controller
     {
         private etereaEntities7 db = new etereaEntities7();

@@ -342,6 +342,42 @@ namespace Eterea_Parfums_Web.Controllers
                 ModelState.AddModelError("Dni", "El DNI debe tener 8 dígitos o el CUIT 11 dígitos.");
             }
 
+            if (dniStrModel.Length == 8) // es DNI
+            {
+                // Como FechaNacimiento es DateTime (no nullable),
+                // si el usuario no elige nada, suele venir como 01/01/0001
+                var fecha = model.FechaNacimiento;
+
+                // Sin fecha real (o fecha por defecto muy vieja)
+                if (fecha == default(DateTime))
+                {
+                    ModelState.AddModelError(
+                        "FechaNacimiento",
+                        "Debes ingresar tu fecha de nacimiento si usas DNI."
+                    );
+                }
+                else
+                {
+                    int edad = CalcularEdad(fecha);
+
+                    // 1900 = valor por defecto del local → obligar a cambiar
+                    if (fecha.Year == 1900)
+                    {
+                        ModelState.AddModelError(
+                            "FechaNacimiento",
+                            "Debes actualizar tu fecha de nacimiento. No puede quedar en 1900."
+                        );
+                    }
+                    else if (edad < 18)
+                    {
+                        ModelState.AddModelError(
+                            "FechaNacimiento",
+                            "Debes ser mayor de 18 años para registrarte con DNI."
+                        );
+                    }
+                }
+            }
+
             // 4) Usuario, DNI, email únicos si cambiaron
             if (db.cliente.Any(c => c.usuario == model.Usuario && c.id != clienteId))
             {
@@ -675,15 +711,51 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
+        private int CalcularEdad(DateTime fechaNacimiento)
+        {
+            var hoy = DateTime.Today;
+            int edad = hoy.Year - fechaNacimiento.Year;
+            if (fechaNacimiento > hoy.AddYears(-edad))
+                edad--;
+            return edad;
+        }
+
         private bool DebeForzarCompletarPerfil(cliente c, string claveIngresada)
         {
-            // 1) Usuario y contraseña IGUALES (caso típico DNI/CUIT usado como ambos)
-            bool usuarioClaveIguales =
-                !string.IsNullOrEmpty(c.usuario) &&
-                !string.IsNullOrEmpty(claveIngresada) &&
-                c.usuario == claveIngresada;
+            bool usuarioClaveDocIgual = false;
 
-            // 2) Domicilio incompleto con la lógica de SIN DATO
+            // c.dni es long
+            if (c.dni > 0)
+            {
+                string dniStr = c.dni.ToString();
+
+                // Caso inicial: usuario y contraseña = DNI
+                if (!string.IsNullOrEmpty(c.usuario) &&
+                    !string.IsNullOrEmpty(claveIngresada) &&
+                    c.usuario == dniStr &&
+                    claveIngresada == dniStr)
+                {
+                    usuarioClaveDocIgual = true;
+                }
+            }
+
+            // 🟣 FECHA DE NACIMIENTO INVÁLIDA SOLO PARA DNI (8 dígitos)
+            bool fechaInvalida = false;
+            string dniActual = c.dni.ToString();
+
+            if (dniActual.Length == 8)   // es DNI, no CUIT
+            {
+                DateTime fecha = c.fecha_nacimiento; // en tu modelo no es nullable
+
+                int edad = CalcularEdad(fecha);
+
+                if (fecha.Year == 1900 || edad < 18)
+                {
+                    fechaInvalida = true;
+                }
+            }
+
+            // Domicilio incompleto con la lógica de SIN DATO
             bool domicilioIncompleto =
                    c.pais_id == 1
                 || c.provincia_id == 1
@@ -693,9 +765,9 @@ namespace Eterea_Parfums_Web.Controllers
                 || c.codigo_postal.Value.ToString().Length != 4
                 || c.numeracion_calle == 0;
 
-            return usuarioClaveIguales || domicilioIncompleto;
+            // ⬅️ ahora también se tiene en cuenta la fecha
+            return usuarioClaveDocIgual || domicilioIncompleto || fechaInvalida;
         }
-
 
 
     }
