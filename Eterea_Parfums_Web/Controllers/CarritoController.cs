@@ -9,9 +9,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using Eterea_Parfums_Web.Filters;
 
 namespace Eterea_Parfums_Web.Controllers
 {
+    [ForzarPerfilCompleto]
     public class CarritoController : Controller
     {
         private etereaEntities7 db = new etereaEntities7();

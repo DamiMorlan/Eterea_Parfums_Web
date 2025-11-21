@@ -20,7 +20,7 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
         // Para errores 404
-        [HttpGet]
+        
         public ActionResult NotFound()
         {
             Response.StatusCode = 404;
