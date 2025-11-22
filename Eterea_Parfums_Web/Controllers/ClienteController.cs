@@ -1,14 +1,15 @@
 ﻿using Eterea_Parfums_Desktop;
+using Eterea_Parfums_Web.Filters;
+using Eterea_Parfums_Web.Helpers;
 using Eterea_Parfums_Web.Models;
 using Eterea_Parfums_Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Web.Helpers;
-using System.Diagnostics;
 
 namespace Eterea_Parfums_Web.Controllers
 {
@@ -603,8 +604,8 @@ namespace Eterea_Parfums_Web.Controllers
         }
 
 
-        
 
+        [ForzarPerfilCompleto]
         [HttpGet]
         public ActionResult VerPerfil()
         {
