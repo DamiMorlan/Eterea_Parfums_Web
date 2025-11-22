@@ -48,26 +48,29 @@ namespace Eterea_Parfums_Web.Controllers
                 {
                     Session["ForzarCompletarPerfil"] = true;
 
-                    if (!cumpleRequisitos)
+                    if (!cumpleRequisitos || debeForzarPerfil)
                     {
+                        Session["ForzarCompletarPerfil"] = true;
+
                         TempData["AvisoPasswordInsegura"] =
-                            "Tu contraseña no cumple con los requisitos actuales. Por favor, actualízala.";
+                            "¡Es tu primera vez en nuestra web, bienvenido! " +
+                            "Te pedimos que actualices tu usuario y tu contraseña y completes los datos faltantes " +
+                            "que te solicitamos a continuación en este formulario para terminar tu registro.";
+
+                        return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
                     }
 
-                    // Lo mando a PERFIL en modo primerLogin
-                    return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
+
+                    // Si todo está OK, login normal
+                    Session["ForzarCompletarPerfil"] = false;
+                    return RedirectToAction("Index", "Home");
                 }
 
-                // Si todo está OK, login normal
-                Session["ForzarCompletarPerfil"] = false;
-                return RedirectToAction("Index", "Home");
+                ViewData["Error"] = "Usuario o contraseña incorrectos.";
+                return View();
             }
 
-            ViewData["Error"] = "Usuario o contraseña incorrectos.";
-            return View();
         }
-
-
         // GET: Cliente/Registrar
         public ActionResult Registrar()
         {
@@ -247,44 +250,86 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
-        [HttpGet]
-        public ActionResult Perfil(bool? primerLogin)
+       [HttpGet]
+public ActionResult Perfil(bool? primerLogin)
+{
+    int clienteId;
+
+    if (primerLogin == true)
+    {
+        // Obtengo el cliente desde TempData
+        if (TempData["clienteId"] == null)
+            return RedirectToAction("Login");
+
+        clienteId = (int)TempData["clienteId"];
+        TempData.Keep("clienteId");
+    }
+    else
+    {
+        // Login normal con sesión
+        if (Session["clienteId"] == null)
+            return RedirectToAction("Login");
+
+        clienteId = (int)Session["clienteId"];
+    }
+
+    var cliente = db.cliente.Find(clienteId);
+    if (cliente == null)
+        return RedirectToAction("Login", "Cliente");
+
+    var model = new FormularioPerfilViewModel
+    {
+        Usuario = cliente.usuario,
+        Dni = cliente.dni,
+        Email = cliente.e_mail,
+        Nombre = cliente.nombre,
+        Apellido = cliente.apellido,
+        FechaNacimiento = cliente.fecha_nacimiento,
+        Celular = cliente.celular,
+        PaisId = cliente.pais_id,
+        ProvinciaId = cliente.provincia_id,
+        LocalidadId = cliente.localidad_id,
+        CalleId = cliente.calle_id,
+        NumeracionCalle = cliente.numeracion_calle,
+        Piso = cliente.piso,
+        Departamento = cliente.departamento,
+        CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
+        ComentariosDomicilio = cliente.comentarios_domicilio
+    };
+
+    // 🔴 Mostrar error APENAS entra, solo en primerLogin
+    if (primerLogin == true)
+    {
+        var dniStr = model.Dni.ToString();
+
+        if (dniStr.Length == 8) // DNI
         {
-            if (Session["clienteId"] == null)
-                return RedirectToAction("Login", "Cliente");
+            var fecha = model.FechaNacimiento; // DateTime
 
-            int clienteId = (int)Session["clienteId"];
-
-            var cliente = db.cliente.Find(clienteId);
-            if (cliente == null)
-                return RedirectToAction("Login", "Cliente");
-
-            var model = new FormularioPerfilViewModel
+            if (fecha == default(DateTime) || fecha.Year == 1900)
             {
-                Usuario = cliente.usuario,
-                Dni = cliente.dni,
-                Email = cliente.e_mail,
-                Nombre = cliente.nombre,
-                Apellido = cliente.apellido,
-                FechaNacimiento = cliente.fecha_nacimiento,
-                Celular = cliente.celular,
-                PaisId = cliente.pais_id,
-                ProvinciaId = cliente.provincia_id,
-                LocalidadId = cliente.localidad_id,
-                CalleId = cliente.calle_id,
-                NumeracionCalle = cliente.numeracion_calle,
-                Piso = cliente.piso,
-                Departamento = cliente.departamento,
-                CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
-                ComentariosDomicilio = cliente.comentarios_domicilio
-            };
-
-            // Si querés, podés usar esto en la vista para algún mensaje especial
-            ViewBag.PrimerLogin = primerLogin ?? false;
-
-            CargarPaises();
-            return View(model);
+                ModelState.AddModelError(
+                    "FechaNacimiento",
+                    "Debes actualizar tu fecha de nacimiento. No puede quedar en 1900."
+                );
+            }
+            else
+            {
+                int edad = CalcularEdad(fecha);
+                if (edad < 18)
+                {
+                    ModelState.AddModelError(
+                        "FechaNacimiento",
+                        "Debes ser mayor de 18 años para registrarte con DNI."
+                    );
+                }
+            }
         }
+    }
+
+    CargarPaises();
+    return View(model);
+}
 
 
         [HttpPost]
@@ -340,9 +385,11 @@ namespace Eterea_Parfums_Web.Controllers
             var dniStrModel = model.Dni.ToString();
             if (dniStrModel.Length != 8 && dniStrModel.Length != 11)
             {
-                ModelState.AddModelError("Dni", "El DNI debe tener 8 dígitos o el CUIT 11 dígitos.");
+                ModelState.AddModelError("Dni",
+                "Ingresá un documento válido: 8 dígitos si es DNI o 11 dígitos si es CUIT para completar tu registro.");
             }
 
+            // 🟣 Si es DNI (8 dígitos), obligamos fecha válida y mayor de 18
             if (dniStrModel.Length == 8) // es DNI
             {
                 // Como FechaNacimiento es DateTime (no nullable),
@@ -379,15 +426,28 @@ namespace Eterea_Parfums_Web.Controllers
                 }
             }
 
+
+
             // 4) Usuario, DNI, email únicos si cambiaron
+            // Usuario ya existe
             if (db.cliente.Any(c => c.usuario == model.Usuario && c.id != clienteId))
             {
-                ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso.");
+                ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso. Elegí otro para poder finalizar tu registro.");
             }
+            // Usuario = DNI/CUIT
             if (db.cliente.Any(c => c.dni == model.Dni && c.id != clienteId))
             {
                 ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI/CUIT.");
             }
+            // Clave sigue siendo DNI/CUIT
+            if (passwordEsDni && string.IsNullOrWhiteSpace(model.Clave))
+            {
+                ModelState.AddModelError(
+                    "Clave",
+                    "Por seguridad, ingresá una nueva contraseña distinta a tu DNI/CUIT para terminar tu registro."
+                );
+            }
+            // Email
             if (db.cliente.Any(c => c.e_mail == model.Email && c.id != clienteId))
             {
                 ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
@@ -769,6 +829,7 @@ namespace Eterea_Parfums_Web.Controllers
             // ⬅️ ahora también se tiene en cuenta la fecha
             return usuarioClaveDocIgual || domicilioIncompleto || fechaInvalida;
         }
+
 
 
     }
