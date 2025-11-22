@@ -414,14 +414,7 @@ namespace Eterea_Parfums_Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Perfil(FormularioPerfilViewModel model, bool? primerLogin)
         {
-            // 1) Validaciones de DataAnnotations
-            if (!ModelState.IsValid)
-            {
-                CargarPaises();
-                return View(model);
-            }
-
-            // 2) Chequear sesión
+            // 1) Chequear sesión
             if (Session["clienteId"] == null)
                 return RedirectToAction("Login", "Cliente");
 
@@ -431,50 +424,107 @@ namespace Eterea_Parfums_Web.Controllers
             if (clienteExistente == null)
                 return RedirectToAction("Login", "Cliente");
 
-            // ================================
-            // 2.b) REGLAS DE SEGURIDAD EXTRA
-            // ================================
+            // ¿Sigue siendo perfil incompleto? (primer login o forzado)
+            bool esPrimerLogin = (Session["ForzarCompletarPerfil"] as bool?) ?? false;
+            ViewBag.EsPrimerLogin = esPrimerLogin;
 
-            // DNI del cliente actual como string
-            string dniActualStr = clienteExistente.dni.ToString();
+            // Documento original y el que viene del formulario
+            string docBase = clienteExistente.dni.ToString(); // lo que tiene grabado
+            string docForm = model.Dni.ToString();            // lo que viene en el form
 
-            // ¿La contraseña guardada sigue siendo el DNI/CUIT?
-            bool passwordEsDni = PasswordHelper.VerificarPassword(dniActualStr, clienteExistente.clave);
+            // ---------------------------------------------------
+            // 2) REGLAS DE SEGURIDAD EXTRA
+            // ---------------------------------------------------
 
-            // Si la clave actual es el DNI/CUIT y NO ingresó una nueva -> obligar a cambiar
-            if (passwordEsDni && string.IsNullOrWhiteSpace(model.Clave))
-            {
-                ModelState.AddModelError(
-                    "Clave",
-                    "Por seguridad, debes ingresar una nueva contraseña distinta a tu DNI/CUIT."
-                );
-            }
-
-            // ¿El usuario sigue siendo el DNI/CUIT y en el formulario no lo cambió?
-            if (clienteExistente.usuario == dniActualStr && model.Usuario == dniActualStr)
+            // 2.1) USUARIO no puede ser DNI/CUIT
+            //     – si es primer login usamos el doc original para comparar
+            string docParaUsuario = esPrimerLogin ? docBase : docForm;
+            if (model.Usuario == docParaUsuario)
             {
                 ModelState.AddModelError(
                     "Usuario",
-                    "Por seguridad, tu usuario no puede seguir siendo tu DNI/CUIT. Elige otro nombre de usuario."
+                    "Debes actualizar tu nombre de usuario, no puede ser tu DNI o CUIT."
                 );
             }
 
-            // 3) Validación manual de DNI / CUIT (sobre el valor editado)
-            var dniStrModel = model.Dni.ToString();
-            if (dniStrModel.Length != 8 && dniStrModel.Length != 11)
+            // 2.2) CONTRASEÑA no puede ser DNI/CUIT y debe cumplir el patrón
+            bool passwordActualEsDoc = PasswordHelper.VerificarPassword(docBase, clienteExistente.clave);
+
+            // patrón de seguridad que pedís
+            string patronSeguridad = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡""#$%&/()=?¿]).{8,}$";
+
+            // 2.2.a) PRIMER LOGIN → OBLIGATORIO cambiar la contraseña
+            if (esPrimerLogin && passwordActualEsDoc)
             {
-                ModelState.AddModelError("Dni",
-                "Ingresá un documento válido: 8 dígitos si es DNI o 11 dígitos si es CUIT para completar tu registro.");
+                if (string.IsNullOrWhiteSpace(model.Clave))
+                {
+                    ModelState.AddModelError(
+                        "Clave",
+                        "Debes ingresar una nueva contraseña, no puede seguir siendo tu DNI o CUIT."
+                    );
+                }
+                else
+                {
+                    if (model.Clave == docBase)
+                    {
+                        ModelState.AddModelError(
+                            "Clave",
+                            "La nueva contraseña no puede ser tu DNI o CUIT."
+                        );
+                    }
+                    else if (!System.Text.RegularExpressions.Regex.IsMatch(model.Clave, patronSeguridad))
+                    {
+                        ModelState.AddModelError(
+                            "Clave",
+                            "La clave debe tener 8+ caracteres, incluir mayúsculas, letras, números y 1 carácter especial (!, ¡, \", #, $, %, &, /, (, ), =, ?, ¿)."
+                        );
+                    }
+                }
+            }
+            // 2.2.b) NO es primer login → la contraseña es opcional, pero si la cambia debe ser válida
+            else if (!string.IsNullOrWhiteSpace(model.Clave))
+            {
+                if (model.Clave == docForm)
+                {
+                    ModelState.AddModelError(
+                        "Clave",
+                        "La nueva contraseña no puede ser tu DNI o CUIT."
+                    );
+                }
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(model.Clave, patronSeguridad))
+                {
+                    ModelState.AddModelError(
+                        "Clave",
+                        "La clave debe tener 8+ caracteres, incluir mayúsculas, letras, números y 1 carácter especial (!, ¡, \", #, $, %, &, /, (, ), =, ?, ¿)."
+                    );
+                }
             }
 
-            // 🟣 Si es DNI (8 dígitos), obligamos fecha válida y mayor de 18
-            if (dniStrModel.Length == 8) // es DNI
+            // 2.3) CELULAR obligatorio y distinto de "0"
+            if (string.IsNullOrWhiteSpace(model.Celular) || model.Celular.Trim() == "0")
             {
-                // Como FechaNacimiento es DateTime (no nullable),
-                // si el usuario no elige nada, suele venir como 01/01/0001
+                ModelState.AddModelError(
+                    "Celular",
+                    "Debes ingresar un número de celular."
+                );
+            }
+
+            // ---------------------------------------------------
+            // 3) Validación de DNI/CUIT y FECHA de nacimiento
+            // ---------------------------------------------------
+
+            // DNI/CUIT longitud
+            if (docForm.Length != 8 && docForm.Length != 11)
+            {
+                ModelState.AddModelError("Dni",
+                    "Ingresá un documento válido: 8 dígitos si es DNI o 11 dígitos si es CUIT para completar tu registro.");
+            }
+
+            // Si es DNI (8 dígitos), obligamos fecha válida, >18 y <100 y ≠1900
+            if (docForm.Length == 8)
+            {
                 var fecha = model.FechaNacimiento;
 
-                // Sin fecha real (o fecha por defecto muy vieja)
                 if (fecha == default(DateTime))
                 {
                     ModelState.AddModelError(
@@ -486,78 +536,68 @@ namespace Eterea_Parfums_Web.Controllers
                 {
                     int edad = CalcularEdad(fecha);
 
-                    // 1900 = valor por defecto del local → obligar a cambiar
-                    if (fecha.Year == 1900)
+                    // acá se filtra 01/01/1900, menores de 18 y mayores de 100
+                    if (fecha.Year == 1900 || edad < 18 || edad > 100)
                     {
                         ModelState.AddModelError(
                             "FechaNacimiento",
-                            "Debes actualizar tu fecha de nacimiento. No puede quedar en 1900."
-                        );
-                    }
-                    else if (edad < 18)
-                    {
-                        ModelState.AddModelError(
-                            "FechaNacimiento",
-                            "Debes ser mayor de 18 años para registrarte con DNI."
+                            "Debes ingresar una fecha de nacimiento válida: mayor de 18 años, no mayor de 100 y distinta de 1900."
                         );
                     }
                 }
             }
 
-
-
-            // 4) Usuario, DNI, email únicos si cambiaron
-            // Usuario ya existe
+            // ---------------------------------------------------
+            // 4) Unicidad de usuario / DNI / email
+            // ---------------------------------------------------
             if (db.cliente.Any(c => c.usuario == model.Usuario && c.id != clienteId))
             {
-                ModelState.AddModelError("Usuario", "El nombre de usuario ya está en uso. Elegí otro para poder finalizar tu registro.");
+                ModelState.AddModelError("Usuario",
+                    "El nombre de usuario ya está en uso. Elegí otro para poder finalizar tu registro.");
             }
-            // Usuario = DNI/CUIT
+
             if (db.cliente.Any(c => c.dni == model.Dni && c.id != clienteId))
             {
                 ModelState.AddModelError("Dni", "Ya existe una cuenta con ese DNI/CUIT.");
             }
-            // Clave sigue siendo DNI/CUIT
-            if (passwordEsDni && string.IsNullOrWhiteSpace(model.Clave))
-            {
-                ModelState.AddModelError(
-                    "Clave",
-                    "Por seguridad, ingresá una nueva contraseña distinta a tu DNI/CUIT para terminar tu registro."
-                );
-            }
-            // Email
+
             if (db.cliente.Any(c => c.e_mail == model.Email && c.id != clienteId))
             {
                 ModelState.AddModelError("Email", "Ya existe una cuenta con ese correo.");
             }
 
+            // ---------------------------------------------------
             // 5) Validaciones de domicilio "SIN DATO"
+            // ---------------------------------------------------
             if (model.PaisId == 1)
                 ModelState.AddModelError("PaisId", "Debe seleccionar un país válido.");
-
             if (model.ProvinciaId == 1)
                 ModelState.AddModelError("ProvinciaId", "Debe seleccionar una provincia válida.");
-
             if (model.LocalidadId == 1)
                 ModelState.AddModelError("LocalidadId", "Debe seleccionar una localidad válida.");
-
             if (model.CalleId == 1)
                 ModelState.AddModelError("CalleId", "Debe seleccionar una calle válida.");
-
             if (!model.CodigoPostal.HasValue || model.CodigoPostal.Value.ToString().Length != 4)
-                ModelState.AddModelError("CodigoPostal", "El código postal debe tener 4 dígitos.");
-
+                ModelState.AddModelError("CodigoPostal", "Debe ingresar el código postal de 4 dígitos.");
             if (!model.NumeracionCalle.HasValue || model.NumeracionCalle.Value <= 0)
-                ModelState.AddModelError("NumeracionCalle", "La numeración de calle debe ser mayor a 0.");
+                ModelState.AddModelError("NumeracionCalle", "Debes ingresar la altura del domicilio.");
 
-            // 🔴 Si cualquier validación falló, volvemos a la vista
+            // ---------------------------------------------------
+            // 6) Si hay CUALQUIER error → NO guardamos
+            // ---------------------------------------------------
             if (!ModelState.IsValid)
             {
+                // sigue siendo perfil incompleto → mantener el flag para que lo sigan forzando
+                Session["ForzarCompletarPerfil"] = true;
+
                 CargarPaises();
                 return View(model);
             }
 
-            // 6) Mapear propiedades (ya con datos validados)
+            // ---------------------------------------------------
+            // 7) Si llegamos acá → todos los datos son válidos
+            // ---------------------------------------------------
+
             clienteExistente.usuario = model.Usuario;
             clienteExistente.dni = model.Dni;
             clienteExistente.e_mail = model.Email;
@@ -576,7 +616,7 @@ namespace Eterea_Parfums_Web.Controllers
             clienteExistente.codigo_postal = model.CodigoPostal;
             clienteExistente.comentarios_domicilio = model.ComentariosDomicilio;
 
-            // Cambio de clave solo si el usuario escribió una nueva
+            // Cambio de clave solo si escribió una nueva (ya validada)
             if (!string.IsNullOrWhiteSpace(model.Clave))
             {
                 clienteExistente.clave = PasswordHelper.CrearHash(model.Clave);
@@ -594,10 +634,10 @@ namespace Eterea_Parfums_Web.Controllers
                 return View(model);
             }
 
-            // 7) Perfil completo: ya no hace falta forzar nada
+            // perfil completo → dejo de forzar
             Session["ForzarCompletarPerfil"] = false;
 
-            // Refrescar datos en sesión (por si cambió usuario/nombre)
+            // refrescar datos de sesión
             Session["clienteId"] = clienteExistente.id;
             Session["usuarioLogueado"] = clienteExistente.usuario;
             Session["clienteNombre"] = clienteExistente.nombre;
@@ -606,10 +646,8 @@ namespace Eterea_Parfums_Web.Controllers
                 ? "Tu perfil se actualizó correctamente. ¡Ya podés usar el carrito!"
                 : "Perfil fue editado correctamente";
 
-            // Que quede logueado y vaya al inicio
             return RedirectToAction("Index", "Home");
         }
-
 
 
 
