@@ -28,49 +28,47 @@ namespace Eterea_Parfums_Web.Controllers
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
+            // 1) Buscar cliente por usuario
             var cliente = db.cliente.FirstOrDefault(c => c.usuario == usuario);
 
-            if (cliente != null && PasswordHelper.VerificarPassword(clave, cliente.clave))
+            // 2) Si no existe o la contraseña es incorrecta → error de login
+            if (cliente == null || !PasswordHelper.VerificarPassword(clave, cliente.clave))
             {
-                // --- Iniciar sesión ---
-                Session["clienteId"] = cliente.id;
-                Session["usuarioLogueado"] = cliente.usuario;
-                Session["clienteNombre"] = cliente.nombre;
-
-                // --- Validar si la contraseña cumple requisitos ---
-                string patronSeguridad = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$";
-                bool cumpleRequisitos = System.Text.RegularExpressions.Regex.IsMatch(clave, patronSeguridad);
-
-                // --- Ver si está usando usuario/clave igual o domicilio SIN DATO ---
-                bool debeForzarPerfil = DebeForzarCompletarPerfil(cliente, clave);
-
-                if (!cumpleRequisitos || debeForzarPerfil)
-                {
-                    Session["ForzarCompletarPerfil"] = true;
-
-                    if (!cumpleRequisitos || debeForzarPerfil)
-                    {
-                        Session["ForzarCompletarPerfil"] = true;
-
-                        TempData["AvisoPasswordInsegura"] =
-                            "¡Es tu primera vez en nuestra web, bienvenido! " +
-                            "Te pedimos que actualices tu usuario y tu contraseña y completes los datos faltantes " +
-                            "que te solicitamos a continuación en este formulario para terminar tu registro.";
-
-                        return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
-                    }
-
-
-                    // Si todo está OK, login normal
-                    Session["ForzarCompletarPerfil"] = false;
-                    return RedirectToAction("Index", "Home");
-                }
-
                 ViewData["Error"] = "Usuario o contraseña incorrectos.";
                 return View();
             }
 
+            // 3) Login correcto → setear sesión
+            Session["clienteId"] = cliente.id;
+            Session["usuarioLogueado"] = cliente.usuario;
+            Session["clienteNombre"] = cliente.nombre;
+
+            // 4) Validar si la contraseña cumple requisitos de seguridad
+            string patronSeguridad = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$";
+            bool cumpleRequisitos = System.Text.RegularExpressions.Regex.IsMatch(clave, patronSeguridad);
+
+            // 5) Ver si hay que forzar completar perfil
+            bool debeForzarPerfil = DebeForzarCompletarPerfil(cliente, clave);
+            bool forzar = !cumpleRequisitos || debeForzarPerfil;
+
+            Session["ForzarCompletarPerfil"] = forzar;
+
+            if (forzar)
+            {
+                // Mensaje de bienvenida / explicación
+                TempData["AvisoPasswordInsegura"] =
+                    "¡Es tu primera vez en nuestra web, bienvenido! " +
+                    "Te pedimos que actualices tu usuario y tu contraseña y completes los datos faltantes " +
+                    "que te solicitamos a continuación en este formulario para terminar tu registro.";
+
+                // Redirigir a PERFIL (primer login)
+                return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
+            }
+
+            // 6) Todo OK → ir al Home
+            return RedirectToAction("Index", "Home");
         }
+
         // GET: Cliente/Registrar
         public ActionResult Registrar()
         {
@@ -250,86 +248,166 @@ namespace Eterea_Parfums_Web.Controllers
                 }
         }
 
-       [HttpGet]
-public ActionResult Perfil(bool? primerLogin)
-{
-    int clienteId;
-
-    if (primerLogin == true)
-    {
-        // Obtengo el cliente desde TempData
-        if (TempData["clienteId"] == null)
-            return RedirectToAction("Login");
-
-        clienteId = (int)TempData["clienteId"];
-        TempData.Keep("clienteId");
-    }
-    else
-    {
-        // Login normal con sesión
-        if (Session["clienteId"] == null)
-            return RedirectToAction("Login");
-
-        clienteId = (int)Session["clienteId"];
-    }
-
-    var cliente = db.cliente.Find(clienteId);
-    if (cliente == null)
-        return RedirectToAction("Login", "Cliente");
-
-    var model = new FormularioPerfilViewModel
-    {
-        Usuario = cliente.usuario,
-        Dni = cliente.dni,
-        Email = cliente.e_mail,
-        Nombre = cliente.nombre,
-        Apellido = cliente.apellido,
-        FechaNacimiento = cliente.fecha_nacimiento,
-        Celular = cliente.celular,
-        PaisId = cliente.pais_id,
-        ProvinciaId = cliente.provincia_id,
-        LocalidadId = cliente.localidad_id,
-        CalleId = cliente.calle_id,
-        NumeracionCalle = cliente.numeracion_calle,
-        Piso = cliente.piso,
-        Departamento = cliente.departamento,
-        CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
-        ComentariosDomicilio = cliente.comentarios_domicilio
-    };
-
-    // 🔴 Mostrar error APENAS entra, solo en primerLogin
-    if (primerLogin == true)
-    {
-        var dniStr = model.Dni.ToString();
-
-        if (dniStr.Length == 8) // DNI
+        [HttpGet]
+        public ActionResult Perfil(bool? primerLogin)
         {
-            var fecha = model.FechaNacimiento; // DateTime
+            // Siempre tomar el cliente desde la sesión
+            if (Session["clienteId"] == null)
+                return RedirectToAction("Login", "Cliente");
 
-            if (fecha == default(DateTime) || fecha.Year == 1900)
+            int clienteId = (int)Session["clienteId"];
+
+            var cliente = db.cliente.Find(clienteId);
+            if (cliente == null)
+                return RedirectToAction("Login", "Cliente");
+
+            // Mapear entity → ViewModel
+            var model = new FormularioPerfilViewModel
             {
-                ModelState.AddModelError(
-                    "FechaNacimiento",
-                    "Debes actualizar tu fecha de nacimiento. No puede quedar en 1900."
-                );
-            }
-            else
+                Usuario = cliente.usuario,
+                Dni = cliente.dni,
+                Email = cliente.e_mail,
+                Nombre = cliente.nombre,
+                Apellido = cliente.apellido,
+                FechaNacimiento = cliente.fecha_nacimiento,
+                Celular = cliente.celular,
+                PaisId = cliente.pais_id,
+                ProvinciaId = cliente.provincia_id,
+                LocalidadId = cliente.localidad_id,
+                CalleId = cliente.calle_id,
+                NumeracionCalle = cliente.numeracion_calle,
+                Piso = cliente.piso,
+                Departamento = cliente.departamento,
+                CodigoPostal = cliente.codigo_postal.HasValue ? cliente.codigo_postal.Value : (int?)null,
+                ComentariosDomicilio = cliente.comentarios_domicilio
+            };
+
+            // Bandera para la vista (por si querés mostrar textos especiales)
+            bool forzar = false;
+            if (Session["ForzarCompletarPerfil"] != null)
+                bool.TryParse(Session["ForzarCompletarPerfil"].ToString(), out forzar);
+
+            ViewBag.EsPrimerLogin = (primerLogin ?? false) || forzar;
+
+            // ================================
+            //  ❗ Agregar errores por campo
+            //  cuando haya que forzar perfil
+            // ================================
+            if (forzar)
             {
-                int edad = CalcularEdad(fecha);
-                if (edad < 18)
+                string docStr = cliente.dni.ToString();
+
+                // 1) Usuario igual al DNI/CUIT
+                if (!string.IsNullOrEmpty(cliente.usuario) && cliente.usuario == docStr)
                 {
                     ModelState.AddModelError(
-                        "FechaNacimiento",
-                        "Debes ser mayor de 18 años para registrarte con DNI."
+                        "Usuario",
+                        "Debes actualizar tu nombre de usuario, no puede ser tu DNI o CUIT."
+                    );
+                }
+
+                // 2) Contraseña igual al DNI/CUIT
+                bool passwordEsDoc = PasswordHelper.VerificarPassword(docStr, cliente.clave);
+                if (passwordEsDoc)
+                {
+                    ModelState.AddModelError(
+                        "Clave",
+                        "Debes actualizar tu contraseña, no puede ser tu DNI o CUIT."
+                    );
+                }
+
+                // 3) Celular vacío o en "0"
+                var cel = (cliente.celular ?? "").Trim();
+                if (string.IsNullOrEmpty(cel) || cel == "0")
+                {
+                    ModelState.AddModelError(
+                        "Celular",
+                        "Debes ingresar un número de celular."
+                    );
+                }
+
+                // 4) Fecha de nacimiento (solo si es DNI de 8 dígitos)
+                string dniStr = cliente.dni.ToString();
+                if (dniStr.Length == 8) // DNI
+                {
+                    var fecha = cliente.fecha_nacimiento;
+                    int edad = CalcularEdad(fecha);
+
+                    if (fecha.Year == 1900)
+                    {
+                        ModelState.AddModelError(
+                            "FechaNacimiento",
+                            "Debes actualizar tu fecha de nacimiento. No puede quedar en 1900."
+                        );
+                    }
+                    else if (edad < 18)
+                    {
+                        ModelState.AddModelError(
+                            "FechaNacimiento",
+                            "Debes ser mayor de 18 años para registrarte con DNI."
+                        );
+                    }
+                }
+
+                // 5) Domicilio: pais / provincia / localidad / calle = 1 ("SIN DATO")
+                if (cliente.pais_id == 1)
+                {
+                    ModelState.AddModelError(
+                        "PaisId",
+                        "Debes seleccionar un país."
+                    );
+                }
+
+                if (cliente.provincia_id == 1)
+                {
+                    ModelState.AddModelError(
+                        "ProvinciaId",
+                        "Debes seleccionar una provincia."
+                    );
+                }
+
+                if (cliente.localidad_id == 1)
+                {
+                    ModelState.AddModelError(
+                        "LocalidadId",
+                        "Debes seleccionar una localidad."
+                    );
+                }
+
+                if (cliente.calle_id == 1)
+                {
+                    ModelState.AddModelError(
+                        "CalleId",
+                        "Debes seleccionar una calle."
+                    );
+                }
+
+                // 6) Numeración
+                if (cliente.numeracion_calle == 0)
+                {
+                    ModelState.AddModelError(
+                        "NumeracionCalle",
+                        "Debes ingresar la altura del domicilio."
+                    );
+                }
+
+                // 7) Código postal
+                if (!cliente.codigo_postal.HasValue ||
+                    cliente.codigo_postal.Value.ToString().Length != 4)
+                {
+                    ModelState.AddModelError(
+                        "CodigoPostal",
+                        "Debes ingresar el código postal de 4 dígitos."
                     );
                 }
             }
-        }
-    }
 
-    CargarPaises();
-    return View(model);
-}
+            // Cargar combos 
+            CargarPaises();
+         
+
+            return View(model);
+        }
 
 
         [HttpPost]
@@ -815,6 +893,8 @@ public ActionResult Perfil(bool? primerLogin)
                     fechaInvalida = true;
                 }
             }
+
+
 
             // Domicilio incompleto con la lógica de SIN DATO
             bool domicilioIncompleto =
