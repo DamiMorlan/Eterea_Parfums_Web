@@ -5,12 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using Eterea_Parfums_Web.Models;
 using Eterea_Parfums_Web.ViewModels;
+using Eterea_Parfums_Web.Filters;
 
 namespace Eterea_Parfums_Web.Controllers
 {
     public class HistorialController : Controller
     {
-
+        [ForzarPerfilCompleto]
 
         // GET: Historial
         public ActionResult Index(int page = 1)

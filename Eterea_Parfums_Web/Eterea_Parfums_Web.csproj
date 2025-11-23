@@ -177,6 +177,7 @@
     <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\PerfumeController.cs" />
     <Compile Include="Controllers\PromocionController.cs" />
+    <Compile Include="Filters\ForzarPerfilCompletoAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

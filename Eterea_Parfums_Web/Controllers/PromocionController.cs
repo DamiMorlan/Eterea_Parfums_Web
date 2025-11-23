@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Eterea_Parfums_Web.Filters;
+using Eterea_Parfums_Web.Models;
+using Eterea_Parfums_Web.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Eterea_Parfums_Web.Models;
-using Eterea_Parfums_Web.ViewModels;
 
 namespace Eterea_Parfums_Web.Controllers
 {
+    [ForzarPerfilCompleto]
     public class PromocionController : Controller
     {
 

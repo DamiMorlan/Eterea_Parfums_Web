@@ -1,25 +1,28 @@
-﻿using Eterea_Parfums_Web.Models;
+﻿using Eterea_Parfums_Web.Filters;
+using Eterea_Parfums_Web.Helpers;
+using Eterea_Parfums_Web.Models;
 using Eterea_Parfums_Web.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
-using Newtonsoft.Json;
-using System.Reflection;
-using System.Globalization;
-using System.Data.Entity;
-using Eterea_Parfums_Web.Helpers;
-using System.IO;
+
 
 
 namespace Eterea_Parfums_Web.Controllers
 {
+    [ForzarPerfilCompleto]
     public class PedidoController : Controller
     {
         private etereaEntities7 db = new etereaEntities7();
