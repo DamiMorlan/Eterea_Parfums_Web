@@ -23,7 +23,7 @@
         public string Usuario { get; set; }
 
         [Display(Name = "Clave:")]
-        [MinLength(8, ErrorMessage = "Debe tener al menos 8 caracteres.")]
+        [MinLength(8, ErrorMessage = " ")]
         [StringLength(25, ErrorMessage = "Máximo 25 caracteres.")]
         [DataType(DataType.Password)]
         public string Clave { get; set; }
