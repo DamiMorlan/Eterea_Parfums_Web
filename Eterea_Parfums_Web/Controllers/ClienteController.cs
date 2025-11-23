@@ -24,7 +24,6 @@ namespace Eterea_Parfums_Web.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public ActionResult Login(string usuario, string clave)
         {
@@ -47,22 +46,44 @@ namespace Eterea_Parfums_Web.Controllers
             string patronSeguridad = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$";
             bool cumpleRequisitos = System.Text.RegularExpressions.Regex.IsMatch(clave, patronSeguridad);
 
-            // 5) Ver si hay que forzar completar perfil
+            // 5) Ver si hay que forzar completar perfil (domicilio, fecha, etc.)
             bool debeForzarPerfil = DebeForzarCompletarPerfil(cliente, clave);
-            bool forzar = !cumpleRequisitos || debeForzarPerfil;
 
+            // 5.b) Determinar motivo específico
+            string dniStr = cliente.dni.ToString();
+            bool esPrimerLoginReal = cliente.usuario == dniStr && clave == dniStr;
+            bool claveInsegura = !cumpleRequisitos && !esPrimerLoginReal;
+
+            // 5.c) Activar bandera global
+            bool forzar = esPrimerLoginReal || claveInsegura || debeForzarPerfil;
             Session["ForzarCompletarPerfil"] = forzar;
 
             if (forzar)
             {
-                // Mensaje de bienvenida / explicación
-                TempData["AvisoPasswordInsegura"] =
-                    "¡Es tu primera vez en nuestra web, bienvenido! " +
-                    "Te pedimos que actualices tu usuario y tu contraseña y completes los datos faltantes " +
-                    "que te solicitamos a continuación en este formulario para terminar tu registro.";
+                if (esPrimerLoginReal)
+                {
+                    // Caso 1 — primer ingreso real con usuario/clave = DNI
+                    TempData["AvisoPasswordInsegura"] =
+                        "¡Es tu primera vez en nuestra web, bienvenido/a! " +
+                        "Te pedimos que actualices tu usuario y tu contraseña y completes los datos " +
+                        "faltantes para finalizar tu registro.";
+                }
+                else if (claveInsegura)
+                {
+                    // Caso 2 — usuario habitual con clave vieja no segura
+                    TempData["AvisoPasswordInsegura"] =
+                        "Por normas de seguridad se han actualizado los requisitos de contraseña. " +
+                        "Tu contraseña actual ya no cumple con los nuevos estándares, por lo que " +
+                        "deberás generar una nueva contraseña que respete las nuevas reglas.";
+                }
+                else
+                {
+                    // Caso 3 — otros datos incompletos (domicilio, fecha, etc.)
+                    TempData["AvisoPasswordInsegura"] =
+                        "Para continuar es necesario que completes tus datos de perfil.";
+                }
 
-                // Redirigir a PERFIL (primer login)
-                return RedirectToAction("Perfil", "Cliente", new { primerLogin = true });
+                return RedirectToAction("Perfil", "Cliente", new { primerLogin = esPrimerLoginReal });
             }
 
             // 6) Todo OK → ir al Home
