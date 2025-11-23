@@ -626,6 +626,18 @@
                             leyendaElem.innerHTML = tienePromo ? leyenda : '';
                         }
 
+                        const promoContainer = card.querySelector('.promo-container');
+                        if (promoContainer) {
+                            if (tienePromo && promosJson && JSON.parse(promosJson).length > 0) {
+                                // Hay promos -> quitar estilo de "sin promoción"
+                                promoContainer.classList.remove('promo-sin-promocion');
+                            } else {
+                                // No hay promos -> aplicar estilo de "sin promoción"
+                                promoContainer.classList.add('promo-sin-promocion');
+                            }
+                        }
+
+
                         // Stock
                         const stockElem = card.querySelector('.espacio-stock');
                         if (stockElem) {
