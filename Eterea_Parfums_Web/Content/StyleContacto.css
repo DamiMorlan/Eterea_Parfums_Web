@@ -64,18 +64,18 @@ body {
             text-decoration: underline;
         }
 
-.social-icons {
+.icons {
     margin-top: 10px;
 }
 
-    .social-icons a {
+    .icons a {
         margin-right: 15px;
         font-size: 1.5rem;
         color: rgb(209, 167, 180);
         transition: transform 0.3s ease;
     }
 
-        .social-icons a:hover {
+        .icons a:hover {
             transform: scale(1.2);
             color: #a64d6c;
         }

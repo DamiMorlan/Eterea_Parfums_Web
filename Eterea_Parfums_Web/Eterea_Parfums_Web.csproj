@@ -317,6 +317,7 @@
     <Content Include="Content\StyleBlog.css" />
     <Content Include="Content\StyleCarrito.css" />
     <Content Include="Content\StyleContacto.css" />
+    <Content Include="Content\StyleDetalleFactura.css" />
     <Content Include="Content\StyleHistorial.css" />
     <Content Include="Content\StyleHome.css" />
     <Content Include="Content\StyleOlvidarPassword.css" />

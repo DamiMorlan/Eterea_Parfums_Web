@@ -8,72 +8,79 @@
     <link href="~/Content/StyleHistorial.css" rel="stylesheet" type="text/css" />
 }
 
+<div class="main-container">
 
-@if (Model != null && Model.Facturas != null && Model.Facturas.Count > 0)
-{
-    <h2>@ViewBag.Title </h2>
-    <hr class="separator">
-    <div class="personal-data-container">
-        <h3> Usuario</h3>
-        <p> <strong> Nombre:</strong> @Model.Nombre </p>
-        <p> <strong> Apellido:</strong> @Model.Apellido </p>
-        <p> <strong> DNI:</strong> @Model.Dni </p>
-        <p> <strong> Email:</strong> @Model.Email </p>
-    </div>
+    @if (Model != null && Model.Facturas != null && Model.Facturas.Count > 0)
+    {
+        <h2 class="page-title">@ViewBag.Title</h2>
+        <hr class="separator">
 
-    <hr class="separator">
+        <div class="personal-data-container">
+            <h3> Usuario</h3>
+            <p> <strong>Nombre:</strong> @Model.Nombre </p>
+            <p> <strong>Apellido:</strong> @Model.Apellido </p>
+            <p> <strong>DNI:</strong> @Model.Dni </p>
+            <p> <strong>Email:</strong> @Model.Email </p>
+        </div>
 
-    <div class="row">
-        @foreach (var factura in Model.Facturas)
-        {
-            using (Html.BeginForm("DetalleFactura", "Historial", FormMethod.Post, new { @class = "factura-form" }))
+        <hr class="separator">
+
+        <div class="row">
+            @foreach (var factura in Model.Facturas)
             {
-                <input type="hidden" name="factura_id" value="@factura.id" />
-                <div class="factura-card clickable-card" onclick="this.closest('form').submit();">
-                    <h5 class="card-title">Factura N° @factura.num_factura</h5>
-                    <hr class="separator">
-                    <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
-                    <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
+                using (Html.BeginForm("DetalleFactura", "Historial", FormMethod.Post, new { @class = "factura-form" }))
+                {
+                    <input type="hidden" name="factura_id" value="@factura.id" />
 
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Ver Detalles</button>
+                    <div class="factura-card clickable-card" onclick="this.closest('form').submit();">
+                        <h5 class="card-title">Factura N° @factura.num_factura</h5>
+                        <hr class="separator">
+                        <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
+
+                        
+
+                        <div class="button-container">
+                            <button type="submit" class="btn btn-primary">Ver Detalles</button>
+                        </div>
                     </div>
-                </div>
+                }
             }
-        }
-        @if (Model.TotalPaginas > 1)
-        {
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
 
-                    <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual - 1 })">Anterior</a>
-                    </li>
+            @if (Model.TotalPaginas > 1)
+            {
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
 
-                    @for (int i = 1; i <= Model.TotalPaginas; i++)
-                    {
-                        <li class="page-item @(Model.PaginaActual == i ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("Index", "Historial", new { page = i })">@i</a>
+                        <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual - 1 })">Anterior</a>
                         </li>
-                    }
 
-                    <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual + 1 })">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
-        }
-    </div>
-    <hr class="separator">
-}
-else
-{
-<div class="no-historial-container">
-    <img src="@Url.Content("~/Imagenes/carro-vacio.png")"  alt="Carro vacío" />
-    <h3>No se encontraron compras en tu historial.</h3>
-    <p>Parece que todavía no has realizado ninguna compra. ¡Explora nuestros perfumes y encuentra tu favorito!</p>
-    <a href="@Url.Action("Index", "Perfume")" class="btn btn-primary">Ir a Perfumes</a>
+                        @for (int i = 1; i <= Model.TotalPaginas; i++)
+                        {
+                            <li class="page-item @(Model.PaginaActual == i ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", "Historial", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Index", "Historial", new { page = Model.PaginaActual + 1 })">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+
+        <hr class="separator">
+    }
+    else
+    {
+        <div class="no-historial-container">
+            <img src="@Url.Content("~/Imagenes/carro-vacio.png")" alt="Carro vacío" />
+            <h3>No se encontraron compras en tu historial.</h3>
+            <p>Parece que todavía no has realizado ninguna compra. ¡Explora nuestros perfumes y encuentra tu favorito!</p>
+            <a href="@Url.Action("Index", "Perfume")" class="btn btn-primary">Ir a Perfumes</a>
+        </div>
+    }
+
 </div>
-
-}
-
