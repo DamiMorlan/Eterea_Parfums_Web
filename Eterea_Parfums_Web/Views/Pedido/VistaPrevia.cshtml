@@ -1,125 +1,125 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.VistaPreviaPedidoViewModel
-@using Eterea_Parfums_Web.ViewModels   <!-- ← nueva línea -->
+@using Eterea_Parfums_Web.ViewModels
 
 @section Styles {
     <link href="~/Content/StyleCarrito.css" rel="stylesheet" />
     <link href="~/Content/StyleVistaPrevia.css" rel="stylesheet" />
+    <link href="~/Content/StyleVistaPreviaPedido.css" rel="stylesheet" />
 }
 
-<div class="container mt-4">
-    <!-- Flecha volver -->
-    <a href="@Url.Action("Index","Carrito")" class="volver-carrito" title="Volver al carrito">←</a>
+<div class="container mt-4 d-flex align-items-center justify-content-between">
 
-    <div class="row mt-3">
-        <!-- Dirección -->
-        <div class="col-md-4" style="border-right: 2px solid #ddd;">
-            <h4>Dirección de envío</h4>
+    <div class="d-flex align-items-center">
+        <a href="@Url.Action("Index","Carrito")" class="btn-volver me-3">← Volver</a>       
+    </div>
 
-            @if (!string.IsNullOrEmpty(Model.DomicilioDeEnvioTexto))
-            {
-                <pre>@Model.DomicilioDeEnvioTexto</pre>
-            }
-            else
-            {
-                <div class="alert alert-warning">No se pudo determinar el domicilio de envío.</div>
-            }
+</div>
 
+<div class="container mt-3">
+
+    <div class="row">
+
+        <!-- ===== COLUMNA IZQUIERDA: DIRECCIÓN ===== -->
+        <div class="col-md-4">
+            <div class="box">
+                <h4 class="titulo-box">Dirección de envío</h4>
+
+                @if (!string.IsNullOrEmpty(Model.DomicilioDeEnvioTexto))
+                {
+                    <pre>@Model.DomicilioDeEnvioTexto</pre>
+                }
+                else
+                {
+                    <div class="alert alert-warning">No se pudo determinar el domicilio de envío.</div>
+                }
 
             <a href="@Url.Action("SeleccionarDireccion","Cliente")"
-               class="btn btn-outline-secondary">Cambiar dirección de envío</a>
+               class="btn-cambiar-direccion w-100 mt-2">
+                Cambiar dirección
+            </a>
+            </div>
         </div>
 
-        <!-- Productos + resumen ----------------------------------------- -->
+        <!-- ===== COLUMNA DERECHA: PRODUCTOS + RESUMEN ===== -->
         <div class="col-md-8">
-            <h4>Resumen de compra</h4>
 
-            @foreach (var item in Model.Items)
-            {
-                <div class="resumen-producto">
-                    <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
-                       <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")" 
-                             alt="@item.Nombre"
-                             class="img-fluid rounded"
-                             style="max-height: 80px; object-fit: contain;" />
-                    </a>
-                    <div class="ms-2 w-100">
-                        <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })" class="text-decoration-none text-dark">
-                            <div><strong>@item.Nombre</strong></div>
+            <!-- Caja de productos -->
+            <div class="box">
+                <h4 class="titulo-box">Productos en tu pedido</h4>
+
+                @foreach (var item in Model.Items)
+                {
+                    <div class="producto-item">
+                        <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
+                            <img src="@Url.Content("~/Imagenes/" + item.Imagen + ".jpg")"
+                                 alt="@item.Nombre"
+                                 class="rounded" />
                         </a>
-                        <div>@item.Presentacion ml</div>
-                    </div>
-                    <div class="text-center w-25">
-                        @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
-                    </div>
-                    <div class="text-end w-25">
-                        $@item.TotalSinDescuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                    </div>
-                </div>
-            }
 
+                        <div class="ms-3 w-100">
+                            <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })"
+                               class="text-decoration-none text-dark">
+                                <strong>@item.Nombre</strong>
+                            </a>
+                            <div>@item.Presentacion ml</div>
+                        </div>
 
-            <!-- RESUMEN + BOTÓN ---------------------------------------- -->
-            <div class="resumen-carrito mt-4 mb-5">
+                        <div class="text-center w-25">
+                            @item.Cantidad @((item.Cantidad == 1) ? "unidad" : "unidades")
+                        </div>
+
+                        <div class="text-end w-25 precio-item">
+                            $@item.TotalSinDescuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Caja del resumen final -->
+            <div class="box resumen">
+
+                <h4 class="titulo-box titulo-resumen">Resumen de compra</h4>
 
                 <div class="fila-resumen">
-                    <span class="etiqueta">Subtotal (sin descuento):</span>
-                    <span class="valor">
-                        $@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                    </span>
-                    </span>
+                    <span>Subtotal:</span>
+                    <span>$@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
                 </div>
 
                 <div class="fila-resumen">
-                    <span class="etiqueta">Descuentos aplicados:</span>
-                    <span class="valor descuento">
-                        -$@Model.Descuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                    </span>
+                    <span>Descuentos:</span>
+                    <span class="text-danger">- $@Model.Descuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
                 </div>
 
                 <div class="fila-resumen total">
-                    <span class="etiqueta">Total a pagar:</span>
-                    <span class="valor">$@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    <span>Total a pagar:</span>
+                    <span>$@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
                 </div>
 
                 @if (Model.EnvioGratis)
                 {
-                    <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+                    <div class="text-success mt-2 text-center">¡Felicidades! Tu envío es gratis</div>
                 }
                 else
                 {
-                    <p style="margin-top:10px;font-size:.9rem;color:#555;text-align:center;">
-                        Los gastos de envío se calculan al finalizar la compra.<br />
-                        Envío gratis en compras mayores a $50.000.
+                    <p class="text-muted" style="font-size:.9rem;">
+                        Envío gratis a partir de $50.000.
                     </p>
                 }
 
-                @* ─── Guarda los ítems del pedido en Session para usarlos tras el pago ─── *@
-                @{
-                    Session["PedidoItems"] = Model.Items
-                        .Select(x => new PedidoItemVM
-                        {
-                            PerfumeId = x.PerfumeId,
-                            Cantidad = x.Cantidad
-                        })
-                        .ToList();
-                }
-
-                <!-- Botón “Ir a Pagar” -->
-                <div class="text-center">
-                    <a href="@Url.Action("SimularPago",
-                             "Pedido",
-                             new { monto = Model.Total.ToString(
-                                      "0.00", System.Globalization.CultureInfo.InvariantCulture) })"
-                       class="btn btn-success btn-lg mx-auto mt-3 w-auto">
-                        <!-- sin d-block -->
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("SimularPago", "Pedido",
+                            new { monto = Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) })"
+                       class="btn btn-success btn-lg btn-pagar">
                         Ir a Pagar
                     </a>
                 </div>
 
                 <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
-                    Será redireccionado a Mercado&nbsp;Pago
+                    Serás redirigido a Mercado Pago
                 </p>
+
             </div>
+
         </div>
     </div>
 </div>
