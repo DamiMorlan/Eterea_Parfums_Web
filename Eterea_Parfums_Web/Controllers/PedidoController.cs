@@ -544,7 +544,7 @@ namespace Eterea_Parfums_Web.Controllers
                         id = nuevoIdFactura,
                         fecha = DateTime.Now,
                         sucursal_id = 0,
-                        empleado_id = 1,
+                        empleado_id = 0,
                         cliente_id = clienteId,
                         forma_de_pago = formaPagoTexto,
                         precio_total = (double)totalCalculado, 
