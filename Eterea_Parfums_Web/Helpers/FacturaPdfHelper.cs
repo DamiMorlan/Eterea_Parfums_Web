@@ -108,11 +108,11 @@ namespace Eterea_Parfums_Web.Helpers
                 double subtotal = (precioUnitario * cantidad) - descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");                   // Cantidad
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");                // Descripción
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");       // Precio unitario
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");       // Descuento
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");             // Subtotal
                 filasHtml.AppendLine("</tr>");
             }
 
@@ -224,12 +224,12 @@ namespace Eterea_Parfums_Web.Helpers
                 double subtotalConIva = (precioUnitario * cantidad) - descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");                    // Cantidad
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");                 // Descripción
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");        // Precio unitario
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");        // Descuento
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");              // Importe sin IVA
+                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");        // Importe con IVA
                 filasHtml.AppendLine("</tr>");
 
             }
