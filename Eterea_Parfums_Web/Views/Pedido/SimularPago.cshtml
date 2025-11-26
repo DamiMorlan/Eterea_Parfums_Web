@@ -16,46 +16,71 @@
         <!-- MEDIOS --------------------------------------------------------->
         <div class="col-lg-7 col-md-8 bg-white p-4 shadow-sm rounded-3 ">
             <h4 class="mb-4 fw-bold">¿Cómo querés pagar?</h4>
-
             <div id="listaMedios">
-                <!-- Dinero en cuenta -->
+                <!-- MERCADO PAGO (saldo en cuenta) -->
                 <label class="mp-item">
-                    <input type="radio" name="medio" value="DIN" class="form-check-input me-2 medio" />
-                    <i class="bi bi-wallet2 mp-logo text-warning"></i>
-                    <div class="flex-grow-1">
-                        <div>Dinero disponible</div>
-                        <small class="text-muted">$ @Model.SaldoCuenta.ToString("N0")</small>
-                    </div>
+                    <input type="radio" name="medio" value="MP" class="form-check-input me-2 medio" />
+                    <i class="bi bi-wallet2 mp-logo text-info"></i>
+                    <span class="flex-grow-1">
+                        <span>Mercado Pago</span>
+                        <small class="text-muted">
+                            Saldo disponible: $ @Model.SaldoCuenta.ToString("N0")
+                        </small>
+                    </span>
                 </label>
 
-                <!-- Mastercard crédito -->
+                <!-- VISA CRÉDITO -->
                 <label class="mp-item">
-                    <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
-                   <img src="@Url.Content("~/Imagenes/mastercard.svg")"  class="mp-card" alt="MasterCard" />
-                    <div class="flex-grow-1">
-                        <div>Mastercard **** 0604</div>
+                    <input type="radio" name="medio" value="VISC" class="form-check-input me-2 medio" />
+                    <img src="@Url.Content("~/Imagenes/visa.svg")" class="mp-card" alt="Visa Crédito" />
+                    <span class="flex-grow-1">
+                        <span>Visa Crédito **** 4321</span>
                         <small class="text-muted">Crédito</small>
-                    </div>
+                    </span>
                     <i class="bi bi-chevron-right"></i>
                 </label>
 
-                <!-- Visa débito -->
+                <!-- MASTERCARD CRÉDITO -->
                 <label class="mp-item">
-                    <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
-                   <img src="@Url.Content("~/Imagenes/visa.svg")"  class="mp-card" alt="Visa" />
-                    <div class="flex-grow-1">
-                        <div>Visa Débito **** 4321</div>
-                        <small class="text-muted">Débito</small>
-                    </div>
+                    <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
+                    <img src="@Url.Content("~/Imagenes/mastercard.svg")" class="mp-card" alt="MasterCard" />
+                    <span class="flex-grow-1">
+                        <span>Mastercard **** 0604</span>
+                        <small class="text-muted">Crédito</small>
+                    </span>
+                    <i class="bi bi-chevron-right"></i>
                 </label>
 
-                <!-- Nueva tarjeta (modal) -->
+                <!-- AMERICAN EXPRESS -->
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="AMEX" class="form-check-input me-2 medio" />
+                    <img src="@Url.Content("~/Imagenes/american-express-1.svg")"
+                         class="mp-card" alt="American Express" />
+                    <span class="flex-grow-1 d-flex flex-column">
+                        <span>American Express **** 7777</span>
+                        <small class="text-muted">Crédito</small>
+                    </span>
+                    <i class="bi bi-chevron-right"></i>
+                </label>
+
+                <!-- VISA DÉBITO -->
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
+                    <img src="@Url.Content("~/Imagenes/visa.svg")" class="mp-card" alt="Visa Débito" />
+                    <span class="flex-grow-1">
+                        <span>Visa Débito **** 4321</span>
+                        <small class="text-muted">Débito</small>
+                    </span>
+                </label>
+
+                <!-- Nueva tarjeta (opcional, la dejo como “otro medio sin cuotas”) -->
                 <div class="mp-item cursor-pointer" data-bs-toggle="modal" data-bs-target="#modalNueva">
                     <i class="bi bi-credit-card mp-logo"></i>
                     <div class="flex-grow-1">Nueva tarjeta</div>
                     <i class="bi bi-chevron-right"></i>
                 </div>
             </div>
+
 
             <a href="@Url.Action("VistaPrevia","Pedido")" class="d-block mt-4 text-decoration-none">
                 &lt; Volver al sitio
@@ -138,12 +163,20 @@
 $(function(){
 
   /* ======== constantes ======== */
-  const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
-  const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
-  const cuotasMC  = {1:0, 3:0.10, 6:0.15, 9:0.18, 12:0.20};
+ const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+
+// Tablas de recargo por medio
+//  Visa Crédito y Mastercard: 1 y 3 sin interés, 6=10%, 9=15%, 12=20%
+//  Amex: 1 sin interés, 6=10%, 12=20%
+const tablasCuotas = {
+    MC:   { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
+    VISC: { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
+    AMEX: { 1: 0,       6: 0.10,          12: 0.20 }
+};
 
   /* ======== estado / refs ====== */
-  let medio="", cuotas=1, recargo=0;
+    let medio = "", cuotas = 1, recargo = 0, tablaActual = null;
 
   const $txtTotal = $('#txtTotal'),
         $txtInter = $('#txtInteres'),
@@ -162,50 +195,82 @@ $(function(){
       $filaInt.toggle(recargo>0);
       $hdTotal.val(fmtUS(total));
   };
-  const calcRecargo = _=>{
-      recargo = cuotasMC[cuotas]*totalBase;
-      actResumen();
-  };
+    const calcRecargo = _ => {
+        if (!tablaActual) {
+            recargo = 0;
+            actResumen();
+            return;
+        }
+        const tasa = tablaActual[cuotas] || 0;
+        recargo = tasa * totalBase;
+        actResumen();
+    };
 
   /* ======== selección medio ===== */
-  $(document).on('change','input[name="medio"]',function(){
-      medio=this.value;  $hdMedio.val(medio);
-      ocultarCuotas(); recargo=0;
+    $(document).on('change', 'input[name="medio"]', function () {
+        medio = this.value;
+        $hdMedio.val(medio);
+        ocultarCuotas(); // limpia select y recargo
 
-      if(medio==='DIN'){
-          if(saldo< totalBase){
-              alert('El saldo disponible no alcanza para pagar la compra.');
-              this.checked=false; medio=""; validar(); return;
-          }
-          actResumen();          // sin recargo
-      }
-      else if(medio==='MC'){     // crédito
-          mostrarCuotas($(this).parent());
-      }
-      else {                     // débito u otra
-          actResumen();
-      }
-      validar();
-  });
+        if (medio === 'MP') {
+            // Mercado Pago: se paga con saldo, sin interés
+            if (saldo < totalBase) {
+                alert('El saldo disponible no alcanza para pagar la compra.');
+                this.checked = false;
+                medio = "";
+                validar();
+                return;
+            }
+            actResumen();
+        }
+        else if (medio === 'MC' || medio === 'VISC' || medio === 'AMEX') {
+            // Tarjetas de crédito con cuotas
+            mostrarCuotas($(this).parent(), tablasCuotas[medio]);
+        }
+        else {
+            // Visa débito, nueva tarjeta u otros -> 1 pago sin interés
+            actResumen();
+        }
+
+        validar();
+    });
+
 
   /* ======== cuotas ============== */
-  function mostrarCuotas($where){
-      if($where.find('.selCuotas').length) return;
-      const html = `<select class="form-select selCuotas mt-2">
-        ${Object.entries(cuotasMC).map(([c,p])=>`
-          <option value="${c}">${c} pago${c>1?'s':''}
-            ${c==1?' sin interés':' ('+(p*100)+'% interés)'}
-          </option>`).join('')}
-      </select>`;
-      $where.append(html);
-      $where.find('.selCuotas')
-            .on('change',function(){
-                cuotas=+this.value; $hdCuotas.val(cuotas);
+    function mostrarCuotas($where, tabla) {
+        if (!tabla) return;
+        if ($where.find('.selCuotas').length) return;
+
+        tablaActual = tabla;
+
+        const html = `<select class="form-select selCuotas mt-2">
+        ${Object.entries(tabla).map(([c, p]) => `
+            <option value="${c}">
+                ${c} pago${c > 1 ? 's' : ''}
+                ${p === 0 ? ' sin interés' : ' (' + (p * 100) + '% interés)'}
+            </option>`).join('')}
+    </select>`;
+
+        $where.append(html);
+
+        $where.find('.selCuotas')
+            .on('change', function () {
+                cuotas = +this.value;
+                $hdCuotas.val(cuotas);
                 calcRecargo();
             })
-            .trigger('change');   // aplica 1 pago (0 % interés) inicial
-  }
-  function ocultarCuotas(){ $('.selCuotas').remove(); cuotas=1; $hdCuotas.val(1); }
+            .trigger('change'); // arranca en la primera opción (1 pago)
+    }
+
+    function ocultarCuotas() {
+        $('.selCuotas').remove();
+        cuotas = 1;
+        $hdCuotas.val(1);
+        tablaActual = null;
+        recargo = 0;
+        actResumen();
+    }
+
 
   /* ======== botón pagar ========= */
   function validar(){

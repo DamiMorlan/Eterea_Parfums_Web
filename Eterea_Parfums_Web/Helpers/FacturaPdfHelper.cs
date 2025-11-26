@@ -38,7 +38,11 @@ namespace Eterea_Parfums_Web.Helpers
             // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
-            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            // Es tarjeta de crédito si es Visa Crédito, Mastercard o Amex
+            bool esTarjeta = forma == "Visa Crédito"
+                          || forma == "Mastercard"
+                          || forma == "Amex";
 
             string rowFormaPago;
             if (esTarjeta)
@@ -104,11 +108,11 @@ namespace Eterea_Parfums_Web.Helpers
                 double subtotal = (precioUnitario * cantidad) - descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");                   // Cantidad
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");                // Descripción
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");       // Precio unitario
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");       // Descuento
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");             // Subtotal
                 filasHtml.AppendLine("</tr>");
             }
 
@@ -148,7 +152,11 @@ namespace Eterea_Parfums_Web.Helpers
             // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
-            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            // Es tarjeta de crédito si es Visa Crédito, Mastercard o Amex
+            bool esTarjeta = forma == "Visa Crédito"
+                          || forma == "Mastercard"
+                          || forma == "Amex";
 
             string rowFormaPago;
             if (esTarjeta)
@@ -216,12 +224,12 @@ namespace Eterea_Parfums_Web.Helpers
                 double subtotalConIva = (precioUnitario * cantidad) - descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");
-                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");
+                filasHtml.AppendLine($"  <td>{cantidad}</td>");                    // Cantidad
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");                 // Descripción
+                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");        // Precio unitario
+                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");        // Descuento
+                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");              // Importe sin IVA
+                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");        // Importe con IVA
                 filasHtml.AppendLine("</tr>");
 
             }

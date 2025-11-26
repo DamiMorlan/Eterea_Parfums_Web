@@ -64,7 +64,6 @@ namespace Eterea_Parfums_Web.Controllers
         {
             if (factura_id == null || factura_id == 0)
             {
-                // Podés mostrar una vista de error o redirigir
                 TempData["Error"] = "Página inválida o factura no especificada.";
                 return RedirectToAction("Index", "Historial");
             }
@@ -93,9 +92,7 @@ namespace Eterea_Parfums_Web.Controllers
                     if (perfumeData == null) continue;
 
                     var marca = db.marca.FirstOrDefault(m => m.id == perfumeData.marca_id);
-                    var promocion = d.promocion_id != null
-                                    ? db.promocion.FirstOrDefault(promo => promo.id == d.promocion_id)
-                                    : null;
+                    var promocion = db.promocion.FirstOrDefault(promo => promo.id == d.promocion_id);
 
                     perfumes.Add(new DetallePerfumeViewModel
                     {
