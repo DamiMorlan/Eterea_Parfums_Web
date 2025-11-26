@@ -21,22 +21,22 @@
                 <label class="mp-item">
                     <input type="radio" name="medio" value="MP" class="form-check-input me-2 medio" />
                     <i class="bi bi-wallet2 mp-logo text-info"></i>
-                    <div class="flex-grow-1">
-                        <div>Mercado Pago</div>
+                    <span class="flex-grow-1">
+                        <span>Mercado Pago</span>
                         <small class="text-muted">
                             Saldo disponible: $ @Model.SaldoCuenta.ToString("N0")
                         </small>
-                    </div>
+                    </span>
                 </label>
 
                 <!-- VISA CRÉDITO -->
                 <label class="mp-item">
                     <input type="radio" name="medio" value="VISC" class="form-check-input me-2 medio" />
                     <img src="@Url.Content("~/Imagenes/visa.svg")" class="mp-card" alt="Visa Crédito" />
-                    <div class="flex-grow-1">
-                        <div>Visa Crédito **** 4321</div>
+                    <span class="flex-grow-1">
+                        <span>Visa Crédito **** 4321</span>
                         <small class="text-muted">Crédito</small>
-                    </div>
+                    </span>
                     <i class="bi bi-chevron-right"></i>
                 </label>
 
@@ -44,10 +44,10 @@
                 <label class="mp-item">
                     <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
                     <img src="@Url.Content("~/Imagenes/mastercard.svg")" class="mp-card" alt="MasterCard" />
-                    <div class="flex-grow-1">
-                        <div>Mastercard **** 0604</div>
+                    <span class="flex-grow-1">
+                        <span>Mastercard **** 0604</span>
                         <small class="text-muted">Crédito</small>
-                    </div>
+                    </span>
                     <i class="bi bi-chevron-right"></i>
                 </label>
 
@@ -55,10 +55,10 @@
                 <label class="mp-item">
                     <input type="radio" name="medio" value="AMEX" class="form-check-input me-2 medio" />
                     <i class="bi bi-credit-card-2-front mp-logo"></i>
-                    <div class="flex-grow-1">
-                        <div>American Express **** 7777</div>
+                    <span class="flex-grow-1">
+                        <span>American Express **** 7777</span>
                         <small class="text-muted">Crédito</small>
-                    </div>
+                    </span>
                     <i class="bi bi-chevron-right"></i>
                 </label>
 
@@ -66,10 +66,10 @@
                 <label class="mp-item">
                     <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
                     <img src="@Url.Content("~/Imagenes/visa.svg")" class="mp-card" alt="Visa Débito" />
-                    <div class="flex-grow-1">
-                        <div>Visa Débito **** 4321</div>
+                    <span class="flex-grow-1">
+                        <span>Visa Débito **** 4321</span>
                         <small class="text-muted">Débito</small>
-                    </div>
+                    </span>
                 </label>
 
                 <!-- Nueva tarjeta (opcional, la dejo como “otro medio sin cuotas”) -->
