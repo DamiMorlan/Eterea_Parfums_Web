@@ -38,7 +38,11 @@ namespace Eterea_Parfums_Web.Helpers
             // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
-            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            // Es tarjeta de crédito si es Visa Crédito, Mastercard o Amex
+            bool esTarjeta = forma == "Visa Crédito"
+                          || forma == "Mastercard"
+                          || forma == "Amex";
 
             string rowFormaPago;
             if (esTarjeta)
@@ -148,7 +152,11 @@ namespace Eterea_Parfums_Web.Helpers
             // ===== Fila dinámica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
-            bool esTarjeta = forma == "MC" || forma == "Mastercard" || forma == "Amex";
+
+            // Es tarjeta de crédito si es Visa Crédito, Mastercard o Amex
+            bool esTarjeta = forma == "Visa Crédito"
+                          || forma == "Mastercard"
+                          || forma == "Amex";
 
             string rowFormaPago;
             if (esTarjeta)

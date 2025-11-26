@@ -306,8 +306,8 @@ namespace Eterea_Parfums_Web.Controllers
 
         public ActionResult IrAPagar()
         {
-            // Lógica para crear preferencia de MercadoPago o iniciar el proceso de pago
-            // Por ahora, podés redirigir a MercadoPago directamente para testeo
+            // Opción para crear preferencia de MercadoPago o iniciar el proceso de pago
+            
             return Redirect("https://www.mercadopago.com.ar/checkout");
         }
 
@@ -526,13 +526,19 @@ namespace Eterea_Parfums_Web.Controllers
 
                     /* 4) Tipo y numeración de factura */
                     string tipoFactura = cliente.condicion_frente_al_iva == "Responsable Inscripto" ? "A" : "B";
-                    string numFactura = GenerarNumeroFactura(db, tipoFactura);
+
+                    // Para la WEB, el punto de venta será 0004
+                    string puntoVenta = "0004";
+
+                    string numFactura = GenerarNumeroFactura(db, tipoFactura, puntoVenta);
 
                     int nuevoIdFactura = db.factura.Any()
                         ? db.factura.Max(f => f.id) + 1
                         : 1;
 
                     /* 5) FACTURA */
+                    var formaPagoTexto = MapearFormaDePago(medio);
+
                     var fac = new factura
                     {
                         id = nuevoIdFactura,
@@ -540,8 +546,8 @@ namespace Eterea_Parfums_Web.Controllers
                         sucursal_id = 0,
                         empleado_id = 1,
                         cliente_id = clienteId,
-                        forma_de_pago = medio,
-                        precio_total = (double)totalCalculado, // si la columna es float/double en BD
+                        forma_de_pago = formaPagoTexto,
+                        precio_total = (double)totalCalculado, 
                         recargo_tarjeta = (double)recargoTotal,
                         descuento = (double)descuentoTotal,
                         numero_de_caja = 10,
@@ -675,35 +681,73 @@ namespace Eterea_Parfums_Web.Controllers
 
         private double GetRecargo(string medio, int cuotas, double baseTotal, double descuentoTotal)
         {
-            if (medio != "MC" || cuotas == 1) return 0;
+            // Total sobre el que se calcula interés = total con descuento aplicado
+            double baseConDescuento = baseTotal - descuentoTotal;
 
-            var tabla = new Dictionary<int, double> { { 3, 0.10 }, { 6, 0.15 }, { 9, 0.18 }, { 12, 0.20 } };
-            return (baseTotal - descuentoTotal) * (tabla.ContainsKey(cuotas) ? tabla[cuotas] : 0);
+            if (cuotas <= 1 || baseConDescuento <= 0)
+                return 0;
+
+            // Tablas de tasas por medio y cuotas
+            var tablaVisaMc = new Dictionary<int, double>
+    {
+        { 1, 0.00 }, // sin interés
+        { 3, 0.00 }, // sin interés
+        { 6, 0.10 }, // 10%
+        { 9, 0.15 }, // 15%
+        { 12, 0.20 } // 20%
+    };
+
+            var tablaAmex = new Dictionary<int, double>
+    {
+        { 1, 0.00 }, // sin interés
+        { 6, 0.10 }, // 10%
+        { 12, 0.20 } // 20%
+    };
+
+            Dictionary<int, double> tabla = null;
+
+            // Medios con cuotas
+            if (medio == "MC" || medio == "VISC")
+                tabla = tablaVisaMc;
+            else if (medio == "AMEX")
+                tabla = tablaAmex;
+            else
+                return 0; // Mercado Pago, Visa Débito y otros → sin recargo
+
+            if (!tabla.TryGetValue(cuotas, out double tasa))
+                return 0;
+
+            return baseConDescuento * tasa;
         }
 
-        private string GenerarNumeroFactura(etereaEntities7 db, string tipo)
+        private string GenerarNumeroFactura(etereaEntities7 db, string tipo, string puntoVenta)
         {
-            // Traemos el último num_factura del mismo tipo (‘A’ o ‘B’)
+            // puntoVenta debe venir con 4 dígitos: "0001", "0002", "0003", "0004"
+            string prefijo = puntoVenta;
+
+            // Traemos el último num_factura del mismo tipo y mismo punto de venta
             string ultimo = db.factura
-                              .Where(f => f.tipo_de_factura == tipo)
-                              .OrderByDescending(f => f.id)          // o por fecha
+                              .Where(f => f.tipo_de_factura == tipo
+                                       && f.num_factura.StartsWith(prefijo))
+                              .OrderByDescending(f => f.id)   // o OrderByDescending(f => f.num_factura)
                               .Select(f => f.num_factura)
                               .FirstOrDefault();
 
             int correlativo = 0;
 
-            if (!string.IsNullOrEmpty(ultimo) && ultimo.Length > 1)
+            if (!string.IsNullOrEmpty(ultimo) && ultimo.Length >= 12)
             {
-                // Ej.: “A00000123”  →  “00000123”
-                int.TryParse(ultimo.Substring(4), out correlativo);
+                // Ej.: “000400000123”  →  “00000123” (últimos 8 dígitos)
+                string parteNumerica = ultimo.Substring(4);   // desde la posición 4, 8 dígitos
+                int.TryParse(parteNumerica, out correlativo);
             }
 
             correlativo += 1;
 
-            // 0002 por el numero de venta de la web
-            return $"0001{correlativo:D8}";
+            // Devuelve algo como "0004" + "00000001"
+            return $"{puntoVenta}{correlativo:D8}";
         }
-        
+
         private string ConstruirDireccionEnvio(etereaEntities7 db, cliente cli)
         {
             if (Session["NuevoDomicilioEntrega"] != null)
@@ -713,7 +757,32 @@ namespace Eterea_Parfums_Web.Controllers
 
             // Si no hay dirección en sesión, lanzamos una excepción controlada
             throw new InvalidOperationException("No se ha definido un domicilio de envío en la sesión.");
-        }   
+        }
+
+        private string MapearFormaDePago(string medio)
+        {
+            switch (medio)
+            {
+                case "MP":
+                    return "Mercado Pago";
+
+                case "VSD":
+                    return "Visa Débito";
+
+                case "VISC":
+                    return "Visa Crédito";
+
+                case "MC":
+                    return "Mastercard";
+
+                case "AMEX":
+                    return "Amex";
+
+                default:
+                    return "Otro";
+            }
+        }
+
 
     }
 }
