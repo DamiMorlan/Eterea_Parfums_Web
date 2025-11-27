@@ -7,6 +7,8 @@
     --rosa-suave: rgb(250, 236, 239);
     --beige: #f5f5dc;
     --moka: #b89b82;
+    --bordo: #973f5c;
+    --bordo-oscuro: #7a304a;
 }
 
 body {
@@ -115,8 +117,22 @@ select {
     font-size: 1rem;
 }
 
+.btn-de-finalizar {
+    background-color: var(--bordo);
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+}
+
+    .btn-de-finalizar:hover {
+        background-color: var(--bordo-oscuro);
+        color: #fff;
+    }
+
 .envio-gratis {
-    color: green;
+    color: var(--bordo);
     font-weight: bold;
 }
 

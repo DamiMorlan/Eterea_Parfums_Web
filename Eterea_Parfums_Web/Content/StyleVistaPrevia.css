@@ -6,6 +6,8 @@
     --rosa-suave: rgb(250, 236, 239);
     --beige: #f5f5dc;
     --moka: #b89b82;
+    --bordo: #973f5c;
+    --bordo-oscuro: #7a304a;
 }
 
 .titulo-principal {
@@ -119,11 +121,19 @@
         font-weight: bold;
     }
 
-.btn-pagar {
+.btn-de-pagar {
+    background-color: var(--bordo);
+    color: #fff;
     padding: 12px 25px;
     font-size: 1.2rem;
     border-radius: 12px;
+    border: none;
 }
+
+    .btn-de-pagar:hover {
+        color: #fff;
+        background-color: var(--bordo-oscuro);
+    }
 
 /* Envío gratis centrado */
 .envio-gratis {
