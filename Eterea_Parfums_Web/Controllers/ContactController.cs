@@ -19,12 +19,20 @@ namespace Eterea_Parfums_Web.Controllers
                                 $"Correo: {email}\n\n" +
                                 $"Mensaje:\n{mensaje}";
 
-                // Podés cambiar esta dirección a donde querés recibir los mensajes
+                // Destino: casilla de la empresa
                 string destinatario = "etereaparfumsinfo@gmail.com";
 
+                // 1) Mail a la empresa
                 CorreoHelper.EnviarCorreoGenerico(destinatario, asunto, cuerpo);
 
-                TempData["MensajeEnviado"] = true;
+                // 2) 👉 Respuesta automática al cliente
+                CorreoHelper.EnviarRespuestaAutoContacto(email, nombre);
+
+                // 3) Mensaje para mostrar en la vista
+                TempData["MensajeEnviado"] =
+                    "Tu consulta fue recibida correctamente. " +
+                    "En los próximos 5 días hábiles estarás recibiendo nuestra respuesta. " +
+                    "¡Gracias por comunicarte con Etérea Parfums!";
             }
             catch (Exception ex)
             {
@@ -32,8 +40,10 @@ namespace Eterea_Parfums_Web.Controllers
                 TempData["MensajeError"] = "Hubo un error al enviar tu mensaje. Por favor, intentá más tarde.";
             }
 
-            return RedirectToAction("Index"); // Redirigí a la misma vista para mostrar feedback
+            // Volver a la página de contacto
+            return Redirect(Url.Action("Index", "Contact") + "#form-contacto");
         }
+
 
         // GET: Contact
         public ActionResult Index()

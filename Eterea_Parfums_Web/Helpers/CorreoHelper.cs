@@ -73,6 +73,23 @@ namespace Eterea_Parfums_Web.Helpers
             }
         }
 
+        public static void EnviarRespuestaAutoContacto(string emailDestino, string nombre)
+        {
+            string asunto = "Hemos recibido tu consulta - Etérea Parfums";
+
+            string cuerpo =
+                $"Hola {nombre},\n\n" +
+                "Gracias por comunicarte con Etérea Parfums.\n\n" +
+                "Tu consulta fue recibida correctamente y nuestro equipo ya la está revisando.\n" +
+                "En los próximos 5 días hábiles estarás recibiendo nuestra respuesta.\n\n" +
+                "¡Muchas gracias por escribirnos!\n\n" +
+                "Etérea Parfums.\n\n" +
+                "Este es un mensaje automático, por favor no respondas a este correo.";
+
+            EnviarCorreoGenerico(emailDestino, asunto, cuerpo);
+        }
+
+
 
     }
 }

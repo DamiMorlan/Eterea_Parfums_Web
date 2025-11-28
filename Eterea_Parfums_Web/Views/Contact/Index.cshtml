@@ -76,15 +76,20 @@
             <!-- Separador -->
             <hr class="my-5 linea-separadora" />
             <!-- Formulario de contacto -->
-            <div class="contact-form-box">
+            <div id="form-contacto" class="contact-form-box">
                 <h3 class="section-subtitle mb-3">Formulario de Contacto</h3>
+
+            
 
                 @if (TempData["MensajeEnviado"] != null)
                 {
                     <div class="alert alert-success text-center">
-                        ¡Tu mensaje ha sido enviado con éxito! Te responderemos pronto.
+                        @TempData["MensajeEnviado"]
                     </div>
                 }
+
+
+
                 @if (TempData["MensajeError"] != null)
                 {
                     <div class="alert alert-danger text-center">
@@ -94,7 +99,7 @@
 
                 <form action="@Url.Action("EnviarContacto", "Contact")" method="post">
                     <div class="form-group">
-                        <label for="nombre">Nombre:</label>
+                        <label for="nombre">Nombre completo:</label>
                         <input type="text" id="nombre" name="nombre" required
                                value="@Request.Form["nombre"]" />
                     </div>
