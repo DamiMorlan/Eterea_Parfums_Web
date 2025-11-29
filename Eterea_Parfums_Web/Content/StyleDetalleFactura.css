@@ -205,3 +205,12 @@ h2 {
     color: var(--rosa-profundo);
     text-align: right;
 }
+
+.factura-recargo {
+    margin-top: 10px; /* un poco menos de espacio que el total */
+    margin-bottom: 4px; /* separar del total */
+    font-weight: normal; /* SIN negrita */
+    font-size: 1.05rem; /* un poquito más chica que el total */
+    color: var(--rosa-profundo); /* mismo color que el total */
+    text-align: right; /* alineado a la derecha */
+}

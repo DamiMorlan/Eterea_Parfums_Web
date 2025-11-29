@@ -28,24 +28,20 @@
         <div class="row">
             @foreach (var factura in Model.Facturas)
             {
-                using (Html.BeginForm("DetalleFactura", "Historial", FormMethod.Post, new { @class = "factura-form" }))
-                {
-                    <input type="hidden" name="factura_id" value="@factura.id" />
+                var urlDetalle = Url.Action("DetalleFactura", "Historial", new { factura_id = factura.id });
 
-                    <div class="factura-card clickable-card" onclick="this.closest('form').submit();">
-                        <h5 class="card-title">Factura N° @factura.num_factura</h5>
-                        <hr class="separator">
-                        <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
-                        <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
+                <a href="@urlDetalle" class="factura-card clickable-card" style="text-decoration:none; color:inherit;">
+                    <h5 class="card-title">Factura N° @factura.num_factura</h5>
+                    <hr class="separator">
+                    <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
 
-                        
-
-                        <div class="button-container">
-                            <button type="submit" class="btn btn-primary">Ver Detalles</button>
-                        </div>
+                    <div class="button-container">
+                        <span class="btn btn-primary">Ver Detalles</span>
                     </div>
-                }
+                </a>
             }
+
 
             @if (Model.TotalPaginas > 1)
             {

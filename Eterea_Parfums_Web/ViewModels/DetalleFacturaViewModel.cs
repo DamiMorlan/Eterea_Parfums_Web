@@ -13,9 +13,12 @@ public class DetallePerfumeViewModel
     public int Tamaño { get; set; }
     public decimal PrecioUnitario { get; set; }
     public int Cantidad { get; set; }
+
+    // Texto que mostrás en la vista (por ej. "10% OFF", "2x1", "Sin promoción", etc.)
     public string Promocion { get; set; }
 
-    public decimal PrecioTotal => Cantidad * PrecioUnitario;
+    //se setea desde el controlador con las promos aplicadas
+    public decimal PrecioTotal { get; set; }
 }
 
 public class DetalleFacturaViewModel
@@ -24,4 +27,7 @@ public class DetalleFacturaViewModel
     public string NumeroFactura { get; set; }
     public DateTime Fecha { get; set; }
     public List<DetallePerfumeViewModel> Perfumes { get; set; }
+
+    public decimal RecargoTarjeta { get; set; }   // dbo.factura.recargo_tarjeta
+    public string FormaDePago { get; set; }       // dbo.factura.forma_de_pago
 }

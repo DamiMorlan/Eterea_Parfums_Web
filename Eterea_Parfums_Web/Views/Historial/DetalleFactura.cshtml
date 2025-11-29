@@ -1,6 +1,8 @@
 ﻿
+@model DetalleFacturaViewModel
+
 @{
-    ViewBag.Title = "Detalle de la Factura N° " + ViewBag.NumeroFactura; // Agregar el número de factura al título
+    ViewBag.Title = "Detalle de la factura";  
 }
 
 @section Styles {
@@ -9,7 +11,9 @@
 
 <div class="container mt-4">
     <div class="factura-detalle-container">
-        <h2>@ViewBag.Title @Model.NumeroFactura</h2>
+        <h2>
+            Detalle de la Factura N° @Model.NumeroFactura
+        </h2>
         <h3 class="small-heading"><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</h3>
         <hr class="separator" />
 
@@ -44,9 +48,18 @@
                     </div>
                 }
             }
+
+            if (Model.RecargoTarjeta > 0)
+            {
+                <div class="factura-recargo">
+                    Recargo por pago con @Model.FormaDePago: $@Model.RecargoTarjeta.ToString("N2")
+                </div>
+            }
+
             <div class="factura-total">
                 Precio Total: $@Model.PrecioTotal.ToString("N2")
             </div>
+
         }
         else
         {
