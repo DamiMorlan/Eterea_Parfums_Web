@@ -1,37 +1,66 @@
-﻿/* === Estilos coherentes con VistaPreviaPedido (Etérea Parfums) === */
-/* Flecha de volver */
-body {
-    background-color: #faecef; /* mismo fondo rosa suave que VistaPreviaPedido */
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
 }
 
-.volver-carrito {
-    display: inline-block;
-    background-color: #ffe6f0; /* rosado claro */
-    color: rgb(209, 167, 180); /* rosado oscuro */
-    font-size: 1.5rem;
-    padding: 6px 12px;
-    border-radius: 6px;
+/* Fondo general */
+body {
+    background-color: #faecef;
+}
+
+/* Contenedor estilo VistaPreviaPedido */
+.box {
+    background: #fff5f8; /* Rosa MUY suave */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+
+/* =============================== */
+/* BOTÓN VOLVER actualizado */
+/* =============================== */
+/* Botón Volver */
+.btn-volver {
+    padding: 6px 14px;
+    background-color: var(--rosa-claro);
+    color: #fff;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s, color 0.3s;
-    position: absolute;
-    left: 0;
+    transition: 0.3s;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.volver-carrito:hover {
-    background-color: #f8bbd0;
-    color: #880e4f;
-    text-decoration: none;
-}
+    .btn-volver:hover {
+        background-color: var(--rosa-profundo);
+        color: #fff;
+    }
 
-/* Título central */
+
+/* =============================== */
+/* TITULO CENTRAL */
+/* =============================== */
 .titulo-central {
     font-weight: bold;
-    color: #880e4f;
+    color: var(--rosa-claro);
     font-size: 1.8rem;
+    border-bottom: 2px solid #f3c4d3;
+    padding-bottom: 5px;
 }
 
-/* Alertas */
+/* =============================== */
+/* ALERTAS */
+/* =============================== */
 .alert-info {
     background-color: #fff0f5;
     border: 1px solid #f8bbd0;
@@ -44,7 +73,9 @@ body {
     color: #880e4f;
 }
 
-/* Tarjetas de direcciones */
+/* =============================== */
+/* TARJETAS DE DIRECCIONES */
+/* =============================== */
 .card {
     border: 1px solid #f1cfd9;
     border-radius: 10px;
@@ -65,7 +96,9 @@ body {
         margin-bottom: 0;
     }
 
-/* Botones */
+/* =============================== */
+/* BOTONES */
+/* =============================== */
 .btn-primary {
     background-color: #d1a7b4;
     border-color: #d1a7b4;
@@ -82,16 +115,17 @@ body {
     }
 
 .btn-success {
-    background-color: #b86c8b;
-    border-color: #b86c8b;
-    font-weight: 600;
+    background-color: var(--rosa-claro);
+    color: #fff;
+    font-weight: bold;
     border-radius: 8px;
+    text-decoration: none;
+    border: none; /* ← Esto elimina el borde */
     transition: background-color 0.3s, transform 0.2s;
 }
 
     .btn-success:hover {
-        background-color: #a85a7d;
-        border-color: #a85a7d;
+        background-color: var(--rosa-profundo);
         transform: translateY(-1px);
     }
 
@@ -99,12 +133,33 @@ body {
     padding: 10px 25px;
 }
 
-@media (max-width: 772px) {
-    .volver-carrito {
-        display: none !important;
+/* =============================== */
+/* RESPONSIVE - MEJORADO */
+/* =============================== */
+
+/* Mobile: botón arriba y centrado el título */
+@media (max-width: 576px) {
+
+    .contenedor-titulo {
+        flex-direction: column;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .btn-volver {
+        align-self: flex-start;
+        margin-bottom: 6px;
+        font-size: 1rem;
+        padding: 5px 10px;
+    }
+
+    .titulo-central {
+        width: 100%;
+        font-size: 1.5rem;
     }
 }
 
+/* Tarjetas más ordenadas en pantallas pequeñas */
 @media (max-width: 454px) {
     .card .d-flex {
         flex-direction: column !important;

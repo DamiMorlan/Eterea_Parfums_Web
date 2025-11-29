@@ -1,61 +1,190 @@
-﻿
-.volver-carrito {
-    font-size: 1.5rem;
-    text-decoration: none;
-    margin-bottom: 15px;
-    display: inline-block;
+﻿:root {
+    --rosa-claro: rgb(235, 199, 206);
+    --rosa-medio: rgb(228, 137, 164);
+    --rosa-fondo: rgb(249, 230, 225);
+    --rosa-profundo: rgb(209, 167, 180);
+    --rosa-suave: rgb(250, 236, 239);
+    --beige: #f5f5dc;
+    --moka: #b89b82;
+    --bordo: #973f5c;
+    --bordo-oscuro: #7a304a;
 }
 
-.volver-carrito:hover {
-    color: #007bff;
-    text-decoration: none;
+.titulo-principal {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
 }
 
-.resumen-producto {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-}
-
-    .resumen-producto img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        margin-right: 10px;
-    }
-
-.volver-carrito {
-    display: inline-block;
-    background-color: #ffe6f0; /* rosado claro */
-    color: rgb(209, 167, 180); /* rosado oscuro */
-    font-size: 1.5rem;
-    padding: 6px 12px;
-    border-radius: 6px;
+.btn-volver {
+    padding: 6px 14px;
+    background-color: var(--rosa-claro);
+    color: #fff;
+    border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: 0.3s;
 }
 
-    .volver-carrito:hover {
-        background-color: #f8bbd0; /* más oscuro al pasar */
-        color: #880e4f;
-        text-decoration: none;
+    .btn-volver:hover {
+        background-color: var(--rosa-profundo);
     }
 
-.resumen-producto {
+
+.btn-cambiar-direccion {
+    padding: 6px 14px;
+    background-color: var(--rosa-claro);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    display: block;
+    text-align: center;
+    border: none;
+}
+
+    .btn-cambiar-direccion:hover {
+        background-color: var(--rosa-profundo);
+    }
+
+/* ============================================
+   CONTENEDORES
+   ============================================ */
+
+
+.box {
+    background: #fff5f8; /* Rosa MUY suave */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(243, 196, 211, 0.4);
+}
+
+/* Título dentro del box */
+.titulo-box {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--rosa-claro);
+    border-bottom: 2px solid #f3c4d3;
+    padding-bottom: 5px;
+}
+
+.titulo-resumen {
+    color: #fff5f8; /* Rosa MUY suave */
+    border-bottom: 2px solid #fff5f8;
+}
+
+.box.resumen {
+    background-color: var(--rosa-claro) !important;
+}
+
+/* ============================================
+   PRODUCTOS
+   ============================================ */
+.producto-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
 }
 
-    .resumen-producto img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        margin-right: 10px;
+    .producto-item img {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+        margin-right: 15px;
     }
+
+    /* Más separación del borde derecho */
+    .producto-item .precio-item {
+        padding-right: 20px;
+    }
+
+    /* Ajuste por si algún estilo anterior pisa el padding */
+    .producto-item > .text-end.w-25 {
+        padding-right: 20px;
+    }
+
+/* ============================================
+   RESUMEN
+   ============================================ */
+.fila-resumen {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 1rem;
+}
+
+    .fila-resumen.total {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+.btn-de-pagar {
+    background-color: var(--bordo);
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+}
+
+    .btn-de-pagar:hover {
+        color: #fff;
+        background-color: var(--bordo-oscuro);
+    }
+
+/* Envío gratis centrado */
+.envio-gratis {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* ============================================
+   RESPONSIVE MOBILE — Mejor visualización
+   ============================================ */
+@media (max-width: 768px) {
+
+    /* Cada producto se vuelve un "card" vertical */
+    .producto-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 0;
+    }
+
+        /* Imagen centrada y más grande */
+        .producto-item img {
+            margin: 0 auto 12px auto;
+            width: 90px;
+            height: 90px;
+        }
+
+        /* Contenedor del nombre y presentación */
+        .producto-item .ms-3,
+        .producto-item .w-100 {
+            width: 100% !important;
+            margin-left: 0 !important;
+            margin-bottom: 8px;
+        }
+
+        /* Cantidad centrada */
+        .producto-item .text-center.w-25 {
+            width: 100% !important;
+            margin-bottom: 5px;
+        }
+
+        /* Precio centrado y separado */
+        .producto-item .text-end.w-25 {
+            width: 100% !important;
+            text-align: center !important;
+            padding-right: 0 !important;
+            margin-top: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+}
 

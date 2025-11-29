@@ -12,52 +12,66 @@
 
 <div class="container mt-4 pb-4">
 
-    <div class="contenedor-titulo d-flex justify-content-center align-items-center mb-4 position-relative">
+    <!-- Contenedor del título + botón volver -->
+    <div class="contenedor-titulo d-flex justify-content-between align-items-center mb-4 flex-wrap">
+
         <a href="@Url.Action("VistaPrevia", "Pedido")"
-           class="volver-carrito"
-           title="Volver al resumen de compra">←</a>
-        <h2 class="m-0 titulo-central">Seleccionar dirección de entrega</h2>
+           class="btn-volver">
+            <i class="bi bi-arrow-left"></i> ← Volver
+        </a>    
+
     </div>
 
-    @if (!string.IsNullOrEmpty(direccionActual))
-    {
-        <div class="alert alert-info">
-            <strong>Dirección seleccionada:</strong><br />
-            <pre class="mb-0">@direccionActual</pre>
-        </div>
-    }
+    <!-- Caja principal (como VistaPreviaPedido) -->
+    <div class="box">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-warning text-center">
-            No se encontraron direcciones anteriores.
-        </div>
-    }
-    else
-    {
-        foreach (var direccion in Model)
+        <!-- Título dentro del contenedor -->
+        <h2 class="titulo-central text-center mb-4">
+            Seleccionar dirección de entrega
+        </h2>
+
+        @if (!string.IsNullOrEmpty(direccionActual))
         {
-            <div class="card mb-3 p-3">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="me-3" style="white-space: pre-line;">
-                        @direccion.TextoCompleto
-                    </div>
-
-                    <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")"
-                          method="post" class="mb-0">
-                        <input type="hidden" name="texto" value="@direccion.TextoCompleto" />
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            Seleccionar
-                        </button>
-                    </form>
-                </div>
+            <div class="alert alert-info">
+                <strong>Dirección seleccionada:</strong><br />
+                <pre class="mb-0">@direccionActual</pre>
             </div>
         }
-    }
 
-    <div class="text-center mt-4">
-        <a href="@Url.Action("AgregarDireccion", "Cliente")" class="btn btn-success">
-            Agregar nuevo domicilio de entrega
-        </a>
-    </div>
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning text-center">
+                No se encontraron direcciones anteriores.
+            </div>
+        }
+        else
+        {
+            foreach (var direccion in Model)
+            {
+                <div class="card mb-3 p-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="me-3" style="white-space: pre-line;">
+                            @direccion.TextoCompleto
+                        </div>
+
+                        <form action="@Url.Action("SeleccionarDireccionConfirmar", "Cliente")"
+                              method="post" class="mb-0">
+                            <input type="hidden" name="texto" value="@direccion.TextoCompleto" />
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Seleccionar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("AgregarDireccion", "Cliente")" class="btn btn-success">
+                Agregar nuevo domicilio de entrega
+            </a>
+        </div>
+
+    </div> <!-- FIN BOX -->
+
 </div>

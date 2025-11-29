@@ -139,7 +139,8 @@
 
     @if (total >= 50000)
     {
-        <div class="envio-gratis">¡Felicidades! Tu envío es gratis</div>
+        <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
+    ¡Felicidades! Tu envío es gratis</div>
     }
     else
     {
@@ -151,7 +152,7 @@
     @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
     {
         <div class="contenedor-boton-finalizar text-center mt-3">
-            <button type="submit" class="btn btn-success btn-lg">Finalizar pedido</button>
+            <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
         </div>
     }
 
