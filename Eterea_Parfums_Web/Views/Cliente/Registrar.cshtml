@@ -47,7 +47,8 @@
 
     <h2 id="title" class="text-center">@ViewBag.Title</h2>
 
-    @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post, new { @class = "register-form" }))
+    @using (Html.BeginForm("Registrar", "Cliente", FormMethod.Post,
+      new { @class = "register-form", autocomplete = "off" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -69,7 +70,17 @@
 
                 <div class="form-group">
                     <label for="Usuario">Nombre de usuario:</label>
-                    @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", required = "required" })
+                    @Html.TextBoxFor(m => m.Usuario, new
+               {
+                   @class = "form-control",
+                   required = "required",
+                   autocomplete = "off",
+                   minlength = "4",
+                   maxlength = "8",
+                   // solo letras (may/min) y números, de 4 a 8 caracteres
+                   pattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,8}$",
+                   title = "El nombre de usuario debe tener entre 4 y 8 caracteres, contener letras y números, y no puede ser solo letras ni solo números."
+               })
                     @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
                 </div>
 
@@ -77,13 +88,14 @@
                     <label for="Clave">Contraseña:</label>
 
                     <div class="input-group">
-                        @Html.PasswordFor(m => m.Clave, new
-                        {
-                            @class = "form-control password-input",
-                            required = "required",
-                            pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
-                            title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial."
-                        })
+                         @Html.PasswordFor(m => m.Clave, new
+                         {
+                             @class = "form-control password-input",
+                             required = "required",
+                             pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
+                             title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial.",
+                             autocomplete = "new-password"
+                         })
                         <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
                             <i class="fa-solid fa-eye"></i>
                         </button>
@@ -106,7 +118,13 @@
 
                 <div class="form-group">
                     <label for="Dni">DNI:</label>
-                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-control", required = "required" })
+                    @Html.TextBoxFor(m => m.Email, new
+                    {
+                        @class = "form-control",
+                        type = "email",
+                        required = "required",
+                        autocomplete = "off"
+                    })
                     @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "text-danger" })
                 </div>
 
@@ -132,7 +150,7 @@
                         ViewBag.Paises as List<SelectListItem>,
                         "Seleccione un país",
                         new { @class = "form-control select2", id = "pais" })
-                    @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(m => m.PaisId, "", new { @class = "text-danger", id = "error-pais"})
                 </div>
 
 
@@ -241,6 +259,11 @@
         // Cambio de país → provincias
         $('#pais').change(function () {
             var paisId = $(this).val();
+
+            // Si eligió un país válido, ocultar el error
+            if (paisId) {
+                $('#error-pais').text('').hide();
+            }
 
             // Limpiar y deshabilitar dependientes
             $('#provincia').val(null).trigger('change').prop('disabled', !paisId);
