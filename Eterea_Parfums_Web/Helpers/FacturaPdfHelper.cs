@@ -39,9 +39,9 @@ namespace Eterea_Parfums_Web.Helpers
 
             if (sucursal != null)
             {
-                // Ajustá el nombre del campo número según tu modelo (ej: numeracion_calle)
                 string calleNombre = sucursal.calle != null ? sucursal.calle.nombre : "";
-                string numero = ""; // ej: sucursal.numeracion_calle?.ToString() ?? "";
+
+                string numero = sucursal.numeracion_calle.ToString();
 
                 dirSucursal = (calleNombre + " " + numero).Trim();
 
@@ -188,11 +188,18 @@ namespace Eterea_Parfums_Web.Helpers
             if (sucursal != null)
             {
                 string calleNombre = sucursal.calle != null ? sucursal.calle.nombre : "";
-                string numero = ""; // ej: sucursal.numeracion_calle?.ToString() ?? "";
+
+                // Si numeracion_calle es int:
+                string numero = sucursal.numeracion_calle.ToString();
+
+                // Si el campo se llama distinto, cambiá esta línea:
+                // string numero = sucursal.numero.ToString();
+                // string numero = sucursal.altura.ToString();
+
                 dirSucursal = (calleNombre + " " + numero).Trim();
 
                 string localidadNombre = sucursal.localidad != null ? sucursal.localidad.nombre : "";
-                string paisNombre = sucursal.pais != null ? sucursal.pais.nombre : "";
+                string paisNombre = sucursal.pais != null ? sucursal.pais.pais : "";
 
                 locPaisSucursal = (localidadNombre + ", " + paisNombre).Trim().Trim(',');
             }
