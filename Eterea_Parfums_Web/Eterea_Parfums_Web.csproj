@@ -389,6 +389,8 @@
     <Content Include="Imagenes\Blog-Tipos-Perfume.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Calvin Klein.jpg" />
+    <Content Include="Imagenes\Carolina Herrera.jpg" />
     <Content Include="Imagenes\carro-vacio.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -415,6 +417,7 @@
     <Content Include="Imagenes\desc 10%25 hugo boss-4442-banner.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Diesel.jpg" />
     <Content Include="Imagenes\Diseño Logo1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -445,6 +448,9 @@
     </Content>
     <Content Include="Imagenes\femme-edp-5311-envase.jpg" />
     <Content Include="Imagenes\femme-edp-9380-envase-y-caja.jpg" />
+    <Content Include="Imagenes\Giorgio Armani.jpg" />
+    <Content Include="Imagenes\Givenchy.jpg" />
+    <Content Include="Imagenes\Hugo Boss.jpg" />
     <Content Include="Imagenes\Hugo Man - 6962 - envase y caja.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -468,6 +474,7 @@
     <Content Include="Imagenes\Just Different EDT-envase.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Kenzo.jpg" />
     <Content Include="Imagenes\LogoEterea.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -483,12 +490,14 @@
     <Content Include="Imagenes\mp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Paco Rabanne.jpg" />
     <Content Include="Imagenes\PlantillaFactura.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Imagenes\PlantillaInformeVentas.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Imagenes\Prada.jpg" />
     <Content Include="Imagenes\promo_no_acumulable_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
