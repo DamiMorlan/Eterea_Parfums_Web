@@ -1,4 +1,4 @@
-using Eterea_Parfums_Web.Models;
+Ôªøusing Eterea_Parfums_Web.Models;
 using System.Globalization;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -25,7 +25,7 @@ namespace Eterea_Parfums_Web.Helpers
 
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
 
-            // Importe neto (sin IVA) ? total + descuento - recargo
+            // Importe neto (sin IVA) ‚âà total + descuento - recargo
             double importe = factura.precio_total + factura.descuento - factura.recargo_tarjeta;
             double total = factura.precio_total;
 
@@ -41,11 +41,11 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
 
-            // ===== Fila din·mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            // ===== Fila din√°mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
 
-            bool esTarjeta = forma == "Visa CrÈdito"
+            bool esTarjeta = forma == "Visa Cr√©dito"
                           || forma == "Mastercard"
                           || forma == "Amex";
 
@@ -142,7 +142,7 @@ namespace Eterea_Parfums_Web.Helpers
 
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
 
-            // Base con IVA ANTES de bonificaciÛn y recargo
+            // Base con IVA ANTES de bonificaci√≥n y recargo
             double baseConIva = factura.precio_total + factura.descuento - factura.recargo_tarjeta;
 
             // Importe neto gravado (sin IVA)
@@ -163,11 +163,11 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
 
-            // ===== Fila din·mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            // ===== Fila din√°mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
 
-            bool esTarjeta = forma == "Visa CrÈdito"
+            bool esTarjeta = forma == "Visa Cr√©dito"
                           || forma == "Mastercard"
                           || forma == "Amex";
 
@@ -258,5 +258,22 @@ namespace Eterea_Parfums_Web.Helpers
             return html;
         }
 
+        public static byte[] GenerarFacturaPdf(string html)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var document = new Document(PageSize.A4, 50, 50, 60, 60))
+                {
+                    PdfWriter writer = PdfWriter.GetInstance(document, ms);
+                    document.Open();
+                    using (var sr = new StringReader(html))
+                    {
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, sr);
+                    }
+                    document.Close();
+                }
+                return ms.ToArray();
+            }
+        }
     }
 }
