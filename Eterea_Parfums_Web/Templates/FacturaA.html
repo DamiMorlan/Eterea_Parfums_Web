@@ -86,8 +86,8 @@
                         <!-- Columna izquierda -->
                         <td style="width: 33%; padding-top: 10px; padding-bottom: 20px; ">
                             <div class="titulo">Eterea Parfums</div>
-                            <div class="info-empresa">Dirección: Av. Corrientes 1234</div>
-                            <div class="info-empresa">Buenos Aires, Argentina</div>
+                            <div class="info-empresa">Dirección: @DIR_SUCURSAL</div>
+                            <div class="info-empresa">@LOC_PAIS_SUC</div>
                             <div class="info-empresa">Teléfono: 1234-5678</div>
                             <div class="info-empresa">Web: www.etereaparfums.com.ar</div>
 
@@ -158,25 +158,16 @@
                             <th class="th-pink th-nowrap">Cantidad</th>
                             <th class="th-pink th-nowrap">Descripción</th>
                             <th class="th-pink">Precio<br />Unitario</th>
-                            <th class="th-pink">Descuento<br />Promo</th>
+
                             <th class="th-pink th-nowrap">Subtotal</th>
-                            <th class="th-pink">Subtotal<br />c/IVA</th>
+                            <th class="th-pink">Descuento<br />Promoción</th>
+                            <th class="th-pink">Total<br />c/IVA</th>
                         </tr>
                     </thead>
                     <tbody>
                         @FILAS
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td colspan="4" style="border:0"></td>
-                            <td class="num" style="background:#DCDCDC;"><strong>Importe Neto Gravado:</strong></td>
-                            <td class="money" style="background:#DCDCDC;">@IMPORTE</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="border:0"></td>
-                            <td class="num" style="background: #e4e4e4;"><strong>IVA 21%:</strong></td>
-                            <td class="money" style="background: #e4e4e4;">@IVA</td>
-                        </tr>
                         <tr>
                             <td colspan="4" style="border:0"></td>
                             <td class="num" style="background:#DCDCDC;"><strong>Bonificación:</strong></td>
@@ -189,7 +180,23 @@
                         </tr>
                         <tr>
                             <td colspan="4" style="border:0"></td>
-                            <td class="num" style="background: #F6DDE6;"><strong>Total:</strong></td>
+                            <td class="num" style="background:#DCDCDC;"><strong>Precio Final c/IVA:</strong></td>
+                            <td class="money" style="background:#DCDCDC;">@PRECIO_FINAL</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #e4e4e4;"><strong>Importe Neto Gravado:</strong></td>
+                            <td class="money" style="background: #e4e4e4;">@IMPORTE</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #DCDCDC;"><strong>IVA 21%:</strong></td>
+                            <td class="money" style="background: #DCDCDC;">@IVA</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" style="border:0"></td>
+                            <td class="num" style="background: #F6DDE6;"><strong>Total a pagar:</strong></td>
                             <td class="money" style="background: #FFFFFF;">@TOTAL</td>
                         </tr>
                     </tfoot>
