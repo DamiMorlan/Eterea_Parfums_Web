@@ -1,4 +1,5 @@
-using Eterea_Parfums_Web.Models;
+Ôªøusing Eterea_Parfums_Web.Models;
+using System.Globalization;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -20,6 +21,42 @@ namespace Eterea_Parfums_Web.Helpers
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaB.html");
             string html = File.ReadAllText(templatePath);
 
+            // ============================
+            // 1) Datos de la sucursal
+            // ============================
+            // Si sucursal_id = 0 (web), usamos 1 para obtener el domicilio del local 1 
+            //que es desde donde se despachan las ventas online
+            int sucursalIdParaDireccion = (factura.sucursal_id == 0) ? 1 : factura.sucursal_id;
+
+            var sucursal = db.sucursal
+                             .Include("calle")
+                             .Include("localidad")
+                             .Include("pais")
+                             .FirstOrDefault(s => s.id == sucursalIdParaDireccion);
+
+            string dirSucursal = "";
+            string locPaisSucursal = "";
+
+            if (sucursal != null)
+            {
+                string calleNombre = sucursal.calle != null ? sucursal.calle.nombre : "";
+
+                string numero = sucursal.numeracion_calle.ToString();
+
+                dirSucursal = (calleNombre + " " + numero).Trim();
+
+                string localidadNombre = sucursal.localidad != null ? sucursal.localidad.nombre : "";
+                string paisNombre = sucursal.pais != null ? sucursal.pais.nombre : "";
+
+                locPaisSucursal = (localidadNombre + ", " + paisNombre).Trim().Trim(',');
+            }
+
+            html = html.Replace("@DIR_SUCURSAL", dirSucursal);
+            html = html.Replace("@LOC_PAIS_SUC", locPaisSucursal);
+
+            // ============================
+            // 2) Datos del cliente / factura
+            // ============================
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
             double importe = factura.precio_total + factura.descuento - factura.recargo_tarjeta;
             double total = factura.precio_total;
@@ -30,17 +67,17 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@CONDIVA", cliente.condicion_frente_al_iva);
             html = html.Replace("@FORMAPAGO", factura.forma_de_pago);
             html = html.Replace("@DOCUMENTO", cliente.dni.ToString());
+
             string domicilio = $"{cliente.calle.nombre} {cliente.numeracion_calle}";
             string localidad = $"{cliente.localidad.nombre}";
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
 
-            // ===== Fila din·mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            // ===== Fila din√°mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
 
-            // Es tarjeta de crÈdito si es Visa CrÈdito, Mastercard o Amex
-            bool esTarjeta = forma == "Visa CrÈdito"
+            bool esTarjeta = forma == "Visa Cr√©dito"
                           || forma == "Mastercard"
                           || forma == "Amex";
 
@@ -48,20 +85,20 @@ namespace Eterea_Parfums_Web.Helpers
             if (esTarjeta)
             {
                 rowFormaPago = @"
-                <tr>
-                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
-                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
-                </tr>";
+        <tr>
+          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+          <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+          <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+          <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+        </tr>";
             }
             else
             {
                 rowFormaPago = @"
-                <tr>
-                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-                </tr>";
+        <tr>
+          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+          <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+        </tr>";
             }
             html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
 
@@ -70,7 +107,7 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
             html = html.Replace("@TOTAL", factura.precio_total.ToString("0.00"));
 
-            // Generar filas detalle
+            // ===== Detalle de filas =====
             var detallesFactura = db.detalle_factura
                 .Include(d => d.perfume)
                 .Include(d => d.promocion)
@@ -90,8 +127,7 @@ namespace Eterea_Parfums_Web.Helpers
 
                 double descuentoTotal = 0;
                 int cantRestante = cantidad;
-                
-            
+
                 if (descuento2 > 10 && cantRestante >= 2)
                 {
                     int pares = cantRestante / 2;
@@ -99,7 +135,6 @@ namespace Eterea_Parfums_Web.Helpers
                     cantRestante -= pares * 2;
                 }
 
-                // Aplicamos promo del 10% a lo que quede
                 if (descuento1 == 10 && cantRestante > 0)
                 {
                     descuentoTotal += cantRestante * (descuento1 / 100.0) * precioUnitario;
@@ -108,11 +143,11 @@ namespace Eterea_Parfums_Web.Helpers
                 double subtotal = (precioUnitario * cantidad) - descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");                   // Cantidad
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");                // DescripciÛn
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");       // Precio unitario
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");       // Descuento
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");             // Subtotal
+                filasHtml.AppendLine($"  <td class='cant'>{cantidad}</td>");
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");
+                filasHtml.AppendLine($"  <td class='money'>${precioUnitario:0.00}</td>");
+                filasHtml.AppendLine($"  <td class='money'>${descuentoTotal:0.00}</td>");
+                filasHtml.AppendLine($"  <td class='money'>${subtotal:0.00}</td>");
                 filasHtml.AppendLine("</tr>");
             }
 
@@ -133,28 +168,66 @@ namespace Eterea_Parfums_Web.Helpers
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaA.html");
             string html = File.ReadAllText(templatePath);
 
+            var ci = new CultureInfo("es-AR");
+            string Mon(decimal v) => "$ " + v.ToString("N2", ci);
+
+            // ============================
+            // 1) Datos de la sucursal
+            // ============================
+            int sucursalIdParaDireccion = (factura.sucursal_id == 0) ? 1 : factura.sucursal_id;
+
+            var sucursal = db.sucursal
+                             .Include("calle")
+                             .Include("localidad")
+                             .Include("pais")
+                             .FirstOrDefault(s => s.id == sucursalIdParaDireccion);
+
+            string dirSucursal = "";
+            string locPaisSucursal = "";
+
+            if (sucursal != null)
+            {
+                string calleNombre = sucursal.calle != null ? sucursal.calle.nombre : "";
+
+                // Si numeracion_calle es int:
+                string numero = sucursal.numeracion_calle.ToString();
+
+                // Si el campo se llama distinto, cambi√° esta l√≠nea:
+                // string numero = sucursal.numero.ToString();
+                // string numero = sucursal.altura.ToString();
+
+                dirSucursal = (calleNombre + " " + numero).Trim();
+
+                string localidadNombre = sucursal.localidad != null ? sucursal.localidad.nombre : "";
+                string paisNombre = sucursal.pais != null ? sucursal.pais.nombre : "";
+
+                locPaisSucursal = (localidadNombre + ", " + paisNombre).Trim().Trim(',');
+            }
+
+            html = html.Replace("@DIR_SUCURSAL", dirSucursal);
+            html = html.Replace("@LOC_PAIS_SUC", locPaisSucursal);
+
+            // ============================
+            // 2) Datos cliente / factura
+            // ============================
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
-            double iva = factura.precio_total / 1.21 * 0.21;
-            double importeSinIva = (factura.precio_total - iva + factura.descuento - factura.recargo_tarjeta );
-            
 
             html = html.Replace("@NUMEROFACTURA", factura.num_factura);
             html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
             html = html.Replace("@CLIENTE", clienteNombre);
             html = html.Replace("@CONDIVA", cliente.condicion_frente_al_iva);
-            html = html.Replace("@FORMAPAGO", factura.forma_de_pago);
             html = html.Replace("@DOCUMENTO", cliente.dni.ToString());
+
             string domicilio = $"{cliente.calle.nombre} {cliente.numeracion_calle}";
             string localidad = $"{cliente.localidad.nombre}";
             html = html.Replace("@DOMICILIO", domicilio);
             html = html.Replace("@LOCALIDAD", localidad);
 
-            // ===== Fila din·mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
+            // ===== Fila din√°mica de "Forma de Pago" (+ "Cuotas" si es tarjeta) =====
             var forma = factura.forma_de_pago ?? "";
             string cuotasSel = cuotas.ToString();
 
-            // Es tarjeta de crÈdito si es Visa CrÈdito, Mastercard o Amex
-            bool esTarjeta = forma == "Visa CrÈdito"
+            bool esTarjeta = forma == "Visa Cr√©dito"
                           || forma == "Mastercard"
                           || forma == "Amex";
 
@@ -162,30 +235,27 @@ namespace Eterea_Parfums_Web.Helpers
             if (esTarjeta)
             {
                 rowFormaPago = @"
-                <tr>
-                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
-                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
-                </tr>";
+        <tr>
+          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+          <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+          <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+          <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+        </tr>";
             }
             else
             {
                 rowFormaPago = @"
-                <tr>
-                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-                </tr>";
+        <tr>
+          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+          <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+        </tr>";
             }
             html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
 
-            html = html.Replace("@IMPORTE", importeSinIva.ToString("0.00"));
-            html = html.Replace("@IVA", iva.ToString("0.00"));
-            html = html.Replace("@DESCUENTO", factura.descuento.ToString("0.00"));
-            html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
-            html = html.Replace("@TOTAL", factura.precio_total.ToString("0.00"));
-
-            // Generar filas detalle
+            // ============================
+            // 3) Detalle de la factura
+            //    (misma l√≥gica que desktop)
+            // ============================
             var detallesFactura = db.detalle_factura
                 .Include(d => d.perfume)
                 .Include(d => d.promocion)
@@ -195,10 +265,13 @@ namespace Eterea_Parfums_Web.Helpers
 
             StringBuilder filasHtml = new StringBuilder();
 
+            decimal sumaTotalConIva = 0m;   // suma de columna "Total c/IVA"
+            decimal sumaTotalDescPromo = 0m;
+
             foreach (var detalle in detallesFactura)
             {
                 string descripcion = detalle.perfume.nombre;
-                double precioUnitario = detalle.precio_unitario;
+                double precioUnitario = detalle.precio_unitario; // se asume PRECIO CON IVA
                 int cantidad = detalle.cantidad;
                 double descuento1 = detalle.promocion?.descuento ?? 0;
                 double descuento2 = detalle.promocion1?.descuento ?? 0;
@@ -206,7 +279,7 @@ namespace Eterea_Parfums_Web.Helpers
                 double descuentoTotal = 0;
                 int cantRestante = cantidad;
 
-
+                // Promo por cantidad (descuento2 > 10) ‚Üí pares
                 if (descuento2 > 10 && cantRestante >= 2)
                 {
                     int pares = cantRestante / 2;
@@ -214,28 +287,67 @@ namespace Eterea_Parfums_Web.Helpers
                     cantRestante -= pares * 2;
                 }
 
-                // Aplicamos promo del 10% a lo que quede
+                // Promo 10% (descuento1 == 10) sobre lo que qued√≥
                 if (descuento1 == 10 && cantRestante > 0)
                 {
                     descuentoTotal += cantRestante * (descuento1 / 100.0) * precioUnitario;
                 }
 
-                double subtotal = ((precioUnitario * cantidad) - descuentoTotal)/1.21;
-                double subtotalConIva = (precioUnitario * cantidad) - descuentoTotal;
+                double subtotal = precioUnitario * cantidad;           // sin aplicar promo
+                double totalConIvaLinea = subtotal - descuentoTotal;    // columna "Total c/IVA"
+                double subtotalSinIvaLinea = totalConIvaLinea / 1.21;   // solo para info interna
+
+                sumaTotalConIva += (decimal)totalConIvaLinea;
+                sumaTotalDescPromo += (decimal)descuentoTotal;
 
                 filasHtml.AppendLine("<tr>");
-                filasHtml.AppendLine($"  <td>{cantidad}</td>");                    // Cantidad
-                filasHtml.AppendLine($"  <td>{descripcion}</td>");                 // DescripciÛn
-                filasHtml.AppendLine($"  <td>${precioUnitario:0.00}</td>");        // Precio unitario
-                filasHtml.AppendLine($"  <td>${descuentoTotal:0.00}</td>");        // Descuento
-                filasHtml.AppendLine($"  <td>${subtotal:0.00}</td>");              // Importe sin IVA
-                filasHtml.AppendLine($"  <td>${subtotalConIva:0.00}</td>");        // Importe con IVA
+                filasHtml.AppendLine($"  <td class='cant'>{cantidad}</td>");
+                filasHtml.AppendLine($"  <td>{descripcion}</td>");
+                filasHtml.AppendLine($"  <td class='money'>{Mon((decimal)precioUnitario)}</td>");
+                filasHtml.AppendLine($"  <td class='money'>{Mon((decimal)subtotal)}</td>");
+                filasHtml.AppendLine($"  <td class='money'>{Mon((decimal)descuentoTotal)}</td>");
+                filasHtml.AppendLine($"  <td class='money'>{Mon((decimal)totalConIvaLinea)}</td>");
                 filasHtml.AppendLine("</tr>");
-
             }
 
             html = html.Replace("@FILAS", filasHtml.ToString());
 
+            // ============================
+            // 4) Totales (como desktop)
+            // ============================
+
+            // Por ahora en la web NO est√°s aplicando descuento extra por forma de pago,
+            // s√≥lo promos y recargos ‚Üí Bonificaci√≥n = 0
+            decimal bonificacion = 0m;
+
+            // Recargo tarjeta viene de la factura
+            decimal recargo = (decimal)factura.recargo_tarjeta;
+
+            // Precio Final c/IVA = suma l√≠neas - bonificaci√≥n + recargo
+            decimal precioFinalConIva = sumaTotalConIva - bonificacion + recargo;
+            precioFinalConIva = Math.Round(precioFinalConIva, 2, MidpointRounding.AwayFromZero);
+
+            // Importe Neto Gravado + IVA sobre el PRECIO FINAL (como desktop)
+            decimal importeNeto = 0m;
+            decimal iva = 0m;
+            if (precioFinalConIva != 0)
+            {
+                importeNeto = Math.Round(precioFinalConIva / 1.21m, 2, MidpointRounding.AwayFromZero);
+                iva = precioFinalConIva - importeNeto;
+                iva = Math.Round(iva, 2, MidpointRounding.AwayFromZero);
+            }
+
+            // Reemplazos de pie de p√°gina
+            html = html.Replace("@DESCUENTO", Mon(bonificacion));        // "Bonificaci√≥n:"
+            html = html.Replace("@RECARGO", Mon(recargo));               // "Recargo Tarjeta:"
+            html = html.Replace("@PRECIO_FINAL", Mon(precioFinalConIva));// "Precio Final c/IVA:"
+            html = html.Replace("@IMPORTE", Mon(importeNeto));           // "Importe Neto Gravado:"
+            html = html.Replace("@IVA", Mon(iva));                       // "IVA 21%:"
+            html = html.Replace("@TOTAL", Mon(precioFinalConIva));       // "Total a pagar:"
+
+            // ============================
+            // 5) Logo
+            // ============================
             var request = System.Web.HttpContext.Current.Request;
             var baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}/";
             string urlLogo = baseUrl + "Imagen/Mostrar?nombre=LogoEtereaFactura.png";
@@ -244,8 +356,9 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@LOGO", imgTag);
 
             return html;
-
         }
+
+
         public static byte[] GenerarFacturaPdf(string html)
         {
             using (var ms = new MemoryStream())

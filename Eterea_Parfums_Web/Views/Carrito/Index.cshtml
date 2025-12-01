@@ -1,8 +1,15 @@
 ﻿@model List<Eterea_Parfums_Web.ViewModels.ItemCarritoViewModel>
 
+@using System.Globalization
+@{
+    var ciAR = new CultureInfo("es-AR");
+}
+
 @{
     var API_IMG = Url.Content("~/imagenes/");
 }
+
+
 
 @functions {
     // Trunca a 2 decimales SIN redondear (usa decimal para evitar errores binarios de double)
@@ -68,16 +75,16 @@
                         @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
                         {
                             <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                                $@item.PrecioOriginal.ToString("N2")
+                                $ @item.PrecioOriginal.ToString("N2", ciAR)
                             </p>
                             <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                                $@item.PrecioConDescuento.Value.ToString("N2")
+                                $@item.PrecioConDescuento.Value.ToString("N2", ciAR)
                             </p>
                         }
                         else
                         {
                             <p class="precio-descuento" style="color: black;">
-                                $@item.PrecioOriginal.ToString("N2")
+                                $@item.PrecioOriginal.ToString("N2", ciAR)
                             </p>
                         }
 
@@ -111,53 +118,54 @@
             </div>
         }
 
-<div class="resumen-carrito">
-    @{
-        // Pase todo a decimal durante el cálculo
-        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
-        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
-        decimal descuentoRaw = subtotalRaw - totalRaw;
+        <div class="resumen-carrito">
+            @{
+                // Pase todo a decimal durante el cálculo
+                decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+                decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+                decimal descuentoRaw = subtotalRaw - totalRaw;
 
-        // Truncar a 2 decimales SIN redondear para mostrar
-        var subtotal = Trunc2(subtotalRaw);
-        var total = Trunc2(totalRaw);
-        var descuento = Trunc2(descuentoRaw);
-    }
+                // Truncar a 2 decimales SIN redondear para mostrar
+                var subtotal = Trunc2(subtotalRaw);
+                var total = Trunc2(totalRaw);
+                var descuento = Trunc2(descuentoRaw);
+            }
 
-    <div class="fila-resumen">
-        <span class="etiqueta">Subtotal (sin descuento):</span>
-        <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
-    </div>
-    <div class="fila-resumen">
-        <span class="etiqueta">Descuentos aplicados:</span>
-        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
-    </div>
-    <div class="fila-resumen total">
-        <span class="etiqueta">Total a pagar:</span>
-        <span class="valor" id="total">$@total.ToString("N2")</span>
-    </div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Subtotal (sin descuento):</span>
+                <span class="valor" id="subtotal">$@subtotal.ToString("N2", ciAR)</span>
+            </div>
+            <div class="fila-resumen">
+                <span class="etiqueta">Descuentos aplicados:</span>
+                <span class="valor descuento" id="descuento">-$@descuento.ToString("N2", ciAR)</span>
+            </div>
+            <div class="fila-resumen total">
+                <span class="etiqueta">Total a pagar:</span>
+                <span class="valor" id="total">$@total.ToString("N2", ciAR)</span>
+            </div>
 
-    @if (total >= 50000)
-    {
-        <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
-    ¡Felicidades! Tu envío es gratis</div>
-    }
-    else
-    {
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-        </p>
-    }
+            @if (total >= 50000)
+            {
+                <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
+                    ¡Felicidades! Tu envío es gratis
+                </div>
+            }
+            else
+            {
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+                </p>
+            }
 
-    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-    {
-        <div class="contenedor-boton-finalizar text-center mt-3">
-            <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
+            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+            {
+                <div class="contenedor-boton-finalizar text-center mt-3">
+                    <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
+                </div>
+            }
+
+
         </div>
-    }
-
-
-</div>
 
     }
     else
@@ -299,19 +307,12 @@
 
 
 
-        const fmtAR = new Intl.NumberFormat('es-AR', {
-            style: 'currency',
-            currency: 'ARS',
+        const fmtARNumber = new Intl.NumberFormat('es-AR', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         });
 
-        function desdeCentavos(cents) {
-            return (Number(cents) || 0) / 100;
-        }
-
         function pintarTotales(data) {
-            // ⚠️ Usa SIEMPRE los campos *_cents que devuelve el controller
             const sub = desdeCentavos(data.subtotal_cents);
             const des = desdeCentavos(data.descuento_cents);
             const tot = desdeCentavos(data.total_cents);
@@ -320,9 +321,9 @@
             const elDes = document.getElementById("descuento");
             const elTot = document.getElementById("total");
 
-            if (elSub) elSub.textContent = fmtAR.format(sub);
-            if (elDes) elDes.textContent = '-' + fmtAR.format(des);
-            if (elTot) elTot.textContent = fmtAR.format(tot);
+            if (elSub) elSub.textContent = '$ ' + fmtARNumber.format(sub);
+            if (elDes) elDes.textContent = '- $ ' + fmtARNumber.format(des);
+            if (elTot) elTot.textContent = '$ ' + fmtARNumber.format(tot);
 
             // Envío gratis (usa total_cents para evitar errores)
             const contResumen = document.querySelector('.resumen-carrito');

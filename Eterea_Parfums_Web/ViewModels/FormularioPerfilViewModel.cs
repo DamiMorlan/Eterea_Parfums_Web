@@ -20,6 +20,8 @@
         [Display(Name = "Usuario:")]
         [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
         [StringLength(8, MinimumLength = 4, ErrorMessage = "Debe tener entre 4 y 8 caracteres.")]
+        [RegularExpression("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{4,8}$",
+             ErrorMessage = "El nombre de usuario debe contener letras y números, y no puede ser solo letras ni solo números.")]
         public string Usuario { get; set; }
 
         [Display(Name = "Clave:")]

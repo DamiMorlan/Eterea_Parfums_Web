@@ -1,6 +1,11 @@
 ﻿@model Eterea_Parfums_Web.ViewModels.VistaPreviaPedidoViewModel
 @using Eterea_Parfums_Web.ViewModels
 
+@using System.Globalization
+@{
+    var ciAR = new CultureInfo("es-AR");
+}
+
 @section Styles {
     <link href="~/Content/StyleCarrito.css" rel="stylesheet" />
     <link href="~/Content/StyleVistaPrevia.css" rel="stylesheet" />
@@ -10,7 +15,7 @@
 <div class="container mt-4 d-flex align-items-center justify-content-between">
 
     <div class="d-flex align-items-center">
-        <a href="@Url.Action("Index","Carrito")" class="btn-volver me-3">← Volver</a>       
+        <a href="@Url.Action("Index","Carrito")" class="btn-volver me-3">← Volver</a>
     </div>
 
 </div>
@@ -33,10 +38,10 @@
                     <div class="alert alert-warning">No se pudo determinar el domicilio de envío.</div>
                 }
 
-            <a href="@Url.Action("SeleccionarDireccion","Cliente")"
-               class="btn-cambiar-direccion w-100 mt-2">
-                Cambiar dirección
-            </a>
+                <a href="@Url.Action("SeleccionarDireccion","Cliente")"
+                   class="btn-cambiar-direccion w-100 mt-2">
+                    Cambiar dirección
+                </a>
             </div>
         </div>
 
@@ -69,8 +74,9 @@
                         </div>
 
                         <div class="text-end w-25 precio-item">
-                            $@item.TotalSinDescuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                            $ @item.TotalSinDescuento.ToString("N2", ciAR)
                         </div>
+
                     </div>
                 }
             </div>
@@ -82,17 +88,17 @@
 
                 <div class="fila-resumen">
                     <span>Subtotal:</span>
-                    <span>$@Model.Subtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    <span>$ @Model.Subtotal.ToString("N2", ciAR)</span>
                 </div>
 
                 <div class="fila-resumen">
                     <span>Descuentos:</span>
-                    <span class="text-danger">- $@Model.Descuento.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    <span class="text-danger">- $ @Model.Descuento.ToString("N2", ciAR)</span>
                 </div>
 
                 <div class="fila-resumen total">
                     <span>Total a pagar:</span>
-                    <span>$@Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)</span>
+                    <span>$ @Model.Total.ToString("N2", ciAR)</span>
                 </div>
 
                 @if (Model.EnvioGratis)
