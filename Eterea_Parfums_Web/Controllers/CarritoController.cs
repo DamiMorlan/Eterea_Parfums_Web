@@ -207,7 +207,7 @@ namespace Eterea_Parfums_Web.Controllers
                 descuento_cents = ToCents(descuentoDec),
                 total_cents = ToCents(totalDec),
 
-                envioGratis = totalDec >= 50000m
+                envioGratis = totalDec >= 70000m
             });
         }
 
@@ -547,7 +547,7 @@ namespace Eterea_Parfums_Web.Controllers
 
 
         // POST: Carrito/Delete/5
-        [HttpPost]
+        /*[HttpPost]
         public ActionResult Eliminar(int perfumeId)
         {
             int clienteId = 2; // simulado
@@ -560,7 +560,7 @@ namespace Eterea_Parfums_Web.Controllers
             }
 
             return RedirectToAction("Index");
-        }
+        }*/
 
         protected override void Dispose(bool disposing)
         {

@@ -70,11 +70,11 @@
     </div>
 
     <div class="contenedor-eliminar">
-        <form action="@Url.Action("Eliminar", "Carrito")" method="post" style="display:inline;">
-            <input type="hidden" name="perfumeId" value="@Model.PerfumeId" />
-            <button type="submit" style="background:none; border:none; cursor:pointer;" title="Eliminar">
-                🗑️
-            </button>
-        </form>
+        <button type="button"
+                onclick="eliminarPerfume(@Model.PerfumeId); return false;"
+                style="background:none; border:none; cursor:pointer;"
+                title="Eliminar">
+            🗑️
+        </button>
     </div>
 </div>
