@@ -118,54 +118,54 @@
             </div>
         }
 
-        <div class="resumen-carrito">
-            @{
-                // Pase todo a decimal durante el cálculo
-                decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
-                decimal totalRaw = Model.Sum(m => (decimal)m.Total);
-                decimal descuentoRaw = subtotalRaw - totalRaw;
+<div class="resumen-carrito">
+    @{
+        // Pase todo a decimal durante el cálculo
+        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+        decimal descuentoRaw = subtotalRaw - totalRaw;
 
-                // Truncar a 2 decimales SIN redondear para mostrar
-                var subtotal = Trunc2(subtotalRaw);
-                var total = Trunc2(totalRaw);
-                var descuento = Trunc2(descuentoRaw);
-            }
+        // Truncar a 2 decimales SIN redondear para mostrar
+        var subtotal = Trunc2(subtotalRaw);
+        var total = Trunc2(totalRaw);
+        var descuento = Trunc2(descuentoRaw);
+    }
 
-            <div class="fila-resumen">
-                <span class="etiqueta">Subtotal (sin descuento):</span>
-                <span class="valor" id="subtotal">$@subtotal.ToString("N2", ciAR)</span>
-            </div>
-            <div class="fila-resumen">
-                <span class="etiqueta">Descuentos aplicados:</span>
-                <span class="valor descuento" id="descuento">-$@descuento.ToString("N2", ciAR)</span>
-            </div>
-            <div class="fila-resumen total">
-                <span class="etiqueta">Total a pagar:</span>
-                <span class="valor" id="total">$@total.ToString("N2", ciAR)</span>
-            </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Subtotal (sin descuento):</span>
+        <span class="valor" id="subtotal">$@subtotal.ToString("N2", ciAR)</span>
+    </div>
+    <div class="fila-resumen">
+        <span class="etiqueta">Descuentos aplicados:</span>
+        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2", ciAR)</span>
+    </div>
+    <div class="fila-resumen total">
+        <span class="etiqueta">Total a pagar:</span>
+        <span class="valor" id="total">$@total.ToString("N2", ciAR)</span>
+    </div>
 
-            @if (total >= 50000)
-            {
-                <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
-                    ¡Felicidades! Tu envío es gratis
-                </div>
-            }
-            else
-            {
-                <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-                </p>
-            }
+    <div id="envioGratisMensaje"
+         class="mt-2 text-center"
+         style="color: var(--bordo); font-weight: bold; @(total >= 70000 ? "" : "display:none;")">
+        ¡Felicidades! Tu envío es gratis
+    </div>
 
-            @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-            {
-                <div class="contenedor-boton-finalizar text-center mt-3">
-                    <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
-                </div>
-            }
+    @if (total < 70000)
+    {
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $70.000.
+        </p>
+    }
 
-
+    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+    {
+        <div class="contenedor-boton-finalizar text-center mt-3">
+            <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
         </div>
+    }
+
+
+</div>
 
     }
     else
@@ -243,6 +243,11 @@
                         alert("No se pudo actualizar el carrito.");
                         resumen.style.opacity = "1";
                     }
+                })
+                .catch(err => {
+                    console.error("Error en actualizarCantidad:", err);
+                    resumen.style.opacity = "1";
+                    alert("Ocurrió un error al actualizar el carrito.");
                 });
         }
 
@@ -312,6 +317,13 @@
             maximumFractionDigits: 2
         });
 
+        function desdeCentavos(cents) {
+            if (!cents) return 0;
+            return cents / 100.0;
+        }
+
+
+
         function pintarTotales(data) {
             const sub = desdeCentavos(data.subtotal_cents);
             const des = desdeCentavos(data.descuento_cents);
@@ -325,20 +337,15 @@
             if (elDes) elDes.textContent = '- $ ' + fmtARNumber.format(des);
             if (elTot) elTot.textContent = '$ ' + fmtARNumber.format(tot);
 
-            // Envío gratis (usa total_cents para evitar errores)
-            const contResumen = document.querySelector('.resumen-carrito');
-            if (!contResumen) return;
-            let aviso = contResumen.querySelector('.envio-gratis');
+            // Mostrar / ocultar mensaje de envío gratis
+            const aviso = document.getElementById('envioGratisMensaje');
 
-            if (data.total_cents >= 70000 * 100) { // $70.000 en centavos
-                if (!aviso) {
-                    aviso = document.createElement('div');
-                    aviso.className = 'envio-gratis';
-                    aviso.textContent = '¡Felicidades! Tu envío es gratis';
-                    contResumen.appendChild(aviso);
+            if (aviso) {
+                if (data.total_cents >= 70000 * 100) { // 70.000 en centavos
+                    aviso.style.display = 'block';
+                } else {
+                    aviso.style.display = 'none';
                 }
-            } else {
-                if (aviso) aviso.remove();
             }
         }
 

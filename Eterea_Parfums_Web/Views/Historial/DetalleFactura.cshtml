@@ -1,8 +1,9 @@
 ﻿
 @model DetalleFacturaViewModel
 
+
 @{
-    ViewBag.Title = "Detalle de la factura";  
+    ViewBag.Title = "Detalle de la factura";
 }
 
 @section Styles {
@@ -33,7 +34,7 @@
                                 <p><strong>Marca:</strong> @perfume.Marca</p>
                                 <p><strong>Tamaño:</strong> @perfume.Tamaño ml</p>
                                 <p><strong>Cantidad:</strong> @perfume.Cantidad</p>
-                                <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario</p>
+                                <p><strong>Precio Unitario:</strong> $@perfume.PrecioUnitario.ToString("N2")</p>
                                 <p><strong>Promoción:</strong> @perfume.Promocion</p>
                                 <p><strong>Precio Total:</strong> $@perfume.PrecioTotal.ToString("N2")</p>
 
