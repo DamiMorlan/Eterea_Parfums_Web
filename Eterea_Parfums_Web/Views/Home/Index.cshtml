@@ -31,7 +31,7 @@
     <!-- Carousel de Imágenes Fijas -->
     @{
         var banners = new List<string>
-     {
+ {
         "banner1.jpg",
         "banner2.jpg",
         "banner3.jpg",
@@ -77,6 +77,8 @@
 
 
 
+    @using System.IO
+
     <!-- Carousel Marcas Perfumes -->
     <div class="bg-marcas py-4 mt-5">
 
@@ -88,25 +90,53 @@
                     var itemsPorSlide = 4;
                     int totalItems = Model.Marcas.Count;
                     int totalSlides = (int)Math.Ceiling((double)totalItems / itemsPorSlide);
+
+                    // Ruta física a /Imagenes/
+                    var rutaImagenes = Server.MapPath("~/Imagenes");
+
                     for (int i = 0; i < totalSlides; i++)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
                             <div class="row justify-content-center">
+
                                 @for (int j = 0; j < itemsPorSlide && (i * itemsPorSlide + j) < totalItems; j++)
                                 {
                                     var marca = Model.Marcas[i * itemsPorSlide + j];
+
+                                    string fileName = marca.Nombre + ".jpg";
+                                    string filePath = Path.Combine(rutaImagenes, fileName);
+
+                                    bool existeImagen = System.IO.File.Exists(filePath);
+
                                     <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4">
                                         <div class="card text-center mb-3 border-0 shadow-sm rounded">
                                             <div class="card-body">
+
                                                 <a href="@Url.Action("Index", "Perfume", new { marcasSeleccionadas = marca.Nombre })"
-                                                   class="card-title text-decoration-none"
-                                                   style="font-family: 'Georgia', serif; color: inherit;">
-                                                    @marca.Nombre
+                                                   class="text-decoration-none"
+                                                   style="color: inherit;">
+
+                                                    @if (existeImagen)
+                                                    {
+                                                        <img src="~/Imagenes/@fileName"
+                                                             alt="@marca.Nombre"
+                                                             class="img-fluid p-2"
+                                                             style="max-height: 80px;" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="font-family: 'Georgia', serif; font-size: 1.2rem;">
+                                                            @marca.Nombre
+                                                        </span>
+                                                    }
+
                                                 </a>
+
                                             </div>
                                         </div>
                                     </div>
                                 }
+
                             </div>
                         </div>
                     }
@@ -123,7 +153,9 @@
                 <span class="fa-solid fa-chevron-right flecha-carousel"></span>
             </button>
         </div>
+
     </div>
+
 
 
     <!-- Carousel Perfumes con Promociones -->
