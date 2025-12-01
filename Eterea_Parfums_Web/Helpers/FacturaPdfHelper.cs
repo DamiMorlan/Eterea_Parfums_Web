@@ -199,7 +199,7 @@ namespace Eterea_Parfums_Web.Helpers
                 dirSucursal = (calleNombre + " " + numero).Trim();
 
                 string localidadNombre = sucursal.localidad != null ? sucursal.localidad.nombre : "";
-                string paisNombre = sucursal.pais != null ? sucursal.pais.pais : "";
+                string paisNombre = sucursal.pais != null ? sucursal.pais.nombre : "";
 
                 locPaisSucursal = (localidadNombre + ", " + paisNombre).Trim().Trim(',');
             }
