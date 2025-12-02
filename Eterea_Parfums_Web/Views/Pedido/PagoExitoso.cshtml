@@ -6,38 +6,68 @@
 @section Styles {
     <link href="~/Content/StylePagoExitoso.css" rel="stylesheet" type="text/css" />
 }
-<!--<div class="container text-center my-5">
-    <h2 class="text-success">¡Pago aprobado!</h2>
-    <p>@TempData["PagoOK"]</p>
-    <p class="text-muted">Serás redirigido en 5 segundos…</p>
-    <a href="@Url.Action("Index","Home")" class="btn btn-primary mt-3">
-        Ir ahora
-    </a>
-</div>-->
-
 
 <div class="container-fluid bg-success-mp text-white py-5 text-center">
     <div class="icon-circle mb-3">
-        <i class="fa-solid fa-check"></i><!-- Usa Bootstrap Icons si están cargadas -->
+        <i class="fa-solid fa-check"></i>
     </div>
     <h2 class="fw-bold">¡Listo! Se acreditó tu pago</h2>
-    <p class="mb-0">Numero de Operacion: <strong>@ViewBag.NumOrden</strong></p>
+    <p class="mb-0">Número de Operación: <strong>@ViewBag.NumOrden</strong></p>
 </div>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="payment-box text-center mt-3">
-                <p class="fs-5 mb-1">Pagaste <strong>$@ViewBag.TotalFinal.ToString("N2", new System.Globalization.CultureInfo("es-AR"))</strong></p>
+                <p class="fs-5 mb-1">
+                    Pagaste <strong>$@ViewBag.TotalFinal.ToString("N2", new System.Globalization.CultureInfo("es-AR"))</strong>
+                </p>
                 <p class="text-muted small">
-                    En el resumen de tu tarjeta verás el cargo a nombre de:<br>
+                    En el resumen de tu tarjeta verás el cargo a nombre de:<br />
                     <strong>MERCADOPAGO*ETEREAPARFUMS</strong>
                 </p>
+
+                <!-- Botón manual -->
                 <a href="@Url.Action("Index", "Home")" class="btn btn-custom mt-3">
                     Volver al sitio
                 </a>
+
+                <!-- Mensaje de redirección automática con segundero -->
+                <p class="text-muted mt-3">
+                    Serás redirigido automáticamente al sitio en
+                    <strong><span id="countdown">20</span></strong> segundos.
+                </p>
             </div>
         </div>
     </div>
-    <!--<p class="text-center text-muted mt-3">Serás redirigido en 5 segundos…</p>-->
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            // segundos iniciales
+            var segundos = 20;
+            var span = document.getElementById('countdown');
+
+            // URL de destino (Home/Index)
+            var redirectUrl = '@Url.Action("Index", "Home")';
+
+            // Mostrar el valor inicial
+            if (span) {
+                span.textContent = segundos;
+            }
+
+            var timer = setInterval(function () {
+                segundos--;
+                if (span) {
+                    span.textContent = segundos;
+                }
+
+                if (segundos <= 0) {
+                    clearInterval(timer);
+                    window.location.href = redirectUrl;
+                }
+            }, 1000);
+        })();
+    </script>
+}
