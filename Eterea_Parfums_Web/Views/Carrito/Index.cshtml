@@ -11,6 +11,7 @@
 
 
 
+
 @functions {
     // Trunca a 2 decimales SIN redondear (usa decimal para evitar errores binarios de double)
     decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
@@ -40,145 +41,179 @@
 
     <h1 class="titulo-carrito">Tu carrito</h1>
 
-    @if (ViewBag.MensajeStockActualizado != null)
-    {
-        <div class="alert alert-warning text-center mt-3">
-            @ViewBag.MensajeStockActualizado
-        </div>
-    }
+    <!--Mensaje de éxito al eliminar perfume -->
+    <div id="mensajeCarrito"
+         class="alert alert-success text-center"
+         style="display:none; margin-top:10px;">
+        <!-- El texto se completa desde JS -->
+    </div>
 
-    @if (Model != null && Model.Any())
-    {
+    <div class="carrito-container">
 
-        foreach (var item in Model)
+        @if (ViewBag.MensajeStockActualizado != null)
         {
-            <div class="fila-producto" id="perfume-@item.PerfumeId">
-                <div class="contenedor-producto">
-                    <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
-
-
-                        <img src="@($"{API_IMG}{item.Imagen}.jpg")"
-                             alt="@item.Nombre"
-                             class="img-perfume" />
-
-                    </a>
-                    <div class="producto-detalles">
-                        <h3>@item.Nombre</h3>
-                        <p>Tipo: @item.TipoDePerfume</p>
-                        <p>Presentación: @item.Presentacion ml</p>
-                        <p>Género: @item.Genero</p>
-
-                        @if (item.StockDisponibleParaVentaWeb == 1)
-                        {
-                            <p style="color: red; font-weight: bold;">¡Último disponible!</p>
-                        }
-                        @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
-                        {
-                            <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                                $ @item.PrecioOriginal.ToString("N2", ciAR)
-                            </p>
-                            <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                                $@item.PrecioConDescuento.Value.ToString("N2", ciAR)
-                            </p>
-                        }
-                        else
-                        {
-                            <p class="precio-descuento" style="color: black;">
-                                $@item.PrecioOriginal.ToString("N2", ciAR)
-                            </p>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
-                        {
-                            <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
-                        }
-
-                        <label for="cantidad-@item.PerfumeId">Cantidad: </label>
-                        <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
-                            @for (int i = 0; i <= item.StockDisponibleParaVentaWeb; i++)
-                            {
-                                <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
-                            }
-                        </select>
-
-
-                        <div class="producto-precio">
-                            <p id="total-perfume-@item.PerfumeId" class="total-perfume">Total: $@item.Total.ToString("N2")</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="contenedor-eliminar">
-                    <button type="button"
-                            onclick="eliminarPerfume(@item.PerfumeId); return false;"
-                            style="background:none; border:none; cursor:pointer;" title="Eliminar">
-                        🗑️
-                    </button>
-
-                </div>
+            <div class="alert alert-warning text-center mt-3">
+                @ViewBag.MensajeStockActualizado
             </div>
         }
 
-<div class="resumen-carrito">
-    @{
-        // Pase todo a decimal durante el cálculo
-        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
-        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
-        decimal descuentoRaw = subtotalRaw - totalRaw;
+        @if (Model != null && Model.Any())
+        {
 
-        // Truncar a 2 decimales SIN redondear para mostrar
-        var subtotal = Trunc2(subtotalRaw);
-        var total = Trunc2(totalRaw);
-        var descuento = Trunc2(descuentoRaw);
-    }
+            foreach (var item in Model)
+            {
+                <div class="fila-producto" id="perfume-@item.PerfumeId">
+                    <div class="contenedor-producto">
+                        <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
 
-    <div class="fila-resumen">
-        <span class="etiqueta">Subtotal (sin descuento):</span>
-        <span class="valor" id="subtotal">$@subtotal.ToString("N2", ciAR)</span>
+
+                            <img src="@($"{API_IMG}{item.Imagen}.jpg")"
+                                 alt="@item.Nombre"
+                                 class="img-perfume" />
+
+                        </a>
+                        <div class="producto-detalles">
+                            <h3>@item.Nombre</h3>
+                            <p>Tipo: @item.TipoDePerfume</p>
+                            <p>Presentación: @item.Presentacion ml</p>
+                            <p>Género: @item.Genero</p>
+
+                            @if (item.StockDisponibleParaVentaWeb == 1)
+                            {
+                                <p style="color: red; font-weight: bold;">¡Último disponible!</p>
+                            }
+                            @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
+                            {
+                                <p class="precio-original" style="text-decoration: line-through; color: gray;">
+                                    $ @item.PrecioOriginal.ToString("N2", ciAR)
+                                </p>
+                                <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
+                                    $@item.PrecioConDescuento.Value.ToString("N2", ciAR)
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="precio-descuento" style="color: black;">
+                                    $@item.PrecioOriginal.ToString("N2", ciAR)
+                                </p>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
+                            {
+                                <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
+                            }
+
+                            <label for="cantidad-@item.PerfumeId">Cantidad: </label>
+                            <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
+                                @for (int i = 0; i <= item.StockDisponibleParaVentaWeb; i++)
+                                {
+                                    <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                                }
+                            </select>
+
+
+                            <div class="producto-precio">
+                                <p id="total-perfume-@item.PerfumeId" class="total-perfume">Total: $@item.Total.ToString("N2")</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contenedor-eliminar">
+                        <button type="button"
+                                onclick="eliminarPerfume(@item.PerfumeId); return false;"
+                                style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                            🗑️
+                        </button>
+
+                    </div>
+                </div>
+            }
+
+            <div class="resumen-carrito">
+                @{
+                    // Pase todo a decimal durante el cálculo
+                    decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+                    decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+                    decimal descuentoRaw = subtotalRaw - totalRaw;
+
+                    // Truncar a 2 decimales SIN redondear para mostrar
+                    var subtotal = Trunc2(subtotalRaw);
+                    var total = Trunc2(totalRaw);
+                    var descuento = Trunc2(descuentoRaw);
+                }
+
+                <div class="fila-resumen">
+                    <span class="etiqueta">Subtotal (sin descuento):</span>
+                    <span class="valor" id="subtotal">$@subtotal.ToString("N2", ciAR)</span>
+                </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Descuentos aplicados:</span>
+                    <span class="valor descuento" id="descuento">-$@descuento.ToString("N2", ciAR)</span>
+                </div>
+                <div class="fila-resumen total">
+                    <span class="etiqueta">Total a pagar:</span>
+                    <span class="valor" id="total">$@total.ToString("N2", ciAR)</span>
+                </div>
+
+                <div id="envioGratisMensaje"
+                     class="mt-2 text-center"
+                     style="color: var(--bordo); font-weight: bold; @(total >= 70000 ? "" : "display:none;")">
+                    ¡Felicidades! Tu envío es gratis
+                </div>
+
+                @if (total < 70000)
+                {
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+                        Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $70.000.
+                    </p>
+                }
+
+                @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+                {
+                    <div class="contenedor-boton-finalizar text-center mt-3">
+                        <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
+                    </div>
+                }
+
+
+            </div>
+
+        }
+        else
+        {
+            <div style="text-align: center; padding: 50px;">
+                <div style="font-size: 100px;">🛒</div>
+                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+            </div>
+        }
     </div>
-    <div class="fila-resumen">
-        <span class="etiqueta">Descuentos aplicados:</span>
-        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2", ciAR)</span>
-    </div>
-    <div class="fila-resumen total">
-        <span class="etiqueta">Total a pagar:</span>
-        <span class="valor" id="total">$@total.ToString("N2", ciAR)</span>
-    </div>
 
-    <div id="envioGratisMensaje"
-         class="mt-2 text-center"
-         style="color: var(--bordo); font-weight: bold; @(total >= 70000 ? "" : "display:none;")">
-        ¡Felicidades! Tu envío es gratis
-    </div>
+    @section Scripts {
+        <script>
+            function mostrarMensajeEliminado() {
+                let toast = document.getElementById('toastEliminado');
 
-    @if (total < 70000)
-    {
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $70.000.
-        </p>
-    }
+                // Si no existe, lo creamos una sola vez
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'toastEliminado';
+                    toast.className = 'mensaje-toast';
+                    document.body.appendChild(toast);
+                }
 
-    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-    {
-        <div class="contenedor-boton-finalizar text-center mt-3">
-            <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
-        </div>
-    }
+                toast.textContent = 'Se ha eliminado un perfume de tu carrito.';
+                toast.style.display = 'block';
 
+                // Si ya había un timeout anterior, lo limpiamos
+                if (window._toastTimeout) {
+                    clearTimeout(window._toastTimeout);
+                }
 
-</div>
+                // Ocultar automáticamente después de 3 segundos
+                window._toastTimeout = setTimeout(function () {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
 
-    }
-    else
-    {
-        <div style="text-align: center; padding: 50px;">
-            <div style="font-size: 100px;">🛒</div>
-            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-        </div>
-    }
-</div>
-
-@section Scripts {
-    <script>
         function actualizarCantidad(select) {
             const perfumeId = select.dataset.id;
             const cantidad = select.value;
@@ -203,11 +238,13 @@
             })
                 .then(data => {
                     if (data.success) {
-                        // ✅ Pintar totales SIEMPRE (aunque se elimine)
+                        //Pintar totales SIEMPRE (aunque se elimine)
                         pintarTotales(data);
 
-                        // ✅ Si se eliminó el ítem (cantidad = 0)
+                        //Si se eliminó el ítem (cantidad = 0)
                         if (data.eliminado === true || cantidad === "0") {
+                            //Mostrar cartel de eliminación
+                            mostrarMensajeEliminado();
                             const fila = document.getElementById(`perfume-${perfumeId}`);
                             if (fila) {
                                 fila.classList.add("fade-out");
@@ -251,59 +288,60 @@
                 });
         }
 
-       function eliminarPerfume(perfumeId) {
-    const resumen = document.querySelector('.resumen-carrito');
-    const fila = document.getElementById(`perfume-${perfumeId}`);  // ✅ definir la fila
-    if (resumen) resumen.style.opacity = "0.5";
+        function eliminarPerfume(perfumeId) {
+        const resumen = document.querySelector('.resumen-carrito');
+        const fila = document.getElementById(`perfume-${perfumeId}`);  //definir la fila
+        if (resumen) resumen.style.opacity = "0.5";
 
-    fetch('@Url.Action("EliminarPerfume", "Carrito")', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-            // Si tu acción usa [ValidateAntiForgeryToken], descomenta la línea de abajo
-            // 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-        },
-        body: `perfumeId=${encodeURIComponent(perfumeId)}`
-    })
-    .then(res => {
-        if (!res.ok) throw new Error('Error de red');
-        return res.json();
-    })
-    .then(data => {
-        if (!data || data.success !== true) {
-            throw new Error(data && data.message ? data.message : 'No se pudo eliminar el producto.');
-        }
+        fetch('@Url.Action("EliminarPerfume", "Carrito")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
 
-        // ✅ Actualizar totales UNA sola vez
-        pintarTotales(data);
+            },
+            body: `perfumeId=${encodeURIComponent(perfumeId)}`
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Error de red');
+            return res.json();
+        })
+        .then(data => {
+            if (!data || data.success !== true) {
+                throw new Error(data && data.message ? data.message : 'No se pudo eliminar el producto.');
+            }
+            //Mostrar cartel de eliminación
+            mostrarMensajeEliminado();
 
-        // ✅ Animación + quitar fila
-        if (fila) {
-            fila.classList.add('fade-out');
-            setTimeout(() => {
-                fila.remove();
+            //Actualizar totales UNA sola vez
+            pintarTotales(data);
 
-                // Si ya no quedan productos, mostrar “carrito vacío”
-                if (document.querySelectorAll('.fila-producto').length === 0) {
-                    document.querySelector('.carrito-container').innerHTML = `
-                        <div style="text-align: center; padding: 50px;">
-                            <div style="font-size: 100px;">🛒</div>
-                            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                        </div>`;
-                }
+            //Animación + quitar fila
+            if (fila) {
+                fila.classList.add('fade-out');
+                setTimeout(() => {
+                    fila.remove();
 
+                    // Si ya no quedan productos, mostrar “carrito vacío”
+                    if (document.querySelectorAll('.fila-producto').length === 0) {
+                        document.querySelector('.carrito-container').innerHTML = `
+                            <div style="text-align: center; padding: 50px;">
+                                <div style="font-size: 100px;">🛒</div>
+                                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+                            </div>`;
+                    }
+
+                    if (resumen) resumen.style.opacity = "1";
+                }, 400);
+            } else {
+                // Si por algún motivo no encontramos la fila, al menos restauramos la UI
                 if (resumen) resumen.style.opacity = "1";
-            }, 400);
-        } else {
-            // Si por algún motivo no encontramos la fila, al menos restauramos la UI
+            }
+        })
+        .catch(err => {
+            console.error('Error al eliminar:', err);
             if (resumen) resumen.style.opacity = "1";
-        }
-    })
-    .catch(err => {
-        console.error('Error al eliminar:', err);
-        if (resumen) resumen.style.opacity = "1";
-        alert('Ocurrió un error al eliminar el perfume.');
-    });
+            alert('Ocurrió un error al eliminar el perfume.');
+        });
 }
 
 
@@ -349,8 +387,8 @@
             }
         }
 
-    </script>
-}
+        </script>
+    }
 
 
 
