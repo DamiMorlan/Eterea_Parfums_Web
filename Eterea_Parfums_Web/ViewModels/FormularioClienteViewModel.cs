@@ -8,11 +8,17 @@ namespace Eterea_Parfums_Web.ViewModels
     public class FormularioClienteViewModel
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]
-        [StringLength(16, ErrorMessage = "Máximo 16 caracteres.")]
+        [StringLength(24, MinimumLength = 2,
+        ErrorMessage = "El nombre debe tener entre 2 y 24 caracteres.")]
+        [RegularExpression(@"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$",
+        ErrorMessage = "El nombre solo puede contener letras.")]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "El apellido es obligatorio.")]
-        [StringLength(16, ErrorMessage = "Máximo 16 caracteres.")]
+        [StringLength(24, MinimumLength = 2,
+            ErrorMessage = "El apellido debe tener entre 2 y 24 caracteres.")]
+        [RegularExpression(@"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$",
+            ErrorMessage = "El apellido solo puede contener letras.")]
         public string Apellido { get; set; }
 
         [Remote("ValidarUsuario", "Cliente", ErrorMessage = "El nombre de usuario ya está en uso.")]

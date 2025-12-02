@@ -58,7 +58,11 @@
             <div class="col-md-6">
                 <div class="form-group">
                     @Html.LabelFor(m => m.Nombre)
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.Nombre, new
+                    {
+                         @class = "form-control solo-letras",
+                         maxlength = "24"
+                     })
                     @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                     @if (string.Equals(Request.QueryString["primerLogin"], "true", StringComparison.OrdinalIgnoreCase))
                     {
@@ -68,7 +72,11 @@
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.Apellido)
-                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.Apellido, new
+                    {
+                        @class = "form-control solo-letras",
+                        maxlength = "24"
+                    })
                     @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "text-danger" })
                 </div>
 
@@ -217,6 +225,12 @@
             },
             containerCssClass: "mi-select2",
             dropdownCssClass: "mi-select2-dropdown"
+        });
+
+        //Solo letras en Nombre y Apellido
+        //(inputs que tengan la clase "solo-letras")
+        $('.solo-letras').on('input', function () {
+            this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]/g, '');
         });
 
         // --- Lógica de los selects encadenados ---
