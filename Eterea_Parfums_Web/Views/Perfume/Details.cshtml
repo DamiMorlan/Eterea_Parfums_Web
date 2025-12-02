@@ -768,36 +768,7 @@
     <script src="~/Scripts/custom/Perfume.details.js"></script>
 
     <script>
-        // Convierte lo que venga del servidor a número real (ARS)
-        function parsePrecioFromServer(v) {
-            if (v == null) return 0;
-
-            if (typeof v === 'number') return v;
-
-            const s = String(v).trim();
-            if (s === '') return 0;
-
-            // Caso "70.558" (punto como separador de miles, sin coma)
-            if (s.includes('.') && !s.includes(',')) {
-                const sinPuntos = s.replace(/\./g, '');
-                const num = Number(sinPuntos);
-                return Number.isNaN(num) ? 0 : num;
-            }
-
-            // Caso estilo "70.558,00" (formato latino)
-            const normalizado = s.replace(/\./g, '').replace(',', '.');
-            const n = Number(normalizado);
-            return Number.isNaN(n) ? 0 : n;
-        }
-
-        // Siempre 2 decimales, miles con punto, decimales con coma
-        function formatPrecioArFull(v) {
-            const num = parsePrecioFromServer(v);
-            return num.toLocaleString('es-AR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+       
         // ✅ Helper para formatear precios en ARS
         function formatPrecioAr(n) {
             const v = Number(n);
@@ -862,11 +833,11 @@
                                 <p><strong>${data.nombre}</strong></p>
                                 <p>${data.tipo} - ${data.presentacion} ml</p>
                                 <p>Género: ${data.genero}</p>
-                               <p>Precio: ${
-                                    data.precioDescuento
-                                        ? `<del>$${formatPrecioArFull(data.precioOriginal)}</del> <strong>$${formatPrecioArFull(data.precioDescuento)}</strong>`
-                                        : `<strong>$${formatPrecioArFull(data.precioOriginal)}</strong>`
-                                }</p>
+                                <p>Precio: ${
+                                     data.precioDescuento
+                                         ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                         : `<strong>$${data.precioOriginal}</strong>`
+                                 }</p>
                                 ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                             `;
 
