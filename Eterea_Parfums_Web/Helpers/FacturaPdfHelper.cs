@@ -58,8 +58,7 @@ namespace Eterea_Parfums_Web.Helpers
             // 2) Datos del cliente / factura
             // ============================
             string clienteNombre = $"{cliente.nombre} {cliente.apellido}";
-            double importe = factura.precio_total + factura.descuento - factura.recargo_tarjeta;
-            double total = factura.precio_total;
+           
 
             html = html.Replace("@NUMEROFACTURA", factura.num_factura);
             html = html.Replace("@FECHA", factura.fecha.ToString("dd/MM/yyyy"));
@@ -102,10 +101,22 @@ namespace Eterea_Parfums_Web.Helpers
             }
             html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
 
-            html = html.Replace("@IMPORTE", importe.ToString("0.00"));
-            html = html.Replace("@DESCUENTO", factura.descuento.ToString("0.00"));
-            html = html.Replace("@RECARGO", factura.recargo_tarjeta.ToString("0.00"));
-            html = html.Replace("@TOTAL", factura.precio_total.ToString("0.00"));
+            // En la web: Bonificación SIEMPRE 0
+            double bonificacion = 0.0;
+
+            // Recargo por tarjeta (si lo hubiera)
+            double recargo = factura.recargo_tarjeta;
+
+            // Importe = total sin recargo (las promos ya están aplicadas en el precio_total)
+            double importe = factura.precio_total - recargo;
+
+            // Total = lo que realmente paga el cliente
+            double total = factura.precio_total;
+
+            html = html.Replace("@IMPORTE", "$ " + importe.ToString("0.00"));
+            html = html.Replace("@DESCUENTO", "$ " + bonificacion.ToString("0.00"));  // Bonificación = 0
+            html = html.Replace("@RECARGO", "$ " + recargo.ToString("0.00"));
+            html = html.Replace("@TOTAL", "$ " + total.ToString("0.00"));
 
             // ===== Detalle de filas =====
             var detallesFactura = db.detalle_factura
