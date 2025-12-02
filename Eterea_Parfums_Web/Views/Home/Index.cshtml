@@ -766,10 +766,11 @@
                             <p><strong>${data.nombre}</strong></p>
                             <p>${data.tipo} - ${data.presentacion} ml</p>
                             <p>Género: ${data.genero}</p>
-                            <p>Precio: ${data.precioDescuento
-                                                        ? `<del>$${formatPrecioAr(data.precioOriginal)}</del> <strong>$${formatPrecioAr(data.precioDescuento)}</strong>`
-                                                        : `<strong>$${formatPrecioAr(data.precioOriginal)}</strong>`
-                                                    }</p>
+                              <p>Precio: ${
+                            data.precioDescuento
+                                ? `<del>$${data.precioOriginal}</del> <strong>$${data.precioDescuento}</strong>`
+                                : `<strong>$${data.precioOriginal}</strong>`
+                            }</p>
                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                         `;
 

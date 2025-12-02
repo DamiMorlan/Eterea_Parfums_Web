@@ -514,15 +514,22 @@ namespace Eterea_Parfums_Web.Controllers
                         .Select(i => (decimal)i.perfume.precio_en_pesos * i.cantidad)
                         .Sum();
 
-                    decimal descuentoTotal = (decimal)descuentoTotalDouble;
-                    decimal recargoTotal = (decimal)GetRecargo(medio, cuotas,
-                                                (double)subtotalOriginal, (double)descuentoTotal);
+                    // Redondeamos descuento y recargo a 2 decimales
+                    decimal descuentoTotal = Math.Round((decimal)descuentoTotalDouble, 2, MidpointRounding.AwayFromZero);
+                    decimal recargoTotal = Math.Round(
+                        (decimal)GetRecargo(medio, cuotas, (double)subtotalOriginal, (double)descuentoTotal),
+                        2,
+                        MidpointRounding.AwayFromZero
+                    );
 
+                    // Calculamos el total y también lo redondeamos a 2 decimales
                     decimal totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+                    totalCalculado = Math.Round(totalCalculado, 2, MidpointRounding.AwayFromZero);
 
-                    // Comparación en DECIMAL
+                    // Comparación en DECIMAL (tanto totalCalculado como totalFinalDec van con 2 decimales)
                     if (Math.Abs(totalCalculado - totalFinalDec) > 0.01m)
                         throw new InvalidOperationException("Los totales no coinciden");
+
 
                     /* 4) Tipo y numeración de factura */
                     string tipoFactura = cliente.condicion_frente_al_iva == "Responsable Inscripto" ? "A" : "B";
