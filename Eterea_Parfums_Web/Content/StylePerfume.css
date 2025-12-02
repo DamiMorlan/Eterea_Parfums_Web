@@ -626,3 +626,14 @@ input.no-outline:focus {
         font-size: 0.95rem;
     }
 }
+
+/* Imagen del perfume en el popup "Se agregó a tu carrito" */
+.popup-perfume-img {
+    max-width: 120px; /* ancho máximo visible */
+    max-height: 160px; /* alto máximo visible */
+    width: auto;
+    height: auto;
+    object-fit: contain; /* respeta proporciones, sin recortar */
+    display: block;
+    margin: 0 auto 10px; /* centrado y espacio abajo */
+}

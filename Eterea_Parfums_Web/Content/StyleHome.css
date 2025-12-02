@@ -583,3 +583,14 @@ h2 {
         padding: 15px 8px 8px 8px !important;
     }
 }
+
+/* Imagen del perfume en el popup "Se agregó a tu carrito" */
+.popup-perfume-img {
+    max-width: 120px; /* ancho máximo visible */
+    max-height: 160px; /* alto máximo visible */
+    width: auto;
+    height: auto;
+    object-fit: contain; /* respeta proporciones, sin recortar */
+    display: block;
+    margin: 0 auto 10px; /* centrado y espacio abajo */
+}

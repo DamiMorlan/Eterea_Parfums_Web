@@ -728,15 +728,16 @@
                         }
 
                         contenedor.innerHTML = `
-                          <img src="${API_IMG}${data.imagen}.jpg" alt="${data.nombre}" />
+                            <img src="${API_IMG}${data.imagen}.jpg" 
+                                 alt="${data.nombre}" 
+                                 class="popup-perfume-img" />
                             <p><strong>${data.nombre}</strong></p>
                             <p>${data.tipo} - ${data.presentacion} ml</p>
                             <p>Género: ${data.genero}</p>
-                            <p>Precio: ${
-                                data.precioDescuento
-                            ? `<del>$${formatPrecioAr(data.precioOriginal)}</del> <strong>$${formatPrecioAr(data.precioDescuento)}</strong>`
-                            : `<strong>$${formatPrecioAr(data.precioOriginal)}</strong>`
-                            }</p>
+                            <p>Precio: ${data.precioDescuento
+                                                        ? `<del>$${formatPrecioAr(data.precioOriginal)}</del> <strong>$${formatPrecioAr(data.precioDescuento)}</strong>`
+                                                        : `<strong>$${formatPrecioAr(data.precioOriginal)}</strong>`
+                                                    }</p>
                             ${data.leyenda ? `<p>${data.leyenda}</p>` : ''}
                         `;
 
