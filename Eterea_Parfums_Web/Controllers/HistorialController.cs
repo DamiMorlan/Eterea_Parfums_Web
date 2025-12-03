@@ -170,7 +170,8 @@ namespace Eterea_Parfums_Web.Controllers
 
                     //datos para mostrar el recargo
                     RecargoTarjeta = (decimal)factura.recargo_tarjeta,
-                    FormaDePago = factura.forma_de_pago
+                    FormaDePago = factura.forma_de_pago,
+                    Cuotas = factura.factura_pdf   //acá mapeamos la columna factura_pdf que guarda el numero de cuotas
                 };
 
                 return View(viewModel);

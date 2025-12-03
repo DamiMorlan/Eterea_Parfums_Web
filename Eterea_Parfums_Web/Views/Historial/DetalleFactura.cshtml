@@ -52,10 +52,26 @@
 
             if (Model.RecargoTarjeta > 0)
             {
-                <div class="factura-recargo">
-                    Recargo por pago con @Model.FormaDePago: $@Model.RecargoTarjeta.ToString("N2")
+                // Tomamos las cuotas desde el ViewModel (columna factura_pdf)
+                var cuotasStr = Model.Cuotas ?? "1";
+                int cuotasInt;
+                if (!int.TryParse(cuotasStr, out cuotasInt))
+                {
+                    cuotasInt = 1; // por las dudas
+                }
+
+                // Armamos "en X cuota / cuotas"
+                string textoCuotas = "";
+                if (cuotasInt > 0)
+                {
+                    textoCuotas = $" en {cuotasInt} cuota" + (cuotasInt > 1 ? "s" : "");
+                }
+
+                <div class="factura-total factura-recargo">
+                    Recargo por pago con @(Model.FormaDePago + textoCuotas): $@Model.RecargoTarjeta.ToString("N2")
                 </div>
             }
+
 
             <div class="factura-total">
                 Precio Total: $@Model.PrecioTotal.ToString("N2")
@@ -68,6 +84,7 @@
         }
     </div>
 </div>
+
 <div class="text-center">
     <a href="@Url.Action("Index", "Historial")" class="btn-secondary">Volver al historial</a>
 </div>

@@ -30,4 +30,7 @@ public class DetalleFacturaViewModel
 
     public decimal RecargoTarjeta { get; set; }   // dbo.factura.recargo_tarjeta
     public string FormaDePago { get; set; }       // dbo.factura.forma_de_pago
+
+    // NUEVO: cuotas (mapea a dbo.factura.factura_pdf)
+    public string Cuotas { get; set; }
 }
