@@ -560,7 +560,7 @@ namespace Eterea_Parfums_Web.Controllers
                         numero_de_caja = 10,
                         tipo_de_consumidor = cliente.condicion_frente_al_iva,
                         origen = "web",
-                        factura_pdf = null,
+                        factura_pdf = cuotas.ToString(),
                         num_factura = numFactura,
                         tipo_de_factura = tipoFactura
                     };
