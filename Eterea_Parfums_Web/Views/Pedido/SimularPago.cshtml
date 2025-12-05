@@ -227,19 +227,44 @@ $(function(){
   }
 
   /* ======== nueva tarjeta ======= */
-      (() => {
+        $("input[name='CVV'], input[name='DNI'], input[name='NumeroTarjeta']").on("input", function () { this.value = this.value.replace(/\D/g, '') });
+        $("input[name='CVV']").attr("maxlength",3);
+        $("input[name='DNI']").attr("maxlength",8);
+        $("input[name='NumeroTarjeta']").attr("maxlength",16);
+
+        $("input[name='FechaDeExpiracion']").on("input", function () {
+            let v = this.value.replace(/\D/g, "");
+            if (v.length >= 3) {
+                this.value = v.substring(0,2) + "/" + v.substring(2,4);
+            } else {
+                this.value = v;
+            }
+        })
+
+
+
+  /* ======== init ================ */
+  actResumen(); validar();
+});
+    </script>
+
+    <script>
+             (() => {
      
      const forms = document.querySelectorAll('.needs-validation');
-    
+      console.log(forms)
       Array.from(forms).forEach(form => {
           form.addEventListener(`submit`, event => {
+              console.log(form)
               if (!form.checkValidity()) {
                   event.preventDefault();
                   event.stopPropagation();
                   form.classList.add(`was-validated`)
                   return;
               }
+
               event.preventDefault();
+                
               const idx = Date.now();
               const numero = $("input[name='NumeroTarjeta']").val()
               $('#listaMedios').append(`
@@ -256,9 +281,6 @@ $(function(){
 
   })()
 
-  /* ======== init ================ */
-  actResumen(); validar();
-});
     </script>
 
 }
