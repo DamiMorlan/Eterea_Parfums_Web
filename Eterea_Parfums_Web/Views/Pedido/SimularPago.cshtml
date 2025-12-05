@@ -31,7 +31,7 @@
                 <!-- Mastercard crédito -->
                 <label class="mp-item">
                     <input type="radio" name="medio" value="MC" class="form-check-input me-2 medio" />
-                   <img src="@Url.Content("~/Imagenes/mastercard.svg")"  class="mp-card" alt="MasterCard" />
+                    <img src="@Url.Content("~/Imagenes/mastercard.svg")" class="mp-card" alt="MasterCard" />
                     <div class="flex-grow-1">
                         <div>Mastercard **** 0604</div>
                         <small class="text-muted">Crédito</small>
@@ -42,7 +42,7 @@
                 <!-- Visa débito -->
                 <label class="mp-item">
                     <input type="radio" name="medio" value="VSD" class="form-check-input me-2 medio" />
-                   <img src="@Url.Content("~/Imagenes/visa.svg")"  class="mp-card" alt="Visa" />
+                    <img src="@Url.Content("~/Imagenes/visa.svg")" class="mp-card" alt="Visa" />
                     <div class="flex-grow-1">
                         <div>Visa Débito **** 4321</div>
                         <small class="text-muted">Débito</small>
@@ -109,21 +109,34 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title">Nueva tarjeta</h5></div>
-            <div class="modal-body">
-                <input class="form-control mb-2" placeholder="Número de tarjeta" />
-                <div class="row g-2 mb-2">
-                    <div class="col"><input class="form-control" placeholder="MM/AA" /></div>
-                    <div class="col"><input class="form-control" placeholder="CVV" /></div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <input name="NumeroTarjeta" class="form-control mb-2" placeholder="Número de tarjeta" required />
+                    <div class="invalid-feedback">Debe ingresar numero de tarjeta</div>
+                    <div class="row g-2 mb-2">
+                        <div class="col">
+                            <input type="text" name="FechaDeExpiracion" class="form-control" placeholder="MM/AA" required />
+                            <div id="FechaDeExpiracion" class="invalid-feedback">Debe ingresar la fecha</div>
+                        </div>
+                        <div class="col">
+                            <input name="CVV" class="form-control" placeholder="CVV" required />
+                            <div class="invalid-feedback">Debe ingresar CVV</div>
+                        </div>
+                    </div>
+                    <input name="NombreTitular" class="form-control mb-2" placeholder="Nombre titular" required />
+                    <div class="invalid-feedback">Nombre del titular invalido</div>
+                    <input name="DNI" class="form-control" placeholder="DNI" required />
+                    <div class="invalid-feedback">Debe ingresar el DNI</div>
                 </div>
-                <input class="form-control mb-2" placeholder="Nombre titular" />
-                <input class="form-control" placeholder="DNI" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="btnAddCard" class="btn btn-success">Confirmar</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnAddCard" class="btn btn-success">Confirmar</button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -214,17 +227,34 @@ $(function(){
   }
 
   /* ======== nueva tarjeta ======= */
-  $('#btnAddCard').on('click',function(){
-      const idx=Date.now();
-      $('#listaMedios').append(`
-        <label class="mp-item">
-          <input type="radio" name="medio" value="NEW${idx}"
-                 class="form-check-input me-2 medio"/>
-          <i class="bi bi-credit-card-2-front mp-logo"></i>
-          <div class="flex-grow-1">Tarjeta nueva ****1234</div>
-        </label>`);
-      $('#modalNueva').modal('hide');
-  });
+      (() => {
+     
+     const forms = document.querySelectorAll('.needs-validation');
+    
+      Array.from(forms).forEach(form => {
+          form.addEventListener(`submit`, event => {
+              if (!form.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  form.classList.add(`was-validated`)
+                  return;
+              }
+              event.preventDefault();
+              const idx = Date.now();
+              const numero = $("input[name='NumeroTarjeta']").val()
+              $('#listaMedios').append(`
+                 <label class="mp-item">
+                   <input type="radio" name="medio" value="NEW${idx}"
+                          class="form-check-input me-2 medio"/>
+                   <i class="bi bi-credit-card-2-front mp-logo"></i>
+                   <div class="flex-grow-1">Tarjeta nueva ****${numero.slice(-4)}</div>
+                 </label>`);
+              $('#modalNueva').modal('hide');
+ 
+          })
+      })
+
+  })()
 
   /* ======== init ================ */
   actResumen(); validar();
