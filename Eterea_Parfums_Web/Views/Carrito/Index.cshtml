@@ -102,15 +102,17 @@
                                 <p id="total-perfume-@item.PerfumeId" class="total-perfume">Total: $@item.Total.ToString("N2")</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="contenedor-eliminar">
-                        <button type="button"
-                                onclick="eliminarPerfume(@item.PerfumeId); return false;"
-                                style="background:none; border:none; cursor:pointer;" title="Eliminar">
-                            🗑️
-                        </button>
 
+                        <div class="contenedor-eliminar">
+                            <button type="button"
+                                    onclick="eliminarPerfume(@item.PerfumeId); return false;"
+                                    style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                                🗑️
+                            </button>
+
+                        </div>
                     </div>
+                    
                 </div>
             }
 

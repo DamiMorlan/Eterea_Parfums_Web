@@ -293,11 +293,7 @@ select {
     margin-top: 10px;
 }
 
-@media (max-width: 458px) {
-    .contenedor-eliminar {
-        display: none !important;
-    }
-}
+
 
 @media (max-width: 360px) {
     .contenedor-producto {
