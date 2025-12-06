@@ -10,8 +10,6 @@
 }
 
 
-
-
 @functions {
     // Trunca a 2 decimales SIN redondear (usa decimal para evitar errores binarios de double)
     decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
@@ -40,9 +38,16 @@
 <div class="contenedor-general">
     <div class="carrito-container">
 
-        
+
 
         <h2 class="section-title text-center mb-5 titulo-box">Tu Carrito</h2>
+
+        <!--Mensaje de éxito al eliminar perfume -->
+        <div id="mensajeCarrito"
+             class="alert alert-success text-center"
+             style="display:none; margin-top:10px;">
+            <!-- El texto se completa desde JS -->
+        </div>
 
         @if (ViewBag.MensajeStockActualizado != null)
         {
@@ -120,7 +125,7 @@
 
                         </div>
                     </div>
-                    
+
                 </div>
             }
 
@@ -182,6 +187,8 @@
             </div>
         }
     </div>
+</div>
+
 
     @section Scripts {
         <script>
