@@ -12,20 +12,23 @@
     <link href="~/Content/StyleVistaPreviaPedido.css" rel="stylesheet" />
 }
 
-<div class="container mt-4 d-flex align-items-center justify-content-between">
 
-    <div class="d-flex align-items-center">
-        <a href="@Url.Action("Index","Carrito")" class="btn-volver me-3">← Volver</a>
-    </div>
 
-</div>
+<div class="contenedor-principal mt-3">
 
-<div class="container mt-3">
+    <!-- TÍTULO IGUAL AL RESTO DE LAS PÁGINAS -->
+    <h2 class="titulo-principal titulo1-box mb-4">
+        Finalizar Compra
+    </h2>
 
     <div class="row">
 
-        <!-- ===== COLUMNA IZQUIERDA: DIRECCIÓN ===== -->
-        <div class="col-md-4">
+        <div class="col-md-4 columna-izquierda">
+
+            <a href="@Url.Action("Index","Carrito")" class="btn-volver mb-3">
+                ← Volver
+            </a>
+
             <div class="box">
                 <h4 class="titulo-box">Dirección de envío</h4>
 
@@ -43,7 +46,11 @@
                     Cambiar dirección
                 </a>
             </div>
+
         </div>
+
+
+
 
         <!-- ===== COLUMNA DERECHA: PRODUCTOS + RESUMEN ===== -->
         <div class="col-md-8">
@@ -131,3 +138,4 @@
         </div>
     </div>
 </div>
+

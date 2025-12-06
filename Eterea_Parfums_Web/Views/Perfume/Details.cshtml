@@ -405,9 +405,27 @@
                             <div class="d-flex">
                                 @if (Model.Perfume.nota_con_tipo_de_nota != null && Model.Perfume.nota_con_tipo_de_nota.Any())
                                 {
+                                    Func<string, int> ordenar = key =>
+                                    {
+                                        var k = key.ToLower();
+
+                                        if (k.Contains("salida"))
+                                            return 1;
+                                        if (k.Contains("corazón") || k.Contains("corazon"))
+                                            return 2;
+                                        if (k.Contains("fondo"))
+                                            return 3;
+
+                                        return 999; // lo desconocido al final
+                                    };
+
+                                    var grupos = Model.Perfume.nota_con_tipo_de_nota
+                                        .GroupBy(n => n.tipo_de_nota.nombre)
+                                        .OrderBy(g => ordenar(g.Key))
+                                        .ToList();
+
                                     <div>
-                                        @foreach (var grupo in Model.Perfume.nota_con_tipo_de_nota
-                                            .GroupBy(n => n.tipo_de_nota.nombre))
+                                        @foreach (var grupo in grupos)
                                         {
                                             <p class="mb-0">
                                                 <strong>@grupo.Key:</strong> @string.Join(", ", grupo.Select(n => n.nota.nombre))
@@ -420,6 +438,9 @@
                                     <p class="fs-6 mb-0">No hay tipos de notas asociados.</p>
                                 }
                             </div>
+
+
+
                             <div class="d-flex">
                                 <p class="fw-bold mb-0">Tipo:</p>
                                 <p class="ms-1 mb-0">@Model.Perfume.tipo_de_perfume.tipo_de_perfume1</p>
