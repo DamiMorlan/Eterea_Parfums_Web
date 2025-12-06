@@ -41,6 +41,15 @@ body {
     font-weight: 700;
 }
 
+/* Título dentro del box */
+.titulo-box {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--rosa-profundo);
+    border-bottom: 2px solid #f3c4d3;
+    padding-bottom: 5px;
+}
+
 .btn-perfumes {
     padding: 6px 14px;
     background-color: var(--rosa-claro);
