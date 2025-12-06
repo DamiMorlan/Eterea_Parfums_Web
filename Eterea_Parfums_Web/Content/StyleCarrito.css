@@ -16,6 +16,15 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
 }
 
+.contenedor-general {
+    max-width: 1100px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
 .carrito-container {
     max-width: 900px;
     margin: auto;
@@ -23,6 +32,37 @@ body {
     color: #333;
     padding: 20px;
 }
+
+.section-title {
+    text-align: center;
+    font-size: 2.8rem;
+    margin-bottom: 25px;
+    color: var(--rosa-profundo); /* color igual al filtro */ /* rosa profundo */
+    font-weight: 700;
+}
+
+/* Título dentro del box */
+.titulo-box {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--rosa-profundo);
+    border-bottom: 2px solid #f3c4d3;
+    padding-bottom: 5px;
+}
+
+.btn-perfumes {
+    padding: 6px 14px;
+    background-color: var(--rosa-claro);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+    .btn-perfumes:hover {
+        background-color: var(--rosa-profundo);
+    }
 
 .producto-item {
     display: flex;
@@ -262,15 +302,123 @@ select {
     margin-top: 10px;
 }
 
-@media (max-width: 458px) {
-    .contenedor-eliminar {
-        display: none !important;
-    }
-}
+
 
 @media (max-width: 360px) {
     .contenedor-producto {
         padding: 0.5rem;
         text-align: center;
+    }
+}
+
+/* 📱📱 RESPONSIVE MOBILE — hasta 768px */
+@media (max-width: 768px) {
+
+    /* Contenedor general del carrito */
+    .carrito-container {
+        padding: 10px;
+    }
+
+    /* Título */
+    .titulo-carrito {
+        font-size: 1.6rem;
+        text-align: center;
+    }
+
+    /* Cada fila del producto */
+    .fila-producto {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Cuadro del producto */
+    .contenedor-producto {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        padding: 12px;
+    }
+
+        .contenedor-producto img {
+            width: 140px;
+            height: 140px;
+            margin-bottom: 10px;
+        }
+
+    /* Sección izquierda (imagen + texto) */
+    .contenido-izquierdo {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    /* Detalles del producto */
+    .producto-detalles {
+        margin-left: 0;
+    }
+
+        .producto-detalles h3 {
+            font-size: 1rem;
+        }
+
+    /* Cuadro rojo del tacho */
+    .contenedor-eliminar {
+        width: 80%;
+        min-width: unset;
+        padding: 10px;
+        font-size: 24px;
+        margin-top: 10px;
+    }
+
+    /* Resumen del carrito */
+    .resumen-carrito {
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .fila-resumen {
+        font-size: 1rem;
+        flex-direction: row;
+        text-align: left;
+    }
+
+        .fila-resumen .valor {
+            min-width: unset;
+        }
+
+    /* Botón finalizar compra */
+    .contenedor-boton-finalizar {
+        margin-top: 20px;
+    }
+
+    .btn-de-finalizar {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 12px;
+    }
+}
+
+/* 📱 EXTRA SMALL — hasta 420px */
+@media (max-width: 420px) {
+
+    .contenedor-producto img {
+        width: 110px;
+        height: 110px;
+    }
+
+    .producto-detalles h3 {
+        font-size: 0.9rem;
+    }
+
+    .producto-detalles p,
+    .total-perfume {
+        font-size: 0.85rem;
+    }
+
+    .btn-de-finalizar {
+        font-size: 1rem;
     }
 }

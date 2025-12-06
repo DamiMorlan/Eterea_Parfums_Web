@@ -10,10 +10,31 @@
     --bordo-oscuro: #7a304a;
 }
 
+
+.contenedor-principal {
+    max-width: 1100px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
 .titulo-principal {
-    font-size: 1.8rem;
+    text-align: center;
+    font-size: 2.8rem;
+    margin-bottom: 25px;
+    color: var(--rosa-profundo); /* color igual al filtro */ /* rosa profundo */
     font-weight: 700;
-    color: #333;
+}
+
+/* Título dentro del box */
+.titulo1-box {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--rosa-profundo);
+    border-bottom: 2px solid #f3c4d3;
+    padding-bottom: 5px;
 }
 
 .btn-volver {
@@ -60,6 +81,8 @@
     margin-bottom: 25px;
     box-shadow: 0 4px 12px rgba(243, 196, 211, 0.4);
 }
+
+
 
 /* Título dentro del box */
 .titulo-box {
@@ -186,5 +209,44 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
+}
+
+/* Contenedor como columna flexible */
+.columna-izquierda {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo general del botón */
+.btn-volver {
+    display: inline-block; /* evita que ocupe todo el ancho */
+    width: auto !important; /* asegura que no se estire */
+    padding: 6px 14px;
+}
+
+/* DESKTOP */
+@media (min-width: 769px) {
+    .btn-volver {
+        order: 2; /* va abajo */
+        margin-top: 20px;
+        align-self: flex-start; /* lo alinea a la izquierda */
+    }
+
+    .columna-izquierda .box {
+        order: 1;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .btn-volver {
+        order: 1; /* va arriba */
+        margin-bottom: 15px;
+        align-self: flex-start; /* evita que ocupe todo el ancho */
+    }
+
+    .columna-izquierda .box {
+        order: 2;
+    }
 }
 

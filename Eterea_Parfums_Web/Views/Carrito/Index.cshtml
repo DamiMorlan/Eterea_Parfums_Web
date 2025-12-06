@@ -29,148 +29,160 @@
     <link href="~/Content/StyleCarrito.css" rel="stylesheet" type="text/css" />
 }
 
-<div class="carrito-container">
+<div class="contenedor-general">
+    <div class="carrito-container">
 
-    <h1 class="titulo-carrito">Tu carrito</h1>
+        
 
-    @if (ViewBag.MensajeStockActualizado != null)
-    {
-        <div class="alert alert-warning text-center mt-3">
-            @ViewBag.MensajeStockActualizado
-        </div>
-    }
+        <h2 class="section-title text-center mb-5 titulo-box">Tu Carrito</h2>
 
-    @if (Model != null && Model.Any())
-    {
-
-        foreach (var item in Model)
+        @if (ViewBag.MensajeStockActualizado != null)
         {
-            <div class="fila-producto" id="perfume-@item.PerfumeId">
-                <div class="contenedor-producto">
-                    <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
-
-
-                        <img src="@($"{API_IMG}{item.Imagen}.jpg")"
-                             alt="@item.Nombre"
-                             class="img-perfume" />
-
-                    </a>
-                    <div class="producto-detalles">
-                        <h3>@item.Nombre</h3>
-                        <p>Tipo: @item.TipoDePerfume</p>
-                        <p>Presentación: @item.Presentacion ml</p>
-                        <p>Género: @item.Genero</p>
-
-                        @if (item.StockDisponibleParaVentaWeb == 1)
-                        {
-                            <p style="color: red; font-weight: bold;">¡Último disponible!</p>
-                        }
-                        @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
-                        {
-                            <p class="precio-original" style="text-decoration: line-through; color: gray;">
-                                $@item.PrecioOriginal.ToString("N2")
-                            </p>
-                            <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
-                                $@item.PrecioConDescuento.Value.ToString("N2")
-                            </p>
-                        }
-                        else
-                        {
-                            <p class="precio-descuento" style="color: black;">
-                                $@item.PrecioOriginal.ToString("N2")
-                            </p>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
-                        {
-                            <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
-                        }
-
-                        <label for="cantidad-@item.PerfumeId">Cantidad: </label>
-                        <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
-                            @for (int i = 0; i <= item.StockDisponibleParaVentaWeb; i++)
-                            {
-                                <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
-                            }
-                        </select>
-
-
-                        <div class="producto-precio">
-                            <p id="total-perfume-@item.PerfumeId" class="total-perfume">Total: $@item.Total.ToString("N2")</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="contenedor-eliminar">
-                    <button type="button"
-                            onclick="eliminarPerfume(@item.PerfumeId); return false;"
-                            style="background:none; border:none; cursor:pointer;" title="Eliminar">
-                        🗑️
-                    </button>
-
-                </div>
+            <div class="alert alert-warning text-center mt-3">
+                @ViewBag.MensajeStockActualizado
             </div>
         }
 
-<div class="resumen-carrito">
-    @{
-        // Pase todo a decimal durante el cálculo
-        decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
-        decimal totalRaw = Model.Sum(m => (decimal)m.Total);
-        decimal descuentoRaw = subtotalRaw - totalRaw;
+        @if (Model != null && Model.Any())
+        {
 
-        // Truncar a 2 decimales SIN redondear para mostrar
-        var subtotal = Trunc2(subtotalRaw);
-        var total = Trunc2(totalRaw);
-        var descuento = Trunc2(descuentoRaw);
-    }
+            foreach (var item in Model)
+            {
+                <div class="fila-producto" id="perfume-@item.PerfumeId">
+                    <div class="contenedor-producto">
+                        <a href="@Url.Action("Details", "Perfume", new { id = item.PerfumeId })">
 
-    <div class="fila-resumen">
-        <span class="etiqueta">Subtotal (sin descuento):</span>
-        <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
+
+                            <img src="@($"{API_IMG}{item.Imagen}.jpg")"
+                                 alt="@item.Nombre"
+                                 class="img-perfume" />
+
+                        </a>
+                        <div class="producto-detalles">
+                            <h3>@item.Nombre</h3>
+                            <p>Tipo: @item.TipoDePerfume</p>
+                            <p>Presentación: @item.Presentacion ml</p>
+                            <p>Género: @item.Genero</p>
+
+                            @if (item.StockDisponibleParaVentaWeb == 1)
+                            {
+                                <p style="color: red; font-weight: bold;">¡Último disponible!</p>
+                            }
+                            @if (item.MostrarPrecioTachado && item.PrecioConDescuento.HasValue)
+                            {
+                                <p class="precio-original" style="text-decoration: line-through; color: gray;">
+                                    $@item.PrecioOriginal.ToString("N2")
+                                </p>
+                                <p class="precio-descuento" style="color: #cc6699; font-weight: bold;">
+                                    $@item.PrecioConDescuento.Value.ToString("N2")
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="precio-descuento" style="color: black;">
+                                    $@item.PrecioOriginal.ToString("N2")
+                                </p>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.LeyendaPromo))
+                            {
+                                <p class="leyenda-promo">@Html.Raw(item.LeyendaPromo)</p>
+                            }
+
+                            <label for="cantidad-@item.PerfumeId">Cantidad: </label>
+                            <select id="cantidad-@item.PerfumeId" data-id="@item.PerfumeId" onchange="actualizarCantidad(this)">
+                                @for (int i = 0; i <= item.StockDisponibleParaVentaWeb; i++)
+                                {
+                                    <option value="@i" @(item.Cantidad == i ? "selected" : "")>@i @(i == 0 ? "(Eliminar)" : "")</option>
+                                }
+                            </select>
+
+
+                            <div class="producto-precio">
+                                <p id="total-perfume-@item.PerfumeId" class="total-perfume">Total: $@item.Total.ToString("N2")</p>
+                            </div>
+                        </div>
+
+                        <div class="contenedor-eliminar">
+                            <button type="button"
+                                    onclick="eliminarPerfume(@item.PerfumeId); return false;"
+                                    style="background:none; border:none; cursor:pointer;" title="Eliminar">
+                                🗑️
+                            </button>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            }
+
+            <div class="resumen-carrito">
+                @{
+                    // Pase todo a decimal durante el cálculo
+                    decimal subtotalRaw = Model.Sum(m => (decimal)m.PrecioOriginal * m.Cantidad);
+                    decimal totalRaw = Model.Sum(m => (decimal)m.Total);
+                    decimal descuentoRaw = subtotalRaw - totalRaw;
+
+                    // Truncar a 2 decimales SIN redondear para mostrar
+                    var subtotal = Trunc2(subtotalRaw);
+                    var total = Trunc2(totalRaw);
+                    var descuento = Trunc2(descuentoRaw);
+                }
+
+                <div class="fila-resumen">
+                    <span class="etiqueta">Subtotal (sin descuento):</span>
+                    <span class="valor" id="subtotal">$@subtotal.ToString("N2")</span>
+                </div>
+                <div class="fila-resumen">
+                    <span class="etiqueta">Descuentos aplicados:</span>
+                    <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
+                </div>
+                <div class="fila-resumen total">
+                    <span class="etiqueta">Total a pagar:</span>
+                    <span class="valor" id="total">$@total.ToString("N2")</span>
+                </div>
+
+                @if (total >= 50000)
+                {
+                    <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
+                        ¡Felicidades! Tu envío es gratis
+                    </div>
+                }
+                else
+                {
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
+                        Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
+                    </p>
+                }
+
+                @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
+                {
+                    <div class="contenedor-boton-finalizar text-center mt-3">
+                        <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
+                    </div>
+                }
+
+
+            </div>
+
+        }
+        else
+        {
+            <div style="text-align: center; padding: 50px;">
+                <div style="font-size: 100px;">🛒</div>
+                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+
+                <a href="@Url.Action("Index", "Perfume")" class="btn-perfumes" style="margin-top: 20px; display: inline-block;">
+                    Ver Perfumes
+                </a>
+            </div>
+        }
     </div>
-    <div class="fila-resumen">
-        <span class="etiqueta">Descuentos aplicados:</span>
-        <span class="valor descuento" id="descuento">-$@descuento.ToString("N2")</span>
-    </div>
-    <div class="fila-resumen total">
-        <span class="etiqueta">Total a pagar:</span>
-        <span class="valor" id="total">$@total.ToString("N2")</span>
-    </div>
-
-    @if (total >= 50000)
-    {
-        <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
-    ¡Felicidades! Tu envío es gratis</div>
-    }
-    else
-    {
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-            Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $50.000.
-        </p>
-    }
-
-    @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
-    {
-        <div class="contenedor-boton-finalizar text-center mt-3">
-            <button type="submit" class="btn btn-de-finalizar btn-lg">Finalizar pedido</button>
-        </div>
-    }
-
-
 </div>
 
-    }
-    else
-    {
-        <div style="text-align: center; padding: 50px;">
-            <div style="font-size: 100px;">🛒</div>
-            <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-        </div>
-    }
-</div>
 
-@section Scripts {
-    <script>
+    @section Scripts {
+        <script>
         function actualizarCantidad(select) {
             const perfumeId = select.dataset.id;
             const cantidad = select.value;
@@ -276,6 +288,12 @@
                         <div style="text-align: center; padding: 50px;">
                             <div style="font-size: 100px;">🛒</div>
                             <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+
+                            <a href="@Url.Action("Index", "Perfume")"
+                               class="btn-perfumes"
+                               style="margin-top: 20px; display: inline-block;">
+                                Ver Perfumes
+                            </a>
                         </div>`;
                 }
 
@@ -341,8 +359,8 @@
             }
         }
 
-    </script>
-}
+        </script>
+    }
 
 
 
