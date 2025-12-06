@@ -184,6 +184,10 @@
             <div style="text-align: center; padding: 50px;">
                 <div style="font-size: 100px;">🛒</div>
                 <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+
+                <a href="@Url.Action("Index", "Perfume")" class="btn-perfumes" style="margin-top: 20px; display: inline-block;">
+                    Ver Perfumes
+                </a>
             </div>
         }
     </div>
@@ -260,10 +264,16 @@
                                     // Si ya no hay perfumes, mostrar mensaje de carrito vacío
                                     if (document.querySelectorAll('.fila-producto').length === 0) {
                                         document.querySelector('.carrito-container').innerHTML = `
-                            <div style="text-align: center; padding: 50px;">
-                                <div style="font-size: 100px;">🛒</div>
-                                <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
-                            </div>`;
+                                        <div style="text-align: center; padding: 50px;">
+                                        <div style="font-size: 100px;">🛒</div>
+                                        <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+
+                                        <a href="@Url.Action("Index", "Perfume")"
+                                           class="btn-perfumes"
+                                           style="margin-top: 20px; display: inline-block;">
+                                            Ver Perfumes
+                                        </a>
+                                        </div>`;
                                     }
                                 }, 500);
                             }
@@ -328,8 +338,15 @@
                     if (document.querySelectorAll('.fila-producto').length === 0) {
                         document.querySelector('.carrito-container').innerHTML = `
                             <div style="text-align: center; padding: 50px;">
-                                <div style="font-size: 100px;">🛒</div>
+                            <h2 class="section-title text-center mb-5 titulo-box">Tu Carrito</h2>
+                            <div style="font-size: 100px;">🛒</div>
                                 <h2 style="margin-top: 20px; color: #555;">¡Tu carrito está vacío!</h2>
+
+                                <a href="@Url.Action("Index", "Perfume")"
+                                   class="btn-perfumes"
+                                   style="margin-top: 20px; display: inline-block;">
+                                    Ver Perfumes
+                                </a>
                             </div>`;
                     }
 
