@@ -522,9 +522,16 @@ namespace Eterea_Parfums_Web.Controllers
                         MidpointRounding.AwayFromZero
                     );
 
-                    // Calculamos el total y también lo redondeamos a 2 decimales
-                    decimal totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+                    // Neto de productos (con descuento, sin recargo ni envío)
+                    decimal netoProductos = subtotalOriginal - descuentoTotal;
+
+                    // 🔹 Costo de envío: si el neto de productos es menor a 70.000, se cobran 4.000
+                    decimal costoEnvio = netoProductos < 70000m ? 4000m : 0m;
+
+                    // 🔹 Total = productos + envío + recargo
+                    decimal totalCalculado = netoProductos + costoEnvio + recargoTotal;
                     totalCalculado = Math.Round(totalCalculado, 2, MidpointRounding.AwayFromZero);
+
 
                     // Comparación en DECIMAL (tanto totalCalculado como totalFinalDec van con 2 decimales)
                     if (Math.Abs(totalCalculado - totalFinalDec) > 0.01m)
@@ -590,6 +597,7 @@ namespace Eterea_Parfums_Web.Controllers
                             }
                         }
 
+
                         db.detalle_factura.Add(new detalle_factura
                         {
                             factura_id = fac.id,
@@ -635,8 +643,8 @@ namespace Eterea_Parfums_Web.Controllers
 
                     // Generación PDF + correo (tal cual lo tenías)...
                     string htmlFactura = (tipoFactura == "A")
-                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente,cuotas)
-                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente,cuotas);
+                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente, cuotas, costoEnvio)
+                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente, cuotas, costoEnvio);
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 

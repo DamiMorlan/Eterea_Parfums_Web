@@ -102,6 +102,14 @@
                     <span>$ @Model.Monto.ToString("N2", ciAR)</span>
                 </div>
 
+                @if ((decimal)Model.Monto < 70000m)
+                {
+                    <div class="d-flex justify-content-between">
+                        <span>Costo de envío</span>
+                        <span id="txtEnvio">$ @((4000m).ToString("N2", ciAR))</span>
+                    </div>
+                }
+
                 <div class="d-flex justify-content-between" id="filaInteres" style="display:none;">
                     <span>Recargo por cuotas</span>
                     <span id="txtInteres">$0</span>
@@ -167,9 +175,15 @@
 
 $(function(){
 
-  /* ======== constantes ======== */
- const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+/* ======== constantes ======== */
+const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
 const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+
+// Costo de envío si la compra es menor a 70.000
+    const costoEnvioBase = @Html.Raw(
+    (((decimal)Model.Monto) < 70000m ? 4000m : 0m)
+        .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture)
+);
 
 // Tablas de recargo por medio
 //  Visa Crédito y Mastercard: 1 y 3 sin interés, 6=10%, 9=15%, 12=20%
@@ -189,7 +203,8 @@ const tablasCuotas = {
         $btnPay   = $('#btnPagar'),
         $hdMedio  = $('#hdMedio'),
         $hdCuotas = $('#hdCuotas'),
-        $hdTotal  = $('#hdTotal');
+        $hdTotal = $('#hdTotal');
+        $txtEnvio = $('#txtEnvio');
 
     /* ======== helpers ============ */
 
@@ -199,15 +214,22 @@ const tablasCuotas = {
     });
 
     const actResumen = _ => {
-        const total = totalBase + recargo;
-        //Lo que ve el usuario: AR
+        const total = totalBase + costoEnvioBase + recargo;
+
+        // Lo que ve el usuario: AR
         $txtTotal.text(`$ ${fmtAR(total)}`);
         $txtInter.text(`$ ${fmtAR(recargo)}`);
         $filaInt.toggle(recargo > 0);
 
-        //Lo que se envía al servidor: US (para parsear seguro)
+        // Si existe la fila de envío, actualizar por si acaso
+        if ($txtEnvio.length) {
+            $txtEnvio.text(`$ ${fmtAR(costoEnvioBase)}`);
+        }
+
+        // Lo que se envía al servidor: US (para parsear seguro)
         $hdTotal.val(fmtUS(total));
     };
+
     const calcRecargo = _ => {
         if (!tablaActual) {
             recargo = 0;
@@ -227,8 +249,9 @@ const tablasCuotas = {
 
         if (medio === 'MP') {
             // Mercado Pago: se paga con saldo, sin interés
-            if (saldo < totalBase) {
-                alert('El saldo disponible no alcanza para pagar la compra.');
+            const totalConEnvio = totalBase + costoEnvioBase;
+            if (saldo < totalConEnvio) {
+                alert('El saldo disponible no alcanza para pagar la compra (incluyendo el costo de envío).');
                 this.checked = false;
                 medio = "";
                 validar();

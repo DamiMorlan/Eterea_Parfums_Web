@@ -16,7 +16,7 @@ namespace Eterea_Parfums_Web.Helpers
 {
     public static class FacturaHelper
     {
-        public static string GenerarHtmlFacturaB(etereaEntities7 db, factura factura, cliente cliente, int cuotas)
+        public static string GenerarHtmlFacturaB(etereaEntities7 db, factura factura, cliente cliente, int cuotas, decimal costoEnvio)
         {
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaB.html");
             string html = File.ReadAllText(templatePath);
@@ -84,20 +84,20 @@ namespace Eterea_Parfums_Web.Helpers
             if (esTarjeta)
             {
                 rowFormaPago = @"
-        <tr>
-          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-          <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-          <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
-          <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
-        </tr>";
-            }
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+                </tr>";
+                    }
             else
             {
                 rowFormaPago = @"
-        <tr>
-          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-          <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-        </tr>";
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                </tr>";
             }
             html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
 
@@ -162,6 +162,21 @@ namespace Eterea_Parfums_Web.Helpers
                 filasHtml.AppendLine("</tr>");
             }
 
+            //Fila extra de costo de envío (si corresponde)
+            if (costoEnvio > 0)
+            {
+                double costoEnvioDouble = (double)costoEnvio;
+
+                filasHtml.AppendLine("<tr>");
+                filasHtml.AppendLine("  <td class='cant'>1</td>");
+                filasHtml.AppendLine("  <td>Costo de envío</td>");
+                filasHtml.AppendLine($"  <td class='money'>${costoEnvioDouble:0.00}</td>");
+                filasHtml.AppendLine("  <td class='money'>$0.00</td>");           // sin descuento
+                filasHtml.AppendLine($"  <td class='money'>${costoEnvioDouble:0.00}</td>");
+                filasHtml.AppendLine("</tr>");
+            }
+
+
             html = html.Replace("@FILAS", filasHtml.ToString());
 
             var request = System.Web.HttpContext.Current.Request;
@@ -174,7 +189,7 @@ namespace Eterea_Parfums_Web.Helpers
             return html;
         }
 
-        public static string GenerarHtmlFacturaA(etereaEntities7 db, factura factura, cliente cliente, int cuotas)
+        public static string GenerarHtmlFacturaA(etereaEntities7 db, factura factura, cliente cliente, int cuotas, decimal costoEnvio)
         {
             string templatePath = System.Web.HttpContext.Current.Server.MapPath("~/Templates/FacturaA.html");
             string html = File.ReadAllText(templatePath);
@@ -246,20 +261,20 @@ namespace Eterea_Parfums_Web.Helpers
             if (esTarjeta)
             {
                 rowFormaPago = @"
-        <tr>
-          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-          <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-          <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
-          <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
-        </tr>";
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td style='width:40%;'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                  <td style='width:20%; background:#F6DDE6; font-weight:bold;'>Cuotas:</td>
+                  <td>" + System.Net.WebUtility.HtmlEncode(cuotasSel) + @"</td>
+                </tr>";
             }
             else
             {
                 rowFormaPago = @"
-        <tr>
-          <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
-          <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
-        </tr>";
+                <tr>
+                  <td style='background:#F6DDE6; font-weight:bold;'>Forma de Pago:</td>
+                  <td colspan='3'>" + System.Net.WebUtility.HtmlEncode(forma) + @"</td>
+                </tr>";
             }
             html = html.Replace("@ROW_FORMA_PAGO", rowFormaPago);
 
@@ -320,6 +335,23 @@ namespace Eterea_Parfums_Web.Helpers
                 filasHtml.AppendLine($"  <td class='money'>{Mon((decimal)totalConIvaLinea)}</td>");
                 filasHtml.AppendLine("</tr>");
             }
+
+            //Fila extra de costo de envío (si corresponde)
+            if (costoEnvio > 0)
+            {
+                filasHtml.AppendLine("<tr>");
+                filasHtml.AppendLine("  <td class='cant'>1</td>");
+                filasHtml.AppendLine("  <td>Costo de envío</td>");
+                filasHtml.AppendLine($"  <td class='money'>{Mon(costoEnvio)}</td>"); // Precio unitario
+                filasHtml.AppendLine($"  <td class='money'>{Mon(costoEnvio)}</td>"); // Subtotal
+                filasHtml.AppendLine("  <td class='money'>$ 0,00</td>");             // Descuento
+                filasHtml.AppendLine($"  <td class='money'>{Mon(costoEnvio)}</td>"); // Total c/IVA
+                filasHtml.AppendLine("</tr>");
+
+                // También lo sumamos a los totales con IVA
+                sumaTotalConIva += costoEnvio;
+            }
+
 
             html = html.Replace("@FILAS", filasHtml.ToString());
 
