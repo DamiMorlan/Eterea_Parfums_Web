@@ -42,7 +42,7 @@ body {
 }
 
 /* =============================
-          CARDS PROMO
+       CARD — FOTO IZQUIERDA
    ============================= */
 
 .box-promo {
@@ -54,16 +54,15 @@ body {
 
 /* Card */
 .promo-item {
-    position: relative;
     width: 100%;
     max-width: 940px;
-    height: 320px;
+    background: var(--rosa-suave);
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-    transition: transform .35s ease, box-shadow .35s ease;
     display: flex;
-    align-items: center;
+    min-height: 260px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    transition: transform .35s ease, box-shadow .35s ease;
 }
 
     .promo-item:hover {
@@ -71,54 +70,36 @@ body {
         box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
     }
 
-/* Img */
-.promo-bg-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+/* IMG IZQUIERDA */
+.promo-img {
+    width: 38%;
+    min-height: 260px;
     object-fit: cover;
-    z-index: 0;
 }
 
-/* Overlay */
-.gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.15));
-}
-
-/* Contenido */
+/* CONTENIDO DERECHA */
 .item-body {
-    position: relative;
-    z-index: 2;
+    width: 62%;
     padding: 2rem;
-    width: 50%;
-    color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: var(--rosa-profundo);
 }
 
 .item-title {
     font-size: 2rem;
     font-weight: 800;
-    color: var(--blanco);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    margin-bottom: .8rem;
+    color: var(--rosa-profundo);
 }
 
 .item-body p {
     font-size: 1.05rem;
     margin-bottom: .45rem;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
 
-/* Botón */
+/* BOTÓN */
 .promo-item .btn {
     align-self: flex-start;
     background-color: var(--blanco);
@@ -138,7 +119,7 @@ body {
     }
 
 /* =============================
-        LOGO ANIMADO
+         LOGO
    ============================= */
 .logo-eterea-container {
     animation: fadeInLogo 1.5s ease-in-out;
@@ -183,13 +164,17 @@ body {
 }
 
 /* =============================
-         RESPONSIVE
+           RESPONSIVE
    ============================= */
 
 /* Tablets */
 @media (max-width: 992px) {
     .promo-item {
-        height: 300px;
+        min-height: 230px;
+    }
+
+    .promo-img {
+        width: 40%;
     }
 
     .item-body {
@@ -203,31 +188,27 @@ body {
 
     .promo-item {
         flex-direction: column;
-        height: auto;
+        min-height: auto;
         text-align: center;
-        padding-bottom: 1.5rem;
     }
 
-    .gradient-overlay {
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.15));
+    .promo-img {
+        width: 100%;
+        height: 220px;
     }
 
     .item-body {
         width: 100%;
         padding: 1.5rem;
-    }
-
-    .item-title {
-        font-size: 1.6rem;
-    }
-
-    .item-body p {
-        font-size: .95rem;
+        text-align: center;
     }
 
     .promo-item .btn {
         align-self: center;
-        font-size: .9rem;
+    }
+
+    .item-title {
+        font-size: 1.7rem;
     }
 }
 
@@ -237,7 +218,7 @@ body {
         font-size: 1.4rem;
     }
 
-    .promo-item {
-        border-radius: 12px;
+    .promo-img {
+        height: 200px;
     }
 }

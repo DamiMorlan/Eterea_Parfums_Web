@@ -257,3 +257,15 @@
     font-weight: bold;
     text-align: center;
 }
+
+
+/* Más espacio para el precio */
+.producto-item .precio-item {
+    width: 30% !important; /* antes w-25 (25%) */
+}
+
+/* Reducir espacio para el nombre si es necesario */
+.producto-item .w-100 {
+    flex: 1;
+    min-width: 0; /* permite que el texto se contraiga */
+}
