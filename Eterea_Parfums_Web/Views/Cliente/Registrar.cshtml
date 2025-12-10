@@ -98,14 +98,14 @@
                     <label for="Clave">Contraseña:</label>
 
                     <div class="input-group">
-                         @Html.PasswordFor(m => m.Clave, new
-                         {
-                             @class = "form-control password-input",
-                             required = "required",
-                             pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
-                             title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial.",
-                             autocomplete = "new-password"
-                         })
+                        @Html.PasswordFor(m => m.Clave, new
+                        {
+                            @class = "form-control password-input",
+                            required = "required",
+                            pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡\""#\$%&/()=?¿]).{8,}$",
+                            title = "La clave debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y un carácter especial.",
+                            autocomplete = "new-password"
+                        })
                         <button type="button" class="btn btn-outline-secondary toggle-password" tabindex="-1">
                             <i class="fa-solid fa-eye"></i>
                         </button>
@@ -128,10 +128,10 @@
 
                 <div class="form-group">
                     <label for="Dni">DNI:</label>
-                    @Html.TextBoxFor(m => m.Email, new
+                    @Html.TextBoxFor(m => m.Dni, new
                     {
                         @class = "form-control",
-                        type = "email",
+                        type = "text",
                         required = "required",
                         autocomplete = "off"
                     })
