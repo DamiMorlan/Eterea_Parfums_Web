@@ -29,31 +29,33 @@
                     foreach (var p in Model)
                     {
                         <div class="box-promo d-flex justify-content-center">
-                            <div class="promo-item d-flex @(p.id % 2 == 0 && p.id != 1 ? "justify-content-end" : "")">
+                            <div class="box-promo d-flex justify-content-center">
+                                <div class="promo-item">
 
-                                <img src="@Url.Content("~/Imagenes/" + p.banner + ".jpg")"
-                                     alt="Promo"
-                                     class="promo-bg-img" />
+                                    <!-- IMAGEN A LA IZQUIERDA -->
+                                    <img src="@Url.Content("~/Imagenes/" + p.banner + ".jpg")"
+                                         alt="Promo"
+                                         class="promo-img" />
 
-                                <div class="gradient-overlay"></div>
+                                    <!-- INFO A LA DERECHA -->
+                                    <div class="item-body">
+                                        <h5 class="item-title">@p.nombre</h5>
 
-                                <div class="item-body">
-                                    <h5 class="item-title">@p.nombre</h5>
+                                        <p class="fw-semibold my-2">
+                                            @p.descripcion
+                                        </p>
 
-                                    <p class="fw-semibold my-2">
-                                        @p.descripcion
-                                    </p>
+                                        <p>
+                                            <small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small>
+                                        </p>
 
-                                    <p>
-                                        <small>Promo válida hasta: @p.FechaFin.ToString("dd-MM-yyyy")</small>
-                                    </p>
+                                        <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })"
+                                           class="btn btn-light mt-2">
+                                            Ver perfumes
+                                        </a>
+                                    </div>
 
-                                    <a href="@Url.Action("Index", "Perfume", new { promocionId = p.id })"
-                                       class="btn btn-light mt-2">
-                                        Ver perfumes
-                                    </a>
                                 </div>
-
                             </div>
                         </div>
                     }
