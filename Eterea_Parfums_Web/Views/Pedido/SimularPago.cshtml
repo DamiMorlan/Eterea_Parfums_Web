@@ -152,9 +152,11 @@
                            class="form-control mb-2"
                            placeholder="Número de tarjeta"
                            required
-                           minlength="16"
+                           minlength="15"
                            maxlength="16" />
-                    <div class="invalid-feedback">Debe ingresar un número de tarjeta de 16 dígitos.</div>
+                    <div class="invalid-feedback">
+                        Debe ingresar un número de tarjeta válida (Visa, Mastercard o American Express).
+                    </div>
 
                     <div class="row g-2 mb-2">
                         <div class="col">
@@ -211,9 +213,7 @@
         });
 
         // 🔍 Detectar marca según número de tarjeta
-        // Nota: Amex real usa 15 dígitos (34/37). Como vos exigís 16, en la práctica
-        // sólo vas a detectar bien Visa y Mastercard. Dejo Amex por si más adelante
-        // permitís 15 dígitos.
+        // Nota: Amex real usa 15 dígitos (34/37). 
         function detectarMarca(numero) {
             if (!numero) return null;
 
@@ -392,106 +392,107 @@
 
     <script>
         // Validación Bootstrap + alta de nueva tarjeta
-        (() => {
-            const forms = document.querySelectorAll('.needs-validation');
+(() => {
+    const forms = document.querySelectorAll('.needs-validation');
 
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
 
-                    const numInput  = form.querySelector("input[name='NumeroTarjeta']");
-                    const cvvInput  = form.querySelector("input[name='CVV']");
-                    const dniInput  = form.querySelector("input[name='DNI']");
-                    const expInput  = form.querySelector("input[name='FechaDeExpiracion']");
+            const numInput  = form.querySelector("input[name='NumeroTarjeta']");
+            const cvvInput  = form.querySelector("input[name='CVV']");
+            const dniInput  = form.querySelector("input[name='DNI']");
+            const expInput  = form.querySelector("input[name='FechaDeExpiracion']");
 
-                    // Reset de mensajes personalizados
-                    numInput.setCustomValidity('');
-                    cvvInput.setCustomValidity('');
-                    dniInput.setCustomValidity('');
-                    expInput.setCustomValidity('');
+            // Reset de mensajes personalizados
+            numInput.setCustomValidity('');
+            cvvInput.setCustomValidity('');
+            dniInput.setCustomValidity('');
+            expInput.setCustomValidity('');
 
-                    const numVal = (numInput.value || "").trim();
-                    const cvvVal = (cvvInput.value || "").trim();
-                    const dniVal = (dniInput.value || "").trim();
-                    const expVal = (expInput.value || "").trim();
+            const numVal = (numInput.value || "").trim();
+            const cvvVal = (cvvInput.value || "").trim();
+            const dniVal = (dniInput.value || "").trim();
+            const expVal = (expInput.value || "").trim();
 
-                    // Número: 16 dígitos
-                    if (numVal.length !== 16) {
-                        numInput.setCustomValidity('La tarjeta debe tener exactamente 16 dígitos.');
+            // 👉 Detectar la marca por número
+            const marcaNum = detectarMarca(numVal);
+
+            // Número: debe ser Visa / Mastercard / Amex válidos
+            if (!marcaNum) {
+                numInput.setCustomValidity('Número de tarjeta inválido. Verificá los dígitos.');
+            }
+
+            // CVV: 3 dígitos (incluso para Amex en tu simulador)
+            if (cvvVal.length !== 3) {
+                cvvInput.setCustomValidity('El CVV debe tener 3 dígitos.');
+            }
+
+            // DNI: 8 dígitos
+            if (dniVal.length !== 8) {
+                dniInput.setCustomValidity('El DNI debe tener 8 dígitos.');
+            }
+
+            // Fecha: formato MM/AA y posterior o igual al mes actual
+            let fechaOK = false;
+            const match = /^(\d{2})\/(\d{2})$/.exec(expVal);
+            if (match) {
+                const mm = parseInt(match[1], 10);
+                const yy = parseInt(match[2], 10); // últimos 2 dígitos
+                if (mm >= 1 && mm <= 12) {
+                    const hoy = new Date();
+                    const currentYY = hoy.getFullYear() % 100;
+                    const currentMM = hoy.getMonth() + 1;
+
+                    if (yy > currentYY || (yy === currentYY && mm >= currentMM)) {
+                        fechaOK = true;
                     }
+                }
+            }
+            if (!fechaOK) {
+                expInput.setCustomValidity('La fecha debe ser válida y posterior (o igual) al mes actual.');
+            }
 
-                    // CVV: 3 dígitos
-                    if (cvvVal.length !== 3) {
-                        cvvInput.setCustomValidity('El CVV debe tener 3 dígitos.');
-                    }
+            // Disparar validación nativa
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
 
-                    // DNI: 8 dígitos
-                    if (dniVal.length !== 8) {
-                        dniInput.setCustomValidity('El DNI debe tener 8 dígitos.');
-                    }
+            // Formulario OK → no hacemos submit real, solo damos de alta la tarjeta
+            event.preventDefault();
 
-                    // Fecha: formato MM/AA y posterior o igual al mes actual
-                    let fechaOK = false;
-                    const match = /^(\d{2})\/(\d{2})$/.exec(expVal);
-                    if (match) {
-                        const mm = parseInt(match[1], 10);
-                        const yy = parseInt(match[2], 10); // últimos dos dígitos
-                        if (mm >= 1 && mm <= 12) {
-                            const hoy = new Date();
-                            const currentYY = hoy.getFullYear() % 100;
-                            const currentMM = hoy.getMonth() + 1;
+            const idx    = Date.now();
+            const numero = numVal;
 
-                            // Permitimos mismo mes / año o futuro
-                            if (yy > currentYY || (yy === currentYY && mm >= currentMM)) {
-                                fechaOK = true;
-                            }
-                        }
-                    }
-                    if (!fechaOK) {
-                        expInput.setCustomValidity('La fecha debe ser válida y posterior (o igual) al mes actual.');
-                    }
+            // Usamos la marca detectada para decidir el medio
+            let medioValue = `NEW${idx}`;
+            let labelTexto = "Tarjeta nueva";
 
-                    // Ahora dispara la validación nativa
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        form.classList.add('was-validated');
-                        return;
-                    }
+            if (marcaNum === 'VISC') {
+                medioValue = 'VISC';
+                labelTexto = 'Visa nueva';
+            } else if (marcaNum === 'MC') {
+                medioValue = 'MC';
+                labelTexto = 'Mastercard nueva';
+            } else if (marcaNum === 'AMEX') {
+                medioValue = 'AMEX';
+                labelTexto = 'American Express nueva';
+            }
 
-                    // Formulario OK → no hacemos post real, solo simulamos alta
-                    event.preventDefault();
+            $('#listaMedios').append(`
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="${medioValue}"
+                           class="form-check-input me-2 medio" />
+                    <i class="bi bi-credit-card-2-front mp-logo"></i>
+                    <div class="flex-grow-1">${labelTexto} ****${numero.slice(-4)}</div>
+                </label>`);
 
-                    const idx    = Date.now();
-                    const numero = numVal;
+            $('#modalNueva').modal('hide');
+        });
+    });
+})();
 
-                    // Detectar tarjeta
-                    const marca = detectarMarca(numero); // usa la función global
-
-                    let medioValue = `NEW${idx}`;
-                    let labelTexto = "Tarjeta nueva";
-
-                    if (marca === 'VISC') {
-                        medioValue = 'VISC';
-                        labelTexto = 'Visa nueva';
-                    } else if (marca === 'MC') {
-                        medioValue = 'MC';
-                        labelTexto = 'Mastercard nueva';
-                    } else if (marca === 'AMEX') {
-                        medioValue = 'AMEX';
-                        labelTexto = 'American Express nueva';
-                    }
-
-                    $('#listaMedios').append(`
-                        <label class="mp-item">
-                            <input type="radio" name="medio" value="${medioValue}"
-                                   class="form-check-input me-2 medio" />
-                            <i class="bi bi-credit-card-2-front mp-logo"></i>
-                            <div class="flex-grow-1">${labelTexto} ****${numero.slice(-4)}</div>
-                        </label>`);
-
-                    $('#modalNueva').modal('hide');
-                });
-            });
-        })();
     </script>
 }
