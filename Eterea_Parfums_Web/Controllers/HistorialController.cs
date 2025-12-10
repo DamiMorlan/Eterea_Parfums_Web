@@ -168,6 +168,8 @@ namespace Eterea_Parfums_Web.Controllers
                     Perfumes = perfumes,
                     PrecioTotal = totalPagado,
 
+                    tipoDeFactura = factura.tipo_de_factura,
+
                     //datos para mostrar el recargo
                     RecargoTarjeta = (decimal)factura.recargo_tarjeta,
                     FormaDePago = factura.forma_de_pago,

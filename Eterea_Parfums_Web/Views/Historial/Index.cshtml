@@ -31,7 +31,7 @@
                 var urlDetalle = Url.Action("DetalleFactura", "Historial", new { factura_id = factura.id });
 
                 <a href="@urlDetalle" class="factura-card clickable-card" style="text-decoration:none; color:inherit;">
-                    <h5 class="card-title">Factura N° @factura.num_factura</h5>
+                    <h5 class="card-title">Factura @factura.tipo_de_factura N° @factura.num_factura</h5>
                     <hr class="separator">
                     <p><strong>Fecha:</strong> @factura.fecha.ToString("dd/MM/yyyy")</p>
                     <p><strong>Total:</strong> $@factura.precio_total.ToString("N2")</p>
