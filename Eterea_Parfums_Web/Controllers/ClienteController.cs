@@ -207,6 +207,13 @@ namespace Eterea_Parfums_Web.Controllers
                 {
                     db.cliente.Add(nuevoCliente);
                     db.SaveChanges();
+
+                    // 📧 Enviar mail de bienvenida al registrarse
+                    CorreoHelper.EnviarCorreoBienvenidaRegistro(
+                        nuevoCliente.e_mail,
+                        nuevoCliente.nombre,
+                        nuevoCliente.usuario
+                    );
                 }
                 catch (DbEntityValidationException ex)
                 {
@@ -221,6 +228,7 @@ namespace Eterea_Parfums_Web.Controllers
                     throw;
                 }
             }
+            TempData["RegistroOK"] = "Tu registro se completó correctamente. Te enviamos un correo de bienvenida.";
 
             return RedirectToAction("Login", "Cliente");
         }
@@ -531,10 +539,10 @@ namespace Eterea_Parfums_Web.Controllers
             }
 
             // ---------------------------------------------------
-            // 3) Validación de DNI/CUIT y FECHA de nacimiento
+            // 3) Validación de DNI y FECHA de nacimiento
             // ---------------------------------------------------
 
-            // DNI/CUIT longitud
+            // DNI longitud
             if (docForm.Length != 8 && docForm.Length != 11)
             {
                 ModelState.AddModelError("Dni",

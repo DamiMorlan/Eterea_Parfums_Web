@@ -89,6 +89,25 @@ namespace Eterea_Parfums_Web.Helpers
             EnviarCorreoGenerico(emailDestino, asunto, cuerpo);
         }
 
+        public static void EnviarCorreoBienvenidaRegistro(string emailDestino, string nombreCliente, string usuario)
+        {
+            string asunto = "¡Bienvenido/a a Etérea Parfums!";
+
+            string cuerpo =
+                $"Hola {nombreCliente},\n\n" +
+                "¡Te damos la bienvenida a Etérea Parfums!\n\n" +
+                "Tu registro se ha completado correctamente y ya podés ingresar a nuestra web con tus datos de acceso.\n\n" +
+                $"Nombre de usuario: {usuario}\n\n" +
+                "Desde ahora podrás:\n" +
+                "- Realizar compras online.\n" +
+                "- Ver el historial de tus pedidos.\n" +
+                "- Gestionar tus domicilios de envío.\n\n" +
+                "¡Gracias por registrarte y por confiar en Etérea Parfums!\n\n" +
+                "Etérea Parfums.\n\n" +
+                "Este es un mensaje automático, por favor no respondas a este correo.";
+
+            EnviarCorreoGenerico(emailDestino, asunto, cuerpo);
+        }
 
 
     }
