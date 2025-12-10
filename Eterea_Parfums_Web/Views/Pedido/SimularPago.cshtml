@@ -5,7 +5,6 @@
     var ciAR = new CultureInfo("es-AR");
 }
 
-
 @{
     ViewBag.Title = "Simulación de Pago";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -86,7 +85,6 @@
                 </div>
             </div>
 
-
             <a href="@Url.Action("VistaPrevia","Pedido")" class="d-block mt-4 text-decoration-none">
                 &lt; Volver al sitio
             </a>
@@ -101,6 +99,15 @@
                     <span>Subtotal productos</span>
                     <span>$ @Model.Monto.ToString("N2", ciAR)</span>
                 </div>
+
+                @* Costo de envío solo si el total es menor a 70.000 *@
+                @if ((decimal)Model.Monto < 70000m)
+                {
+                    <div class="d-flex justify-content-between">
+                        <span>Costo de envío</span>
+                        <span id="txtEnvio">$ @((4000m).ToString("N2", ciAR))</span>
+                    </div>
+                }
 
                 <div class="d-flex justify-content-between" id="filaInteres" style="display:none;">
                     <span>Recargo por cuotas</span>
@@ -134,179 +141,358 @@
     </div>
 </div>
 
-<!-- MODAL NUEVA TARJETA (simulado) ----------------------------------->
+<!-- MODAL NUEVA TARJETA (con validación) ----------------------------------->
 <div class="modal fade" id="modalNueva" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title">Nueva tarjeta</h5></div>
-            <div class="modal-body">
-                <input class="form-control mb-2" placeholder="Número de tarjeta" />
-                <div class="row g-2 mb-2">
-                    <div class="col"><input class="form-control" placeholder="MM/AA" /></div>
-                    <div class="col"><input class="form-control" placeholder="CVV" /></div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <input name="NumeroTarjeta"
+                           class="form-control mb-2"
+                           placeholder="Número de tarjeta"
+                           required
+                           minlength="15"
+                           maxlength="16" />
+                    <div class="invalid-feedback">
+                        Debe ingresar un número de tarjeta válida (Visa, Mastercard o American Express).
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col">
+                            <input type="text"
+                                   name="FechaDeExpiracion"
+                                   class="form-control"
+                                   placeholder="MM/AA"
+                                   required />
+                            <div class="invalid-feedback">Debe ingresar una fecha válida posterior al mes actual.</div>
+                        </div>
+                        <div class="col">
+                            <input name="CVV"
+                                   class="form-control"
+                                   placeholder="CVV"
+                                   required
+                                   minlength="3"
+                                   maxlength="3" />
+                            <div class="invalid-feedback">El CVV debe tener 3 dígitos.</div>
+                        </div>
+                    </div>
+
+                    <input name="NombreTitular"
+                           class="form-control mb-2"
+                           placeholder="Nombre titular"
+                           required />
+                    <div class="invalid-feedback">Nombre del titular inválido.</div>
+
+                    <input name="DNI"
+                           class="form-control"
+                           placeholder="DNI"
+                           required
+                           minlength="8"
+                           maxlength="8" />
+                    <div class="invalid-feedback">El DNI debe tener 8 dígitos.</div>
                 </div>
-                <input class="form-control mb-2" placeholder="Nombre titular" />
-                <input class="form-control" placeholder="DNI" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="btnAddCard" class="btn btn-success">Confirmar</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnAddCard" class="btn btn-success">Confirmar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
 
+    <script>
+        // Formato para enviar al servidor (invariante)
         const fmtUS = n => Number(n).toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
             useGrouping: false
         });
 
-$(function(){
+        // 🔍 Detectar marca según número de tarjeta
+        // Nota: Amex real usa 15 dígitos (34/37). 
+        function detectarMarca(numero) {
+            if (!numero) return null;
 
-  /* ======== constantes ======== */
- const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
-const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+            // Visa: empieza con 4 (mostramos sólo 16 dígitos)
+            if (/^4\d{15}$/.test(numero)) return 'VISC';
 
-// Tablas de recargo por medio
-//  Visa Crédito y Mastercard: 1 y 3 sin interés, 6=10%, 9=15%, 12=20%
-//  Amex: 1 sin interés, 6=10%, 12=20%
-const tablasCuotas = {
-    MC:   { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
-    VISC: { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
-    AMEX: { 1: 0,       6: 0.10,          12: 0.20 }
-};
+            // Mastercard: 51-55 o 2221-2720
+            if (/^5[1-5]\d{14}$/.test(numero)) return 'MC'; // 51-55
+            if (/^2(2[2-9]\d{2}|[3-6]\d{3}|7[01]\d{2}|720\d{2})\d{10}$/.test(numero)) return 'MC'; // 2221-2720
 
-  /* ======== estado / refs ====== */
-    let medio = "", cuotas = 1, recargo = 0, tablaActual = null;
+            // American Express: 34 o 37 + 13 dígitos (total 15)
+            if (/^3[47]\d{13}$/.test(numero)) return 'AMEX';
 
-  const $txtTotal = $('#txtTotal'),
-        $txtInter = $('#txtInteres'),
-        $filaInt  = $('#filaInteres'),
-        $btnPay   = $('#btnPagar'),
-        $hdMedio  = $('#hdMedio'),
-        $hdCuotas = $('#hdCuotas'),
-        $hdTotal  = $('#hdTotal');
-
-    /* ======== helpers ============ */
-
-    const fmtAR = n => Number(n).toLocaleString('es-AR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-
-    const actResumen = _ => {
-        const total = totalBase + recargo;
-        //Lo que ve el usuario: AR
-        $txtTotal.text(`$ ${fmtAR(total)}`);
-        $txtInter.text(`$ ${fmtAR(recargo)}`);
-        $filaInt.toggle(recargo > 0);
-
-        //Lo que se envía al servidor: US (para parsear seguro)
-        $hdTotal.val(fmtUS(total));
-    };
-    const calcRecargo = _ => {
-        if (!tablaActual) {
-            recargo = 0;
-            actResumen();
-            return;
+            return null;
         }
-        const tasa = tablaActual[cuotas] || 0;
-        recargo = tasa * totalBase;
-        actResumen();
-    };
 
-  /* ======== selección medio ===== */
-    $(document).on('change', 'input[name="medio"]', function () {
-        medio = this.value;
-        $hdMedio.val(medio);
-        ocultarCuotas(); // limpia select y recargo
+        $(function () {
 
-        if (medio === 'MP') {
-            // Mercado Pago: se paga con saldo, sin interés
-            if (saldo < totalBase) {
-                alert('El saldo disponible no alcanza para pagar la compra.');
-                this.checked = false;
-                medio = "";
+            /* ======== constantes ======== */
+            const totalBase = @Html.Raw(((decimal)Model.Monto).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+            const saldo     = @Html.Raw(((decimal)Model.SaldoCuenta).ToString("0.################", System.Globalization.CultureInfo.InvariantCulture));
+
+            // Costo de envío si la compra es menor a 70.000
+            const costoEnvioBase = @Html.Raw(
+                (((decimal)Model.Monto) < 70000m ? 4000m : 0m)
+                    .ToString("0.################", System.Globalization.CultureInfo.InvariantCulture)
+            );
+
+            // Tablas de recargo por medio
+            const tablasCuotas = {
+                MC:   { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
+                VISC: { 1: 0, 3: 0, 6: 0.10, 9: 0.15, 12: 0.20 },
+                AMEX: { 1: 0,       6: 0.10,          12: 0.20 }
+            };
+
+            /* ======== estado / refs ====== */
+            let medio = "", cuotas = 1, recargo = 0, tablaActual = null;
+
+            const $txtTotal = $('#txtTotal'),
+                  $txtInter = $('#txtInteres'),
+                  $filaInt  = $('#filaInteres'),
+                  $btnPay   = $('#btnPagar'),
+                  $hdMedio  = $('#hdMedio'),
+                  $hdCuotas = $('#hdCuotas'),
+                  $hdTotal  = $('#hdTotal'),
+                  $txtEnvio = $('#txtEnvio');
+
+            /* ======== helpers ============ */
+            const fmtAR = n => Number(n).toLocaleString('es-AR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            const actResumen = _ => {
+                const total = totalBase + costoEnvioBase + recargo;
+
+                // Lo que ve el usuario: AR
+                $txtTotal.text(`$ ${fmtAR(total)}`);
+                $txtInter.text(`$ ${fmtAR(recargo)}`);
+                $filaInt.toggle(recargo > 0);
+
+                // Envío
+                if ($txtEnvio.length) {
+                    $txtEnvio.text(`$ ${fmtAR(costoEnvioBase)}`);
+                }
+
+                // Lo que se envía al servidor
+                $hdTotal.val(fmtUS(total));
+            };
+
+            const calcRecargo = _ => {
+                if (!tablaActual) {
+                    recargo = 0;
+                    actResumen();
+                    return;
+                }
+                const tasa = tablaActual[cuotas] || 0;
+                recargo = tasa * totalBase;
+                actResumen();
+            };
+
+            /* ======== selección medio ===== */
+            $(document).on('change', 'input[name="medio"]', function () {
+                medio = this.value;
+                $hdMedio.val(medio);
+                ocultarCuotas();
+                recargo = 0;
+
+                if (medio === 'MP') {
+                    // Mercado Pago: se paga con saldo, sin interés, pero con envío si corresponde
+                    const totalConEnvio = totalBase + costoEnvioBase;
+                    if (saldo < totalConEnvio) {
+                        alert('El saldo disponible no alcanza para pagar la compra (incluyendo el costo de envío).');
+                        this.checked = false;
+                        medio = "";
+                        validar();
+                        return;
+                    }
+                    actResumen();
+                }
+                else if (medio === 'MC' || medio === 'VISC' || medio === 'AMEX') {
+                    // Tarjetas de crédito con cuotas
+                    mostrarCuotas($(this).parent(), tablasCuotas[medio]);
+                }
+                else {
+                    // Visa débito u otra tarjeta sin tabla de cuotas
+                    actResumen();
+                }
+
                 validar();
-                return;
+            });
+
+            /* ======== cuotas ============== */
+            function mostrarCuotas($where, tabla) {
+                if (!tabla) return;
+                if ($where.find('.selCuotas').length) return;
+
+                tablaActual = tabla;
+
+                const html = `<select class="form-select selCuotas mt-2">
+                    ${Object.entries(tabla).map(([c, p]) => `
+                        <option value="${c}">
+                            ${c} pago${c > 1 ? 's' : ''}
+                            ${p === 0 ? ' sin interés' : ' (' + (p * 100) + '% interés)'}
+                        </option>`).join('')}
+                </select>`;
+
+                $where.append(html);
+
+                $where.find('.selCuotas')
+                    .on('change', function () {
+                        cuotas = +this.value;
+                        $hdCuotas.val(cuotas);
+                        calcRecargo();
+                    })
+                    .trigger('change'); // arranca con la primera opción
             }
+
+            function ocultarCuotas() {
+                $('.selCuotas').remove();
+                cuotas = 1;
+                $hdCuotas.val(1);
+                tablaActual = null;
+                recargo = 0;
+                actResumen();
+            }
+
+            /* ======== botón pagar ========= */
+            function validar() {
+                const ok = !!medio;
+                $btnPay.prop('disabled', !ok);
+            }
+
+            /* ======== máscaras inputs modal ======= */
+            $("input[name='CVV'], input[name='DNI'], input[name='NumeroTarjeta']").on("input", function () {
+                this.value = this.value.replace(/\D/g, '');
+            });
+            $("input[name='CVV']").attr("maxlength", 3);
+            $("input[name='DNI']").attr("maxlength", 8);
+            $("input[name='NumeroTarjeta']").attr("maxlength", 16);
+
+            $("input[name='FechaDeExpiracion']").on("input", function () {
+                let v = this.value.replace(/\D/g, "");
+                if (v.length >= 3) {
+                    this.value = v.substring(0, 2) + "/" + v.substring(2, 4);
+                } else {
+                    this.value = v;
+                }
+            });
+
+            /* ======== init ================ */
             actResumen();
-        }
-        else if (medio === 'MC' || medio === 'VISC' || medio === 'AMEX') {
-            // Tarjetas de crédito con cuotas
-            mostrarCuotas($(this).parent(), tablasCuotas[medio]);
-        }
-        else {
-            // Visa débito, nueva tarjeta u otros -> 1 pago sin interés
-            actResumen();
-        }
-
-        validar();
-    });
-
-
-  /* ======== cuotas ============== */
-    function mostrarCuotas($where, tabla) {
-        if (!tabla) return;
-        if ($where.find('.selCuotas').length) return;
-
-        tablaActual = tabla;
-
-        const html = `<select class="form-select selCuotas mt-2">
-        ${Object.entries(tabla).map(([c, p]) => `
-            <option value="${c}">
-                ${c} pago${c > 1 ? 's' : ''}
-                ${p === 0 ? ' sin interés' : ' (' + (p * 100) + '% interés)'}
-            </option>`).join('')}
-    </select>`;
-
-        $where.append(html);
-
-        $where.find('.selCuotas')
-            .on('change', function () {
-                cuotas = +this.value;
-                $hdCuotas.val(cuotas);
-                calcRecargo();
-            })
-            .trigger('change'); // arranca en la primera opción (1 pago)
-    }
-
-    function ocultarCuotas() {
-        $('.selCuotas').remove();
-        cuotas = 1;
-        $hdCuotas.val(1);
-        tablaActual = null;
-        recargo = 0;
-        actResumen();
-    }
-
-
-  /* ======== botón pagar ========= */
-  function validar(){
-      const ok = !!medio;
-      $btnPay.prop('disabled',!ok);
-  }
-
-  /* ======== nueva tarjeta ======= */
-  $('#btnAddCard').on('click',function(){
-      const idx=Date.now();
-      $('#listaMedios').append(`
-        <label class="mp-item">
-          <input type="radio" name="medio" value="NEW${idx}"
-                 class="form-check-input me-2 medio"/>
-          <i class="bi bi-credit-card-2-front mp-logo"></i>
-          <div class="flex-grow-1">Tarjeta nueva ****1234</div>
-        </label>`);
-      $('#modalNueva').modal('hide');
-  });
-
-  /* ======== init ================ */
-  actResumen(); validar();
-});
+            validar();
+        });
     </script>
 
+    <script>
+        // Validación Bootstrap + alta de nueva tarjeta
+(() => {
+    const forms = document.querySelectorAll('.needs-validation');
+
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+
+            const numInput  = form.querySelector("input[name='NumeroTarjeta']");
+            const cvvInput  = form.querySelector("input[name='CVV']");
+            const dniInput  = form.querySelector("input[name='DNI']");
+            const expInput  = form.querySelector("input[name='FechaDeExpiracion']");
+
+            // Reset de mensajes personalizados
+            numInput.setCustomValidity('');
+            cvvInput.setCustomValidity('');
+            dniInput.setCustomValidity('');
+            expInput.setCustomValidity('');
+
+            const numVal = (numInput.value || "").trim();
+            const cvvVal = (cvvInput.value || "").trim();
+            const dniVal = (dniInput.value || "").trim();
+            const expVal = (expInput.value || "").trim();
+
+            // 👉 Detectar la marca por número
+            const marcaNum = detectarMarca(numVal);
+
+            // Número: debe ser Visa / Mastercard / Amex válidos
+            if (!marcaNum) {
+                numInput.setCustomValidity('Número de tarjeta inválido. Verificá los dígitos.');
+            }
+
+            // CVV: 3 dígitos (incluso para Amex en tu simulador)
+            if (cvvVal.length !== 3) {
+                cvvInput.setCustomValidity('El CVV debe tener 3 dígitos.');
+            }
+
+            // DNI: 8 dígitos
+            if (dniVal.length !== 8) {
+                dniInput.setCustomValidity('El DNI debe tener 8 dígitos.');
+            }
+
+            // Fecha: formato MM/AA y posterior o igual al mes actual
+            let fechaOK = false;
+            const match = /^(\d{2})\/(\d{2})$/.exec(expVal);
+            if (match) {
+                const mm = parseInt(match[1], 10);
+                const yy = parseInt(match[2], 10); // últimos 2 dígitos
+                if (mm >= 1 && mm <= 12) {
+                    const hoy = new Date();
+                    const currentYY = hoy.getFullYear() % 100;
+                    const currentMM = hoy.getMonth() + 1;
+
+                    if (yy > currentYY || (yy === currentYY && mm >= currentMM)) {
+                        fechaOK = true;
+                    }
+                }
+            }
+            if (!fechaOK) {
+                expInput.setCustomValidity('La fecha debe ser válida y posterior (o igual) al mes actual.');
+            }
+
+            // Disparar validación nativa
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            // Formulario OK → no hacemos submit real, solo damos de alta la tarjeta
+            event.preventDefault();
+
+            const idx    = Date.now();
+            const numero = numVal;
+
+            // Usamos la marca detectada para decidir el medio
+            let medioValue = `NEW${idx}`;
+            let labelTexto = "Tarjeta nueva";
+
+            if (marcaNum === 'VISC') {
+                medioValue = 'VISC';
+                labelTexto = 'Visa nueva';
+            } else if (marcaNum === 'MC') {
+                medioValue = 'MC';
+                labelTexto = 'Mastercard nueva';
+            } else if (marcaNum === 'AMEX') {
+                medioValue = 'AMEX';
+                labelTexto = 'American Express nueva';
+            }
+
+            $('#listaMedios').append(`
+                <label class="mp-item">
+                    <input type="radio" name="medio" value="${medioValue}"
+                           class="form-check-input me-2 medio" />
+                    <i class="bi bi-credit-card-2-front mp-logo"></i>
+                    <div class="flex-grow-1">${labelTexto} ****${numero.slice(-4)}</div>
+                </label>`);
+
+            $('#modalNueva').modal('hide');
+        });
+    });
+})();
+
+    </script>
 }

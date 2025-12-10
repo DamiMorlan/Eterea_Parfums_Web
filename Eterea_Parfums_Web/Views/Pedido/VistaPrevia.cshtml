@@ -110,24 +110,23 @@
 
                 @if (Model.EnvioGratis)
                 {
-                    <div class="mt-2 text-center" style="color: var(--bordo); font-weight: bold;">
+                    <div class="envio-gratis-vp">
                         ¡Felicidades! Tu envío es gratis
                     </div>
                 }
                 else
                 {
-                    <p style="font-size:.9rem; color: var(--bordo); font-weight: bold;">
+                    <p class="envio-gratis-vp">
                         Envío gratis a partir de $70.000.
                     </p>
                 }
 
-                <div class="text-center mt-3">
-                    <a href="@Url.Action("SimularPago", "Pedido",
-                            new { monto = Model.Total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) })"
-                       class="btn btn-lg btn-de-pagar">
-                        Ir a Pagar
-                    </a>
-                </div>
+            <div class="text-center mt-3">
+                <a href="@Url.Action("SimularPago", "Pedido")"
+                   class="btn btn-lg btn-de-pagar">
+                    Ir a Pagar
+                </a>
+            </div>
 
                 <p class="text-muted mt-2 text-center" style="font-size:.9rem;">
                     Serás redirigido a Mercado Pago

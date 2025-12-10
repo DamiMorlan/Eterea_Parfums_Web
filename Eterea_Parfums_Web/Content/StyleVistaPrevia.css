@@ -250,3 +250,10 @@
     }
 }
 
+/* Mensaje de envío gratis (centrado) */
+.envio-gratis-vp {
+    font-size: 0.9rem;
+    color: var(--bordo);
+    font-weight: bold;
+    text-align: center;
+}

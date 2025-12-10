@@ -144,14 +144,40 @@
                     <h2 class="fs-2 mb-1 fw-semibold">
                         @Model.Perfume.nombre
                     </h2>
+
                     @{
-                        var precio = Model.Perfume.precio_en_pesos;
-                        var parteEntera = Math.Truncate(precio);
+                        // Precio de lista del perfume (con IVA)
+                        decimal precioLista = (decimal)Model.Perfume.precio_en_pesos;
+
+                        // Formato actual (entero, sin decimales)
+                        var parteEntera = Math.Truncate(precioLista);
                         var precioFormateado = parteEntera.ToString("#,##0");
+
+                        // 🔹 Promos activas (filtro)
+                        var promosActivas = Model.Perfume.promocion?
+                            .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
+                            .ToList()
+                            ?? new List<Eterea_Parfums_Web.Models.promocion>();
+
+                        // 🔹 Precio final a considerar para el envío
+                        // Regla: si hay promo del 10%, uso el precio con 10% OFF;
+                        // si sólo hay promo por segunda unidad, no afecta a 1 unidad, así que uso el precio de lista.
+                        decimal precioFinalEnvio = precioLista;
+
+                        var promoDiez = promosActivas.FirstOrDefault(p => ObtenerPorcentaje(p) == 10);
+                        if (promoDiez != null)
+                        {
+                            // Usamos el helper ya definido en @functions
+                            precioFinalEnvio = PrecioLlevandoUno(precioLista, 10);
+                        }
+
+                        bool envioGratis = precioFinalEnvio >= 70000m;
                     }
+
                     <h3 class="fs-3 fw-bold texte-grey mt-2">
                         $@precioFormateado
                     </h3>
+
 
                     <hr />
 
@@ -217,10 +243,13 @@
                         </button>
                     }
 
-                    <p class="envio mt-4">
-                        <i class="fa fa-truck me-2"></i>
-                        <span class="">Llega GRATIS en hasta 1 día hábil</span>
-                    </p>
+                    @if (envioGratis)
+                    {
+                        <p class="envio mt-4">
+                            <i class="fa fa-truck me-2"></i>
+                            <span class="">Llega GRATIS en hasta 1 día hábil</span>
+                        </p>
+                    }
                     <!-- Separador personalizado -->
                     <hr class="d-md-none mt-4" />
 
@@ -283,11 +312,7 @@
                             => R2(precioLista + (precioLista * (100 - porcentajeSegunda * 2) / 100m));
                     }
 
-                    @{
-                        var promosActivas = Model.Perfume.promocion?
-                            .Where(p => p.id != 1 && p.activo && p.fecha_inicio <= DateTime.Now && p.fecha_fin >= DateTime.Now)
-                            .ToList();
-                    }
+                   
 
                     @if (promosActivas != null && promosActivas.Any())
 

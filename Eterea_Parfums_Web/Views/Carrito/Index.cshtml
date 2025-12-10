@@ -161,12 +161,10 @@
                     ¡Felicidades! Tu envío es gratis
                 </div>
 
-                @if (total < 70000)
-                {
-                    <p style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center;">
-                        Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $70.000.
-                    </p>
-                }
+                <p id="textoEnvioCalculado"
+                   style="margin-top: 10px; font-size: 0.9rem; color: #555; text-align: center; @(total >= 70000 ? "display:none;" : "")">
+                    Los gastos de envío serán calculados al finalizar la compra. Envío gratis en compras mayores a $70.000.
+                </p>
 
                 @using (Html.BeginForm("VistaPrevia", "Pedido", FormMethod.Get))
                 {
@@ -395,15 +393,16 @@
             if (elDes) elDes.textContent = '- $ ' + fmtARNumber.format(des);
             if (elTot) elTot.textContent = '$ ' + fmtARNumber.format(tot);
 
-            // Mostrar / ocultar mensaje de envío gratis
+            // Mostrar / ocultar mensaje de envío gratis y el texto de cálculo de envío
             const aviso = document.getElementById('envioGratisMensaje');
+            const textoEnvio = document.getElementById('textoEnvioCalculado');
 
-            if (aviso) {
-                if (data.total_cents >= 70000 * 100) { // 70.000 en centavos
-                    aviso.style.display = 'block';
-                } else {
-                    aviso.style.display = 'none';
-                }
+            if (data.total_cents >= 70000 * 100) { // 70.000 en centavos
+                if (aviso) aviso.style.display = 'block';
+                if (textoEnvio) textoEnvio.style.display = 'none';
+            } else {
+                if (aviso) aviso.style.display = 'none';
+                if (textoEnvio) textoEnvio.style.display = 'block';
             }
         }
 

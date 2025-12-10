@@ -27,102 +27,7 @@ namespace Eterea_Parfums_Web.Controllers
     {
         private etereaEntities7 db = new etereaEntities7();
 
-        /*  [HttpPost]
-          public ActionResult VistaPrevia(List<int> PerfumeIds, List<int> Cantidades, double Subtotal, double Descuento, double Total)
-          {
-              if (Session["clienteId"] == null)
-              {
-                  return RedirectToAction("Login", "Cuenta");
-              }
-
-              if (PerfumeIds == null || Cantidades == null || PerfumeIds.Count != Cantidades.Count)
-              {
-                  return RedirectToAction("Index", "Carrito");
-              }
-
-              int clienteId = (int)Session["clienteId"];
-
-              var cliente = db.cliente.FirstOrDefault(c => c.id == clienteId);
-              var calle = db.calle.FirstOrDefault(c => c.id == cliente.calle_id);
-              var localidad = db.localidad.FirstOrDefault(l => l.id == cliente.localidad_id);
-              var provincia = db.provincia.FirstOrDefault(p => p.id == cliente.provincia_id);
-
-              // ✅ Armar el texto del domicilio para mostrar
-              string domicilioTexto = "";
-
-              if (calle != null)
-                  domicilioTexto += calle.nombre + " ";
-              domicilioTexto += cliente.numeracion_calle;
-
-              if (!string.IsNullOrEmpty(cliente.piso))
-                  domicilioTexto += " Piso " + cliente.piso;
-              if (!string.IsNullOrEmpty(cliente.departamento))
-                  domicilioTexto += " Dpto. " + cliente.departamento;
-
-              domicilioTexto += "\n";
-              domicilioTexto += "C.P. " + cliente.codigo_postal + ", ";
-              if (localidad != null)
-                  domicilioTexto += localidad.nombre + ", ";
-              if (provincia != null)
-                  domicilioTexto += provincia.nombre;
-
-              // ✅ Guardar en sesión
-              Session["DomicilioDeEnvioTexto"] = domicilioTexto;
-
-              // ✅ Cargar ítems del pedido
-              var items = new List<ItemCarritoViewModel>();
-              for (int i = 0; i < PerfumeIds.Count; i++)
-              {
-                  int perfumeId = PerfumeIds[i];
-                  int cantidad = Cantidades[i];
-
-                  var perfume = db.perfume
-                      .Include(p => p.promocion)
-                      .Include(p => p.tipo_de_perfume)
-                      .Include(p => p.genero)
-                      .Include(p => p.stock)
-                      .FirstOrDefault(p => p.id == perfumeId);
-
-                  if (perfume != null && cantidad > 0)
-                  {
-                      // Simular un objeto carrito para reusar el helper
-                      var carritoFake = new carrito
-                      {
-                          perfume = perfume,
-                          cantidad = cantidad
-                      };
-
-                      // Podés calcular stock real si querés, o dejarlo en 0
-                      int stockDisponible = perfume.stock.Sum(s => s.cantidad) - 5;
-
-                      var itemVM = CarritoHelper.BuildItemViewModel(carritoFake, stockDisponible);
-
-                      items.Add(itemVM);
-                  }
-              }
-
-              double subtotal = items.Sum(i => i.PrecioOriginal * i.Cantidad);
-              double total = items.Sum(i => i.Total);
-              double descuento = subtotal - total;
-              bool envioGratis = total >= 50000;
-
-
-              var model = new VistaPreviaPedidoViewModel
-              {
-                  Cliente = cliente,
-                  Calle = calle,
-                  Localidad = localidad,
-                  Provincia = provincia,
-                  Items = items,
-                  Subtotal = subtotal,
-                  Descuento = descuento,
-                  Total = total,
-                  EnvioGratis = envioGratis,
-                  DomicilioDeEnvioTexto = domicilioTexto  // ✅ pasarlo al modelo también
-              };
-
-              return View(model);
-          }*/
+       
         [HttpGet]
         public ActionResult VistaPrevia()
         {
@@ -215,74 +120,7 @@ namespace Eterea_Parfums_Web.Controllers
 
 
 
-        //[HttpPost]
-        /*public async Task<ActionResult> IrAPagar(List<ItemResumenPedidoViewModel> productos, string montoFinal)
-        {
-            if (string.IsNullOrWhiteSpace(montoFinal))
-            {
-                TempData["ErrorPago"] = "No se pudo iniciar el pago. montoFinal vacío.";
-                return RedirectToAction("Index", "Carrito");
-            }
-
-            decimal montoDecimal;
-            bool ok = decimal.TryParse(
-                montoFinal.Replace(",", "."), // Fuerza punto decimal
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out montoDecimal
-            );
-
-            if (!ok)
-            {
-                TempData["ErrorPago"] = "No se pudo interpretar el monto.";
-                return RedirectToAction("Index", "Carrito");
-            }
-
-            // 👇 AQUÍ va esta parte (una vez que montoDecimal está listo)
-            var items = new[]
-            {
-        new
-        {
-            title = "Compra en Etérea Parfums",
-            quantity = 1,
-            unit_price = montoDecimal,
-            currency_id = "ARS"
-        }
-    };
-
-            var preference = new
-            {
-                items = items,
-                back_urls = new
-                {
-                    success = Url.Action("PagoExitoso", "Pedido", null, Request.Url.Scheme),
-                    failure = Url.Action("PagoFallido", "Pedido", null, Request.Url.Scheme),
-                    pending = Url.Action("PagoPendiente", "Pedido", null, Request.Url.Scheme)
-                },
-                auto_return = "approved"
-            };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "TEST-5038567099517736-070123-746239afa62e81d9d67bce507d09076f-130528138");
-                var content = new StringContent(JsonConvert.SerializeObject(preference), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("https://api.mercadopago.com/checkout/preferences", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                    string initPoint = result.init_point;
-                    return Redirect(initPoint);
-                }
-                else
-                {
-                    TempData["ErrorPago"] = "No se pudo iniciar el pago. Intente nuevamente.";
-                    return RedirectToAction("Index", "Carrito");
-                }
-            }
-        }*/
-
-
+       
 
 
         public ActionResult PagoExitoso(int numOrden, double totalFinal)
@@ -392,34 +230,74 @@ namespace Eterea_Parfums_Web.Controllers
 
 
 
-        public ActionResult SimularPago(string monto)
+        [HttpGet]
+        public ActionResult SimularPago()
         {
-            System.Diagnostics.Debug.WriteLine($"[SimularPago] raw query monto='{monto}'");
+            // 1) Debe estar logueado
+            if (Session["clienteId"] == null)
+            {
+                TempData["ErrorPago"] = "Tenés que iniciar sesión para simular el pago.";
+                return RedirectToAction("Login", "Cliente");
+            }
 
-            // 1) Parse del monto (Invariant primero)
-            decimal m;
-            if (!decimal.TryParse(monto, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
-                decimal.TryParse(monto, NumberStyles.Any, CultureInfo.GetCultureInfo("es-AR"), out m);
+            int clienteId = (int)Session["clienteId"];
 
-            // 2) Saldo random por sesión (100.000 a 800.000)
+            // 2) Traer carrito del cliente
+            var carrito = db.carrito
+                .Include(c => c.perfume)
+                .Include(c => c.perfume.promocion)
+                .Include(c => c.perfume.stock)
+                .Where(c => c.cliente_id == clienteId)
+                .ToList();
+
+            if (!carrito.Any())
+            {
+                TempData["ErrorPago"] = "Tu carrito está vacío. Agregá perfumes antes de simular el pago.";
+                return RedirectToAction("Index", "Carrito");
+            }
+
+            // 3) Armar stock web por perfume (misma lógica que VistaPrevia)
+            var perfumeIds = carrito.Select(c => c.perfume_id).Distinct().ToList();
+
+            var stockDict = db.stock
+                .Where(s => perfumeIds.Contains(s.perfume_id) && s.sucursal_id == 1)
+                .ToDictionary(
+                    s => s.perfume_id,
+                    s => Math.Max(0, s.cantidad - 5)   // stock web = stock local 1 - 5
+                );
+
+            // 4) Reutilizar el helper para calcular totales y promos
+            var items = carrito.Select(c =>
+                CarritoHelper.BuildItemViewModel(
+                    c,
+                    stockDict.ContainsKey(c.perfume_id)
+                        ? stockDict[c.perfume_id]
+                        : 0
+                )).ToList();
+
+            // ⚠️ Este es el MONTO que debe ir a la simulación:
+            // total de productos con descuentos, SIN envío ni recargo
+            double totalNetoProductos = items.Sum(x => x.Total);
+
+            // 5) Saldo "demo" estable por sesión (como ya tenías)
             if (Session["SaldoCuentaDemo"] == null)
             {
-                // Semilla estable por sesión para no cambiar en cada refresh
                 var seed = unchecked(Environment.TickCount + (Session.SessionID?.GetHashCode() ?? 0));
                 var rnd = new Random(seed);
-                // Next(min, maxExclusive) → usamos 800001 para incluir 800000
-                var saldo = rnd.Next(100000, 800001);
+                var saldo = rnd.Next(100000, 800001); // entre 100.000 y 800.000
                 Session["SaldoCuentaDemo"] = (double)saldo;
             }
+
             double saldoCuenta = (double)Session["SaldoCuentaDemo"];
 
             var vm = new SimularPagoViewModel
             {
-                Monto = (double)m,
+                Monto = totalNetoProductos,  // 👈 ya no viene de la URL
                 SaldoCuenta = saldoCuenta
             };
 
-            System.Diagnostics.Debug.WriteLine($"[SimularPago] parsed m={m} | saldo={saldoCuenta}");
+            System.Diagnostics.Debug.WriteLine($"[SimularPago] totalNetoProductos={totalNetoProductos} | saldo={saldoCuenta}");
+
             return View(vm);
         }
 
@@ -522,9 +400,16 @@ namespace Eterea_Parfums_Web.Controllers
                         MidpointRounding.AwayFromZero
                     );
 
-                    // Calculamos el total y también lo redondeamos a 2 decimales
-                    decimal totalCalculado = subtotalOriginal - descuentoTotal + recargoTotal;
+                    // Neto de productos (con descuento, sin recargo ni envío)
+                    decimal netoProductos = subtotalOriginal - descuentoTotal;
+
+                    // 🔹 Costo de envío: si el neto de productos es menor a 70.000, se cobran 4.000
+                    decimal costoEnvio = netoProductos < 70000m ? 4000m : 0m;
+
+                    // 🔹 Total = productos + envío + recargo
+                    decimal totalCalculado = netoProductos + costoEnvio + recargoTotal;
                     totalCalculado = Math.Round(totalCalculado, 2, MidpointRounding.AwayFromZero);
+
 
                     // Comparación en DECIMAL (tanto totalCalculado como totalFinalDec van con 2 decimales)
                     if (Math.Abs(totalCalculado - totalFinalDec) > 0.01m)
@@ -590,6 +475,7 @@ namespace Eterea_Parfums_Web.Controllers
                             }
                         }
 
+
                         db.detalle_factura.Add(new detalle_factura
                         {
                             factura_id = fac.id,
@@ -635,8 +521,8 @@ namespace Eterea_Parfums_Web.Controllers
 
                     // Generación PDF + correo (tal cual lo tenías)...
                     string htmlFactura = (tipoFactura == "A")
-                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente,cuotas)
-                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente,cuotas);
+                        ? FacturaHelper.GenerarHtmlFacturaA(db, fac, cliente, cuotas, costoEnvio)
+                        : FacturaHelper.GenerarHtmlFacturaB(db, fac, cliente, cuotas, costoEnvio);
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 

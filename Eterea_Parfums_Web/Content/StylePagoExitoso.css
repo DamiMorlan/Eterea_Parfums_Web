@@ -48,3 +48,8 @@ body {
         transform: scale(1.02);
         color: white;
     }
+
+.countdown-msg {
+    color: #5a2a39; /* tu color */
+    font-weight: 500; /* opcional, para que se vea un poquito más marcado */
+}
