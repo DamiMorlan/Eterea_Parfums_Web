@@ -218,9 +218,7 @@ namespace Eterea_Parfums_Web.Helpers
                 // Si numeracion_calle es int:
                 string numero = sucursal.numeracion_calle.ToString();
 
-                // Si el campo se llama distinto, cambiá esta línea:
-                // string numero = sucursal.numero.ToString();
-                // string numero = sucursal.altura.ToString();
+               
 
                 dirSucursal = (calleNombre + " " + numero).Trim();
 
