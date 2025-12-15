@@ -15,7 +15,7 @@ namespace Eterea_Parfums_Web.Helpers
         // Trunca a 2 decimales SIN redondear
         private static decimal Trunc2(decimal v) => decimal.Truncate(v * 100m) / 100m;
 
-        // Versión para exponer como double (tu VM usa double)
+        // Versión para exponer como double (nuestro VM usa double)
         private static double Trunc2D(decimal v) => (double)Trunc2(v);
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Eterea_Parfums_Web.Helpers
                 Genero = perfume.genero?.genero1 ?? "",
                 Imagen = perfume.imagen1,
 
-                // Dejo el precio original como viene (double). Si querés, podés truncarlo así:
+                // Precio original como viene (double). Se puede truncarlo así:
                 // PrecioOriginal = Trunc2D(p),
                 PrecioOriginal = perfume.precio_en_pesos,
 
