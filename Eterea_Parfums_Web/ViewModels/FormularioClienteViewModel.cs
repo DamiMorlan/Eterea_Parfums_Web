@@ -34,14 +34,14 @@ namespace Eterea_Parfums_Web.ViewModels
         [DataType(DataType.Password)]
         public string Clave { get; set; }
 
-        [Remote("ValidarDni", "Cliente", ErrorMessage = "Ya existe una cuenta con ese DNI o CUIT.")]
-        [Required(ErrorMessage = "El DNI o CUIT es obligatorio.")]
-        [Range(10000000, 99999999999, ErrorMessage = "Debe ingresar un DNI (8 dígitos) o un CUIT (11 dígitos).")]
+        [Remote("ValidarDni", "Cliente", ErrorMessage = "Ya existe una cuenta con ese DNI.")]
+        [Required(ErrorMessage = "El DNI es obligatorio.")]
+        [Range(10000000, 99999999999, ErrorMessage = "Debe ingresar un DNI (8 dígitos).")]
         public long? Dni { get; set; }
 
         [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.Date)]
-        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 250, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
+        [FechaMenorQueActual(EdadMinima = 18, EdadMaxima = 100, ErrorMessage = "La fecha debe ser válida y debes tener 18 años como mínimo.")]
         public DateTime? FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El celular es obligatorio.")]
