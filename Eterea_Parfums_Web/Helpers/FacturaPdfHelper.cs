@@ -180,11 +180,13 @@ namespace Eterea_Parfums_Web.Helpers
             html = html.Replace("@FILAS", filasHtml.ToString());
 
             var request = System.Web.HttpContext.Current.Request;
-            var baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}/";
-            string urlLogo = baseUrl + "Imagen/Mostrar?nombre=LogoEtereaFactura.png";
 
-            string imgTag = $"<img src=\"{urlLogo}\" style=\"width:60px; height:60px;\" />";
-            html = html.Replace("@LOGO", imgTag);
+            string baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}";
+
+            string urlLogo = baseUrl + "/Imagenes/LogoEtereaFactura.png";
+
+            html = html.Replace("@LOGO", urlLogo);
+
 
             return html;
         }
@@ -390,11 +392,12 @@ namespace Eterea_Parfums_Web.Helpers
             // 5) Logo
             // ============================
             var request = System.Web.HttpContext.Current.Request;
-            var baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}/";
-            string urlLogo = baseUrl + "Imagen/Mostrar?nombre=LogoEtereaFactura.png";
 
-            string imgTag = $"<img src=\"{urlLogo}\" style=\"width:60px; height:60px;\" />";
-            html = html.Replace("@LOGO", imgTag);
+            string baseUrl = $"{request.Url.Scheme}://{request.Url.Authority}{request.ApplicationPath.TrimEnd('/')}";
+
+            string urlLogo = baseUrl + "/Imagenes/LogoEtereaFactura.png";
+
+            html = html.Replace("@LOGO", urlLogo);
 
             return html;
         }
