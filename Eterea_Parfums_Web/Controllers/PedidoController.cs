@@ -526,7 +526,8 @@ namespace Eterea_Parfums_Web.Controllers
 
                     byte[] pdfBytes = FacturaHelper.GenerarFacturaPdf(htmlFactura);
 
-                    string nombreArchivo = $"Factura_{numFactura}.pdf";
+                    string prefijo = (tipoFactura == "A") ? "Factura A" : "Factura B";
+                    string nombreArchivo = $"{prefijo} Nro {numFactura}.pdf";
                     string rutaRelativa = $"~/Facturas/{nombreArchivo}";
                     string rutaDelPdfGenerado = Server.MapPath(rutaRelativa);
                     Directory.CreateDirectory(Path.GetDirectoryName(rutaDelPdfGenerado));
@@ -537,6 +538,7 @@ namespace Eterea_Parfums_Web.Controllers
                         CorreoHelper.EnviarCorreoConfirmacionPedido(
                             emailDestino: cliente.e_mail,
                             nombreCliente: cliente.nombre,
+                            tipoFactura: tipoFactura,
                             numeroFactura: numFactura,
                             total: (double)totalCalculado,
                             rutaPdf: rutaDelPdfGenerado

@@ -21,17 +21,21 @@
 @section Styles {
     <link href="~/Content/StyleHome.css" rel="stylesheet" type="text/css" />
 }
+
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
+    <div id="mensaje-bienvenida" class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
 }
+
 
 <div class="container-fluid p-0">
 
     <!-- Carousel de Imágenes Fijas -->
     @{
         var banners = new List<string>
- {
+{
         "banner1.jpg",
         "banner2.jpg",
         "banner3.jpg",
@@ -760,8 +764,8 @@
                         }
 
                         contenedor.innerHTML = `
-                            <img src="${API_IMG}${data.imagen}.jpg" 
-                                 alt="${data.nombre}" 
+                            <img src="${API_IMG}${data.imagen}.jpg"
+                                 alt="${data.nombre}"
                                  class="popup-perfume-img" />
                             <p><strong>${data.nombre}</strong></p>
                             <p>${data.tipo} - ${data.presentacion} ml</p>
@@ -809,6 +813,17 @@
                     }
                 });*/
 
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const mensaje = document.getElementById("mensaje-bienvenida");
+                if (mensaje) {
+                    setTimeout(() => {
+                        mensaje.style.transition = "opacity 0.5s ease";
+                        mensaje.style.opacity = "0";
+                        setTimeout(() => mensaje.remove(), 500); // lo quita del DOM
+                    }, 5000); // 5 segundos
+                }
             });
 
         </script>

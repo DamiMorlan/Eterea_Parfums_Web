@@ -8,11 +8,11 @@ namespace Eterea_Parfums_Web.Helpers
 {
     public static class CorreoHelper
     {
-        public static void EnviarCorreoConfirmacionPedido(string emailDestino, string nombreCliente, string numeroFactura, double total, string rutaPdf)
+        public static void EnviarCorreoConfirmacionPedido(string emailDestino, string nombreCliente, string tipoFactura, string numeroFactura, double total, string rutaPdf)
         {
             string asunto = "Confirmación de tu compra - Etérea Parfums";
             string mensaje = $"Hola {nombreCliente},\n\n" +
-                             $"Gracias por tu compra. Tu factura Nº {numeroFactura} ha sido generada con éxito.\n" +
+                           $"Gracias por tu compra. Tu factura {tipoFactura} Nº {numeroFactura} ha sido generada con éxito.\n" +
                              $"Total: ${total:F2}\n\n" +
                              $"¡Gracias por confiar en Etérea Parfums!\n\n" +
                              "Este es un mensaje automático, por favor no respondas.";
@@ -28,8 +28,9 @@ namespace Eterea_Parfums_Web.Helpers
 
                 if (!string.IsNullOrEmpty(rutaPdf) && File.Exists(rutaPdf))
                 {
-                    Attachment adjunto = new Attachment(rutaPdf);
-                    adjunto.Name = $"Factura_{numeroFactura}.pdf";
+                    //Toma el nombre real del archivo generado (Factura A..., Factura B..., etc.)
+                    var adjunto = new Attachment(rutaPdf);
+                    adjunto.Name = Path.GetFileName(rutaPdf); 
                     mail.Attachments.Add(adjunto);
                 }
 
