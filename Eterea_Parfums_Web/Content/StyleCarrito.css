@@ -343,7 +343,9 @@ select {
 
         .contenedor-producto img {
             width: 140px;
-            height: 140px;
+            height: auto; 
+            max-height: 140px;
+            object-fit: contain; 
             margin-bottom: 10px;
         }
 
@@ -406,7 +408,9 @@ select {
 
     .contenedor-producto img {
         width: 110px;
-        height: 110px;
+        height: auto; 
+        max-height: 110px;
+        object-fit: contain; 
     }
 
     .producto-detalles h3 {

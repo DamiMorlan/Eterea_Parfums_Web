@@ -64,7 +64,7 @@
                         @Html.ActionLink("Preguntas Frecuentes", "PreguntasFrecuentes", "Home", null,
                                     new { @class = "nav-link " + (currentAction == "PreguntasFrecuentes" ? "active" : "") })
                     </li>
-                
+
                 </ul>
 
                 <ul class="navbar-nav">
@@ -117,6 +117,16 @@
             </div>
         </div>
     </nav>
+
+    <!-- MENSAJE DE LOGIN EXITOSO -->
+    @if (TempData["LoginOK"] != null)
+    {
+        <div class="container mt-3">
+            <div class="alert alert-success text-center">
+                @TempData["LoginOK"]
+            </div>
+        </div>
+    }
 
     <!-- Contenido principal sin container, para que la vista decida el ancho -->
     <div class="body-content">

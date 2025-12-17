@@ -13,6 +13,15 @@
             <div class="alert alert-success">@TempData["Mensaje"]</div>
         }
 
+        @* ✅ MENSAJE DE REGISTRO EXITOSO *@
+        @if (TempData["RegistroOK"] != null)
+        {
+            <div class="alert alert-success text-center mb-3">
+                @TempData["RegistroOK"]
+            </div>
+        }
+
+
         <!-- Logo -->
         <div class="logo-eterea-container text-center mb-4">
             <img src="@Url.Content("~/Imagenes/LogoEterea.png")" alt="Logo Eterea Parfums" class="logo-eterea img-fluid" />

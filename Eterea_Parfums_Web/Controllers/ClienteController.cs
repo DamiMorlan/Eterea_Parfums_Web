@@ -87,6 +87,9 @@ namespace Eterea_Parfums_Web.Controllers
             }
 
             // 6) Todo OK → ir al Home
+            TempData["LoginOK"] = $"¡Bienvenido/a {cliente.nombre}!";
+
+            // 6) Todo OK → ir al Home
             return RedirectToAction("Index", "Home");
         }
 
